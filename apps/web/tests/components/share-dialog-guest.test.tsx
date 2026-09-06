@@ -148,6 +148,13 @@ describe("the share dialog's guest links", () => {
       "teammate@example.com"
     ) as HTMLInputElement
     await vi.waitFor(() => expect(field.value).toBe(""))
+    // The field clears before the save's refresh settles; the button stays
+    // pending until it does, and a click on a pending button is ignored.
+    await vi.waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Share" }).getAttribute("aria-busy")
+      ).toBeNull()
+    )
     invite()
 
     await vi.waitFor(() => expect(shareRecipe).toHaveBeenCalledTimes(2))
