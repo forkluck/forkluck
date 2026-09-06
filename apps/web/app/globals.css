@@ -136,42 +136,6 @@
   }
 }
 
-/* The halo behind the Primo composer: four pastels on a slow turn, blurred
-   by the call site so only a soft wash leaks past the field's edge. The
-   colors are the field's own, not the brand blue, because this is mood, not
-   data or selection. */
-@property --primo-glow-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes primo-glow-turn {
-  to {
-    --primo-glow-angle: 360deg;
-  }
-}
-
-.primo-glow {
-  background: conic-gradient(
-    from var(--primo-glow-angle) at 50% 50%,
-    #c6adff,
-    #a0cbff,
-    #c6adff,
-    #f4c2ff,
-    #ffd8b7,
-    #f4c2ff,
-    #c6adff
-  );
-  animation: primo-glow-turn 9s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .primo-glow {
-    animation: none;
-  }
-}
-
 :root {
   /* Neutrals are the handoff palette and nothing else — ten values, no other
      greys. The app frame, cards, modals and popovers are all white; --canvas
