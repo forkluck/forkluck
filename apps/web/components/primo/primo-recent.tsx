@@ -17,12 +17,9 @@ import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import { Switch } from "@/components/ui/switch"
 import { LoadingRegion } from "@/components/ui/loading-region"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { Spinner } from "@/components/ui/spinner"
 import { groupConversationsByDate } from "@/lib/primo/conversation-groups"
 import type { PrimoConversationSummary } from "@/lib/backend/types"
-
-const SKELETON_ROW_WIDTHS = ["w-3/5", "w-2/5", "w-1/2", "w-3/4", "w-1/3"]
 
 function RecentList({ close }: { close: () => void }) {
   const {
@@ -139,10 +136,11 @@ function RecentList({ close }: { close: () => void }) {
           </Button>
         </div>
       ) : null}
-      {/* The first load draws the list's own shape; a reload over rows that
-          are already showing dims them under the activity mark instead. */}
+      {/* The first load is one ring centered in the room the rows will take,
+          so the dialog opens at its working height; a reload over rows that
+          are already showing dims them under the ring instead. */}
       <LoadingRegion pending={loading && rows.length > 0} label="Loading chats">
-        <div className="-mx-2 max-h-[55dvh] min-h-32 overflow-y-auto px-2 pb-2">
+        <div className="-mx-2 max-h-[55dvh] min-h-60 overflow-y-auto px-2 pb-2">
           {rows.length ? (
             groupConversationsByDate(rows).map((group) => (
               <section key={group.label} className="mb-3">
@@ -251,14 +249,8 @@ function RecentList({ close }: { close: () => void }) {
               </section>
             ))
           ) : loading ? (
-            <div role="status" aria-busy="true" className="mb-3">
-              <span className="sr-only">Loading chats</span>
-              <Skeleton className="my-1.5 h-3 w-16" />
-              {SKELETON_ROW_WIDTHS.map((width) => (
-                <div key={width} className="flex min-h-11 items-center">
-                  <Skeleton className={cn("h-4", width)} />
-                </div>
-              ))}
+            <div className="grid min-h-60 place-items-center">
+              <Spinner size="md" delayed label="Loading chats" />
             </div>
           ) : !error ? (
             <p className="py-8 text-center text-base text-muted-foreground">
