@@ -22,7 +22,7 @@ import { PrimoAttachmentPreview } from "./primo-attachment-preview"
 import { PrimoFeedback } from "./primo-feedback"
 import { type PrimoAttachment } from "@/lib/primo/attachments"
 import { GuardedLink } from "@/components/navigation-blocker"
-import { LoadingRegion } from "@/components/ui/loading-region"
+import { Skeleton } from "@/components/ui/skeleton"
 import { PrimoComposer } from "@/components/primo/primo-composer"
 import { usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRecipeDraftCard } from "@/components/primo/primo-recipe-draft-card"
@@ -279,9 +279,27 @@ export function PrimoConversation({
       )}
     >
       {conversationLoading ? (
-        <LoadingRegion pending label="Loading chat">
-          <div className="min-h-48" />
-        </LoadingRegion>
+        // The shape of a short exchange, bottom-anchored the way a loaded
+        // chat is, so the composer is already where it will stay and the
+        // messages land into the grey rather than under a spinner.
+        <div
+          role="status"
+          aria-busy="true"
+          className="flex min-h-0 flex-1 flex-col justify-end gap-6 px-4 py-6"
+        >
+          <span className="sr-only">Loading chat</span>
+          <Skeleton className="ml-auto h-10 w-48 rounded-xl" />
+          <div className="space-y-2.5">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-11/12" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+          <Skeleton className="ml-auto h-10 w-36 rounded-xl" />
+          <div className="space-y-2.5">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
       ) : conversationError ? (
         <div role="alert" className="p-6 text-center">
           <p>{conversationError}</p>
