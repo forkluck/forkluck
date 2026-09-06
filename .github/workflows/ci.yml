@@ -168,16 +168,14 @@ jobs:
           apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
       - run: apps/api/.venv/bin/python scripts/backend-test-shard.py ${{ matrix.shard }} 2
 
+  # The browser suite is one sequential story (each spec builds state the
+  # next one reads), so it cannot be sharded across runners.
   acceptance:
-    name: Browser acceptance ${{ matrix.shard }}/2
+    name: Browser acceptance
     needs: changes
     if: needs.changes.outputs.web == 'true' || needs.changes.outputs.api == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -212,7 +210,7 @@ jobs:
           restore-keys: |
             next-acceptance-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm --filter @forkluck/web exec playwright install --with-deps chromium
-      - run: pnpm test:acceptance --shard=${{ matrix.shard }}/2
+      - run: pnpm test:acceptance
 
   connectors:
     name: Connectors
