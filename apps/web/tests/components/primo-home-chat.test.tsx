@@ -46,29 +46,16 @@ afterEach(() => {
 
 describe("PrimoHomeChat", () => {
   it("passes kitchen context to the shared conversation", () => {
-    const { rerender } = render(
-      <PrimoHomeChat tabs={null} topProductName="" userName="Ada" />
-    )
+    render(<PrimoHomeChat userName="Ada" />)
 
-    expect(screen.queryByText("What sold best this month?")).toBeNull()
-
-    rerender(
-      <PrimoHomeChat tabs={null} topProductName="Mooncake" userName="Ada" />
-    )
     expect(mocks.conversationProps).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        home: true,
-        topProductName: "Mooncake",
-        userName: "Ada",
-      })
+      expect.objectContaining({ home: true, userName: "Ada" })
     )
   })
 
   it("offers New when a conversation is showing", () => {
     mocks.messages = [{ id: "message-1" }]
-    render(
-      <PrimoHomeChat tabs={null} topProductName="Mooncake" userName="Ada" />
-    )
+    render(<PrimoHomeChat userName="Ada" />)
     fireEvent.click(screen.getByRole("button", { name: "New chat" }))
     expect(mocks.newChat).toHaveBeenCalled()
   })

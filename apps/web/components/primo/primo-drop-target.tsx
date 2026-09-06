@@ -68,7 +68,7 @@ export function PrimoDropTarget({
       {dragging ? (
         <div
           role="status"
-          className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center rounded-xl border-2 border-dashed border-foreground bg-background/95 p-6 text-center"
+          className="pointer-events-none absolute inset-4 z-50 flex items-center justify-center rounded-xl border-2 border-dashed border-foreground bg-background/95 p-6 text-center"
         >
           <div>
             <FileUp className="mx-auto mb-3 size-8" aria-hidden="true" />

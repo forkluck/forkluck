@@ -20,13 +20,13 @@ const KNOWN_ABSENT_ID = "00000000-0000-0000-0000-000000000000"
 const renders = [
   // Overview: a month or day outside the calendar, and a window longer than
   // the year both reports allow.
-  { path: "/?tab=activity&start=2026-13-45", name: "Analytics" },
-  { path: "/?tab=activity&start=2026-01-32", name: "Analytics" },
-  { path: "/?tab=activity&start=0000-01-01", name: "Analytics" },
-  { path: "/?tab=activity&start=2020-01-01&end=2026-01-01", name: "Analytics" },
-  { path: "/?tab=activity&start=2026-01-01&end=2026-12-31", name: "Analytics" },
+  { path: "/analytics?start=2026-13-45", name: "Analytics" },
+  { path: "/analytics?start=2026-01-32", name: "Analytics" },
+  { path: "/analytics?start=0000-01-01", name: "Analytics" },
+  { path: "/analytics?start=2020-01-01&end=2026-01-01", name: "Analytics" },
+  { path: "/analytics?start=2026-01-01&end=2026-12-31", name: "Analytics" },
   {
-    path: "/?tab=activity&start=2026-07-01&start=2026-07-02",
+    path: "/analytics?start=2026-07-01&start=2026-07-02",
     name: "Analytics",
   },
   // Labor reads the same parameters through the same guards.

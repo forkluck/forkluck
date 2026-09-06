@@ -4,6 +4,7 @@ import * as React from "react"
 import { usePathname } from "next/navigation"
 import {
   Book,
+  ChartColumn,
   CircleAlert,
   FileText,
   Home,
@@ -28,8 +29,9 @@ import type { ActiveKitchen } from "@/lib/kitchen"
 import { cn } from "@/lib/utils"
 
 // Every sidebar row is the same box: 34px tall, radius 8, 10px of side
-// padding, a 9px gap to a 17px glyph. One grey carries hover *and* active —
-// the label color never changes, only its weight.
+// padding, a 9px gap to a 17px glyph. Hover on a resting row is the sidebar
+// grey; the active row has no fill and turns brand blue, and hovering it tints
+// with the same translucent blue as an active section tab.
 const ROW_CLASS =
   "flex h-11 w-full items-center gap-[9px] rounded-lg border border-transparent px-2.5 text-base leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-9"
 
@@ -45,6 +47,8 @@ type NavChild = {
 
 type NavItem = {
   href: string
+  /** The path prefix the row lights up for, when wider than `href`. */
+  match?: string
   label: string
   icon: typeof Book
   children?: NavChild[]
@@ -61,6 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { href: "/", label: "Home", icon: Home },
+      { href: "/analytics", label: "Analytics", icon: ChartColumn },
       {
         href: "/products",
         label: "Products",
@@ -83,13 +88,17 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: "Integrations",
     items: [
+      // Straight to each family's first page: a row that lands on a redirect
+      // shows the screen's chrome over an empty body for the whole load.
       {
-        href: "/integrations/sales",
+        href: "/integrations/sales/connections",
+        match: "/integrations/sales",
         label: "Sales",
         icon: Store,
       },
       {
-        href: "/integrations/suppliers",
+        href: "/integrations/suppliers/connections",
+        match: "/integrations/suppliers",
         label: "Suppliers",
         icon: Truck,
       },
@@ -105,13 +114,13 @@ const BOTTOM_ITEMS: NavItem[] = [
 // decision, not by omission. A member kitchen is a recipe book.
 const MEMBER_HREFS = new Set(["/recipes"])
 
-const ISSUE_EMAIL_URL =
-  "mailto:guero@forkluck.com?subject=Forkluck%20issue&body=Please%20describe%20what%20happened%3A%0A%0A"
+const ISSUE_URL = "https://github.com/forkluck/forkluck/issues"
 
 export function AppSidebar({
   user,
   kitchen = null,
   kitchens = [],
+  primoEnabled = true,
   open,
   onOpenChange,
   collapsed = false,
@@ -121,6 +130,8 @@ export function AppSidebar({
   /** The kitchen being looked at; `null` is the account's own. */
   kitchen?: ActiveKitchen | null
   kitchens?: ActiveKitchen[]
+  /** Home is the chat; without Primo there is no Home row to land on. */
+  primoEnabled?: boolean
   open: boolean
   onOpenChange: (open: boolean) => void
   /** Desktop only — the drawer is driven by `open`. */
@@ -129,7 +140,13 @@ export function AppSidebar({
 }) {
   const pathname = usePathname()
   const sections = React.useMemo(() => {
-    if (!kitchen) return NAV_SECTIONS
+    if (!kitchen)
+      return primoEnabled
+        ? NAV_SECTIONS
+        : NAV_SECTIONS.map((section) => ({
+            ...section,
+            items: section.items.filter((item) => item.href !== "/"),
+          }))
     return NAV_SECTIONS.flatMap((section) => {
       const items = section.items.flatMap((item) =>
         MEMBER_HREFS.has(item.href)
@@ -140,7 +157,7 @@ export function AppSidebar({
       )
       return items.length ? [{ ...section, items }] : []
     })
-  }, [kitchen])
+  }, [kitchen, primoEnabled])
   const sidebarRef = React.useRef<HTMLElement>(null)
   const returnFocusRef = React.useRef<HTMLElement | null>(null)
   const [isDesktop, setIsDesktop] = React.useState(false)
@@ -217,7 +234,7 @@ export function AppSidebar({
   const navRow = (item: NavItem) => {
     const childActive = item.children?.some((child) => isActive(child.href))
     // A child living off the parent's path (Supplies) still opens the family.
-    const active = isActive(item.href) || Boolean(childActive)
+    const active = isActive(item.match ?? item.href) || Boolean(childActive)
     const filled = active && !childActive
 
     return (
@@ -225,10 +242,8 @@ export function AppSidebar({
         <div
           className={cn(
             "relative rounded-lg",
-            filled ? "bg-sidebar-hover" : "hover:bg-sidebar-hover",
-            !filled &&
-              item.action &&
-              "has-[[data-nav-action]:hover]:bg-transparent"
+            filled ? "hover:bg-brand/10" : "hover:bg-sidebar-hover",
+            item.action && "has-[[data-nav-action]:hover]:bg-transparent"
           )}
         >
           <GuardedLink
@@ -238,12 +253,12 @@ export function AppSidebar({
             className={cn(
               ROW_CLASS,
               item.action && "pr-9",
-              filled && "font-semibold"
+              filled && "font-semibold text-brand"
             )}
           >
             <item.icon
               className={ICON_CLASS}
-              strokeWidth={1.8}
+              strokeWidth={2}
               aria-hidden="true"
             />
             {item.label}
@@ -277,7 +292,7 @@ export function AppSidebar({
                   className={cn(
                     SUB_ROW_CLASS,
                     active
-                      ? "bg-sidebar-hover font-semibold"
+                      ? "font-semibold text-brand hover:bg-brand/10"
                       : "hover:bg-sidebar-hover"
                   )}
                 >
@@ -378,12 +393,14 @@ export function AppSidebar({
             {/* Settings is the owner's account; a member has none here. */}
             {kitchen ? null : BOTTOM_ITEMS.map(navRow)}
             <a
-              href={ISSUE_EMAIL_URL}
+              href={ISSUE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className={cn(ROW_CLASS, "hover:bg-sidebar-hover")}
             >
               <CircleAlert
                 className={ICON_CLASS}
-                strokeWidth={1.8}
+                strokeWidth={2}
                 aria-hidden="true"
               />
               Submit an issue

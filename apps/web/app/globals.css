@@ -332,6 +332,12 @@
   min-height: 100svh;
 }
 
+/* While a page loads, the content area shows the activity mark and nothing
+   else: the Primo trigger in the header waits with the page. */
+[data-content]:has([data-route-loading]) [data-primo-trigger] {
+  visibility: hidden;
+}
+
 .tabular {
   font-variant-numeric: tabular-nums;
 }

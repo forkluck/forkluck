@@ -3,8 +3,10 @@
 import * as React from "react"
 import {
   ArrowUp,
+  AtSign,
   Square,
-  Paperclip,
+  Plus,
+  Upload,
   X,
   RotateCcw,
   FileText,
@@ -13,6 +15,7 @@ import {
 
 import { runKitchenToolAction } from "@/app/(app)/actions"
 import { Button } from "@/components/ui/button"
+import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/ui/menu"
 import { Textarea } from "@/components/ui/textarea"
 import type { PrimoMention } from "@/lib/primo/messages"
 import { PrimoAttachmentPreview } from "./primo-attachment-preview"
@@ -93,7 +96,7 @@ export function PrimoComposer({
     const field = textareaRef.current
     if (!field) return
     field.style.height = "auto"
-    field.style.height = `${Math.min(200, Math.max(72, field.scrollHeight))}px`
+    field.style.height = `${Math.min(200, Math.max(36, field.scrollHeight))}px`
   }, [input])
 
   React.useEffect(() => {
@@ -147,6 +150,16 @@ export function PrimoComposer({
       textareaRef.current?.setSelectionRange(position, position)
       setCaret(position)
     })
+  }
+
+  /** Drops an `@` at the caret, which opens the recipe and product picker. */
+  function startMention() {
+    const before = input.slice(0, caret)
+    const leading = before && !/\s$/.test(before) ? " " : ""
+    const next = `${before}${leading}@${input.slice(caret)}`
+    setInput(next)
+    setClosedFor(null)
+    focusAt(before.length + leading.length + 1)
   }
 
   function pickRecipe(recipe: RecipeChoice) {
@@ -275,185 +288,221 @@ export function PrimoComposer({
           ))}
         </div>
       ) : null}
-      <div className="relative rounded-md border border-input bg-muted/30 p-1.5 focus-within:border-foreground">
-        {listOpen ? (
-          <div
-            id={listId}
-            role="listbox"
-            aria-label="Recipes and products"
-            className="absolute right-0 bottom-full left-0 z-40 mb-1 max-h-56 overflow-y-auto rounded-lg border border-popover-border bg-popover p-1.5 text-popover-foreground"
-          >
-            {matches.length ? (
-              matches.map((recipe, index) => (
-                <button
-                  key={recipe.recipeRef}
-                  id={`${listId}-${index}`}
-                  type="button"
-                  aria-label={recipe.title}
-                  role="option"
-                  aria-selected={index === highlighted}
-                  tabIndex={-1}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => pickRecipe(recipe)}
-                  className="flex h-9 w-full items-center rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent aria-selected:bg-accent"
-                >
-                  <span className="truncate">
-                    {recipe.title}{" "}
-                    <span className="text-xs text-muted-foreground">
-                      · {recipe.kind ?? "recipe"}
-                    </span>
-                  </span>
-                </button>
-              ))
-            ) : (
-              <p className="px-2.5 py-2 text-xs text-muted-foreground">
-                {searching
-                  ? "Finding recipes and products…"
-                  : "No recipes or products match that."}
-              </p>
-            )}
-          </div>
-        ) : null}
-        <Textarea
-          ref={textareaRef}
-          maxLength={4000}
-          disabled={disabled}
-          onPaste={(event) => {
-            if (event.clipboardData.files.length) {
-              event.preventDefault()
-              if (!disabled)
-                attachments.add(Array.from(event.clipboardData.files))
-            }
-          }}
-          value={input}
-          aria-autocomplete="list"
-          aria-haspopup="listbox"
-          aria-expanded={listOpen}
-          aria-controls={listOpen ? listId : undefined}
-          aria-activedescendant={
-            listOpen && matches.length ? `${listId}-${highlighted}` : undefined
-          }
-          onChange={(event) => {
-            const next = event.target.value.slice(0, 4_000)
-            const nextCaret = Math.min(
-              event.target.selectionStart ?? next.length,
-              next.length
-            )
-            setInput(next)
-            setCaret(nextCaret)
-            setClosedFor(null)
-            setMentions((current) =>
-              current.filter((mention) => next.includes(`@${mention.label}`))
-            )
-          }}
-          onClick={(event) => setCaret(event.currentTarget.selectionStart)}
-          onSelect={(event) => setCaret(event.currentTarget.selectionStart)}
-          onKeyDown={(event) => {
-            if (listOpen && matches.length) {
-              if (event.key === "ArrowDown") {
-                event.preventDefault()
-                setHighlighted((index) => (index + 1) % matches.length)
-                return
-              }
-              if (event.key === "ArrowUp") {
-                event.preventDefault()
-                setHighlighted((index) =>
-                  index <= 0 ? matches.length - 1 : index - 1
-                )
-                return
-              }
-              if (event.key === "Home") {
-                event.preventDefault()
-                setHighlighted(0)
-                return
-              }
-              if (event.key === "End") {
-                event.preventDefault()
-                setHighlighted(matches.length - 1)
-                return
-              }
-              if (
-                resolveComposerKey(
-                  {
-                    key: event.key,
-                    shiftKey: event.shiftKey,
-                    keyCode: event.keyCode,
-                    isComposing: event.nativeEvent.isComposing,
-                  },
-                  { pickerOpen: listOpen, hasPickerOptions: matches.length > 0 }
-                ) === "pick"
-              ) {
-                event.preventDefault()
-                pickRecipe(matches[highlighted]!)
-                return
-              }
-            }
-            const keyAction = resolveComposerKey(
-              {
-                key: event.key,
-                shiftKey: event.shiftKey,
-                keyCode: event.keyCode,
-                isComposing: event.nativeEvent.isComposing,
-              },
-              { pickerOpen: listOpen, hasPickerOptions: matches.length > 0 }
-            )
-            if (keyAction === "close") {
-              event.preventDefault()
-              event.stopPropagation()
-              setClosedFor(triggerKey)
-              return
-            }
-            if (event.key === "Backspace") {
-              const position = event.currentTarget.selectionStart
-              const token = mentions
-                .map((mention) => ({
-                  mention,
-                  token: `@${mention.label}`,
-                }))
-                .find(({ token }) => input.slice(0, position).endsWith(token))
-              if (token) {
-                event.preventDefault()
-                const start = position - token.token.length
-                const next = `${input.slice(0, start)}${input.slice(position)}`
-                setInput(next)
-                setMentions((current) =>
-                  current.filter((mention) => mention.ref !== token.mention.ref)
-                )
-                focusAt(start)
-                return
-              }
-            }
-            if (keyAction === "send") {
-              event.preventDefault()
-              submit()
-            }
-          }}
-          placeholder={
-            recipeOpen
-              ? "Ask Primo about this recipe…"
-              : "Ask Primo about the kitchen…"
-          }
-          aria-label="Message Primo"
-          className="max-h-[200px] min-h-[72px] resize-none border-0 bg-transparent px-3 py-2 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
-          rows={1}
+      {/* rounded-2xl outside, rounded-lg buttons inside, 8px between: the
+          outer corner is the inner radius plus the gap, so the two curves
+          share a center. The inset is what keeps this from reading as a
+          plain text field. The line is one step darker than a field's and
+          does not go to ink on focus: the halo behind it, which shows only
+          while the field has focus and only just, is the focus mark. */}
+      <div className="group/composer relative">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-border opacity-0 blur-sm transition-opacity duration-500 ease-out group-focus-within/composer:opacity-80"
         />
-        <span className="sr-only" aria-live="polite">
-          {listOpen && !searching ? `${matches.length} matches found.` : ""}
-        </span>
-        <div className="flex items-center justify-between px-1 pb-1">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
+        <div className="relative flex items-end gap-1 rounded-2xl border border-line-strong bg-background py-2 pr-2 pl-4">
+          {listOpen ? (
+            <div
+              id={listId}
+              role="listbox"
+              aria-label="Recipes and products"
+              className="absolute right-0 bottom-full left-0 z-40 mb-1 max-h-56 overflow-y-auto rounded-lg border border-popover-border bg-popover p-1.5 text-popover-foreground"
+            >
+              {matches.length ? (
+                matches.map((recipe, index) => (
+                  <button
+                    key={recipe.recipeRef}
+                    id={`${listId}-${index}`}
+                    type="button"
+                    aria-label={recipe.title}
+                    role="option"
+                    aria-selected={index === highlighted}
+                    tabIndex={-1}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => pickRecipe(recipe)}
+                    className="flex h-9 w-full items-center rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent aria-selected:bg-accent"
+                  >
+                    <span className="truncate">
+                      {recipe.title}{" "}
+                      <span className="text-xs text-muted-foreground">
+                        · {recipe.kind ?? "recipe"}
+                      </span>
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <p className="px-2.5 py-2 text-xs text-muted-foreground">
+                  {searching
+                    ? "Finding recipes and products…"
+                    : "No recipes or products match that."}
+                </p>
+              )}
+            </div>
+          ) : null}
+          <Textarea
+            ref={textareaRef}
+            maxLength={4000}
             disabled={disabled}
-            aria-label="Add attachment"
-            onClick={() => fileInput.current?.click()}
-          >
-            <Paperclip aria-hidden="true" />
-          </Button>
-          <span className="mr-auto px-2 text-xs text-muted-foreground">
-            @ recipe or product
+            onPaste={(event) => {
+              if (event.clipboardData.files.length) {
+                event.preventDefault()
+                if (!disabled)
+                  attachments.add(Array.from(event.clipboardData.files))
+              }
+            }}
+            value={input}
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-expanded={listOpen}
+            aria-controls={listOpen ? listId : undefined}
+            aria-activedescendant={
+              listOpen && matches.length
+                ? `${listId}-${highlighted}`
+                : undefined
+            }
+            onChange={(event) => {
+              const next = event.target.value.slice(0, 4_000)
+              const nextCaret = Math.min(
+                event.target.selectionStart ?? next.length,
+                next.length
+              )
+              setInput(next)
+              setCaret(nextCaret)
+              setClosedFor(null)
+              setMentions((current) =>
+                current.filter((mention) => next.includes(`@${mention.label}`))
+              )
+            }}
+            onClick={(event) => setCaret(event.currentTarget.selectionStart)}
+            onSelect={(event) => setCaret(event.currentTarget.selectionStart)}
+            onKeyDown={(event) => {
+              if (listOpen && matches.length) {
+                if (event.key === "ArrowDown") {
+                  event.preventDefault()
+                  setHighlighted((index) => (index + 1) % matches.length)
+                  return
+                }
+                if (event.key === "ArrowUp") {
+                  event.preventDefault()
+                  setHighlighted((index) =>
+                    index <= 0 ? matches.length - 1 : index - 1
+                  )
+                  return
+                }
+                if (event.key === "Home") {
+                  event.preventDefault()
+                  setHighlighted(0)
+                  return
+                }
+                if (event.key === "End") {
+                  event.preventDefault()
+                  setHighlighted(matches.length - 1)
+                  return
+                }
+                if (
+                  resolveComposerKey(
+                    {
+                      key: event.key,
+                      shiftKey: event.shiftKey,
+                      keyCode: event.keyCode,
+                      isComposing: event.nativeEvent.isComposing,
+                    },
+                    {
+                      pickerOpen: listOpen,
+                      hasPickerOptions: matches.length > 0,
+                    }
+                  ) === "pick"
+                ) {
+                  event.preventDefault()
+                  pickRecipe(matches[highlighted]!)
+                  return
+                }
+              }
+              const keyAction = resolveComposerKey(
+                {
+                  key: event.key,
+                  shiftKey: event.shiftKey,
+                  keyCode: event.keyCode,
+                  isComposing: event.nativeEvent.isComposing,
+                },
+                { pickerOpen: listOpen, hasPickerOptions: matches.length > 0 }
+              )
+              if (keyAction === "close") {
+                event.preventDefault()
+                event.stopPropagation()
+                setClosedFor(triggerKey)
+                return
+              }
+              if (event.key === "Backspace") {
+                const position = event.currentTarget.selectionStart
+                const token = mentions
+                  .map((mention) => ({
+                    mention,
+                    token: `@${mention.label}`,
+                  }))
+                  .find(({ token }) => input.slice(0, position).endsWith(token))
+                if (token) {
+                  event.preventDefault()
+                  const start = position - token.token.length
+                  const next = `${input.slice(0, start)}${input.slice(position)}`
+                  setInput(next)
+                  setMentions((current) =>
+                    current.filter(
+                      (mention) => mention.ref !== token.mention.ref
+                    )
+                  )
+                  focusAt(start)
+                  return
+                }
+              }
+              if (keyAction === "send") {
+                event.preventDefault()
+                submit()
+              }
+            }}
+            placeholder={
+              recipeOpen
+                ? "Ask Primo about this recipe…"
+                : "Ask Primo about the kitchen…"
+            }
+            aria-label="Message Primo"
+            className="max-h-[200px] min-h-9 flex-1 resize-none border-0 bg-transparent px-1 py-1.5 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
+            rows={1}
+          />
+          <span className="sr-only" aria-live="polite">
+            {listOpen && !searching ? `${matches.length} matches found.` : ""}
           </span>
+          <Menu>
+            <MenuTrigger
+              render={
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="ghost"
+                  disabled={disabled}
+                  aria-label="Add to message"
+                  className="mb-1 shrink-0"
+                />
+              }
+            >
+              <Plus aria-hidden="true" />
+            </MenuTrigger>
+            {/* The composer sits at the foot of the screen, so the menu opens
+              upward. Focus goes back to the field, not the plus, because
+              both rows continue the draft. */}
+            <MenuContent side="top" className="w-52" finalFocus={textareaRef}>
+              <MenuItem onClick={() => fileInput.current?.click()}>
+                <Upload strokeWidth={1.8} aria-hidden="true" />
+                Upload from device
+              </MenuItem>
+              <MenuItem onClick={startMention}>
+                <AtSign strokeWidth={1.8} aria-hidden="true" />
+                Mention
+                <kbd className="ml-auto rounded-sm bg-muted px-1.5 py-0.5 font-sans text-xs text-muted-foreground">
+                  @
+                </kbd>
+              </MenuItem>
+            </MenuContent>
+          </Menu>
           {busy ? (
             <Button
               type="button"
@@ -461,7 +510,7 @@ export function PrimoComposer({
               variant="ghost"
               onClick={onStop}
               aria-label="Stop Primo"
-              className="shrink-0"
+              className="mb-1 shrink-0"
             >
               <Square className="size-3.5 fill-current" aria-hidden="true" />
             </Button>
@@ -476,7 +525,9 @@ export function PrimoComposer({
                 filesPending
               }
               aria-label="Send message"
-              className="shrink-0"
+              // The one filled button that is brand blue rather than ink. Pale
+              // while there is nothing to send, full blue once there is.
+              className="mb-1 shrink-0 border-brand bg-brand text-brand-foreground hover:border-brand/85 hover:bg-brand/85 disabled:border-brand/40 disabled:bg-brand/40 disabled:text-brand-foreground"
             >
               <ArrowUp aria-hidden="true" />
             </Button>

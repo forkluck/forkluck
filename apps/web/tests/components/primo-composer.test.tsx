@@ -37,6 +37,29 @@ beforeEach(() => {
 })
 
 describe("Primo composer", () => {
+  it("offers upload and mention behind the plus", async () => {
+    render(
+      <PrimoComposer
+        recipeOpen={false}
+        busy={false}
+        onSend={vi.fn()}
+        onStop={vi.fn()}
+      />
+    )
+    const composer = screen.getByRole("textbox", { name: "Message Primo" })
+    fireEvent.change(composer, { target: { value: "Scale" } })
+
+    fireEvent.click(screen.getByRole("button", { name: "Add to message" }))
+    const rows = await screen.findAllByRole("menuitem")
+    expect(rows.map((row) => row.textContent)).toEqual([
+      "Upload from device",
+      "Mention@",
+    ])
+
+    fireEvent.click(screen.getByRole("menuitem", { name: /Mention/ }))
+    await waitFor(() => expect(composer).toHaveProperty("value", "Scale @"))
+  })
+
   it("accepts ordinary kitchen questions", () => {
     const onSend = vi.fn()
     render(
