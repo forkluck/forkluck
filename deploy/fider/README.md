@@ -26,6 +26,11 @@ Stage the tested image on the existing production host. Pin `FIDER_IMAGE` in
 `/opt/forkluck-feedback/.env` to its immutable image ID. This is a separate
 release from the Django/Next deployment; keep the previous image for rollback.
 
+`deploy/fider/deploy.sh` does all of that in one command: it syncs this
+directory to the host, builds the image there, pins the new image ID, restarts
+the board, and waits for its health check. The previous pin is kept on the host,
+and `deploy/fider/deploy.sh rollback` switches back to it.
+
 ## Install and configure
 
 1. Copy `docker-compose.yml`, `bootstrap.py` and `backup.sh` into `/opt/forkluck-feedback`.
