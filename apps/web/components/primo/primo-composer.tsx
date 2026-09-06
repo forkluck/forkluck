@@ -296,7 +296,7 @@ export function PrimoComposer({
       <div className="group/composer relative">
         <div
           aria-hidden="true"
-          className="primo-glow pointer-events-none absolute -inset-1 rounded-2xl opacity-30 blur-md transition-opacity group-focus-within/composer:opacity-60"
+          className="primo-glow pointer-events-none absolute -inset-2 rounded-2xl opacity-70 blur-lg transition-opacity group-focus-within/composer:opacity-100"
         />
         <div className="relative flex items-end gap-1 rounded-2xl border border-input bg-background py-2 pr-2 pl-4 focus-within:border-foreground">
           {listOpen ? (
