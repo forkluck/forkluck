@@ -13,12 +13,69 @@ concurrency:
   cancel-in-progress: true
 
 # Contributor code runs on disposable hosted runners without deployment secrets.
-# The main-only release workflow owns production verification and deployment.
+# This workflow is the only verification gate: the main branch ruleset accepts
+# nothing that did not pass here on an up-to-date branch. Jobs that a change
+# cannot affect are skipped; a skipped required check still satisfies the
+# ruleset.
 jobs:
-  frontend:
-    name: Frontend
+  changes:
+    name: Changes
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      api: ${{ steps.filter.outputs.api }}
+      connectors: ${{ steps.filter.outputs.connectors }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            # The checked-out commit merges the PR into main; its first parent is main.
+            changed="$(git diff --name-only HEAD^1 HEAD)"
+          else
+            changed="everything"
+          fi
+          printf 'changed files:\n%s\n' "$changed"
+          hit() { [ "$changed" = everything ] || printf '%s\n' "$changed" | grep -qE "$1"; }
+          shared='^(\.github/workflows/|data/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$)'
+          web=false; api=false; connectors=false
+          hit "$shared|^apps/web/" && web=true
+          hit "$shared|^apps/api/|^scripts/backend-test-shard\.py$" && api=true
+          hit '^(\.github/workflows/|services/connectors/)' && connectors=true
+          printf 'web=%s\napi=%s\nconnectors=%s\n' "$web" "$api" "$connectors" | tee -a "$GITHUB_OUTPUT"
+
+  frontend-tests:
+    name: Frontend tests
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  frontend-build:
+    name: Frontend build
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -38,14 +95,23 @@ jobs:
           key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/**/*.ts', 'apps/web/**/*.tsx', 'apps/web/**/*.css') }}
           restore-keys: |
             next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
-      - run: pnpm verify
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
   backend:
-    name: Backend and catalog
+    name: Backend ${{ matrix.shard }}/2
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     services:
       postgres:
         image: postgres:16
@@ -82,17 +148,36 @@ jobs:
         run: |
           python3 -m venv apps/api/.venv
           apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
-      - run: pnpm db:migrate
-      - run: pnpm verify:backend
-      - name: Validate catalog
+      # The CI database is thrown away after the run, so durability buys
+      # nothing; without this every test transaction waits on disk.
+      - name: Make the throwaway Postgres fast
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 \
+            -c "ALTER SYSTEM SET fsync = off" \
+            -c "ALTER SYSTEM SET synchronous_commit = off" \
+            -c "ALTER SYSTEM SET full_page_writes = off" \
+            -c "SELECT pg_reload_conf()"
+      - if: matrix.shard == 1
+        run: pnpm db:migrate
+      - if: matrix.shard == 1
+        run: pnpm verify:backend:checks
+      - if: matrix.shard == 1
+        name: Validate catalog
         run: |
           apps/api/.venv/bin/python data/catalog/scripts/validate.py data/catalog/catalog.csv
           apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
+      - run: apps/api/.venv/bin/python scripts/backend-test-shard.py ${{ matrix.shard }} 2
 
   acceptance:
-    name: Browser acceptance
+    name: Browser acceptance ${{ matrix.shard }}/2
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.api == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -127,10 +212,12 @@ jobs:
           restore-keys: |
             next-acceptance-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm --filter @forkluck/web exec playwright install --with-deps chromium
-      - run: pnpm test:acceptance
+      - run: pnpm test:acceptance --shard=${{ matrix.shard }}/2
 
   connectors:
     name: Connectors
+    needs: changes
+    if: needs.changes.outputs.connectors == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     defaults:

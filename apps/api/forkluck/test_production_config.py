@@ -496,7 +496,8 @@ class ReleasePackagingTests(SimpleTestCase):
     def test_pull_request_gate_runs_the_postgres_and_browser_suites(self):
         # Since main only receives merged pull requests, the CI workflow must
         # carry every production gate: the migration chain and backend suite
-        # on a Postgres that starts empty, and the browser acceptance run.
+        # on a Postgres that starts empty, the frontend checks and build, and
+        # the browser acceptance run.
         ci = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text(
             encoding="utf-8"
         )
@@ -506,7 +507,15 @@ class ReleasePackagingTests(SimpleTestCase):
             ci,
         )
         self.assertIn("FORKLUCK_ENVIRONMENT: development", ci)
-        self.assertIn("run: pnpm db:migrate", ci)
-        self.assertIn("run: pnpm verify:backend", ci)
-        self.assertIn("run: pnpm verify", ci)
-        self.assertIn("run: pnpm test:acceptance", ci)
+        for command in (
+            "run: pnpm db:migrate",
+            "run: pnpm verify:backend:checks",
+            "scripts/backend-test-shard.py",
+            "run: pnpm test\n",
+            "run: pnpm typecheck",
+            "run: pnpm lint",
+            "run: pnpm format:check",
+            "run: pnpm build",
+            "run: pnpm test:acceptance",
+        ):
+            self.assertIn(command, ci)
