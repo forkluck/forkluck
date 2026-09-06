@@ -157,9 +157,8 @@ describe("Primo shell integration", () => {
     expect(screen.queryByRole("button", { name: "Open Primo" })).toBeNull()
   })
 
-  it("keeps the header trigger on the home Activity tab", () => {
-    state.pathname = "/"
-    state.search = "tab=activity"
+  it("keeps the header trigger on Analytics", () => {
+    state.pathname = "/analytics"
     render(
       <AppShell
         user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}

@@ -4,6 +4,7 @@ import * as React from "react"
 import { usePathname } from "next/navigation"
 import {
   Book,
+  ChartColumn,
   CircleAlert,
   FileText,
   Home,
@@ -62,6 +63,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { href: "/", label: "Home", icon: Home },
+      { href: "/analytics", label: "Analytics", icon: ChartColumn },
       {
         href: "/products",
         label: "Products",
@@ -112,6 +114,7 @@ export function AppSidebar({
   user,
   kitchen = null,
   kitchens = [],
+  primoEnabled = true,
   open,
   onOpenChange,
   collapsed = false,
@@ -121,6 +124,8 @@ export function AppSidebar({
   /** The kitchen being looked at; `null` is the account's own. */
   kitchen?: ActiveKitchen | null
   kitchens?: ActiveKitchen[]
+  /** Home is the chat; without Primo there is no Home row to land on. */
+  primoEnabled?: boolean
   open: boolean
   onOpenChange: (open: boolean) => void
   /** Desktop only — the drawer is driven by `open`. */
@@ -129,7 +134,13 @@ export function AppSidebar({
 }) {
   const pathname = usePathname()
   const sections = React.useMemo(() => {
-    if (!kitchen) return NAV_SECTIONS
+    if (!kitchen)
+      return primoEnabled
+        ? NAV_SECTIONS
+        : NAV_SECTIONS.map((section) => ({
+            ...section,
+            items: section.items.filter((item) => item.href !== "/"),
+          }))
     return NAV_SECTIONS.flatMap((section) => {
       const items = section.items.flatMap((item) =>
         MEMBER_HREFS.has(item.href)
@@ -140,7 +151,7 @@ export function AppSidebar({
       )
       return items.length ? [{ ...section, items }] : []
     })
-  }, [kitchen])
+  }, [kitchen, primoEnabled])
   const sidebarRef = React.useRef<HTMLElement>(null)
   const returnFocusRef = React.useRef<HTMLElement | null>(null)
   const [isDesktop, setIsDesktop] = React.useState(false)

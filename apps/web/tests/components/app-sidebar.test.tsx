@@ -114,6 +114,15 @@ describe("sidebar rows", () => {
     expect(link.getAttribute("target")).toBe("_blank")
   })
 
+  it("drops the Home row when there is no chat to land on", () => {
+    renderSidebar({ primoEnabled: false })
+
+    expect(screen.queryByRole("link", { name: "Home" })).toBeNull()
+    expect(
+      screen.getByRole("link", { name: "Analytics" }).getAttribute("href")
+    ).toBe("/analytics")
+  })
+
   it("keeps the primary workspace rows flat", () => {
     renderSidebar()
 

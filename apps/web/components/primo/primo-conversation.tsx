@@ -179,12 +179,10 @@ export function PrimoConversation({
   userName,
   className,
   home = false,
-  topProductName = "",
 }: {
   userName: string
   className?: string
   home?: boolean
-  topProductName?: string
 }) {
   const {
     chat,
@@ -202,9 +200,7 @@ export function PrimoConversation({
   const empty = messages.length === 0
   const starterQuestions = home
     ? [
-        topProductName
-          ? `How many ${topProductName} did we sell this month?`
-          : "Help me understand product sales.",
+        "Help me understand product sales.",
         "What changed in ingredient costs?",
         "Help me create a recipe.",
         "Find a recipe to scale for service.",

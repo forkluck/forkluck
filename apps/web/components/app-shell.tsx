@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { MainHeader } from "@/components/main-header"
@@ -36,13 +36,11 @@ function AppShellContents({
   const primoTriggerRef = React.useRef<HTMLButtonElement>(null)
   const { open: primoOpen, setOpen: setPrimoOpen, inlineCount = 0 } = usePrimo()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
-  // The home Chat tab mounts its own conversation, which the header trigger
-  // and the rail give way to. The route says so before the page has rendered,
-  // so the trigger does not flash in over the loading screen and vanish once
-  // the chat registers itself.
-  const homeChat =
-    primoEnabled && pathname === "/" && searchParams.get("tab") !== "activity"
+  // Home mounts its own conversation, which the header trigger and the rail
+  // give way to. The route says so before the page has rendered, so the
+  // trigger does not flash in over the loading screen and vanish once the
+  // chat registers itself.
+  const homeChat = primoEnabled && pathname === "/"
   const inlineChat = inlineCount > 0 || homeChat
   const viewport = useVisualViewport(inlineCount > 0)
   const primoRailVisible = primoOpen && !inlineChat
@@ -76,6 +74,7 @@ function AppShellContents({
             user={user}
             kitchen={kitchen}
             kitchens={kitchens}
+            primoEnabled={primoEnabled}
             open={navOpen}
             onOpenChange={setNavOpen}
             collapsed={collapsed}
