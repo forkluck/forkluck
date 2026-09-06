@@ -30,29 +30,30 @@ Python 3.13 is used in CI. From the repository root:
 cd services/connectors
 python3.13 -m venv .venv
 .venv/bin/pip install -r requirements-dev.txt
-cp .env.example .env
-set -a
-. ./.env
-set +a
-export CONNECTORS_ENCRYPTION_KEY="$(.venv/bin/python -c 'import secrets; print(secrets.token_hex(32))')"
-.venv/bin/python manage.py migrate
-.venv/bin/python manage.py runserver 127.0.0.1:8010
+cd ../..
+pnpm connectors:setup
+pnpm connectors:dev
 ```
 
-Keep the generated encryption key in your untracked `.env` to retain access to
-locally stored credentials across shell sessions. Start the worker in another
-terminal with the same environment:
+`pnpm connectors:setup` runs `manage.py bootstrap_local`: it creates `.env`
+from `.env.example`, writes a generated `CONNECTORS_ENCRYPTION_KEY` into it
+once (keep it: credentials stored locally are unreadable without it), runs
+the migrations, and registers the local Forkluck app as a service client. It
+then writes the three `FORKLUCK_CONNECTOR_*` settings into `apps/api/.env`.
+`config/settings.py` reads `.env` itself in development, so nothing needs to
+be sourced or exported. Start the worker in another terminal:
 
 ```sh
-.venv/bin/python manage.py run_connector_worker
+pnpm connectors:worker
 ```
 
-To connect a local Forkluck instance, provision a service client with
-`manage.py provision_service_client <id> <exact-callback-url>`, then configure
-that client and its one-time secret in Forkluck's backend environment. Enable
-the provider for your authenticated user in `CONNECTORS_PROVIDER_ALLOWLIST`.
-This setup is optional: the test suite uses synthetic providers and makes no
-live supplier calls.
+To register any other application, use
+`manage.py provision_service_client <id> <callback-url>` with the callback
+`<app origin>/api/integrations/connectors/callback`, and configure the printed
+client id and one-time secret in that application's environment. Development
+opens Baldor to every subject through `CONNECTORS_PROVIDER_ALLOWLIST` in
+`.env.example`; production requires explicit subject ids. The test suite uses
+synthetic providers and makes no live supplier calls.
 
 ## Verification
 
