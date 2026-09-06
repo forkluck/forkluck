@@ -27,21 +27,19 @@ const SegmentLoadingContext = React.createContext<{
 } | null>(null)
 
 function SegmentLoadingProvider({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoadingState] = React.useState(false)
   const [seen, setSeen] = React.useState(false)
   const loadingRef = React.useRef(false)
+  // Stable identities: the loader's layout effect depends on `setLoading`,
+  // and a setter recreated on every state change would loop it.
+  const setLoading = React.useCallback((next: boolean) => {
+    loadingRef.current = next
+    setLoadingState(next)
+  }, [])
+  const markSeen = React.useCallback(() => setSeen(true), [])
   const value = React.useMemo(
-    () => ({
-      loading,
-      seen,
-      loadingRef,
-      setLoading: (next: boolean) => {
-        loadingRef.current = next
-        setLoading(next)
-      },
-      markSeen: () => setSeen(true),
-    }),
-    [loading, seen]
+    () => ({ loading, seen, loadingRef, setLoading, markSeen }),
+    [loading, seen, setLoading, markSeen]
   )
   return (
     <SegmentLoadingContext.Provider value={value}>
