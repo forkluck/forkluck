@@ -357,6 +357,23 @@ describe("PrimoProvider", () => {
     )
   })
 
+  it("forgets a remembered conversation that no longer exists and starts fresh", async () => {
+    const id = "00000000-0000-4000-8000-000000000098"
+    window.localStorage.setItem("primo:active", id)
+    primoActions.load.mockResolvedValue({ error: "Conversation not found" })
+    render(
+      <PrimoProvider>
+        <Probe />
+      </PrimoProvider>
+    )
+    await waitFor(() => expect(primoActions.load).toHaveBeenCalledWith(id))
+    await waitFor(() =>
+      expect(screen.getByLabelText("conversation id").textContent).not.toBe(id)
+    )
+    expect(window.localStorage.getItem("primo:active")).not.toBe(id)
+    expect(screen.queryByText("Conversation not found")).toBeNull()
+  })
+
   it("stops and clears the current turn before minting a new chat", () => {
     render(
       <PrimoProvider>
