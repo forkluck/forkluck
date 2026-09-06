@@ -32,6 +32,7 @@
     "format:check": "pnpm --filter @forkluck/web format:check",
     "typecheck": "pnpm --filter @forkluck/web typecheck",
     "verify:backend": "cd apps/api && .venv/bin/ruff check forkluck && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/python manage.py check && .venv/bin/lint-imports && .venv/bin/python manage.py test --parallel",
+    "verify:backend:checks": "cd apps/api && .venv/bin/ruff check forkluck && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/python manage.py check && .venv/bin/lint-imports",
     "verify:connectors": "cd services/connectors && .venv/bin/ruff format --check config connectors manage.py && .venv/bin/ruff check config connectors manage.py && .venv/bin/python manage.py test && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/python manage.py check",
     "verify:skills": "python3 scripts/validate-skills.py",
     "db:migrate": "apps/api/.venv/bin/python apps/api/manage.py migrate && apps/api/.venv/bin/python apps/api/manage.py sync_catalog",
