@@ -275,7 +275,10 @@ export function PrimoComposer({
           ))}
         </div>
       ) : null}
-      <div className="relative flex items-end gap-1 rounded-2xl border border-input bg-background py-1.5 pr-1.5 pl-3 focus-within:border-foreground">
+      {/* rounded-xl outside, rounded-lg buttons inside, 4px between: the outer
+          corner is the inner radius plus the gap, so the two curves share a
+          center. */}
+      <div className="relative flex items-end gap-1 rounded-xl border border-input bg-background py-1 pr-1 pl-3 focus-within:border-foreground">
         {listOpen ? (
           <div
             id={listId}
