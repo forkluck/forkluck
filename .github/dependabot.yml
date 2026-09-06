@@ -1,3 +1,5 @@
+# One grouped pull request per ecosystem per month. Framework majors (Django,
+# Next.js, React) are upgraded deliberately, not by a bot.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -5,19 +7,39 @@ updates:
     schedule:
       interval: monthly
     groups:
-      production:
-        dependency-type: production
-      development:
-        dependency-type: development
+      npm:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: pip
     directory: /apps/api
     schedule:
       interval: monthly
+    groups:
+      api:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: django
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: pip
     directory: /services/connectors
     schedule:
       interval: monthly
+    groups:
+      connectors:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: django
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
