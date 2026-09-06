@@ -10,8 +10,10 @@ import { PrimoDropTarget } from "./primo-drop-target"
 export function PrimoHomeChat({ userName }: { userName: string }) {
   const { registerInline, newChat } = usePrimo()
   React.useEffect(() => registerInline(), [registerInline])
+  // The header stays outside the drop zone, so the dashed outline that
+  // answers a drag sits below it rather than through it.
   return (
-    <PrimoDropTarget>
+    <>
       <header className="mx-auto mb-4 flex w-full max-w-[1000px] shrink-0 items-center justify-end gap-2 px-4">
         <div className="flex items-center gap-2">
           <Button
@@ -26,7 +28,9 @@ export function PrimoHomeChat({ userName }: { userName: string }) {
           <PrimoRecent />
         </div>
       </header>
-      <PrimoConversation userName={userName} home />
-    </PrimoDropTarget>
+      <PrimoDropTarget>
+        <PrimoConversation userName={userName} home />
+      </PrimoDropTarget>
+    </>
   )
 }
