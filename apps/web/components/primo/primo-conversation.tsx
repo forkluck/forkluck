@@ -22,7 +22,6 @@ import { PrimoAttachmentPreview } from "./primo-attachment-preview"
 import { PrimoFeedback } from "./primo-feedback"
 import { type PrimoAttachment } from "@/lib/primo/attachments"
 import { GuardedLink } from "@/components/navigation-blocker"
-import { Skeleton } from "@/components/ui/skeleton"
 import { PrimoComposer } from "@/components/primo/primo-composer"
 import { usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRecipeDraftCard } from "@/components/primo/primo-recipe-draft-card"
@@ -274,33 +273,16 @@ export function PrimoConversation({
     <div
       className={cn(
         "group/primo mx-auto flex min-h-0 w-full max-w-[760px] flex-1 flex-col bg-background",
-        empty && !conversationLoading && !conversationError && "justify-center",
+        empty && !conversationError && "justify-center",
         className
       )}
+      // A load holds the layout it is most likely to resolve to, the empty
+      // screen, with its controls held: nothing moves when the answer is
+      // "no messages", and messages arriving move things the same way a
+      // first send does.
+      aria-busy={conversationLoading || undefined}
     >
-      {conversationLoading ? (
-        // The shape of a short exchange, bottom-anchored the way a loaded
-        // chat is, so the composer is already where it will stay and the
-        // messages land into the grey rather than under a spinner.
-        <div
-          role="status"
-          aria-busy="true"
-          className="flex min-h-0 flex-1 flex-col justify-end gap-6 px-4 py-6"
-        >
-          <span className="sr-only">Loading chat</span>
-          <Skeleton className="ml-auto h-10 w-48 rounded-xl" />
-          <div className="space-y-2.5">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-11/12" />
-            <Skeleton className="h-4 w-2/3" />
-          </div>
-          <Skeleton className="ml-auto h-10 w-36 rounded-xl" />
-          <div className="space-y-2.5">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-          </div>
-        </div>
-      ) : conversationError ? (
+      {conversationError ? (
         <div role="alert" className="p-6 text-center">
           <p>{conversationError}</p>
           <Button
@@ -313,7 +295,7 @@ export function PrimoConversation({
           </Button>
         </div>
       ) : null}
-      {empty && !conversationLoading && !conversationError ? (
+      {empty && !conversationError ? (
         <div className="px-4 pb-5 text-center max-md:group-has-[textarea:focus]/primo:hidden">
           {/* The rail greets with the Primo glyph; the home screen is already
               the Chat tab, so the greeting stands on its own there. */}
@@ -643,7 +625,7 @@ export function PrimoConversation({
         onStop={busy ? stop : () => {}}
         conversationId={conversationId}
       />
-      {empty && !conversationLoading && !conversationError ? (
+      {empty && !conversationError ? (
         <div className="mt-8 px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
           <p className="mb-2 px-1 text-xs text-muted-foreground">
             Try one of these
@@ -653,8 +635,9 @@ export function PrimoConversation({
               <li key={question}>
                 <button
                   type="button"
+                  disabled={conversationLoading}
                   onClick={() => void sendMessage(question)?.catch(() => {})}
-                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground"
+                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
                 >
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">
                     <Icon
