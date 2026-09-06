@@ -8,7 +8,13 @@ import {
   HatGlasses,
   RotateCcw,
   ArrowUpRight,
-  MessageSquare,
+  Book,
+  CalendarDays,
+  ChartColumn,
+  History,
+  Package,
+  Search,
+  TrendingUp,
 } from "lucide-react"
 
 import { PrimoMarkdown } from "./primo-markdown"
@@ -49,14 +55,24 @@ import { cn } from "@/lib/utils"
 
 type CostResult = RecipeCostDiff & { omittedLines?: number }
 
-const recipeStarterQuestions = [
-  "What changed in this recipe?",
-  "Why did this cost increase?",
-  "Compare this recipe since the start of this year.",
+type Starter = { icon: typeof Book; question: string }
+
+const homeStarterQuestions: Starter[] = [
+  { icon: ChartColumn, question: "Help me understand product sales." },
+  { icon: Package, question: "What changed in ingredient costs?" },
+  { icon: Book, question: "Help me create a recipe." },
 ]
-const generalStarterQuestions = [
-  "Find garlic in the USDA database.",
-  "Help me create a recipe.",
+const recipeStarterQuestions: Starter[] = [
+  { icon: History, question: "What changed in this recipe?" },
+  { icon: TrendingUp, question: "Why did this cost increase?" },
+  {
+    icon: CalendarDays,
+    question: "Compare this recipe since the start of this year.",
+  },
+]
+const generalStarterQuestions: Starter[] = [
+  { icon: Search, question: "Find garlic in the USDA database." },
+  { icon: Book, question: "Help me create a recipe." },
 ]
 
 function WorkingMarker() {
@@ -199,12 +215,7 @@ export function PrimoConversation({
   const busy = status === "submitted" || status === "streaming"
   const empty = messages.length === 0
   const starterQuestions = home
-    ? [
-        "Help me understand product sales.",
-        "What changed in ingredient costs?",
-        "Help me create a recipe.",
-        "Find a recipe to scale for service.",
-      ]
+    ? homeStarterQuestions
     : route.recipeRef
       ? recipeStarterQuestions
       : generalStarterQuestions
@@ -602,24 +613,29 @@ export function PrimoConversation({
       />
       {empty && !conversationLoading && !conversationError ? (
         <div className="px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
-          <div
-            className={cn("grid grid-cols-2 gap-2", home && "sm:grid-cols-4")}
-          >
-            {starterQuestions.map((question) => (
-              <button
-                key={question}
-                type="button"
-                onClick={() => void sendMessage(question)?.catch(() => {})}
-                className="flex min-h-24 flex-col items-start gap-3 rounded-xl border border-border p-3 text-left text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground"
-              >
-                <MessageSquare
-                  className="size-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span>{question}</span>
-              </button>
+          <p className="mb-2 px-1 text-xs text-muted-foreground">
+            Try one of these
+          </p>
+          <ul className="flex flex-col gap-1">
+            {starterQuestions.map(({ icon: Icon, question }) => (
+              <li key={question}>
+                <button
+                  type="button"
+                  onClick={() => void sendMessage(question)?.catch(() => {})}
+                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground"
+                >
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">
+                    <Icon
+                      className="size-4"
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  {question}
+                </button>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       ) : null}
     </div>
