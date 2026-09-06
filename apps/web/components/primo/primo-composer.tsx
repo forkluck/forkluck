@@ -509,7 +509,9 @@ export function PrimoComposer({
               disabled || (!input.trim() && !draft.files.length) || filesPending
             }
             aria-label="Send message"
-            className="mb-1 shrink-0"
+            // The one filled button that is brand blue rather than ink. Pale
+            // while there is nothing to send, full blue once there is.
+            className="mb-1 shrink-0 border-brand bg-brand text-brand-foreground hover:border-brand/85 hover:bg-brand/85 disabled:border-brand/40 disabled:bg-brand/40 disabled:text-brand-foreground"
           >
             <ArrowUp aria-hidden="true" />
           </Button>
