@@ -112,6 +112,10 @@ export function PrimoProvider({
   const [conversationId, setConversationId] = React.useState(
     initialConversation.id
   )
+  // The id this device remembered or the link carried, as opposed to one the
+  // user chose from Recent just now. A remembered chat that no longer exists
+  // is forgotten rather than reported.
+  const restoredId = React.useRef<string | null>(null)
   React.useEffect(() => {
     const linkedValue = new URLSearchParams(window.location.search).get("c")
     const linked = linkedValue && UUID.test(linkedValue) ? linkedValue : null
@@ -125,6 +129,7 @@ export function PrimoProvider({
     let active = true
     queueMicrotask(() => {
       if (!active) return
+      restoredId.current = linked || stored
       if (linked || stored) setConversationId(linked || stored!)
       setRestored(true)
     })
@@ -264,6 +269,21 @@ export function PrimoProvider({
           if (unsent) {
             newConversationIds.current.add(conversationId)
             setConversationLoading(false)
+            return
+          }
+          if (
+            restoredId.current === conversationId &&
+            "error" in result &&
+            result.error === "Conversation not found"
+          ) {
+            // Deleted elsewhere, or a stale link: start fresh, as a first
+            // visit would, instead of an error with a Retry that cannot work.
+            restoredId.current = null
+            const fresh = newConversationId()
+            newConversationIds.current.add(fresh)
+            setConversationId(fresh)
+            if (window.location.pathname === "/")
+              window.history.replaceState(null, "", "/")
             return
           }
           setConversationError(
