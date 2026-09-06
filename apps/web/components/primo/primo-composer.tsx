@@ -96,7 +96,7 @@ export function PrimoComposer({
     const field = textareaRef.current
     if (!field) return
     field.style.height = "auto"
-    field.style.height = `${Math.min(200, Math.max(32, field.scrollHeight))}px`
+    field.style.height = `${Math.min(200, Math.max(36, field.scrollHeight))}px`
   }, [input])
 
   React.useEffect(() => {
@@ -288,10 +288,11 @@ export function PrimoComposer({
           ))}
         </div>
       ) : null}
-      {/* rounded-xl outside, rounded-lg buttons inside, 4px between: the outer
-          corner is the inner radius plus the gap, so the two curves share a
-          center. */}
-      <div className="relative flex items-end gap-1 rounded-xl border border-input bg-background py-1 pr-1 pl-3 focus-within:border-foreground">
+      {/* rounded-2xl outside, rounded-lg buttons inside, 8px between: the
+          outer corner is the inner radius plus the gap, so the two curves
+          share a center. The inset is what keeps this from reading as a
+          plain text field. */}
+      <div className="relative flex items-end gap-1 rounded-2xl border border-input bg-background py-2 pr-2 pl-4 focus-within:border-foreground">
         {listOpen ? (
           <div
             id={listId}
@@ -450,7 +451,7 @@ export function PrimoComposer({
               : "Ask Primo about the kitchen…"
           }
           aria-label="Message Primo"
-          className="max-h-[200px] min-h-8 flex-1 resize-none border-0 bg-transparent px-1 py-1 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
+          className="max-h-[200px] min-h-9 flex-1 resize-none border-0 bg-transparent px-1 py-1.5 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
           rows={1}
         />
         <span className="sr-only" aria-live="polite">
@@ -465,7 +466,7 @@ export function PrimoComposer({
                 variant="ghost"
                 disabled={disabled}
                 aria-label="Add to message"
-                className="mb-0.5 shrink-0"
+                className="mb-1 shrink-0"
               />
             }
           >
@@ -495,7 +496,7 @@ export function PrimoComposer({
             variant="ghost"
             onClick={onStop}
             aria-label="Stop Primo"
-            className="mb-0.5 shrink-0"
+            className="mb-1 shrink-0"
           >
             <Square className="size-3.5 fill-current" aria-hidden="true" />
           </Button>
@@ -508,7 +509,7 @@ export function PrimoComposer({
               disabled || (!input.trim() && !draft.files.length) || filesPending
             }
             aria-label="Send message"
-            className="mb-0.5 shrink-0"
+            className="mb-1 shrink-0"
           >
             <ArrowUp aria-hidden="true" />
           </Button>
