@@ -5,22 +5,24 @@ For the shape of the running system, see [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Release flow
 
-A push to `main` starts the **Deploy** workflow automatically. Pull requests
-run the separate **CI** workflow on GitHub-hosted runners without deployment
-secrets. Run `pnpm verify` and `pnpm verify:backend` locally before pushing.
-The Deploy workflow has three jobs. **Verify** runs the Postgres-backed
-backend suite, the frontend checks, the catalog validation, and the browser
-suite on the maintainer's self-hosted macOS runner (`forkluck-mac`), where the
-whole suite takes a few minutes and costs no Actions minutes. **Package** builds
-the versioned release artifact on a GitHub-hosted Ubuntu runner, because
-`sharp` and `@napi-rs/canvas` ship platform-specific binaries and the artifact
-must match the Linux server. **Deploy** runs only when both succeed. A
-maintainer can also start the workflow manually from `main` as a fallback.
-Every job refuses other refs, and the deploy job uses GitHub's `production`
-environment; configure that environment to hold the five deployment secrets
-and, when desired, require maintainer approval. A manual run therefore cannot
-deploy an arbitrary branch, and code from any other branch never reaches the
-self-hosted runner or production credentials.
+A push to `main` starts the **Deploy** workflow automatically. Verification
+happens before that: every pull request runs the **CI** workflow on
+GitHub-hosted runners without deployment secrets (frontend checks, the
+Postgres-backed backend suite and catalog validation, the connector service
+suite, the agent-skill validation, and the browser acceptance suite), and the
+`main` branch ruleset only accepts merged pull requests whose checks passed on
+an up-to-date branch. Run `pnpm verify` and `pnpm verify:backend` locally
+before opening one.
+
+The Deploy workflow therefore has two jobs. **Package** builds the versioned
+release artifact on a GitHub-hosted Ubuntu runner, because `sharp` and
+`@napi-rs/canvas` ship platform-specific binaries and the artifact must match
+the Linux server. **Deploy** runs only when packaging succeeds. A maintainer
+can also start the workflow manually from `main` as a fallback. Both jobs
+refuse other refs, and the deploy job uses GitHub's `production` environment;
+configure that environment to hold the five deployment secrets and, when
+desired, require maintainer approval. A manual run therefore cannot deploy an
+arbitrary branch, and no machine outside GitHub takes part in any workflow.
 
 The workflow builds the Next.js standalone server and uploads one versioned
 release through the restricted `forkluck-deploy` SSH account. The server runs
@@ -37,45 +39,6 @@ It requires these encrypted GitHub repository secrets:
 - `DEPLOY_HOST`
 - `DEPLOY_PORT`
 - `DEPLOY_USER`
-
-### Runner machines
-
-The verify job runs on whichever online runner carries the labels
-`self-hosted`, `macOS`, and `ARM64`. A push from any computer, with or without
-a runner of its own, verifies on the first idle registered machine, and if none
-is awake the job waits until one is. Register a runner on every Mac you
-regularly work from so a deploy never depends on a machine that is asleep
-somewhere else. To prepare a machine:
-
-1. Install Postgres and Python 3.12, and create the role the job expects. The
-   job drops and recreates `forkluck_ci` at the start of every run, so nothing
-   else touches it.
-
-   ```sh
-   brew install postgresql@17 python@3.12
-   brew services start postgresql@17
-   psql -d postgres \
-     -c "CREATE ROLE forkluck LOGIN PASSWORD 'forkluck' CREATEDB;" \
-     -c "CREATE DATABASE forkluck_ci OWNER forkluck;"
-   ```
-
-2. Add the runner from the repository's **Settings → Actions → Runners → New
-   self-hosted runner** page (macOS, ARM64). Run its download and `config.sh`
-   commands from a terminal where `psql` is on `PATH`, because the runner
-   records that `PATH` for the service; name it after the machine, for
-   example `forkluck-office`, and accept the default labels. Then install it
-   as a per-user LaunchAgent so it starts at login:
-
-   ```sh
-   ./svc.sh install && ./svc.sh start
-   ```
-
-Node, pnpm, and the Playwright browser are provisioned by the workflow into the
-runner's own tool cache on the first run. Python is not: GitHub's setup-python
-action installs macOS builds as `.pkg` packages that assume the hosted image's
-`runner` account, so the job uses Homebrew's `python3.12`. Postgres, Python
-3.12, and the Xcode command-line tools are all a machine needs. The maintainer's home
-Mac is registered as `forkluck-mac` in `~/actions-runner`.
 
 ## Server infrastructure
 

@@ -1933,7 +1933,7 @@ fails loudly.
 
 Every variant names one product. `save-sales-product` accepts variant rows with
 `quantityMultiplier` and `attributionPercent`; the variant model and its
-validation live in `SALES_INTERPRETATION_SPEC.md` at the repository root. A box
+validation live in `docs/SALES_INTERPRETATION_SPEC.md`. A box
 of several products is not a kind of variant: it is an ordinary create carrying
 `name`, `components[]` of `{productId, quantity, position}`, an optional
 `sellPriceCents`, and one variant. `kind: "assorted"` and `members` are refused

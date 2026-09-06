@@ -5,8 +5,7 @@ copy, and commit messages should all use the term on the left; the "Avoid"
 line names synonyms that have been tried and rejected because they blur a
 distinction this domain depends on.
 
-The reasoning behind these terms is in `SALES_INTERPRETATION_SPEC.md` at the
-repository root. This file is the vocabulary only.
+The reasoning behind these terms is in `docs/SALES_INTERPRETATION_SPEC.md`. This file is the vocabulary only.
 
 ## The sale
 

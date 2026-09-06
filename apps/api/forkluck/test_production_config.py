@@ -446,16 +446,17 @@ class ReleasePackagingTests(SimpleTestCase):
         self.assertIn("migrations_pending=true", deploy)
         self.assertIn(restart_guard, deploy)
 
-    def test_main_push_verifies_on_the_mac_before_deploying(self):
+    def test_main_push_packages_and_deploys_on_hosted_runners_only(self):
+        # The pull-request workflow is the verification gate: the branch
+        # ruleset lets nothing onto main without its checks passing on an
+        # up-to-date branch. The deploy workflow only packages and ships, and
+        # never touches a self-hosted machine.
         workflow = (
             REPO_ROOT
             / ".github"
             / "workflows"
             / "deploy.yml"
         ).read_text(encoding="utf-8")
-        verify = workflow[
-            workflow.index("\n  verify:") : workflow.index("\n  package:")
-        ]
         package = workflow[
             workflow.index("\n  package:") : workflow.index("\n  deploy:")
         ]
@@ -463,32 +464,20 @@ class ReleasePackagingTests(SimpleTestCase):
 
         self.assertIn("push:", workflow)
         self.assertIn("- main", workflow)
-        self.assertNotIn("Require a merged PR", workflow)
-
-        # Verification runs on the maintainer's Mac and only ever for main.
-        self.assertIn("runs-on: [self-hosted, macOS, ARM64]", verify)
-        self.assertIn("if: github.ref == 'refs/heads/main'", verify)
-        for command in (
-            "pnpm verify:backend",
-            "pnpm verify",
-            "pnpm test:acceptance",
-            "playwright install",
-            "python3.12 -m venv",
-        ):
-            self.assertIn(command, verify)
-        # setup-python cannot install on a self-hosted Mac, and neither the
-        # secrets nor the release artifact may touch that machine.
-        self.assertNotIn("actions/setup-python", verify)
-        self.assertNotIn("secrets.", verify)
-        self.assertNotIn("upload-artifact", verify)
+        self.assertNotIn("self-hosted", workflow)
+        self.assertNotIn("\n  verify:", workflow)
 
         # The artifact must match the Linux server: sharp and @napi-rs/canvas
         # ship platform-specific binaries.
+        self.assertIn("if: github.ref == 'refs/heads/main'", package)
         self.assertIn("runs-on: ubuntu-24.04", package)
         self.assertIn("upload-artifact", package)
+        self.assertNotIn("secrets.", package)
 
-        self.assertIn("needs: [verify, package]", deploy)
-        self.assertIn("needs.verify.result == 'success'", deploy)
+        self.assertIn("needs: [package]", deploy)
+        self.assertIn("needs.package.result == 'success'", deploy)
+        self.assertIn("github.ref == 'refs/heads/main'", deploy)
+        self.assertIn("environment: production", deploy)
 
     def test_build_artifact_is_a_tarball_with_the_complete_release(self):
         workflow = (
@@ -504,22 +493,20 @@ class ReleasePackagingTests(SimpleTestCase):
         self.assertIn("name: packaged-release", workflow)
         self.assertNotIn("include-hidden-files:", workflow)
 
-    def test_acceptance_gate_covers_direct_main_pushes(self):
-        root = REPO_ROOT
-        deploy = (root / ".github" / "workflows" / "deploy.yml").read_text(
+    def test_pull_request_gate_runs_the_postgres_and_browser_suites(self):
+        # Since main only receives merged pull requests, the CI workflow must
+        # carry every production gate: the migration chain and backend suite
+        # on a Postgres that starts empty, and the browser acceptance run.
+        ci = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text(
             encoding="utf-8"
         )
-
-        # Both contributor checks and direct pushes keep the browser gate.
-        # Production verification uses a Postgres that starts empty every run.
-        ci = (root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-        self.assertIn("run: pnpm test:acceptance", ci)
+        self.assertIn("image: postgres:16", ci)
         self.assertIn(
-            "DATABASE_URL: postgres://forkluck:forkluck@localhost:5432/forkluck_ci",
-            deploy,
+            "DATABASE_URL: postgres://forkluck:forkluck@127.0.0.1:5432/forkluck_ci",
+            ci,
         )
-        self.assertIn("FORKLUCK_ENVIRONMENT: development", deploy)
-        self.assertIn("DROP DATABASE IF EXISTS forkluck_ci", deploy)
-        self.assertIn("manage.py migrate --noinput", deploy)
-        self.assertIn("run: pnpm test:acceptance", deploy)
-        self.assertIn("needs: [verify, package]", deploy)
+        self.assertIn("FORKLUCK_ENVIRONMENT: development", ci)
+        self.assertIn("run: pnpm db:migrate", ci)
+        self.assertIn("run: pnpm verify:backend", ci)
+        self.assertIn("run: pnpm verify", ci)
+        self.assertIn("run: pnpm test:acceptance", ci)

@@ -18,86 +18,13 @@ concurrency:
 permissions:
   contents: read
 
-# Verification runs on the maintainer's self-hosted macOS runner, where the
-# whole suite takes minutes instead of the better part of an hour on a 2-core
-# hosted runner, and costs no Actions minutes. Only `main` ever reaches that
-# machine: every job in this workflow refuses other refs. Pull requests run
-# separately on disposable GitHub-hosted runners in ci.yml.
-#
-# Packaging stays on GitHub's Ubuntu runner because the release artifact must
-# match the Linux server: `sharp` and `@napi-rs/canvas` ship platform-specific
-# binaries, and a standalone build made on macOS would carry the wrong ones.
-# The two run side by side; the deploy waits for both.
+# Every commit on `main` arrived through a pull request whose CI workflow ran
+# the full suite on GitHub-hosted runners against an up-to-date branch; the
+# branch ruleset enforces that. This workflow therefore only packages and
+# ships. Packaging runs on GitHub's Ubuntu runner because the release artifact
+# must match the Linux server: `sharp` and `@napi-rs/canvas` ship
+# platform-specific binaries. No machine outside GitHub takes part.
 jobs:
-  verify:
-    name: Verify
-    if: github.ref == 'refs/heads/main'
-    runs-on: [self-hosted, macOS, ARM64]
-    timeout-minutes: 20
-    env:
-      # Production is Postgres; SQLite silently ignores most `AlterField`
-      # type changes and index-name limits, so the migration chain and the
-      # backend suite run on the runner's local Postgres. The database is
-      # recreated below so every run starts from an empty schema, as the
-      # hosted service container did. The acceptance stack ignores this and
-      # brings up its own throwaway SQLite database.
-      DATABASE_URL: postgres://forkluck:forkluck@localhost:5432/forkluck_ci
-      # settings.py infers "production" from DATABASE_URL alone, which would
-      # trip the development-leftovers boot guard on every management command
-      # that is not `manage.py test`.
-      FORKLUCK_ENVIRONMENT: development
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          version: 10.23.0
-      # No `cache:` inputs here: the runner keeps its own pnpm store and pip
-      # cache, so round-tripping them through GitHub's cache would only add
-      # transfer time.
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
-        with:
-          node-version: 22
-      # No setup-python: its macOS builds are .pkg installers that assume the
-      # hosted image's `runner` account and fail on a self-hosted Mac with
-      # "mkdir: /Users/runner: Permission denied". Homebrew's python@3.12 is a
-      # runner-machine prerequisite instead (docs/DEPLOYMENT.md).
-      - name: Check the lockfile is committed
-        run: test -f pnpm-lock.yaml || { echo "pnpm-lock.yaml is missing"; exit 1; }
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-      # The same apps/api/.venv layout CONTRIBUTING.md documents, so
-      # `pnpm verify:backend` is one command everywhere.
-      - name: Install backend dependencies
-        run: |
-          python3.12 -m venv apps/api/.venv
-          apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
-      - name: Recreate the CI database
-        run: |
-          psql postgres://forkluck:forkluck@localhost:5432/postgres \
-            -v ON_ERROR_STOP=1 \
-            -c "DROP DATABASE IF EXISTS forkluck_ci" \
-            -c "CREATE DATABASE forkluck_ci"
-      - name: Migrate Postgres
-        working-directory: apps/api
-        run: .venv/bin/python manage.py migrate --noinput
-      - name: Validate the ingredient catalog
-        run: |
-          apps/api/.venv/bin/python data/catalog/scripts/validate.py data/catalog/catalog.csv
-          apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
-      - name: Verify backend
-        run: pnpm verify:backend
-      # Every check a contributor is asked to run lives in `pnpm verify`, so
-      # the list cannot drift from CONTRIBUTING.md. Its build is a compile
-      # check only; the release artifact comes from the package job.
-      - name: Verify frontend
-        run: pnpm verify
-      - name: Install acceptance browser
-        run: pnpm --filter @forkluck/web exec playwright install chromium
-      - name: Verify real app stack in Chromium
-        run: pnpm test:acceptance
-
   package:
     name: Package release
     if: github.ref == 'refs/heads/main'
@@ -148,8 +75,8 @@ jobs:
 
   deploy:
     name: Deploy release
-    needs: [verify, package]
-    if: needs.verify.result == 'success' && needs.package.result == 'success' && github.ref == 'refs/heads/main'
+    needs: [package]
+    if: needs.package.result == 'success' && github.ref == 'refs/heads/main'
     environment: production
     runs-on: ubuntu-24.04
     timeout-minutes: 20
