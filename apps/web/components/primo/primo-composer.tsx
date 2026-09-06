@@ -4,7 +4,7 @@ import * as React from "react"
 import {
   ArrowUp,
   Square,
-  Paperclip,
+  Plus,
   X,
   RotateCcw,
   FileText,
@@ -13,6 +13,7 @@ import {
 
 import { runKitchenToolAction } from "@/app/(app)/actions"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Textarea } from "@/components/ui/textarea"
 import type { PrimoMention } from "@/lib/primo/messages"
 import { PrimoAttachmentPreview } from "./primo-attachment-preview"
@@ -83,6 +84,9 @@ export function PrimoComposer({
   const [closedFor, setClosedFor] = React.useState<string | null>(null)
   const fetchedFor = React.useRef<string | null>(null)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+  // One line is a pill; once the draft wraps, the box squares off so its
+  // corners stop swallowing the text.
+  const [tall, setTall] = React.useState(false)
   const trigger = mentionTrigger(input, caret)
   const triggerQuery = trigger?.query.trim() ?? ""
   const triggerKey = trigger ? `${trigger.start}:${trigger.query}` : null
@@ -93,7 +97,8 @@ export function PrimoComposer({
     const field = textareaRef.current
     if (!field) return
     field.style.height = "auto"
-    field.style.height = `${Math.min(200, Math.max(72, field.scrollHeight))}px`
+    field.style.height = `${Math.min(200, Math.max(32, field.scrollHeight))}px`
+    setTall(field.scrollHeight > 32)
   }, [input])
 
   React.useEffect(() => {
@@ -275,7 +280,12 @@ export function PrimoComposer({
           ))}
         </div>
       ) : null}
-      <div className="relative rounded-md border border-input bg-muted/30 p-1.5 focus-within:border-foreground">
+      <div
+        className={cn(
+          "relative flex items-end gap-1 border border-input bg-background py-1.5 pr-1.5 pl-3 focus-within:border-foreground",
+          tall ? "rounded-2xl" : "rounded-full"
+        )}
+      >
         {listOpen ? (
           <div
             id={listId}
@@ -434,54 +444,48 @@ export function PrimoComposer({
               : "Ask Primo about the kitchen…"
           }
           aria-label="Message Primo"
-          className="max-h-[200px] min-h-[72px] resize-none border-0 bg-transparent px-3 py-2 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
+          className="max-h-[200px] min-h-8 flex-1 resize-none border-0 bg-transparent px-1 py-1 text-lg leading-6 shadow-none focus-visible:ring-0 md:text-md"
           rows={1}
         />
         <span className="sr-only" aria-live="polite">
           {listOpen && !searching ? `${matches.length} matches found.` : ""}
         </span>
-        <div className="flex items-center justify-between px-1 pb-1">
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          disabled={disabled}
+          aria-label="Add attachment"
+          onClick={() => fileInput.current?.click()}
+          className="mb-0.5 shrink-0"
+        >
+          <Plus aria-hidden="true" />
+        </Button>
+        {busy ? (
           <Button
             type="button"
-            size="icon"
+            size="icon-sm"
             variant="ghost"
-            disabled={disabled}
-            aria-label="Add attachment"
-            onClick={() => fileInput.current?.click()}
+            onClick={onStop}
+            aria-label="Stop Primo"
+            className="mb-0.5 shrink-0"
           >
-            <Paperclip aria-hidden="true" />
+            <Square className="size-3.5 fill-current" aria-hidden="true" />
           </Button>
-          <span className="mr-auto px-2 text-xs text-muted-foreground">
-            @ recipe or product
-          </span>
-          {busy ? (
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="ghost"
-              onClick={onStop}
-              aria-label="Stop Primo"
-              className="shrink-0"
-            >
-              <Square className="size-3.5 fill-current" aria-hidden="true" />
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              size="icon-sm"
-              onClick={submit}
-              disabled={
-                disabled ||
-                (!input.trim() && !draft.files.length) ||
-                filesPending
-              }
-              aria-label="Send message"
-              className="shrink-0"
-            >
-              <ArrowUp aria-hidden="true" />
-            </Button>
-          )}
-        </div>
+        ) : (
+          <Button
+            type="button"
+            size="icon-sm"
+            onClick={submit}
+            disabled={
+              disabled || (!input.trim() && !draft.files.length) || filesPending
+            }
+            aria-label="Send message"
+            className="mb-0.5 shrink-0"
+          >
+            <ArrowUp aria-hidden="true" />
+          </Button>
+        )}
       </div>
       {draft.fileErrors?.length ? (
         <ul role="alert" className="mt-2 space-y-1 text-xs text-destructive">

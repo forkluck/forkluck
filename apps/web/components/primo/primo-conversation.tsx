@@ -292,9 +292,6 @@ export function PrimoConversation({
               ? "How can I help in the kitchen?"
               : `Hey there${userName ? `, ${userName.split(" ")[0]}` : ""}`}
           </h1>
-          <p className="mt-2 text-base text-muted-foreground">
-            Ask about your kitchen, or drop a recipe or invoice to read.
-          </p>
         </div>
       ) : null}
       {!empty || busy ? (
@@ -605,9 +602,6 @@ export function PrimoConversation({
       />
       {empty && !conversationLoading && !conversationError ? (
         <div className="px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
-          <p className="mb-3 px-1 text-xs text-muted-foreground">
-            Try one of these
-          </p>
           <div
             className={cn("grid grid-cols-2 gap-2", home && "sm:grid-cols-4")}
           >
