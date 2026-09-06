@@ -106,8 +106,7 @@ const BOTTOM_ITEMS: NavItem[] = [
 // decision, not by omission. A member kitchen is a recipe book.
 const MEMBER_HREFS = new Set(["/recipes"])
 
-const ISSUE_EMAIL_URL =
-  "mailto:guero@forkluck.com?subject=Forkluck%20issue&body=Please%20describe%20what%20happened%3A%0A%0A"
+const ISSUE_URL = "https://github.com/forkluck/forkluck/issues"
 
 export function AppSidebar({
   user,
@@ -377,7 +376,9 @@ export function AppSidebar({
             {/* Settings is the owner's account; a member has none here. */}
             {kitchen ? null : BOTTOM_ITEMS.map(navRow)}
             <a
-              href={ISSUE_EMAIL_URL}
+              href={ISSUE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className={cn(ROW_CLASS, "hover:bg-sidebar-hover")}
             >
               <CircleAlert

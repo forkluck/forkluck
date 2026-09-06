@@ -104,13 +104,14 @@ describe("sidebar rows", () => {
     ).toBe("page")
   })
 
-  it("emails issue reports to Forkluck support", () => {
+  it("sends issue reports to the GitHub issue tracker", () => {
     renderSidebar()
 
     const link = screen.getByRole("link", { name: "Submit an issue" })
-    expect(decodeURIComponent(link.getAttribute("href") ?? "")).toBe(
-      "mailto:guero@forkluck.com?subject=Forkluck issue&body=Please describe what happened:\n\n"
+    expect(link.getAttribute("href")).toBe(
+      "https://github.com/forkluck/forkluck/issues"
     )
+    expect(link.getAttribute("target")).toBe("_blank")
   })
 
   it("keeps the primary workspace rows flat", () => {
@@ -147,7 +148,7 @@ describe("the sidebar inside someone else's kitchen", () => {
       screen
         .getAllByRole("link")
         .map((link) => link.getAttribute("href"))
-        .filter((href) => !href?.startsWith("mailto:"))
+        .filter((href) => href?.startsWith("/"))
     ).toEqual(["/recipes", "/recipes/new"])
     expect(screen.queryByRole("group", { name: "Integrations" })).toBeNull()
     expect(screen.getByRole("link", { name: "Submit an issue" })).toBeDefined()
