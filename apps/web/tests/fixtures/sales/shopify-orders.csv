@@ -1,0 +1,3 @@
+Name,Created at,Financial Status,Fulfillment Status,Currency,Subtotal,Taxes,Total,Discount Amount,Refunded Amount,Id,Source,Lineitem quantity,Lineitem name,Lineitem price,Lineitem sku,Lineitem discount,Lineitem fulfillment status
+#1001,2026-07-30 22:58:41 -0400,paid,fulfilled,USD,18.00,1.42,19.42,2.00,0.00,1001,web,2,Cookie Box,5.00,CKB-1,0.00,fulfilled
+,,,,,,,,,,,,1,Gift Box,10.00,GFT-1,0.00,fulfilled

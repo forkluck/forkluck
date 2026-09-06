@@ -1,0 +1,50 @@
+name: Bug report
+description: Report reproducible behavior that does not work as expected.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping improve Forkluck. Remove private recipes, invoices, sales data, and credentials before attaching anything.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Provide the smallest safe set of steps or sample data that reproduces the issue.
+      placeholder: |
+        1. Go to …
+        2. Enter …
+        3. Observe …
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Version or commit
+      description: A commit SHA, deployment version, or approximate date.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, operating system, and self-hosted or forkluck.com.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add sanitized logs or screenshots if useful.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Data safety
+      options:
+        - label: I removed credentials and private business or customer data from this report.
+          required: true
+        - label: This is not a security vulnerability; I will use the private reporting process for security issues.
+          required: true

@@ -1,0 +1,700 @@
+id,name,fdc_id,synonyms,allergens,verify
+water,Water,,,,
+onion,Onion,170000,onions|yellow onion|brown onion,allium,
+shallot,Shallot,170499,,allium,
+scallion,Scallion,170005,green onion|spring onion,allium,
+leek,Leek,169246,,allium,
+garlic,Garlic,169230,garlic clove|fresh garlic,allium,
+carrot,Carrot,170393,carrots,,
+celery,Celery,169988,celery stalk,celery,
+potato,Potato,170026,potatoes|russet potato,nightshades,
+sweet-potato,Sweet Potato,168482,sweet potatoes|yam,,
+tomato,Tomato,170457,tomatoes|fresh tomato,nightshades,
+tomato-puree,Tomato Puree,170460,crushed tomatoes|canned tomato puree,nightshades,
+tomato-paste,Tomato Paste,170459,concentrated tomato paste,nightshades,
+tomato-sauce,Tomato Sauce,170054,,nightshades,allium
+cucumber,Cucumber,168409,,,
+zucchini,Zucchini,169291,courgette,,
+yellow-squash,Yellow Squash,168464,,,
+butternut-squash,Butternut Squash,169295,,,
+acorn-squash,Acorn Squash,168472,,,
+pumpkin,Pumpkin,168448,,,
+eggplant,Eggplant,169228,aubergine,nightshades,
+bell-pepper-red,Red Bell Pepper,170108,red pepper|red capsicum,nightshades,
+bell-pepper-green,Green Bell Pepper,170427,green pepper|green capsicum,nightshades,
+jalapeno,Jalapeno Pepper,168576,jalapeno chile,nightshades,
+serrano,Serrano Pepper,169395,serrano chile,nightshades,
+broccoli,Broccoli,170379,,,
+cauliflower,Cauliflower,169986,,,
+cabbage,Cabbage,169975,,,
+red-cabbage,Red Cabbage,169977,,,
+napa-cabbage,Napa Cabbage,169979,,,
+brussels-sprouts,Brussels Sprouts,170383,,,
+kale,Kale,168421,,,
+spinach,Spinach,168462,,,
+arugula,Arugula,169387,rocket,,
+romaine,Romaine Lettuce,169247,cos lettuce,,
+iceberg-lettuce,Iceberg Lettuce,169248,,,
+swiss-chard,Swiss Chard,169991,,,
+collard-greens,Collard Greens,170406,,,
+bok-choy,Bok Choy,170390,,,
+asparagus,Asparagus,168389,,,
+green-beans,Green Beans,169961,,legumes,
+peas,Green Peas,170419,,legumes,
+snow-peas,Snow Peas,170010,mangetout,legumes,
+corn,Corn,169998,sweet corn|corn on the cob,,
+mushroom,Mushroom,169251,button mushroom|white mushroom,,
+cremini,Cremini Mushroom,168434,crimini mushroom|baby bella,,
+shiitake,Shiitake Mushroom,169242,,,
+portobello,Portobello Mushroom,169255,portabella mushroom,,
+beet,Beet,169145,beetroot,,
+turnip,Turnip,170465,,,
+parsnip,Parsnip,170417,,,
+radish,Radish,169276,,,
+rutabaga,Rutabaga,168454,,,
+fennel,Fennel,169385,,,
+artichoke,Artichoke,169205,,,
+okra,Okra,169260,,,
+ginger,Ginger,169231,fresh ginger|ginger root,,
+horseradish,Horseradish,173472,,,
+avocado,Avocado,171705,avocados,,
+apple,Apple,171688,,,
+banana,Banana,173944,,,
+orange,Orange,169097,,,
+lemon,Lemon,167746,lemons,,
+lemon-zest,Lemon Zest,,lemon zest|zest of lemon|grated lemon peel|lemon peel,,
+lime,Lime,168155,limes,,
+grapefruit,Grapefruit,173033,,,
+strawberry,Strawberry,167762,,,
+blueberry,Blueberry,171711,,,
+raspberry,Raspberry,167755,,,
+blackberry,Blackberry,173946,,,
+grape,Grape,174683,,,
+pear,Pear,169118,,,
+peach,Peach,169928,,stone_fruit,
+plum,Plum,169949,,stone_fruit,
+cherry,Cherry,171719,,stone_fruit,
+pineapple,Pineapple,169124,,,
+mango,Mango,169910,,stone_fruit,
+watermelon,Watermelon,167765,,,
+cantaloupe,Cantaloupe,169092,,,
+kiwi,Kiwi,168153,,,
+pomegranate,Pomegranate,169134,,,
+cranberry,Cranberry,171722,,,
+coconut-shredded,Shredded Coconut,170170,desiccated coconut|dried coconut,,
+raisin,Raisin,168164,raisins|golden raisins,sulphites,
+date,Date,168191,medjool dates,,sulphites
+dried-apricot,Dried Apricot,173941,,sulphites|stone_fruit,
+prune,Prune,168162,,stone_fruit,sulphites
+basil,Basil,172232,fresh basil,,
+parsley,Parsley,170416,fresh parsley|flat-leaf parsley,,
+cilantro,Cilantro,169997,fresh coriander|coriander leaves,,
+mint,Mint,173474,fresh mint,,
+rosemary,Rosemary,173473,fresh rosemary,,
+thyme,Thyme,173470,fresh thyme,,
+sage,Sage,170935,ground sage|dried sage,,
+oregano-dried,Dried Oregano,171328,oregano|dried oregano,,
+dill,Dill,172233,fresh dill,,
+chives,Chives,169994,fresh chives,allium,
+bay-leaf,Bay Leaf,170917,bay leaves,,
+milk,Milk,172217,whole milk|full-fat milk,milk,
+heavy-cream,Heavy Cream,170859,whipping cream|double cream,milk,
+half-and-half,Half and Half,171255,single cream,milk,
+sour-cream,Sour Cream,171257,soured cream,milk,
+buttermilk,Buttermilk,170874,,milk,
+yogurt,Yogurt,171284,plain yogurt|natural yogurt,milk,
+greek-yogurt,Greek Yogurt,170903,greek-style yogurt,milk,
+butter,Butter,173410,salted butter,milk,
+unsalted-butter,Unsalted Butter,173430,sweet butter,milk,
+cream-cheese,Cream Cheese,173418,,milk,
+cheddar,Cheddar Cheese,173414,cheddar,milk,
+mozzarella,Mozzarella Cheese,170845,fresh mozzarella,milk,
+parmesan,Parmesan Cheese,171247,parmigiano reggiano|grated parmesan,milk,
+feta,Feta Cheese,173420,,milk,
+ricotta,Ricotta Cheese,170851,,milk,
+swiss-cheese,Swiss Cheese,171251,,milk,
+goat-cheese,Goat Cheese,173435,,milk,
+blue-cheese,Blue Cheese,172175,,milk,
+egg,Egg,171287,eggs|whole egg|large egg,egg,
+egg-white,Egg White,172183,egg whites,egg,
+egg-yolk,Egg Yolk,172184,egg yolks,egg,
+condensed-milk,Sweetened Condensed Milk,171275,condensed milk,milk,
+evaporated-milk,Evaporated Milk,172194,,milk,
+flour-ap,Flour,168894,all purpose flour|plain flour|ap flour|white flour,wheat|gluten_cereals,
+flour-bread,Bread Flour,168896,strong flour,wheat|gluten_cereals,
+flour-cake,Cake Flour,169723,,wheat|gluten_cereals,
+flour-whole-wheat,Whole Wheat Flour,168893,wholemeal flour|whole wheat flour,wheat|gluten_cereals,
+cornmeal,Cornmeal,169697,,,
+cornstarch,Cornstarch,169698,corn starch|cornflour,,
+semolina,Semolina,169715,semolina flour,wheat|gluten_cereals,
+rye-flour,Rye Flour,168886,rye flour,gluten_cereals,
+almond-flour,Almond Flour,170568,ground almonds|almond meal,tree_nuts,
+oats,Rolled Oats,169705,rolled oats|old-fashioned oats|porridge oats,gluten_cereals,wheat
+rice-white,White Rice,168877,long grain rice,,
+rice-brown,Brown Rice,169703,brown rice,,
+arborio-rice,Arborio Rice,168931,risotto rice,,
+quinoa,Quinoa,168874,quinoa,,
+couscous,Couscous,169699,couscous,wheat|gluten_cereals,
+barley,Barley,170284,,gluten_cereals,
+bulgur,Bulgur,170688,cracked wheat,wheat|gluten_cereals,
+farro,Farro,169721,durum wheat|emmer,wheat|gluten_cereals,
+polenta,Polenta,168929,cornmeal|grits,,
+pasta-dry,Dry Pasta,169736,dried pasta|penne|macaroni,wheat|gluten_cereals,
+egg-noodles,Egg Noodles,169731,egg noodles,egg|wheat|gluten_cereals,
+breadcrumbs,Breadcrumbs,174928,dried breadcrumbs,wheat|gluten_cereals,milk|soy|sesame
+panko,Panko Breadcrumbs,172806,japanese breadcrumbs,wheat|gluten_cereals,milk|soy|sesame
+tortilla-corn,Corn Tortilla,175036,corn tortillas,,
+tortilla-flour,Flour Tortilla,167535,flour tortillas,wheat|gluten_cereals,milk|soy
+sugar,Granulated Sugar,169655,white sugar|caster sugar|granulated sugar,,
+brown-sugar,Brown Sugar,168833,light brown sugar|dark brown sugar,,
+powdered-sugar,Powdered Sugar,169656,confectioners sugar|icing sugar,,
+honey,Honey,169640,,,
+maple-syrup,Maple Syrup,169661,pure maple syrup,,
+molasses,Molasses,168820,,,
+corn-syrup,Corn Syrup,168837,,,
+agave,Agave Nectar,170277,,,
+olive-oil,Olive Oil,171413,extra virgin olive oil|evoo,,
+vegetable-oil,Vegetable Oil,171411,soybean oil|cooking oil,soy|legumes,
+canola-oil,Canola Oil,172336,rapeseed oil,,
+coconut-oil,Coconut Oil,171412,,,
+sesame-oil,Sesame Oil,171016,toasted sesame oil,sesame,
+peanut-oil,Peanut Oil,171410,,peanut|legumes,
+sunflower-oil,Sunflower Oil,171025,,,
+avocado-oil,Avocado Oil,173573,,,
+shortening,Shortening,172327,vegetable shortening,,
+lard,Lard,171401,,,
+ghee,Ghee,173412,,milk,
+mayonnaise,Mayonnaise,171009,mayo,egg,mustard
+vinegar-white,White Vinegar,172237,distilled vinegar|white vinegar,,
+vinegar-cider,Cider Vinegar,173469,apple cider vinegar,sulphites,
+vinegar-balsamic,Balsamic Vinegar,172241,,sulphites,
+vinegar-red-wine,Red Wine Vinegar,172240,,sulphites,
+soy-sauce,Soy Sauce,174277,shoyu|light soy sauce,wheat|soy|gluten_cereals|legumes,
+fish-sauce,Fish Sauce,174531,,fish,shellfish
+worcestershire,Worcestershire Sauce,171610,worcestershire,fish,gluten_cereals|sulphites|soy
+hot-sauce,Hot Sauce,174527,chili sauce|tabasco,nightshades,sulphites
+ketchup,Ketchup,168556,tomato ketchup|catsup,nightshades,celery
+mustard,Mustard,172234,yellow mustard|dijon mustard|prepared mustard,mustard,sulphites|gluten_cereals
+bbq-sauce,Barbecue Sauce,174523,,nightshades,mustard|sulphites|soy
+salsa,Salsa,174524,,allium|nightshades,
+tahini,Tahini,168604,,sesame,
+peanut-butter,Peanut Butter,174266,smooth peanut butter,peanut|legumes,
+hummus,Hummus,174289,,sesame|allium|legumes,
+pickles,Pickles,168558,dill pickles|gherkins,sulphites,mustard
+olives-green,Green Olives,169096,,,sulphites
+olives-black,Black Olives,169094,ripe olives,,sulphites
+capers,Capers,172238,,,sulphites
+coconut-milk,Coconut Milk,170173,canned coconut milk,,
+chicken-breast,Chicken Breast,171474,boneless chicken breast,,
+chicken-thigh,Chicken Thigh,172385,chicken thighs,,
+chicken-whole,Whole Chicken,171447,,,
+ground-chicken,Ground Chicken,171116,minced chicken,,
+turkey-breast,Turkey Breast,172876,,,
+ground-turkey,Ground Turkey,171505,minced turkey,,
+ground-beef,Ground Beef,174036,minced beef|hamburger,,
+beef-chuck,Beef Chuck,171206,stewing beef|chuck roast,,
+beef-brisket,Brisket,168607,,,
+beef-sirloin,Sirloin Steak,174055,sirloin,,
+ribeye,Ribeye Steak,172143,rib eye,,
+beef-short-ribs,Short Ribs,170783,,,
+pork-shoulder,Pork Shoulder,167845,,,
+pork-chop,Pork Chop,167829,,,
+pork-belly,Pork Belly,167812,,,
+ground-pork,Ground Pork,167902,minced pork,,
+bacon,Bacon,168277,streaky bacon|bacon rashers,,
+ham,Ham,173864,,,
+sausage-italian,Italian Sausage,172952,italian sausage,,gluten_cereals|sulphites
+chorizo,Chorizo,173859,,allium|nightshades,gluten_cereals|sulphites
+lamb-shoulder,Lamb Shoulder,174326,,,
+lamb-chop,Lamb Chop,172491,,,
+salmon,Salmon,175167,,fish,
+tuna-canned,Canned Tuna,173709,tinned tuna,fish,
+cod,Cod,171955,,fish,
+halibut,Halibut,174200,,fish,
+tilapia,Tilapia,175176,,fish,
+trout,Trout,173717,,fish,
+anchovy,Anchovy,174183,,fish,
+sardine,Sardine,175139,,fish,
+shrimp,Shrimp,174210,prawns,shellfish,
+crab,Crab,174204,,shellfish,
+lobster,Lobster,174208,,shellfish,
+scallop,Scallop,174220,,mollusks,
+mussel,Mussel,174216,,mollusks,
+clam,Clam,174214,,mollusks,
+oyster,Oyster,171978,,mollusks,
+squid,Squid,174223,calamari,mollusks,
+tofu,Tofu,172475,firm tofu|bean curd,soy|legumes,
+tempeh,Tempeh,174272,,soy|legumes,
+edamame,Edamame,169282,,soy|legumes,
+black-beans,Black Beans,173734,turtle beans,legumes,
+kidney-beans,Kidney Beans,175193,red kidney beans,legumes,
+pinto-beans,Pinto Beans,175199,pinto beans,legumes,
+chickpeas,Chickpeas,173756,garbanzo beans|garbanzos,legumes,
+cannellini-beans,Cannellini Beans,175202,white beans,legumes,
+lentils,Lentils,172420,brown lentils|green lentils,legumes,
+split-peas,Split Peas,172429,yellow split peas,legumes,
+navy-beans,Navy Beans,173745,haricot beans,legumes,
+almond,Almond,170567,almonds|whole almonds,tree_nuts,
+walnut,Walnut,170187,walnuts,tree_nuts,
+pecan,Pecan,170182,pecans,tree_nuts,
+cashew,Cashew,170162,cashews,tree_nuts,
+pistachio,Pistachio,170184,pistachios,tree_nuts,
+hazelnut,Hazelnut,170581,hazelnuts|filberts,tree_nuts,
+macadamia,Macadamia Nut,170178,,tree_nuts,
+pine-nut,Pine Nut,170591,pine nuts|pignoli,tree_nuts,
+peanut,Peanut,172430,peanuts,peanut|legumes,
+sesame-seed,Sesame Seed,170150,sesame seeds,sesame,
+sunflower-seed,Sunflower Seed,170562,sunflower seeds,,
+pumpkin-seed,Pumpkin Seed,170556,pumpkin seeds|pepitas,,
+chia-seed,Chia Seed,170554,chia seeds,,
+flaxseed,Flaxseed,169414,linseed|ground flaxseed,,
+poppy-seed,Poppy Seed,171330,,,
+salt,Salt,173468,table salt|fine salt,,
+kosher-salt,Kosher Salt,,kosher salt|diamond crystal kosher salt|coarse kosher salt,,
+pepper-black,Black Pepper,170931,black pepper|ground black pepper|cracked pepper,,
+white-pepper,White Pepper,170933,,,
+cayenne,Cayenne Pepper,170932,cayenne|red pepper flakes|crushed red pepper,nightshades,
+paprika,Paprika,171329,,nightshades,
+chili-powder,Chili Powder,171319,,nightshades,allium
+cumin,Ground Cumin,170923,cumin|ground cumin,,
+coriander-ground,Ground Coriander,170922,ground coriander seed,,
+turmeric,Turmeric,172231,,,
+curry-powder,Curry Powder,170924,,,mustard|nightshades
+garlic-powder,Garlic Powder,171325,,allium,
+onion-powder,Onion Powder,171327,,allium,
+cinnamon,Ground Cinnamon,171320,cinnamon,,
+nutmeg,Ground Nutmeg,171326,nutmeg,,
+ginger-ground,Ground Ginger,170926,,,
+cloves-ground,Ground Cloves,171321,cloves,,
+allspice,Allspice,171315,,,
+cardamom,Cardamom,170919,ground cardamom,,
+fennel-seed,Fennel Seed,171323,,,
+mustard-seed,Mustard Seed,170929,,mustard,
+celery-seed,Celery Seed,170920,,celery,
+caraway,Caraway Seed,170918,,,
+saffron,Saffron,170934,,,
+star-anise,Star Anise,171316,anise seed,,
+dried-basil,Dried Basil,171317,dried basil,,
+dried-thyme,Dried Thyme,170938,dried thyme,,
+dried-rosemary,Dried Rosemary,171333,dried rosemary,,
+dried-parsley,Dried Parsley,170930,dried parsley,,
+dried-dill,Dried Dill,171322,dried dill,,
+dried-marjoram,Dried Marjoram,170928,dried marjoram,,
+dried-tarragon,Dried Tarragon,170937,dried tarragon,,
+baking-powder,Baking Powder,172804,,,
+baking-soda,Baking Soda,175040,bicarbonate of soda|bicarb,,
+yeast-active-dry,Active Dry Yeast,175043,dry yeast|instant yeast,,
+cocoa-powder,Cocoa Powder,169593,unsweetened cocoa,,soy
+chocolate-dark,Dark Chocolate,170273,bittersweet chocolate|dark chocolate,milk,soy
+chocolate-chips,Chocolate Chips,167976,semisweet chocolate|chocolate morsels,milk,soy
+vanilla-extract,Vanilla Extract,173471,vanilla,,
+gelatin,Gelatin,169599,,,
+cornflakes,Cornflakes,174648,,gluten_cereals,
+bread-white,White Bread,174924,white sandwich bread,wheat|gluten_cereals,milk|soy|sesame
+chicken-stock,Chicken Stock,172884,chicken broth|chicken stock,celery|allium,soy|gluten_cereals
+beef-stock,Beef Stock,172883,beef broth,celery|allium,soy|gluten_cereals
+vegetable-broth,Vegetable Broth,171583,vegetable stock,celery|allium,soy|gluten_cereals
+wine-white,White Wine,174837,dry white wine,sulphites,
+wine-red,Red Wine,173190,dry red wine,sulphites,
+orange-juice,Orange Juice,169098,fresh orange juice,,sulphites
+lemon-juice,Lemon Juice,167747,fresh lemon juice,,sulphites
+lime-juice,Lime Juice,168156,fresh lime juice,,sulphites
+apple-juice,Apple Juice,167771,,,sulphites
+coffee,Brewed Coffee,171890,,,
+provolone,Provolone,170850,provolone cheese|sharp provolone,milk,
+puff-pastry,Puff Pastry,172790,puff pastry sheets|puff pastry dough|pastry dough|butter puff pastry,wheat|gluten_cereals,milk|soy|egg
+pumpkin-pie-spice,Pumpkin Pie Spice,171332,pumpkin spice|pumpkin pie spice blend,,
+pumpkin-puree,Pumpkin Puree,168450,canned pumpkin|pureed pumpkin|pumpkin pulp,,
+quail-whole,Quail,172418,whole quail|quails|semi-boneless quail,,
+queso-fresco,Queso Fresco,172223,queso fresco cheese|fresh mexican cheese|queso blanco fresco,milk,
+radicchio,Radicchio,168564,radicchio chicory|chioggia radicchio|red chicory,,
+raspberry-puree,Raspberry Puree,167808,pureed raspberry|raspberry fruit puree|raspberry coulis,,sulphites
+red-grape,Red Grape,174683,red grapes|red seedless grapes,,
+red-leaf-lettuce,Red Leaf Lettuce,168431,red leaf|red lettuce|lettuce red leaf,,
+red-lentil,Red Lentils,174284,masoor dal|split red lentils|dried red lentils,legumes,
+onion-red,Red Onion,790577,red onions|purple onion,allium,
+rhubarb,Rhubarb,167758,fresh rhubarb|rhubarb stalks|red rhubarb,,
+rice-noodle,Rice Noodles,169742,rice stick noodles|banh pho|dried rice noodles,,
+rice-paper-wrapper,Rice Paper Wrapper,2708166,rice paper wrappers|rice paper|banh trang|spring roll wrapper,,
+ripe-plantain,Ripe Plantain,169130,ripe plantains|yellow plantain|platano maduro,,
+roquefort,Roquefort,171250,roquefort cheese|french blue cheese,milk,
+rum,Rum,174817,white rum|light rum,,sulphites
+rye-bread,Rye Bread,172684,rye loaf|pumpernickel rye|deli rye,gluten_cereals,wheat|soy|sesame|milk
+salami,Salami,174582,hard salami|salami stick|genoa salami|sliced salami,,milk|soy|sulphites|nightshades|allium
+salt-cod,Salt Cod,174190,salted cod|bacalao|baccala|bacalhau|bacala,fish,
+satsuma-mandarin,Satsuma Mandarin,169105,satsuma|satsumas|satsuma mandarins|mandarin,,
+sauerkraut,Sauerkraut,169279,kraut|sour kraut|sourkraut,,sulphites
+sauvignon-blanc,Sauvignon Blanc,173201,sauvignon blanc wine|white wine sauvignon blanc|sauv blanc,sulphites,
+savoy-cabbage,Savoy Cabbage,170388,savoy cabbages|savoy,,
+sea-bass,Sea Bass,175142,seabass|whole sea bass,fish,
+self-rising-flour,Self-Rising Flour,168895,self-raising flour|self rising baking flour,wheat|gluten_cereals,
+shimeji-mushroom,Shimeji Mushroom,2003603,hon shimeji mushrooms|hon shimeji|shimeji mushrooms|beech mushroom|buna shimeji,,
+sliced-almond,Sliced Almond,170567,sliced almonds|almonds sliced|flaked almonds,tree_nuts|stone_fruit,
+slivered-almond,Slivered Almond,170567,slivered almonds|almonds slivered,tree_nuts|stone_fruit,
+smoked-salmon,Smoked Salmon,171985,cold smoked salmon|lox|nova salmon,fish,
+smoked-whitefish,Smoked Whitefish,173712,smoked white fish|whitefish smoked,fish,
+snow-crab-meat,Snow Crab Meat,171969,snow crab|crab meat snow|picked snow crab,shellfish,
+soba-noodle,Soba Noodles,168906,soba|buckwheat noodles,,wheat|gluten_cereals
+soft-shell-crab,Soft-Shell Crab,2706346,soft shell crabs|softshell crab,shellfish,
+sole,Sole,174196,sole fillet|dover sole|lemon sole|whole sole,fish,
+sour-cherry,Sour Cherry,173954,sour cherries|tart cherries|morello cherries,stone_fruit,
+sourdough-bread,Sourdough Bread,172675,sourdough|sour dough bread|sourdough loaf|Sourdough batard|batard|sourdough batard bread|sourdough loaf batard,wheat|gluten_cereals,
+soy-milk,Soy Milk,175215,soymilk|soya milk|unsweetened soy milk,soy,
+spaghetti,Spaghetti,169736,spaghetti pasta|dry spaghetti|spaghetti noodles,wheat|gluten_cereals,egg
+spaghetti-squash,Spaghetti Squash,169298,spaghetti squashes|squash spaghetti,,
+spanish-mackerel,Spanish Mackerel,173673,mackerel spanish|whole spanish mackerel|sierra mackerel,fish,
+spelt-flour,Spelt Flour,2003587,flour spelt|whole spelt flour|dinkel flour,wheat|gluten_cereals,
+sriracha,Sriracha,171186,sriracha sauce|sriracha hot sauce|siracha|sirracha|rooster sauce,nightshades|allium,sulphites|fish
+filet-mignon,Filet Mignon,173988,beef filet|beef tenderloin steak|tenderloin steak,,
+flaxseed-oil,Flaxseed Oil,167702,flax seed oil|flax oil|linseed oil,,
+flounder,Flounder,174196,whole flounder|flounder fillet|fresh flounder,fish,
+focaccia,Focaccia,167945,focaccia bread|focaccia loaf|schiacciata,wheat|gluten_cereals,milk|egg|sesame
+fontina,Fontina,170843,fontina cheese|fontina val d'aosta|fontina val daosta|fontal,milk,
+fresh-coconut,Fresh Coconut,170169,"coconut, fresh|whole coconut|mature coconut",,
+yeast-fresh,Fresh Yeast,175042,compressed yeast|cake yeast|compressed fresh yeast|baker's yeast fresh,,
+freshwater-eel,Freshwater Eel,174193,fresh water eel|unagi|eel freshwater,fish,
+fried-tofu,Fried Tofu,172451,tofu fried|aburaage|fried bean curd|tofu puffs,soy|legumes,wheat|gluten_cereals
+frozen-apple,Frozen Apple,171694,iqf apples|apples frozen,,sulphites
+frozen-blackberry,Frozen Blackberry,171710,iqf blackberries|blackberries frozen|frozen blackberries,,
+frozen-blueberry,Frozen Blueberry,173950,iqf blueberries|blueberries frozen|frozen blueberries,,
+frozen-boysenberry,Frozen Boysenberry,171713,frozen boysenberries|iqf boysenberries|boysenberries frozen,,
+frozen-french-fries,Frozen French Fries,170523,frozen fries|french fries frozen|frozen shoestring fries|frozen french fry,nightshades,wheat|gluten_cereals|milk|soy
+frozen-raspberry,Frozen Raspberry,168209,frozen raspberries|raspberries frozen|raspberry frozen|frzn raspberries|iqf raspberries,,
+frozen-spinach,Frozen Spinach,169287,spinach frozen|frzn spinach|iqf spinach|chopped frozen spinach,,
+frozen-strawberry,Frozen Strawberry,168173,frozen strawberries|iqf strawberries|frozen whole strawberries,,
+fuji-apple,Fuji Apple,167793,fuji apples|apple fuji|fuji,,
+fuyu-persimmon,Fuyu Persimmon,169941,fuyu persimmons|persimmon fuyu|fuyu|persimmon,,
+gala-apple,Gala Apple,168204,gala apples|apple gala|gala,,
+ginger-ale,Ginger Ale,174846,ale ginger|dry ginger ale|ginger ale soda,,sulphites
+glass-noodle,Glass Noodles,174258,cellophane noodles|bean thread noodles|mung bean noodles|dangmyeon,,legumes|soy
+glutinous-rice-flour,Glutinous Rice Flour,1104867,sweet rice flour|mochiko|glutinous rice powder|sticky rice flour,,
+goji-berry,Goji Berry,173032,goji berries|dried goji berries|wolfberry|wolfberries,,sulphites
+golden-delicious-apple,Golden Delicious Apple,168202,golden delicious|apple golden delicious|golden apple,,
+gooseberry,Gooseberry,173030,gooseberries|fresh gooseberries|cape gooseberry,,
+gouda,Gouda,171241,gouda cheese|gouda wheel,milk,
+graham-cracker,Graham Crackers,174957,"graham cracker sheets|crackers, graham",wheat|gluten_cereals,milk|soy|egg
+milk-2-percent,2% Milk,171267,milk 2%|2 percent milk|reduced fat milk|2% fat milk,milk,
+abalone,Abalone,174212,fresh abalone|awabi|abalones,mollusks,
+agar-agar,Agar Agar,170090,agar|agar powder|kanten|agar agar powder,,
+tuna-ahi,Ahi Tuna,175159,ahi|yellowfin tuna|tuna loin|yellow fin tuna|tuna yellowfin,fish,
+alfalfa-sprout,Alfalfa Sprouts,168384,,,
+almond-butter,Almond Butter,168588,smooth almond butter|creamy almond butter,tree_nuts|stone_fruit,peanut
+almond-milk,Almond Milk,2705409,unsweetened almond milk|almond beverage,tree_nuts|stone_fruit,
+almond-paste,Almond Paste,2707535,blanched almond paste|marzipan,tree_nuts|stone_fruit,egg
+amaranth-greens,Amaranth Greens,168385,callaloo|chinese spinach|een choy|amaranth leaves,,
+american-cheese,American Cheese,171290,american cheese block|processed cheese|yellow american cheese,milk,soy
+ancho-chile,Ancho Chile,169396,ancho chilies|anchos|ancho peppers|dried poblano,nightshades,sulphites
+applesauce,Applesauce,171695,apple sauce|smooth applesauce|unsweetened applesauce|Unsweetened apple sauce|apple sauce unsweetened|no sugar added applesauce,,sulphites
+apricot,Apricot,171697,apricots|fresh apricots,stone_fruit,
+apricot-jam,Apricot Jam,170645,apricot preserves|apricot jelly,stone_fruit,sulphites
+arrowroot,Arrowroot,170684,arrowroot powder|arrowroot starch|arrow root,,
+asian-pear,Asian Pear,168177,asian pears|korean pear|nashi pear|apple pear,,
+baby-back-ribs,Baby Back Ribs,168299,bb ribs|pork loin back ribs|baby back rib,,
+baby-carrot,Baby Carrot,168568,baby carrots|petite carrots|carrots baby,,
+bagel,Bagel,174899,bagels|plain bagel|bagel bread,wheat|gluten_cereals,sesame|egg|milk|soy
+baguette,Baguette,172675,french bread|baguette bread,wheat|gluten_cereals,milk|soy|sesame
+bamboo-shoot,Bamboo Shoot,169212,bamboo shoots|canned bamboo shoots|sliced bamboo shoots,,
+steel-cut-oats,Steel-Cut Oats,2346397,irish oats|irish oatmeal|pinhead oats,gluten_cereals,
+steelhead-trout-filet,Steelhead Trout Fillet,173717,steelhead filet|steelhead trout|steelhead trout filet,fish,
+striped-bass,Striped Bass,171948,striper|rockfish|stripe bass,fish,
+snap-pea,Sugar Snap Peas,170010,snap peas,legumes,
+sunchoke,Sunchoke,169236,sunchokes|jerusalem artichoke|jerusalem artichokes,,
+sundried-tomato,Sun-Dried Tomato,168567,sun dried tomatoes|sundried tomatoes|sundried tomato,nightshades,sulphites
+sweet-onion,Sweet Onion,170008,sweet onions|vidalia onion|walla walla onion,allium,
+swordfish,Swordfish,173703,sword fish|swordfish steak|swordfish loin,fish,
+tamari,Tamari,174278,tamari soy sauce|gluten free soy sauce,soy,wheat|gluten_cereals
+tangerine,Tangerine,169105,tangerines|mandarin tangerine,,
+taro-root,Taro Root,169308,taro|taro roots|dasheen|eddo,,
+tequila,Tequila,2710705,blanco tequila|silver tequila|tequila blanco,,
+teriyaki-sauce,Teriyaki Sauce,171167,teriyaki|teriyaki glaze|prepared teriyaki sauce,soy|wheat|gluten_cereals,sesame|allium
+tomatillo,Tomatillo,168566,tomatillos|husk tomato,nightshades,
+tomato-juice,Tomato Juice,170545,juice tomato|bottled tomato juice,nightshades,celery
+tortilla-chip,Tortilla Chips,167558,tortilla chip|corn tortilla chips|chips tortilla,,milk|soy|wheat|gluten_cereals
+turbinado-sugar,Turbinado Sugar,170674,turbinado|raw sugar|sugar in the raw,,
+unsweetened-chocolate,Unsweetened Chocolate,167568,baking chocolate|bitter chocolate|unsweetened baking chocolate|100% cacao chocolate,,milk|soy|tree_nuts
+vodka,Vodka,174818,plain vodka|vodka liquor,,gluten_cereals
+wakame,Wakame,170496,fresh wakame|raw wakame|wakame seaweed,,
+wasabi-paste,Wasabi Paste,2710103,wasabi|prepared wasabi|wasabi pastes,,mustard|soy|milk
+watercress,Watercress,170068,water cress|fresh watercress|cress,,
+wax-bean,Wax Beans,169320,yellow wax beans|yellow beans,legumes,
+whisky,Whisky,174819,whiskey|scotch whisky,,gluten_cereals
+chocolate-white,White Chocolate,167571,white choc|white couverture,milk,soy|tree_nuts
+white-chocolate-chip,White Chocolate Chips,167571,white choc chips|white chocolate morsels,milk,soy|tree_nuts
+white-corn,White Corn,168538,corn white|white sweet corn|white corn on the cob,,
+white-rice-flour,White Rice Flour,169714,rice flour|flour white rice|fine rice flour,,
+sticky-rice-white,White Sticky Rice,168883,sticky rice|glutinous rice|sweet rice|sticky rice white,,
+whole-duck,Whole Duck,172408,duck|whole ducks|pekin duck|duckling,,
+king-crab-whole,Whole King Crab,175164,king crab|alaskan king crab|red king crab,shellfish,
+rabbit-whole,Whole Rabbit,172521,rabbit|fryer rabbit|whole fryer rabbit|rabbit whole,,
+turkey-whole,Whole Turkey,171081,turkey|whole turkeys|fresh whole turkey|turkey whole|turkey meat|fresh turkey,,
+bread-whole-wheat,Whole Wheat Bread,172688,wholewheat bread|ww bread|whole wheat loaf|wholemeal bread|brown bread,wheat|gluten_cereals,soy|milk|egg|sesame
+wild-rice,Wild Rice,169726,wild rice grain|wild rices|lake wild rice,,
+wonton-wrapper,Wonton Wrapper,172802,wonton wrappers|wonton skins|wonton wrap|wonton skin,wheat|gluten_cereals,egg|soy
+wood-ear-mushroom,Wood Ear Mushroom,169237,wood ear mushrooms|woodear mushroom|black fungus|cloud ear mushroom,,
+bell-pepper-yellow,Yellow Bell Pepper,169383,yellow pepper|yellow peppers|yellow capsicum,nightshades,
+yellowtail,Yellowtail,175163,hamachi|yellowtail amberjack|whole yellowtail|buri,fish,
+yellowtail-filet,Yellowtail Fillet,175163,hamachi filet|yellowtail amberjack filet|hamachi loin|yellowtail filet,fish,
+yuca,Yuca,169985,cassava|yuca root|manioc|yucca root|yucas,,
+maraschino-cherry,Maraschino Cherry,167766,maraschino cherries|cocktail cherries|cherries in syrup,stone_fruit|sulphites,
+margarine,Margarine,172346,margarine spread|vegetable margarine|oleo,,milk|soy
+masa-harina,Masa Harina,169694,"masa harina, instant|instant masa harina|instant masa|nixtamalized corn flour|Masa flour|masa|corn masa flour|flour, masa",,
+mesclun,Mesclun,2709792,mesclun mix|mesclun greens|spring mix|mixed baby greens|Mixed greens|salad mix|salad greens|mixed salad greens,,
+milk-chocolate,Milk Chocolate,167587,milk chocolate chips|milk choc|milk chocolate couverture,milk,soy|tree_nuts|wheat|gluten_cereals
+milk-powder,Milk Powder,170877,dry milk powder|nonfat dry milk|powdered milk|dried milk,milk,
+miso,Miso,172442,miso paste,soy,wheat|gluten_cereals
+monterey-jack,Monterey Jack,170844,monterrey jack|jack cheese|monterey jack cheese|Shredded Monterey Jack|shredded monterrey jack|shredded monterey jack cheese|monterey jack shredded|jack cheese shredded,milk,
+mortadella,Mortadella,174573,"italian mortadella|mortadella ham|bologna, mortadella",,tree_nuts|milk|soy|sulphites
+muenster,Muenster,171245,muenster cheese|munster cheese,milk,
+multigrain-bread,Multigrain Bread,2707777,"multi grain bread|multigrain loaf|bread, multigrain",wheat|gluten_cereals,milk|soy|sesame|tree_nuts
+mustard-green,Mustard Greens,169256,gai choy|indian mustard greens,,mustard
+mustard-powder,Mustard Powder,170929,ground mustard|dry mustard|dried mustard|mustard flour,mustard,
+naan,Naan,171845,naan bread|naan flatbread|garlic naan,wheat|gluten_cereals,milk|egg|soy
+nectarine,Nectarine,169914,nectarines|fresh nectarine,stone_fruit,
+ny-strip-steak,New York Strip Steak,171750,ny strip|new york strip|strip steak|ny strip steak|striploin steak,,
+oat-flour,Oat Flour,169741,flour oat|ground oats|oats flour,gluten_cereals,wheat
+oat-milk,Oat Milk,2705412,oatmilk|oat beverage|non dairy oat milk,gluten_cereals,wheat|soy
+octopus,Octopus,174218,whole octopus|pulpo|fresh octopus,mollusks,
+onion-flake,Onion Flakes,170002,dried onion flakes|dehydrated onion flakes|dried onion|minced dried onion,allium,
+orange-marmalade,Orange Marmalade,168819,marmalade|seville orange marmalade|orange preserve,,sulphites
+oxtail,Oxtail,2705843,beef oxtail|oxtails|whole oxtail,,
+oyster-mushroom,Oyster Mushroom,1750345,oyster mushrooms|pleurotus,,
+oyster-sauce,Oyster Sauce,2707150,oyster flavored sauce,mollusks,wheat|gluten_cereals|soy
+papaya,Papaya,169926,papayas|fresh papaya|pawpaw,,
+pasilla-chile,Pasilla Chile,168579,pasilla|pasillas|pasilla chilies|dried pasilla chile|chile negro,nightshades,sulphites
+passion-fruit,Passion Fruit,169108,passionfruit|maracuya|granadilla,,
+pecorino-romano,Pecorino Romano,171249,pecorino|romano cheese|pecorino cheese|Grated pecorino|pecorino grated|grated pecorino cheese|pecorino romano grated,milk,
+pectin,Pectin,168821,pectin powder|powdered pectin|fruit pectin|Apple pectin|apple pectin powder,,
+pepperoni,Pepperoni,174575,peperoni|pepperoni stick|sliced pepperoni|pepperoni salami,nightshades,milk|soy|sulphites
+phyllo-dough,Phyllo Dough,172791,filo dough|phyllo|filo pastry|phyllo sheets,wheat|gluten_cereals,soy|milk
+pickled-ginger,Pickled Ginger,2710082,gari|sushi ginger|beni shoga,,sulphites
+pickled-jalapeno,Pickled Jalapeno,170080,pickled jalapenos|jalapenos en escabeche|nacho jalapenos,nightshades,sulphites
+pineapple-juice,Pineapple Juice,169947,juice pineapple|canned pineapple juice|bottled pineapple juice,,sulphites
+pink-grapefruit,Pink Grapefruit,174673,ruby red grapefruit|grapefruit pink,,
+pita,Pita,174915,pita bread|pitas|pocket bread|pita breads,wheat|gluten_cereals,sesame|soy|milk
+poblano,Poblano Pepper,2747662,poblano|poblanos|poblano chile|poblano peppers,nightshades,
+pomegranate-juice,Pomegranate Juice,167787,pom juice|bottled pomegranate juice,,sulphites
+popcorn,Popcorn,167959,popped corn|popped popcorn,,milk|soy
+pork-bone,Pork Bones,2705897,pork neck bones|pork soup bones,,
+pork-fat,Pork Fat,167813,pig fat,,
+pork-hock,Pork Hock,2705900,pork hocks|ham hock|ham hocks|pork knuckle,,sulphites
+pork-loin,Pork Loin,167818,pork loins|boneless pork loin|center cut pork loin,,
+pork-rib,Pork Ribs,167853,pork rib|spare ribs|rack of pork ribs,,
+pork-sausage,Pork Sausage,172934,raw pork sausage|sausage pork|fresh pork sausage|italian pork sausage,,milk|soy|wheat|gluten_cereals|sulphites|allium
+pork-tenderloin,Pork Tenderloin,168312,pork tender|pork filet|pork loin tenderloin,,
+prosciutto,Prosciutto,2705879,dry cured ham,,sulphites|milk
+dried-chickpea,Dried Chickpeas,173756,dry chickpeas|dried garbanzo beans|dry garbanzos,legumes,
+dried-cilantro,Dried Cilantro,170921,"cilantro, dried|dried cilantro leaf|dried coriander leaf|cilantro flakes",,
+dried-cranberry,Dried Cranberry,171723,dried cranberries|craisins|dry cranberries|sweetened dried cranberries,,sulphites
+dried-cranberry-bean,Dried Cranberry Beans,175189,cranberry beans dried|romano beans|Dried borlotti bean|borlotti beans dried|dried borlotti beans|cranberry beans,legumes,
+dried-currant,Dried Currant,171724,dried currants|zante currants|dry currants,,sulphites
+dried-fava-bean,Dried Fava Beans,175205,dried fava bean|dry fava beans|fava beans dried|dried broad beans,legumes,
+dried-fig,Dried Fig,174665,"figs, dried|dried figs|mission figs dried|dried mission fig",,sulphites
+great-northern-bean,Dried Great Northern Beans,175190,great northern beans dried|great northern beans,legumes,
+dried-mango,Dried Mango,2709205,dried mangoes|dried mangos|dry mango|mango dried,,sulphites
+dried-peach,Dried Peach,169934,dried peaches|dehydrated peach|peaches dried,stone_fruit,sulphites
+dried-pear,Dried Pear,169121,dried pears|dehydrated pear|pears dried,,sulphites
+dried-pineapple,Dried Pineapple,2709210,pineapple dried|dried pineapple chunks|dry pineapple,,sulphites
+dried-shiitake,Dried Shiitake,168436,dried shiitakes|dried shiitake mushrooms|dried shitake|dry shiitake,,sulphites
+dried-sour-cherry,Dried Sour Cherry,171708,dried sour cherries|dry sour cherry|dried montmorency cherries,stone_fruit,sulphites
+dried-soybean,Dried Soybeans,174270,dried soy beans|dry soybeans|soy beans dried|soybean,soy|legumes,
+duck-egg,Duck Egg,172189,duck eggs|fresh duck eggs|whole duck egg,egg,
+duck-liver,Duck Liver,174467,duck livers|fresh duck livers|livers duck,,
+duck-sauce,Duck Sauce,171823,sauce duck|prepared duck sauce|plum duck sauce,,soy|wheat|gluten_cereals|sulphites
+dulce-de-leche,Dulce de Leche,2705699,"dulce de leche, canned|canned dulce de leche|cajeta|milk caramel",milk,
+dungeness-crab-meat,Dungeness Crab Meat,171968,dungenous crab meat|dungeness crabmeat|picked dungeness crab|dungeness crab,shellfish,sulphites
+durian,Durian,168192,durian fruit|fresh durian,,
+egg-powder,Egg Powder,172188,"egg powder, sifted|dried egg powder|dry egg powder|powdered egg|Whole egg powder|egg whole powder|dried whole egg|powdered whole egg",egg,
+egg-yolk-powder,Egg Yolk Powder,173428,powdered egg yolk|dried egg yolk|eggyolk powder,egg,
+endive,Endive,170404,endives|belgian endive|belgium endive|witloof,,
+english-muffin,English Muffin,175063,english muffins|muffin english,wheat|gluten_cereals,milk|soy|egg|sesame
+enoki,Enoki Mushroom,169382,enoki mushrooms|enoki|enokis|enokitake,,
+epazote,Epazote,169398,fresh epazote|herb epazote|epazote leaves,,
+espresso,Espresso,171891,brewed espresso|espresso shot|pulled espresso,,
+farfalle,Farfalle,169736,farfalle pasta|bow tie pasta|bowtie pasta|butterfly pasta,wheat|gluten_cereals,egg
+fatback,Fatback,167811,fat back|back fat|pork fatback|pork back fat,,sulphites
+fenugreek-seed,Fenugreek Seed,171324,fenugreek seeds|fenugreek|methi seeds|whole fenugreek,,
+black-bean-sauce,Fermented Black Bean Sauce,2707404,black bean garlic sauce|douchi sauce,soy|legumes,wheat|gluten_cereals|allium|sesame
+fig,Fig,173021,figs|fresh figs|brown turkey figs,,
+banana-pepper,Banana Pepper,169394,banana peppers|hungarian wax pepper,nightshades,
+pear-bartlett,Bartlett Pear,746773,bartlett pears|williams pear,,
+bean-sprout,Bean Sprouts,169957,mung bean sprouts|beansprouts,legumes,
+beef-bottom-round,Beef Bottom Round,174046,bottom round|bottom round roast|beef round bottom|gooseneck round,,
+beef-bouillon,Beef Bouillon,171561,beef bouillon cubes|beef stock concentrate,,soy|wheat|gluten_cereals|celery|milk|allium
+beef-coulotte,Beef Coulotte,174706,coulotte|picanha|top sirloin cap|culotte steak,,
+beef-flank-steak,Beef Flank Steak,169563,flank steak|flank steaks,,
+flat-iron-steak,Beef Flat Iron Steak,168693,beef flat iron|flat iron steaks|top blade steak|flat iron|flat iron steak,,
+beef-heart,Beef Heart,168625,beef hearts|heart beef|ox heart,,
+beef-liver,Beef Liver,169451,beef livers|ox liver|liver beef,,
+beef-plate-steak,Beef Short Plate,173400,plate steak|plate steaks|beef plate|outside skirt plate|beef plate steak|short plate,,
+beef-porterhouse,Beef Porterhouse,173350,porterhouse|porterhouse steak|beef porterhouse steak|porterhouse steaks,,
+prime-rib,Beef Prime Rib,169498,prime rib|prime rib roast|beef prime rib roast|standing rib roast|rib roast,,
+beef-rib,Beef Back Ribs,172169,beef ribs|bone-in beef rib|beef rib|back ribs,,
+beef-shank,Beef Shank,169441,beef shanks|cross cut beef shank|osso buco beef,,
+beef-shoulder-clod,Beef Shoulder Clod,174018,shoulder clod|beef clod|clod heart|chuck shoulder clod,,
+skirt-steak,Beef Skirt Steak,172158,skirt steak|skirt steaks|outside skirt|inside skirt,,
+strip-loin,Beef Strip Loin,171775,striploin|beef striploin|strip loin|new york strip loin|ny strip loin,,
+t-bone-steak,Beef T-Bone Steak,172118,t-bone|tbone|tbone steak|beef t-bone|t-bone steak,,
+beef-tallow,Beef Tallow,171400,tallow|rendered beef fat|beef fat,,
+beef-tenderloin,Beef Tenderloin,173987,psmo|beef psmo|whole beef filet|tenderloin,,
+beef-tongue,Beef Tongue,170196,beef tongues|ox tongue|lengua|tongue beef,,
+beef-top-blade,Beef Top Blade,172134,top blade|top blade roast,,
+top-round,Beef Top Round,173982,top round|beef top round roast|top round roast|inside round,,
+tri-tip,Beef Tri-Tip,168734,tri-tip|tri-tip roast|tri tip steak,,
+beer,Beer,168746,beers|lager|ale|draft beer,gluten_cereals,wheat|sulphites
+beet-juice,Beet Juice,2709682,beetroot juice|beet root juice|fresh beet juice,,
+bibb-lettuce,Bibb Lettuce,168429,boston bibb lettuce|boston lettuce|bibb|limestone lettuce,,
+bitter-melon,Bitter Melon,168393,bitter gourd|karela|bitter squash,,
+black-bass,Black Bass,175142,black sea bass|sea bass black|whole black bass,fish,
+black-cod,Black Cod,175134,sablefish|butterfish|black cod fillet,fish,
+blackcurrant,Blackcurrant,173963,black currants|black currant|cassis,,
+blood-sausage,Blood Sausage,171618,blood sausages|black pudding|morcilla|boudin noir,,milk|allium|sulphites|gluten_cereals|wheat
+chocolate-sprinkles,Chocolate Sprinkles,2710334,chocolate jimmies|jimmies|chocolate vermicelli,,milk|soy|wheat|gluten_cereals|tree_nuts
+chocolate-syrup,Chocolate Syrup,174117,chocolate sauce|hersheys syrup|chocolate flavored syrup,,milk|soy|wheat
+clarified-butter,Clarified Butter,2710168,drawn butter|clarified sweet butter,milk,
+club-soda,Club Soda,174842,soda water|club soda water|seltzer,,
+cockle,Cockle,169803,cockles|cockle clams|berberechos,mollusks,
+cocktail-sauce,Cocktail Sauce,2709753,seafood cocktail sauce|shrimp cocktail sauce|cocktail sauces,nightshades,fish|shellfish|soy|wheat|gluten_cereals|sulphites|allium
+cocoa-butter,Cocoa Butter,171421,coco butter|cacao butter|cocoa butter wafers,,milk
+coconut-cream,Coconut Cream,170580,cream of coconut|canned coconut cream|thick coconut milk,,tree_nuts|sulphites
+coconut-flour,Coconut Flour,2515382,coco flour|coconut flours|organic coconut flour,,tree_nuts
+coconut-water,Coconut Water,174831,coco water|young coconut water,,tree_nuts
+coconut-yogurt,Coconut Yogurt,2707569,coconut milk yogurt|dairy free coconut yogurt,,tree_nuts|soy
+colby-jack,Colby Jack,2705713,colby jack cheese|colby jack block|marbled colby jack,milk,
+concord-grape,Concord Grape,174682,concord grapes|concords,,
+coriander-seed,Coriander Seed,170922,coriander seeds|whole coriander|coriander|corriander seed|whole coriander seed,,
+corn-flour,Corn Flour,170290,white corn flour|yellow corn flour|fine corn flour,,gluten_cereals
+corn-oil,Corn Oil,171029,cornoil|refined corn oil,,
+cornish-hen,Cornish Hen,171507,cornish game hen|whole cornish hen|cornish hens|poussin,,
+cotija,Cotija,170898,cotija cheese|queso cotija|cotija block|Crumbled cotija|cotija crumbles|cotija crumbled|crumbled cotija cheese|cotija cheese crumbles,milk,
+cottage-cheese,Cottage Cheese,2705748,cottage cheeses|curd cheese|small curd cottage cheese,milk,
+cranberry-juice,Cranberry Juice,168117,cranberry juices|cranberry juice cocktail|unsweetened cranberry juice,,sulphites
+cranberry-sauce,Cranberry Sauce,173961,cranberry sauces|whole berry cranberry sauce|jellied cranberry sauce,,sulphites
+crayfish,Crayfish,175169,crawfish|crawdads|craw fish|whole crawfish,shellfish,
+cream-of-tartar,Cream of Tartar,175041,cream of tartar powder|potassium bitartrate|tartaric acid powder,,
+cream-of-wheat,Cream of Wheat,173010,farina|wheat farina|hot wheat cereal,wheat|gluten_cereals,
+crouton,Croutons,172751,salad croutons|seasoned croutons,wheat|gluten_cereals,milk|soy|egg|allium
+curly-parsley,Curly Parsley,170416,curly leaf parsley|curled parsley|parsley curly,,
+currant,Currant,173964,currants|fresh currants|red currants,,
+cuttlefish,Cuttlefish,174215,cuttle fish|seppia|fresh cuttlefish,mollusks,
+daikon,Daikon Radish,168451,daikon|white radish|mooli|daikon radishes,,
+dandelion-greens,Dandelion Greens,169226,dandelion green|dandelion leaves|italian dandelion,,
+corn-syrup-dark,Dark Corn Syrup,168836,"corn syrup, dark|dark karo syrup|dark karo",,sulphites
+dark-rum,Dark Rum,174817,dark rums|black rum|aged rum,,sulphites
+deglet-noor-date,Deglet Noor Date,171726,deglet noor dates|deglet nour dates|deglet noor,,sulphites
+diastatic-malt-powder,Diastatic Malt Powder,169740,diastatic malt|malted barley flour|diastatic barley malt powder,gluten_cereals,wheat
+dill-seed,Dill Seed,170925,dill seeds|whole dill seed,,
+dragon-fruit,Dragon Fruit,2709234,pitaya|pitahaya|dragonfruit,,
+adzuki-bean,Dried Adzuki Beans,173727,adzuki beans|azuki beans,legumes,
+dried-apple,Dried Apple,171691,dried apples|dry apple|apple dried|dehydrated apple,,sulphites
+black-eyed-pea-dried,Dried Black-Eyed Peas,173758,black eyed peas dried|black-eyed peas|cowpeas,legumes,
+dried-blueberry,Dried Blueberry,168158,dried blueberries|blueberries dried,,sulphites
+butter-bean-dried,Dried Lima Beans,174252,butter beans dried|dried butter beans|dry butter beans|dried butter bean,legumes,
+dried-cherry,Dried Cherry,2709199,dried cherries|cherries dried|dried tart cherries,stone_fruit,sulphites
+canned-pimento,Canned Pimento Pepper,168559,canned pimento peppers|pimentos|canned pimientos|jarred pimento,nightshades,
+canned-pineapple,Canned Pineapple,169126,pineapple canned|tinned pineapple|pineapple chunks canned|pineapple rings canned,,sulphites
+tomato-canned,Canned Tomato,170051,canned tomatoes|tinned tomatoes|peeled canned tomatoes|tomatoes canned,nightshades,
+white-hominy-canned,Canned White Hominy,169701,white hominy canned|white hominy|pozole corn,,
+tomato-whole-peeled-canned,Canned Whole Peeled Tomato,170051,whole peeled tomatoes|canned whole peeled tomatoes,nightshades,
+capon,Capon,172406,whole capon|capon chicken,,
+cardoon,Cardoon,169981,cardoons|cardi|fresh cardoon,,
+carob-powder,Carob Powder,173755,carob|carob flour|roasted carob powder|powdered carob,,
+casaba-melon,Casaba Melon,169093,casaba|casabas|casaba melons,,
+cashew-butter,Cashew Butter,170163,cashew nut butter|raw cashew butter,tree_nuts,peanut|soy
+catfish,Catfish,175165,catfish fillet|whole catfish|channel catfish,fish,
+caviar,Caviar,174188,sturgeon caviar|osetra caviar|fish roe,fish,
+celery-root,Celery Root,170400,celeriac|knob celery|celery knob,celery,
+challah,Challah,172673,challah bread|challah loaf|egg bread,wheat|gluten_cereals|egg,sesame|soy|milk
+chanterelle,Chanterelle,168422,chanterelles|chanterelle mushrooms|girolle,,
+chardonnay,Chardonnay,174110,chardonnay wine|white wine chardonnay,sulphites,egg|fish|milk
+chayote,Chayote,170402,chayote squash|mirliton|vegetable pear|christophine,,
+cherimoya,Cherimoya,173953,custard apple|cherimoya fruit,,
+cherry-juice,Cherry Juice,167807,cherry juices|tart cherry juice|sour cherry juice,stone_fruit,sulphites
+chestnut-flour,Chestnut Flour,2515377,chestnut flours|farina di castagne|chest nut flour,tree_nuts,wheat|gluten_cereals
+chicken-bouillon,Chicken Bouillon,171562,chicken bouillon cubes,,soy|wheat|gluten_cereals|celery|milk|egg
+chicken-drumstick,Chicken Drumstick,172373,chicken drumsticks|ck drumsticks|drumsticks,,
+chicken-fat,Chicken Fat,173564,schmaltz|rendered chicken fat,,
+chicken-gizzard,Chicken Gizzard,171456,chicken gizzards|ck gizzards,,
+chicken-heart,Chicken Heart,171458,chicken hearts|ck hearts,,
+chicken-leg,Chicken Leg,172378,chicken legs|ck legs|chx legs,,
+chicken-liver,Chicken Liver,171060,chicken livers|ck livers|ck liver,,
+chicken-neck,Chicken Neck,172382,ck neck|chicken necks for stock,,
+chicken-skin,Chicken Skin,171452,chx skin|ck skin|chicken skins,,
+chicken-wing,Chicken Wing,172390,chicken wings|ck wings|party wings,,
+chickpea-flour,Chickpea Flour,174288,garbanzo flour|garbanzo bean flour|gram flour|besan|besan flour,legumes,
+chilean-sea-bass,Chilean Sea Bass,2747668,patagonian toothfish|sea bass chilean|chilean seabass,fish,
+chinese-broccoli,Chinese Broccoli,2709657,gai lan|kai lan|chinese kale,,
+apple-granny-smith,Granny Smith Apple,168203,granny smith|green apple,,
+grape-juice,Grape Juice,173042,juice grape|concord grape juice|bottled grape juice|purple grape juice,,sulphites
+tomato-grape,Grape Tomato,321360,grape tomatoes,nightshades,
+grapefruit-juice,Grapefruit Juice,173039,juice grapefruit|grape fruit juice|fresh grapefruit juice|bottled grapefruit juice,,sulphites
+grapeseed-oil,Grapeseed Oil,171028,grape seed oil|grapeseed oils,,
+green-leaf-lettuce,Green Leaf Lettuce,169249,"green leaf|leaf lettuce|lettuce, green leaf",,
+green-plantain,Green Plantain,168215,"green plantains|unripe plantain|plantain, green",,
+green-tomato,Green Tomato,170456,"green tomatoes|unripe tomato|tomatoes, green",nightshades,
+grenadine,Grenadine,168088,grenadine syrup,,sulphites
+ground-bison,Ground Bison,174421,bison ground|ground buffalo|minced bison|bison mince,,
+ground-lamb,Ground Lamb,174370,"lamb mince|minced lamb|lamb, ground|grnd lamb",,
+ground-mace,Ground Mace,170927,mace ground|mace powder|powdered mace,,
+ground-veal,Ground Veal,175290,"veal mince|minced veal|veal, ground",,
+grouper,Grouper,171962,grouper fish|whole grouper|fresh grouper,fish,
+gruyere,Gruyere,171242,gruyere cheese|gruyère|swiss gruyere,milk,
+guava,Guava,173044,guavas|fresh guava|guava fruit,,
+haddock,Haddock,171964,haddock fish|whole haddock|fresh haddock,fish,
+hamburger-bun,Hamburger Bun,172796,"hamburger buns|burger buns|bun, hamburger",wheat|gluten_cereals,milk|egg|soy|sesame
+herring,Herring,175116,fresh herring|whole herring|herring fish,fish,
+hoisin-sauce,Hoisin Sauce,172886,hoisin,soy|wheat|gluten_cereals,sesame|fish
+honeydew-melon,Honeydew Melon,169911,"honeydew|melon, honeydew|green melon",,
+imitation-crab,Imitation Crab,174203,crab stick|crab sticks|surimi|krab|imitation crab meat,fish,shellfish|wheat|gluten_cereals|egg|soy
+italian-bread,Italian Bread,174913,"italian loaf|italian bread loaf|bread, italian",wheat|gluten_cereals,milk|soy|sesame
+jicama,Jicama,170073,jicama root|mexican turnip|yam bean,,
+kielbasa,Kielbasa,173879,kielbasa sausage|polish sausage|kielbasa sausages,allium,milk|soy|wheat|gluten_cereals|sulphites|mustard
+kimchi,Kimchi,170392,cabbage kimchi|napa kimchi|kim chee,allium,fish|shellfish|wheat|gluten_cereals|soy
+king-salmon,King Salmon,173688,"chinook salmon|king salmon fillet|salmon, king",fish,
+kohlrabi,Kohlrabi,168424,fresh kohlrabi|german turnip|kohlrabies,,
+lamb-loin,Lamb Loin,174319,loin of lamb|boneless lamb loin|lamb loin roast,,
+leg-of-lamb,Leg of Lamb,174311,lamb leg|lamb legs|boneless leg of lamb,,
+lemongrass,Lemongrass,168573,lemon grass|lemongrass stalk,,
+lima-bean,Lima Beans,168396,butter beans|fresh lima beans,legumes,
+lobster-meat,Lobster Meat,174209,picked lobster meat|cooked lobster meat|lobster claw meat,shellfish,
+lotus-root,Lotus Root,169250,lotus roots|renkon|fresh lotus root,,
+lychee,Lychee,169086,fresh lychee|litchi|lychee fruit|lichi|lychee nut,,
+mahi-mahi,Mahi Mahi,171959,mahi|dorado|dolphinfish|mahi mahi fillet,fish,
+maitake-mushroom,Maitake Mushroom,169403,maitake mushrooms|maitakes|hen of the woods,,
+blue-crab,Blue Crab,174204,whole blue crabs|blue crabs|maryland blue crabs,shellfish,
+blueberry-juice,Blueberry Juice,2709323,blue berry juice|blueberry fruit juice,,sulphites
+bluefin-tuna,Bluefin Tuna,173706,bluefin|bluefin tuna loin|bluefin loin,fish,
+bluefish,Bluefish,171949,whole bluefish|fresh bluefish,fish,
+bluefish-fillet,Bluefish Fillet,171949,bluefish filet|filet of bluefish|bluefish fillets,fish,
+chicken-breast-bone-in,Bone-In Chicken Breast,171474,"split chicken breast|chicken breasts bone in|chicken brst bone in|ck breast bone in|ck brst bone in|bone-in skin-on chicken breast|airline chicken breast|chicken breast, bone-in",,
+chicken-thigh-bone-in,Bone-In Chicken Thigh,172385,"bone-in skin-on chicken thigh|chicken thighs bone in skin on|ck thigh bone in skin on|chicken thigh bi so|skin-on chicken thigh|chicken thigh, bone-in skin-on",,
+leg-of-lamb-bone-in,Bone-In Leg of Lamb,174311,leg of lamb bone in|lamb leg bone in,,
+chicken-leg-boneless,Boneless Chicken Leg,173619,"boneless chicken legs|chicken legs boneless|bnls chicken leg|ck leg bnls|boneless leg meat|chicken leg, boneless",,
+chicken-thigh-boneless,Boneless Chicken Thigh,2646171,"boneless skinless chicken thigh|chicken thigh bnls|ck thigh bnls|bnls chicken thigh|chicken thighs boneless|bnls skls chicken thigh|chicken thigh, boneless",,
+bosc-pear,Bosc Pear,167778,bosc pears|brown pear,,
+boston-mackerel,Boston Mackerel,175119,atlantic mackerel|whole boston mackerel,fish,
+bourbon,Bourbon,174815,bourbon whiskey|kentucky bourbon,,gluten_cereals
+brandy,Brandy,2710699,brandy liquor|vs brandy,,sulphites
+bratwurst,Bratwurst,171622,bratwurst sausage|bratwursts|brats|brat sausage,,milk|wheat|gluten_cereals|sulphites|mustard|allium
+brazil-nut,Brazil Nut,170569,brazil nuts|brazilnut,tree_nuts,
+bread-and-butter-pickle,Bread and Butter Pickles,169378,sweet pickle chips,,mustard|sulphites|allium
+breadfruit,Breadfruit,171714,bread fruit|fresh breadfruit,,
+brie,Brie,172177,brie cheese|brie wheel|brie de meaux|double cream brie,milk,
+broccoli-rabe,Broccoli Rabe,170381,rapini|broccoli raab|rabe,,
+brown-rice-flour,Brown Rice Flour,168898,rice flour brown|whole grain rice flour,,
+buckwheat-flour,Buckwheat Flour,170687,buckwheat flours|soba flour|farine de sarrasin,,wheat|gluten_cereals
+buckwheat-groats,Buckwheat Groats,170685,buckwheat|kasha|whole buckwheat groats,,gluten_cereals
+burdock-root,Burdock Root,169974,burdock|gobo|burdock roots,,
+butterhead-lettuce,Butterhead Lettuce,168429,butter lettuce|butterhead,,
+cabernet-wine,Cabernet Sauvignon,174833,cabernet|red cabernet|cabernet wine,sulphites,
+calf-liver,Calf Liver,172534,calves liver|calf livers|veal liver,,
+camembert,Camembert,172178,camembert cheese|camembert wheel,milk,
+canadian-bacon,Canadian Bacon,167869,back bacon|peameal bacon|canadian style bacon,,sulphites|milk|celery|soy
+cane-syrup,Cane Syrup,167743,cane sugar syrup|sugarcane syrup|steen's cane syrup,,sulphites
+canned-apricot,Canned Apricot,171699,canned apricots|canned apricots in syrup|tinned apricots,stone_fruit,sulphites
+canned-black-eyed-pea,Canned Black-Eyed Peas,173760,canned black eye peas|black eye peas canned|tinned black eyed peas,legumes,
+canned-clam,Canned Clam,171976,canned clams|chopped clams canned|tinned clams|canned clams in brine,mollusks,
+canned-corn,Canned Corn,169214,canned corn kernels|tinned corn|whole kernel corn,,
+canned-green-chile,Canned Diced Green Chile,170426,canned diced green chilies|diced green chiles|canned green chilies|green chiles in can|hatch green chiles canned,nightshades,
+canned-great-northern-bean,Canned Great Northern Beans,175192,canned great northerns|great northern beans canned,legumes,
+canned-peach,Canned Peach,169112,canned peaches|canned peaches in syrup|tinned peaches,stone_fruit,sulphites
+canned-pear,Canned Pear,169939,canned pears|canned pears in syrup|tinned pears,,sulphites

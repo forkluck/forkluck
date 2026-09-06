@@ -1,0 +1,13 @@
+# Operations
+
+Deploy this repository separately from Forkluck. It needs its own PostgreSQL database, process user, HTTPS reverse proxy, worker, daily cleanup timer, and a restricted service-client secret.
+
+Production releases are immutable directories below `/opt/forkluck-connectors/releases`; `current` is switched only after configuration checks and migrations pass. Run `deploy/provision-connectors` as root once with a dedicated deployment public key and the `deploy/` directory, then configure the repository's deployment secrets. The web and worker units share code and a virtual environment but not the public application's process user, environment file, or database.
+
+Install `deploy/nginx/forkluck-connectors.conf` as its own enabled Nginx site after the shared certificate includes `connectors.forkluck.com`. On the hosted server the certificate is expanded with `certbot certonly --nginx --cert-name forkluck.com --expand` while retaining every existing domain. Run `nginx -t` before reloading. Keep Cloudflare in Full (strict) mode; the origin service remains bound to loopback and sends no browser CORS headers.
+
+Required environment: `CONNECTORS_DJANGO_SECRET_KEY`, `CONNECTORS_DATABASE_URL`, `CONNECTORS_ENCRYPTION_KEY` (64 hex chars), and one or more `ServiceClient` rows. `CONNECTORS_ALLOWED_SUBJECTS` can apply a global hosted-user gate; `CONNECTORS_PROVIDER_ALLOWLIST` is the required provider-specific JSON allowlist, such as `{"baldor":["uuid-1"]}`. A provider whose array is `["*"]` — for example `{"baldor":["*"]}` — is open to every subject, still behind `CONNECTORS_ALLOWED_SUBJECTS` where that gate is set. `CONNECTORS_PUBLIC_BASE_URL` must be the external HTTPS origin. `CONNECTORS_PROVIDER_RUN_GAP_SECONDS` (default `30`, zero or more) is the pause the worker keeps between consecutive runs of the same provider, so a burst of manual syncs reaches the supplier spaced out rather than back to back; `0` disables the pause.
+
+Rotate a service-client secret in place with `provision_service_client <id> <exact-callback-url> --rotate`, then immediately deploy the new secret to the public application. Existing connections remain bound to the same client row. Rotate the encryption key through a planned data rewrite; do not remove the old key before all stored envelopes are re-encrypted. Credentials, connection tokens, raw provider documents, URLs, cookies, and form values must never be placed in logs, metrics, or exception messages.
+
+The service must not send CORS headers. Probe `/healthz` for liveness, `/readyz` for database readiness, and scrape `/metrics` from a private network using a service client Basic credential. Alert on failed runs, stale running jobs, and rapid auth failures.

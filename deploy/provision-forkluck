@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+public_key="${1:-}"
+provision_files="${2:-}"
+
+if [[ ! -f "$public_key" ]]; then
+    echo "Public key file is required" >&2
+    exit 2
+fi
+if [[ ! -f "$provision_files/deploy-forkluck" ]]; then
+    echo "Provisioning files are required" >&2
+    exit 2
+fi
+
+if ! id forkluck >/dev/null 2>&1; then
+    useradd --system --home-dir /opt/forkluck --shell /usr/sbin/nologin forkluck
+fi
+if ! id forkluck-deploy >/dev/null 2>&1; then
+    useradd --create-home --shell /bin/bash forkluck-deploy
+fi
+
+install -d -o forkluck -g forkluck /opt/forkluck /opt/forkluck/releases /opt/forkluck/shared
+install -d -o forkluck-deploy -g forkluck-deploy /home/forkluck-deploy/releases
+install -d -m 700 -o forkluck-deploy -g forkluck-deploy /home/forkluck-deploy/.ssh
+install -m 600 -o forkluck-deploy -g forkluck-deploy \
+    "$public_key" /home/forkluck-deploy/.ssh/authorized_keys
+install -d -m 750 -o root -g forkluck /etc/forkluck
+
+database_password="$(openssl rand -hex 24)"
+if ! runuser -u postgres -- psql -tAc \
+    "SELECT 1 FROM pg_roles WHERE rolname='forkluck'" | grep -qx 1; then
+    runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c \
+        "CREATE ROLE forkluck LOGIN PASSWORD '$database_password'"
+elif [[ ! -f /etc/forkluck/backend.env ]]; then
+    runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c \
+        "ALTER ROLE forkluck PASSWORD '$database_password'"
+fi
+
+if ! runuser -u postgres -- psql -tAc \
+    "SELECT 1 FROM pg_database WHERE datname='forkluck_prod'" | grep -qx 1; then
+    runuser -u postgres -- createdb --owner=forkluck forkluck_prod
+fi
+
+if [[ ! -f /etc/forkluck/backend.env ]]; then
+    django_secret="$(openssl rand -hex 48)"
+    internal_secret="$(openssl rand -hex 32)"
+    token_encryption_key="$(openssl rand -hex 32)"
+    umask 027
+    {
+        printf 'DATABASE_URL=postgresql://forkluck:%s@127.0.0.1:5432/forkluck_prod\n' "$database_password"
+        printf 'DJANGO_SECRET_KEY=%s\n' "$django_secret"
+        printf 'DJANGO_ALLOWED_HOSTS=forkluck.com,www.forkluck.com,app.forkluck.com,localhost,127.0.0.1\n'
+        printf 'DJANGO_CSRF_TRUSTED_ORIGINS=https://forkluck.com,https://www.forkluck.com,https://app.forkluck.com\n'
+        printf 'DJANGO_SECURE_COOKIES=true\n'
+        printf 'DJANGO_DEBUG=false\n'
+        printf 'FORKLUCK_INTERNAL_SECRET=%s\n' "$internal_secret"
+        printf 'FORKLUCK_APP_ORIGIN=https://app.forkluck.com\n'
+        # Encrypts stored Square/Shopify OAuth tokens (token_crypto.py).
+        printf 'FORKLUCK_TOKEN_ENCRYPTION_KEY=%s\n' "$token_encryption_key"
+        # Optional generic HTTPS connector service. Supplier credentials and
+        # provider code never live on this host through these settings.
+        printf 'FORKLUCK_CONNECTOR_SERVICE_URL=\n'
+        printf 'FORKLUCK_CONNECTOR_CLIENT_ID=\n'
+        printf 'FORKLUCK_CONNECTOR_CLIENT_SECRET=\n'
+        # Fill these in from the Square Developer / Shopify Partner dashboards.
+        printf 'SQUARE_APPLICATION_ID=\n'
+        printf 'SQUARE_APPLICATION_SECRET=\n'
+        printf 'SQUARE_ENVIRONMENT=production\n'
+        printf 'SHOPIFY_API_KEY=\n'
+        printf 'SHOPIFY_API_SECRET=\n'
+        # Optional USDA FoodData Central search used by nutrition and Primo.
+        printf 'FDC_API_KEY=\n'
+    } > /etc/forkluck/backend.env
+    chown root:forkluck /etc/forkluck/backend.env
+    chmod 640 /etc/forkluck/backend.env
+fi
+
+# Env keys added after a host was first provisioned never re-enter the
+# first-install block above, so top them up idempotently here. Values are
+# only written when the key is absent — existing settings are never touched.
+ensure_backend_env() {
+    local key="$1" value="$2"
+    if ! grep -q "^${key}=" /etc/forkluck/backend.env; then
+        printf '%s=%s\n' "$key" "$value" >> /etc/forkluck/backend.env
+    fi
+}
+ensure_backend_env FORKLUCK_APP_ORIGIN https://app.forkluck.com
+# Encrypts stored Square/Shopify tokens (token_crypto.py). Losing this key
+# bricks every stored connection — never regenerate it once written.
+ensure_backend_env FORKLUCK_TOKEN_ENCRYPTION_KEY "$(openssl rand -hex 32)"
+ensure_backend_env FORKLUCK_CONNECTOR_SERVICE_URL ""
+ensure_backend_env FORKLUCK_CONNECTOR_CLIENT_ID ""
+ensure_backend_env FORKLUCK_CONNECTOR_CLIENT_SECRET ""
+ensure_backend_env SQUARE_APPLICATION_ID ""
+ensure_backend_env SQUARE_APPLICATION_SECRET ""
+ensure_backend_env SQUARE_ENVIRONMENT production
+ensure_backend_env SHOPIFY_API_KEY ""
+ensure_backend_env SHOPIFY_API_SECRET ""
+ensure_backend_env FDC_API_KEY ""
+# Billing stays off until all five are filled in; see docs/DEPLOYMENT.md.
+ensure_backend_env STRIPE_SECRET_KEY ""
+ensure_backend_env STRIPE_WEBHOOK_SECRET ""
+ensure_backend_env STRIPE_PRICE_ID ""
+ensure_backend_env STRIPE_PRODUCT_ID ""
+ensure_backend_env STRIPE_WEBHOOK_ENDPOINT_ID ""
+# Production refuses to boot until the operator supplies the Azure
+# Communication Services connection string. The verification flag is safe to
+# enable immediately; no session is granted until a signup code is consumed.
+ensure_backend_env ACS_CONNECTION_STRING ""
+ensure_backend_env FORKLUCK_REQUIRE_EMAIL_VERIFICATION true
+# Optional Ghost newsletter sync; both empty leaves membership untouched.
+ensure_backend_env GHOST_ADMIN_URL ""
+ensure_backend_env GHOST_ADMIN_API_KEY ""
+
+if [[ ! -f /etc/forkluck/frontend.env ]]; then
+    internal_secret="$(sed -n 's/^FORKLUCK_INTERNAL_SECRET=//p' /etc/forkluck/backend.env)"
+    umask 027
+    {
+        printf 'DJANGO_INTERNAL_ORIGIN=http://127.0.0.1:8001\n'
+        printf 'DJANGO_PUBLIC_ORIGIN=http://127.0.0.1:8001\n'
+        printf 'FORKLUCK_INTERNAL_SECRET=%s\n' "$internal_secret"
+        printf '# Invoices / Drive import — add by hand, then systemctl restart\n'
+        printf '# forkluck-next. No server-side AI key: standard invoices parse\n'
+        printf '# from the PDF text layer for free, and AI fallback runs on each\n'
+        printf '# user'"'"'s own key stored in-app.\n'
+        printf '# GOOGLE_OAUTH_CLIENT_ID=       (Drive import; public value)\n'
+        printf '# GOOGLE_PICKER_API_KEY=        (Drive import; referrer-restricted)\n'
+        printf '# GOOGLE_CLOUD_PROJECT_NUMBER=  (Drive import; Picker setAppId)\n'
+        printf '# Primo — server-only key; leaving it empty hides the feature.\n'
+        printf 'QWEN_API_KEY=\n'
+        printf 'QWEN_BASE_URL=https://dashscope-us.aliyuncs.com/compatible-mode/v1\n'
+        printf 'QWEN_MODEL=qwen3.7-plus\n'
+    } > /etc/forkluck/frontend.env
+    chown root:forkluck /etc/forkluck/frontend.env
+    chmod 640 /etc/forkluck/frontend.env
+fi
+
+ensure_frontend_env() {
+    local key="$1" value="$2"
+    if ! grep -q "^${key}=" /etc/forkluck/frontend.env; then
+        printf '%s=%s\n' "$key" "$value" >> /etc/forkluck/frontend.env
+    fi
+}
+ensure_frontend_env QWEN_API_KEY ""
+ensure_frontend_env QWEN_BASE_URL https://dashscope-us.aliyuncs.com/compatible-mode/v1
+ensure_frontend_env QWEN_MODEL qwen3.7-plus
+
+install -m 755 "$provision_files/deploy-forkluck" /usr/local/sbin/deploy-forkluck
+install -m 644 "$provision_files/forkluck-django.service" \
+    /etc/systemd/system/forkluck-django.service
+install -m 644 "$provision_files/forkluck-pos-worker.service" \
+    /etc/systemd/system/forkluck-pos-worker.service
+install -m 644 "$provision_files/forkluck-connector-worker.service" \
+    /etc/systemd/system/forkluck-connector-worker.service
+install -m 644 "$provision_files/forkluck-next.service" \
+    /etc/systemd/system/forkluck-next.service
+
+printf '%s\n' \
+    'forkluck-deploy ALL=(root) NOPASSWD: /usr/local/sbin/deploy-forkluck *' \
+    > /etc/sudoers.d/forkluck-deploy
+chmod 440 /etc/sudoers.d/forkluck-deploy
+visudo -cf /etc/sudoers.d/forkluck-deploy
+
+systemctl daemon-reload
+systemctl enable \
+    forkluck-django.service \
+    forkluck-pos-worker.service \
+    forkluck-connector-worker.service \
+    forkluck-next.service
+
+echo "Forkluck server foundation is ready"

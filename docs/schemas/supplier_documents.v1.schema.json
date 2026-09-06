@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forkluck.com/schemas/supplier_documents.v1.schema.json",
+  "title": "Forkluck supplier_documents:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pageId", "documents", "done", "nextCursor", "progress"],
+  "properties": {
+    "pageId": {"type": "string", "minLength": 1, "maxLength": 128},
+    "nextCursor": {"type": ["object", "null"]},
+    "done": {"type": "boolean"},
+    "progress": {"type": "object"},
+    "documents": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {"$ref": "#/$defs/document"}
+    }
+  },
+  "$defs": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supplier", "supplierName", "documentType", "invoiceNumber", "invoiceDate", "totalCents", "currencyCode", "fileName", "lines"],
+      "properties": {
+        "supplier": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9][a-z0-9_-]*$"},
+        "supplierName": {"type": "string", "minLength": 1, "maxLength": 120},
+        "documentType": {"enum": ["invoice", "credit_memo", "receipt", "refund"]},
+        "invoiceNumber": {"type": "string", "maxLength": 64},
+        "invoiceDate": {"type": "string", "format": "date"},
+        "totalCents": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+        "currencyCode": {"type": "string", "pattern": "^[A-Z]{3}$"},
+        "fileName": {"type": "string", "minLength": 1, "maxLength": 255},
+        "lines": {"type": "array", "maxItems": 500, "items": {"$ref": "#/$defs/line"}}
+      }
+    },
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "lineAmountCents"],
+      "properties": {
+        "sku": {"type": ["string", "null"], "maxLength": 120},
+        "description": {"type": "string", "minLength": 1, "maxLength": 240},
+        "quantity": {"type": ["number", "null"]},
+        "unit": {"type": ["string", "null"], "maxLength": 32},
+        "packSize": {"type": ["string", "null"], "maxLength": 120},
+        "unitPriceCents": {"type": ["integer", "null"], "minimum": -2147483648, "maximum": 2147483647},
+        "lineAmountCents": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+        "sourcePayload": {"type": "object"}
+      }
+    }
+  }
+}

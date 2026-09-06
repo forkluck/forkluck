@@ -1,0 +1,699 @@
+{
+  "comment": "Real pasted ingredient lines with the one reading both parsers must produce. Read by tests/recipe-parse.test.ts and backend/forkluck/test_recipe_parse_parity.py, so a form fixed on one side cannot drift on the other. Every line here parses with no ingredients in hand, so a `grams` is asserted only where the text itself states the mass: an unmatched name takes no weight from the density chart, a profile each-weight or a bare number. `unit` is the normalized unit, null when the line carried none and nothing matched it; `amount` is the entered quantity, the low end of a written `range`. `kind` marks a heading or a note, `unmeasured` an ingredient the recipe gave no amount for, and both reach no cost in either engine. A skipped line reports its kind and whether the loss affects a price.",
+  "lines": [
+    {
+      "line": "620 Bread Flour",
+      "expect": {
+        "unit": null,
+        "name": "Bread Flour",
+        "amount": 620,
+        "grams": null
+      }
+    },
+    {
+      "line": "3 eggs",
+      "expect": {
+        "unit": null,
+        "name": "eggs",
+        "amount": 3,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 large Eggs",
+      "expect": {
+        "unit": null,
+        "name": "large Eggs",
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 extra large egg",
+      "expect": {
+        "unit": null,
+        "name": "extra large egg",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 jumbo Eggs",
+      "expect": {
+        "unit": null,
+        "name": "jumbo Eggs",
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 medium onion",
+      "expect": {
+        "unit": null,
+        "name": "medium onion",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 ea Eggs",
+      "expect": {
+        "unit": "each",
+        "name": "Eggs",
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "24 pcs Scallion Greens",
+      "expect": {
+        "unit": "each",
+        "name": "Scallion Greens",
+        "amount": 24,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 piece Eggplant",
+      "expect": {
+        "unit": "each",
+        "name": "Eggplant",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 pc Lemons",
+      "expect": {
+        "unit": "each",
+        "name": "Lemons",
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "3 pieces Focaccia",
+      "expect": {
+        "unit": "each",
+        "name": "Focaccia",
+        "amount": 3,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup Milk",
+      "expect": {
+        "unit": "cup",
+        "name": "Milk",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 1/2 cups water",
+      "expect": {
+        "unit": "cup",
+        "name": "water",
+        "amount": 1.5,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 1/2 cups water",
+      "expect": {
+        "unit": "cup",
+        "name": "water",
+        "amount": 1.5,
+        "grams": null
+      }
+    },
+    {
+      "line": "1½ cups milk",
+      "expect": {
+        "unit": "cup",
+        "name": "milk",
+        "amount": 1.5,
+        "grams": null
+      }
+    },
+    {
+      "line": "1⁄2 cup Milk",
+      "expect": {
+        "unit": "cup",
+        "name": "Milk",
+        "amount": 0.5,
+        "grams": null
+      }
+    },
+    {
+      "line": "​1 cup Milk",
+      "expect": {
+        "unit": "cup",
+        "name": "Milk",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "1,500 g flour",
+      "expect": {
+        "unit": "g",
+        "name": "flour",
+        "grams": 1500
+      }
+    },
+    {
+      "line": "1,5 kg Sugar",
+      "expect": {
+        "skipped": true,
+        "kind": "unconvertible",
+        "affectsPricing": true
+      }
+    },
+    {
+      "line": "1 cup sifted flour",
+      "expect": {
+        "unit": "cup",
+        "name": "sifted flour",
+        "baseName": "sifted flour",
+        "qualifier": null,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup flour, sifted",
+      "expect": {
+        "unit": "cup",
+        "name": "flour, sifted",
+        "qualifier": "sifted",
+        "grams": null
+      }
+    },
+    {
+      "line": "50 g almond sliced",
+      "expect": {
+        "unit": "g",
+        "name": "almond sliced",
+        "baseName": "almond sliced",
+        "qualifier": null,
+        "grams": 50
+      }
+    },
+    {
+      "line": "50 g sliced almond",
+      "expect": {
+        "unit": "g",
+        "name": "sliced almond",
+        "baseName": "sliced almond",
+        "qualifier": null,
+        "grams": 50
+      }
+    },
+    {
+      "line": "50 g almond, sliced",
+      "expect": {
+        "unit": "g",
+        "name": "almond, sliced",
+        "baseName": "almond",
+        "qualifier": "sliced",
+        "grams": 50
+      }
+    },
+    {
+      "line": "1 cup packed brown sugar",
+      "expect": {
+        "unit": "cup",
+        "name": "packed brown sugar",
+        "baseName": "packed brown sugar",
+        "qualifier": null,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup brown sugar, packed",
+      "expect": {
+        "unit": "cup",
+        "name": "brown sugar, packed",
+        "qualifier": "packed",
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup melted butter",
+      "expect": {
+        "unit": "cup",
+        "name": "melted butter",
+        "baseName": "melted butter",
+        "qualifier": null,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup butter, melted",
+      "expect": {
+        "unit": "cup",
+        "name": "butter, melted",
+        "qualifier": "melted",
+        "grams": null
+      }
+    },
+    {
+      "line": "1/2 tsp salt, or to taste",
+      "expect": {
+        "unit": "tsp",
+        "name": "salt, or to taste",
+        "qualifier": null,
+        "amount": 0.5,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 tablespoons (30ml) vegetable oil",
+      "expect": {
+        "unit": "tbsp",
+        "name": "(30ml) vegetable oil",
+        "qualifier": null,
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 cup Milk (240 ml)",
+      "expect": {
+        "unit": "cup",
+        "name": "Milk (240 ml)",
+        "qualifier": null,
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 (14 oz) can diced tomatoes",
+      "expect": {
+        "unit": "can",
+        "name": "diced tomatoes",
+        "grams": 396.89
+      }
+    },
+    {
+      "line": "2 cups (120 g each) Flour",
+      "expect": {
+        "unit": "cup",
+        "name": "Flour",
+        "grams": 240
+      }
+    },
+    {
+      "line": "2 400 g cans Diced tomatoes",
+      "expect": {
+        "unit": "can",
+        "name": "Diced tomatoes",
+        "grams": 800
+      }
+    },
+    {
+      "line": "2 x 400 g cans Chopped Tomatoes",
+      "expect": {
+        "unit": "can",
+        "name": "Chopped Tomatoes",
+        "grams": 800
+      }
+    },
+    {
+      "line": "2 5 g packets Yeast",
+      "expect": {
+        "unit": "packet",
+        "name": "Yeast",
+        "grams": 10
+      }
+    },
+    {
+      "line": "2 pkg Yeast",
+      "expect": {
+        "unit": "packet",
+        "name": "Yeast",
+        "grams": null
+      }
+    },
+    {
+      "line": "2 pkgs Yeast",
+      "expect": {
+        "unit": "packet",
+        "name": "Yeast",
+        "grams": null
+      }
+    },
+    {
+      "line": "2 T Sugar",
+      "expect": {
+        "unit": null,
+        "name": "T Sugar",
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "8 oz milk",
+      "expect": {
+        "unit": "oz",
+        "name": "milk",
+        "grams": 226.8,
+        "reviewFlag": false
+      }
+    },
+    {
+      "line": "1 lb Butter",
+      "expect": {
+        "unit": "lb",
+        "name": "Butter",
+        "grams": 453.59,
+        "reviewFlag": false
+      }
+    },
+    {
+      "line": "100 g milk",
+      "expect": {
+        "unit": "g",
+        "name": "milk",
+        "amount": 100,
+        "grams": 100
+      }
+    },
+    {
+      "line": "Flour 250 g",
+      "expect": {
+        "unit": "g",
+        "name": "Flour",
+        "grams": 250
+      }
+    },
+    {
+      "line": "kosher salt 14",
+      "expect": {
+        "unit": null,
+        "name": "kosher salt",
+        "amount": 14,
+        "grams": null
+      }
+    },
+    {
+      "line": "2 tablespoons plus 1 teaspoon sugar",
+      "expect": {
+        "skipped": true,
+        "kind": "unconvertible",
+        "affectsPricing": true
+      }
+    },
+    {
+      "line": "2 1/2 cups + 2 tbsp bread flour",
+      "expect": {
+        "skipped": true,
+        "kind": "unconvertible",
+        "affectsPricing": true
+      }
+    },
+    {
+      "line": "1-2 tbsp olive oil",
+      "expect": {
+        "unit": "tbsp",
+        "name": "olive oil",
+        "amount": 1,
+        "grams": null,
+        "range": {
+          "low": 1,
+          "high": 2
+        },
+        "noteText": "(1–2 tbsp)"
+      }
+    },
+    {
+      "line": "20-25 min",
+      "expect": {
+        "skipped": true,
+        "kind": "prose",
+        "affectsPricing": false
+      }
+    },
+    {
+      "line": "180-200 C, fan",
+      "expect": {
+        "skipped": true,
+        "kind": "prose",
+        "affectsPricing": false
+      }
+    },
+    {
+      "line": "20-25 minutes at 350F",
+      "expect": {
+        "skipped": true,
+        "kind": "prose",
+        "affectsPricing": false
+      }
+    },
+    {
+      "line": "1-2 c flour",
+      "expect": {
+        "unit": "cup",
+        "name": "flour",
+        "amount": 1,
+        "grams": null,
+        "range": {
+          "low": 1,
+          "high": 2
+        },
+        "noteText": "(1–2 c)"
+      }
+    },
+    {
+      "line": "▢ 620 Bread Flour",
+      "expect": {
+        "unit": null,
+        "name": "Bread Flour",
+        "qualifier": null,
+        "amount": 620,
+        "grams": null
+      }
+    },
+    {
+      "line": "▢1 pound ground beef",
+      "expect": {
+        "unit": "lb",
+        "name": "ground beef",
+        "qualifier": null,
+        "grams": 453.59
+      }
+    },
+    {
+      "line": "☐ 1 cup Milk",
+      "expect": {
+        "unit": "cup",
+        "name": "Milk",
+        "qualifier": null,
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "□ 2 cups water",
+      "expect": {
+        "unit": "cup",
+        "name": "water",
+        "qualifier": null,
+        "amount": 2,
+        "grams": null
+      }
+    },
+    {
+      "line": "✓ 1 tablespoon olive oil",
+      "expect": {
+        "unit": "tbsp",
+        "name": "olive oil",
+        "qualifier": null,
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "6 cloves garlic, pressed or minced",
+      "expect": {
+        "unit": "clove",
+        "name": "garlic, pressed or minced",
+        "qualifier": "pressed or minced",
+        "grams": null
+      }
+    },
+    {
+      "line": "8 oz mushrooms, cleaned + sliced",
+      "expect": {
+        "unit": "oz",
+        "name": "mushrooms, cleaned + sliced",
+        "qualifier": "cleaned sliced",
+        "grams": 226.8
+      }
+    },
+    {
+      "line": "2 lb tomatoes, peeled and crushed",
+      "expect": {
+        "unit": "lb",
+        "name": "tomatoes, peeled and crushed",
+        "qualifier": "peeled and crushed",
+        "grams": 907.18
+      }
+    },
+    {
+      "line": "1 cup flour, sifted (room temperature)",
+      "expect": {
+        "unit": "cup",
+        "name": "flour, sifted (room temperature)",
+        "qualifier": "sifted",
+        "grams": null
+      }
+    },
+    {
+      "line": "Drizzle of avocado oil",
+      "expect": {
+        "unmeasured": true,
+        "unit": "drizzle",
+        "name": "avocado oil",
+        "baseName": "avocado oil",
+        "grams": null
+      }
+    },
+    {
+      "line": "Filling",
+      "expect": {
+        "skipped": true,
+        "kind": "prose",
+        "affectsPricing": false
+      }
+    },
+    {
+      "line": "1 chicken bouillon cube",
+      "expect": {
+        "unit": null,
+        "name": "chicken bouillon cube",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "1 tbsp all purpose flour",
+      "expect": {
+        "unit": "tbsp",
+        "name": "all purpose flour",
+        "amount": 1,
+        "grams": null
+      }
+    },
+    {
+      "line": "3 1/2 to 4 cups all-purpose flour",
+      "expect": {
+        "unit": "cup",
+        "name": "all-purpose flour",
+        "amount": 3.5,
+        "grams": null,
+        "range": {
+          "low": 3.5,
+          "high": 4
+        },
+        "noteText": "(3 1/2–4 cups)"
+      }
+    },
+    {
+      "line": "Dough:",
+      "expect": {
+        "kind": "header",
+        "text": "Dough"
+      }
+    },
+    {
+      "line": "# Choc chips",
+      "expect": {
+        "kind": "header",
+        "text": "Choc chips"
+      }
+    },
+    {
+      "line": "Note: chill 1 hr",
+      "expect": {
+        "kind": "note",
+        "text": "chill 1 hr"
+      }
+    },
+    {
+      "line": "Kosher salt, to taste",
+      "expect": {
+        "unmeasured": true,
+        "unit": null,
+        "name": "Kosher salt, to taste",
+        "baseName": "Kosher salt",
+        "noteText": "to taste",
+        "grams": null
+      }
+    },
+    {
+      "line": "extra-virgin olive oil, for brushing",
+      "expect": {
+        "unmeasured": true,
+        "unit": null,
+        "name": "extra-virgin olive oil, for brushing",
+        "baseName": "extra-virgin olive oil",
+        "noteText": "for brushing",
+        "grams": null
+      }
+    },
+    {
+      "line": "garlic cloves, minced (optional)",
+      "expect": {
+        "unmeasured": true,
+        "unit": null,
+        "name": "garlic cloves, minced (optional)",
+        "baseName": "garlic cloves",
+        "noteText": "minced, optional",
+        "qualifier": "minced",
+        "grams": null
+      }
+    },
+    {
+      "line": "1 Tablespoon (13g) unsalted butter",
+      "expect": {
+        "unit": "tbsp",
+        "name": "unsalted butter",
+        "amount": 1,
+        "grams": 13,
+        "equivalent": {
+          "amount": 13,
+          "unit": "g"
+        },
+        "noteText": "13 g"
+      }
+    },
+    {
+      "line": "(1lb/454g) shredded mozzarella cheese",
+      "expect": {
+        "unit": "lb",
+        "name": "shredded mozzarella cheese",
+        "baseName": "shredded mozzarella cheese",
+        "amount": 1,
+        "grams": 453.59,
+        "qualifier": null,
+        "equivalent": {
+          "amount": 454,
+          "unit": "g"
+        },
+        "noteText": "454 g"
+      }
+    },
+    {
+      "line": "(30ml) extra-virgin olive oil, plus more for greasing",
+      "expect": {
+        "unit": "ml",
+        "name": "extra-virgin olive oil, plus more for greasing",
+        "baseName": "extra-virgin olive oil",
+        "amount": 30,
+        "grams": null,
+        "noteText": "plus more for greasing"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1948 @@
+id,name,synonyms,allergens,verify,preparation,yield,grams,volume,each,estimated,source
+water,Water,,,,,,237,1 cup,,no,si:density
+onion,Onion,onions|yellow onion|brown onion,allium,,,,110,,1 each,no,usda:170000
+onion,,,,,chopped,,160,1 cup,,no,usda:170000
+onion,,,,,sliced,,115,1 cup,,no,usda:170000
+onion,,,,,chopped,,10,1 tbsp,,no,usda:170000
+onion,,,,,large,,150,,1 each,no,usda:170000
+onion,,,,,large,,38,,1 slice,no,usda:170000
+onion,,,,,medium,,110,,1 each,no,usda:170000
+onion,,,,,medium,,14,,1 slice,no,usda:170000
+onion,,,,,small,,70,,1 each,no,usda:170000
+shallot,Shallot,,allium,,,,10,1 tbsp,,yes,usda:170499
+shallot,,,,,chopped,,10,1 tbsp,,no,usda:170499
+scallion,Scallion,green onion|spring onion,allium,,,,15,,1 each,no,usda:170005
+scallion,,,,,chopped,,100,1 cup,,no,usda:170005
+scallion,,,,,chopped,,6,1 tbsp,,no,usda:170005
+scallion,,,,,large,,25,,1 each,no,usda:170005
+scallion,,,,,medium,,15,,1 each,no,usda:170005
+scallion,,,,,small,,5,,1 each,no,usda:170005
+leek,Leek,,allium,,,,89,1 cup,,no,usda:169246
+leek,,,,,,,6,,1 slice,no,usda:169246
+garlic,Garlic,garlic clove|fresh garlic,allium,,,,136,1 cup,,no,usda:169230
+garlic,,,,,,,2.8,1 tsp,,no,usda:169230
+garlic,,,,,,,3,,1 clove,no,usda:169230
+carrot,Carrot,carrots,,,,,61,,1 each,no,usda:170393
+carrot,,,,,,,3,,1 slice,no,usda:170393
+carrot,,,,,chopped,,128,1 cup,,no,usda:170393
+carrot,,,,,grated,,110,1 cup,,no,usda:170393
+carrot,,,,,large,,72,,1 each,no,usda:170393
+carrot,,,,,medium,,61,,1 each,no,usda:170393
+carrot,,,,,small,,50,,1 each,no,usda:170393
+celery,Celery,celery stalk,celery,,,,40,,1 stalk,no,usda:169988
+celery,,,,,,,7.5,1 tbsp,,no,usda:169988
+celery,,,,,chopped,,101,1 cup,,no,usda:169988
+celery,,,,,large,,64,,1 stalk,no,usda:169988
+celery,,,,,medium,,40,,1 stalk,no,usda:169988
+celery,,,,,small,,17,,1 stalk,no,usda:169988
+potato,Potato,potatoes|russet potato,nightshades,,,,213,,1 each,no,usda:170026
+potato,,,,,diced,,75,0.5 cup,,no,usda:170026
+potato,,,,,large,,369,,1 each,no,usda:170026
+potato,,,,,medium,,213,,1 each,no,usda:170026
+potato,,,,,small,,170,,1 each,no,usda:170026
+sweet-potato,Sweet Potato,sweet potatoes|yam,,,,,133,1 cup,,yes,usda:168482
+sweet-potato,,,,,diced,,133,1 cup,,no,usda:168482
+tomato,Tomato,tomatoes|fresh tomato,nightshades,,,,123,,1 each,no,usda:170457
+tomato,,,,,chopped,,180,1 cup,,no,usda:170457
+tomato,,,,,large,,182,,1 each,no,usda:170457
+tomato,,,,,medium,,123,,1 each,no,usda:170457
+tomato,,,,,medium,,20,,1 slice,no,usda:170457
+tomato,,,,,small,,91,,1 each,no,usda:170457
+tomato-puree,Tomato Puree,crushed tomatoes|canned tomato puree,nightshades,,,,250,1 cup,,no,usda:170460
+tomato-paste,Tomato Paste,concentrated tomato paste,nightshades,,,,66,0.25 cup,,no,usda:170459
+tomato-paste,,,,,,,16,1 tbsp,,no,usda:170459
+tomato-sauce,Tomato Sauce,,nightshades,allium,,,245,1 cup,,no,usda:170054
+cucumber,Cucumber,,,,,,52,0.5 cup,,yes,usda:168409
+cucumber,,,,,sliced,,52,0.5 cup,,no,usda:168409
+zucchini,Zucchini,courgette,,,,,196,,1 each,no,usda:169291
+zucchini,,,,,,,9.9,,1 slice,no,usda:169291
+zucchini,,,,,chopped,,124,1 cup,,no,usda:169291
+zucchini,,,,,sliced,,113,1 cup,,no,usda:169291
+zucchini,,,,,large,,323,,1 each,no,usda:169291
+zucchini,,,,,medium,,196,,1 each,no,usda:169291
+zucchini,,,,,small,,118,,1 each,no,usda:169291
+yellow-squash,Yellow Squash,,,,,,127,1 cup,,yes,usda:168464
+yellow-squash,,,,,sliced,,127,1 cup,,no,usda:168464
+butternut-squash,Butternut Squash,,,,,,140,1 cup,,yes,usda:169295
+butternut-squash,,,,,diced,,140,1 cup,,no,usda:169295
+acorn-squash,Acorn Squash,,,,,,140,1 cup,,yes,usda:168472
+acorn-squash,,,,,diced,,140,1 cup,,no,usda:168472
+pumpkin,Pumpkin,,,,,,116,1 cup,,no,usda:168448
+eggplant,Eggplant,aubergine,nightshades,,,,82,1 cup,,yes,usda:169228
+eggplant,,,,,diced,,82,1 cup,,no,usda:169228
+bell-pepper-red,Red Bell Pepper,red pepper|red capsicum,nightshades,,,,119,,1 each,no,usda:170108
+bell-pepper-red,,,,,,,9.3,1 tbsp,,no,usda:170108
+bell-pepper-red,,,,,chopped,,149,1 cup,,no,usda:170108
+bell-pepper-red,,,,,sliced,,92,1 cup,,no,usda:170108
+bell-pepper-red,,,,,large,,164,,1 each,no,usda:170108
+bell-pepper-red,,,,,medium,,119,,1 each,no,usda:170108
+bell-pepper-red,,,,,small,,74,,1 each,no,usda:170108
+bell-pepper-green,Green Bell Pepper,green pepper|green capsicum,nightshades,,,,119,,1 each,no,usda:170427
+bell-pepper-green,,,,,,,9.3,1 tbsp,,no,usda:170427
+bell-pepper-green,,,,,chopped,,149,1 cup,,no,usda:170427
+bell-pepper-green,,,,,sliced,,92,1 cup,,no,usda:170427
+bell-pepper-green,,,,,large,,164,,1 each,no,usda:170427
+bell-pepper-green,,,,,medium,,119,,1 each,no,usda:170427
+bell-pepper-green,,,,,small,,74,,1 each,no,usda:170427
+jalapeno,Jalapeno Pepper,jalapeno chile,nightshades,,,,14,,1 each,no,usda:168576
+jalapeno,,,,,sliced,,90,1 cup,,no,usda:168576
+serrano,Serrano Pepper,serrano chile,nightshades,,,,6.1,,1 each,no,usda:169395
+serrano,,,,,chopped,,105,1 cup,,no,usda:169395
+broccoli,Broccoli,,,,,,608,,1 bunch,no,usda:170379
+broccoli,,,,,,,151,,1 stalk,no,usda:170379
+broccoli,,,,,chopped,,91,1 cup,,no,usda:170379
+cauliflower,Cauliflower,,,,,,588,,1 head,no,usda:169986
+cauliflower,,,,,chopped,,107,1 cup,,no,usda:169986
+cauliflower,,,,,large,,840,,1 head,no,usda:169986
+cauliflower,,,,,medium,,588,,1 head,no,usda:169986
+cauliflower,,,,,small,,265,,1 head,no,usda:169986
+cabbage,Cabbage,,,,,,908,,1 head,no,usda:169975
+cabbage,,,,,,,15,,1 leaf,no,usda:169975
+cabbage,,,,,chopped,,89,1 cup,,no,usda:169975
+cabbage,,,,,shredded,,70,1 cup,,no,usda:169975
+cabbage,,,,,large,,1248,,1 head,no,usda:169975
+cabbage,,,,,large,,33,,1 leaf,no,usda:169975
+cabbage,,,,,medium,,908,,1 head,no,usda:169975
+cabbage,,,,,medium,,23,,1 leaf,no,usda:169975
+cabbage,,,,,small,,714,,1 head,no,usda:169975
+red-cabbage,Red Cabbage,,,,,,839,,1 head,no,usda:169977
+red-cabbage,,,,,,,23,,1 leaf,no,usda:169977
+red-cabbage,,,,,chopped,,89,1 cup,,no,usda:169977
+red-cabbage,,,,,shredded,,70,1 cup,,no,usda:169977
+red-cabbage,,,,,large,,1134,,1 head,no,usda:169977
+red-cabbage,,,,,medium,,839,,1 head,no,usda:169977
+red-cabbage,,,,,small,,567,,1 head,no,usda:169977
+napa-cabbage,Napa Cabbage,,,,,,76,1 cup,,yes,usda:169979
+napa-cabbage,,,,,shredded,,76,1 cup,,no,usda:169979
+brussels-sprouts,Brussels Sprouts,,,,,,88,1 cup,,no,usda:170383
+kale,Kale,,,,,,21,1 cup,,no,usda:168421
+spinach,Spinach,,,,,,30,1 cup,,no,usda:168462
+spinach,,,,,,,340,,1 bunch,no,usda:168462
+spinach,,,,,,,10,,1 leaf,no,usda:168462
+arugula,Arugula,rocket,,,,,10,0.5 cup,,no,usda:169387
+arugula,,,,,,,2,,1 leaf,no,usda:169387
+romaine,Romaine Lettuce,cos lettuce,,,,,626,,1 head,no,usda:169247
+romaine,,,,,shredded,,47,1 cup,,no,usda:169247
+iceberg-lettuce,Iceberg Lettuce,,,,,,539,,1 head,no,usda:169248
+iceberg-lettuce,,,,,chopped,,57,1 cup,,no,usda:169248
+iceberg-lettuce,,,,,shredded,,72,1 cup,,no,usda:169248
+iceberg-lettuce,,,,,large,,755,,1 head,no,usda:169248
+iceberg-lettuce,,,,,large,,15,,1 leaf,no,usda:169248
+iceberg-lettuce,,,,,medium,,539,,1 head,no,usda:169248
+iceberg-lettuce,,,,,medium,,8,,1 leaf,no,usda:169248
+iceberg-lettuce,,,,,small,,324,,1 head,no,usda:169248
+iceberg-lettuce,,,,,small,,5,,1 leaf,no,usda:169248
+swiss-chard,Swiss Chard,,,,,,36,1 cup,,no,usda:169991
+swiss-chard,,,,,,,48,,1 leaf,no,usda:169991
+collard-greens,Collard Greens,,,,,,36,1 cup,,yes,usda:170406
+collard-greens,,,,,chopped,,36,1 cup,,no,usda:170406
+bok-choy,Bok Choy,,,,,,840,,1 head,no,usda:170390
+bok-choy,,,,,,,14,,1 leaf,no,usda:170390
+bok-choy,,,,,shredded,,70,1 cup,,no,usda:170390
+asparagus,Asparagus,,,,,,134,1 cup,,no,usda:168389
+green-beans,Green Beans,,legumes,,,,100,1 cup,,no,usda:169961
+peas,Green Peas,,legumes,,,,145,1 cup,,no,usda:170419
+snow-peas,Snow Peas,mangetout,legumes,,,,63,1 cup,,no,usda:170010
+snow-peas,,,,,chopped,,98,1 cup,,no,usda:170010
+corn,Corn,sweet corn|corn on the cob,,,,,145,1 cup,,no,usda:169998
+corn,,,,,small,,73,,1 ear,no,usda:169998
+mushroom,Mushroom,button mushroom|white mushroom,,,,,18,,1 each,no,usda:169251
+mushroom,,,,,,,96,1 cup,,no,usda:169251
+mushroom,,,,,,,6,,1 slice,no,usda:169251
+mushroom,,,,,large,,23,,1 each,no,usda:169251
+mushroom,,,,,medium,,18,,1 each,no,usda:169251
+mushroom,,,,,small,,10,,1 each,no,usda:169251
+cremini,Cremini Mushroom,crimini mushroom|baby bella,,,,,87,1 cup,,no,usda:168434
+cremini,,,,,,,20,,1 each,no,usda:168434
+cremini,,,,,sliced,,72,1 cup,,no,usda:168434
+shiitake,Shiitake Mushroom,,,,,,19,,1 each,no,usda:169242
+portobello,Portobello Mushroom,portabella mushroom,,,,,84,,1 each,no,usda:169255
+portobello,,,,,diced,,86,1 cup,,no,usda:169255
+beet,Beet,beetroot,,,,,136,1 cup,,no,usda:169145
+turnip,Turnip,,,,,,122,,1 each,no,usda:170465
+turnip,,,,,,,15,,1 slice,no,usda:170465
+turnip,,,,,diced,,130,1 cup,,no,usda:170465
+turnip,,,,,large,,183,,1 each,no,usda:170465
+turnip,,,,,medium,,122,,1 each,no,usda:170465
+turnip,,,,,small,,61,,1 each,no,usda:170465
+parsnip,Parsnip,,,,,,133,1 cup,,yes,usda:170417
+parsnip,,,,,sliced,,133,1 cup,,no,usda:170417
+radish,Radish,,,,,,4.5,,1 each,no,usda:169276
+radish,,,,,,,1,,1 slice,no,usda:169276
+radish,,,,,sliced,,116,1 cup,,no,usda:169276
+radish,,,,,large,,9,,1 each,no,usda:169276
+radish,,,,,medium,,4.5,,1 each,no,usda:169276
+radish,,,,,small,,2,,1 each,no,usda:169276
+rutabaga,Rutabaga,,,,,,386,,1 each,no,usda:168454
+rutabaga,,,,,diced,,140,1 cup,,no,usda:168454
+rutabaga,,,,,large,,772,,1 each,no,usda:168454
+rutabaga,,,,,medium,,386,,1 each,no,usda:168454
+rutabaga,,,,,small,,192,,1 each,no,usda:168454
+fennel,Fennel,,,,,,87,1 cup,,yes,usda:169385
+fennel,,,,,sliced,,87,1 cup,,no,usda:169385
+artichoke,Artichoke,,,,,,128,,1 each,no,usda:169205
+artichoke,,,,,large,,162,,1 each,no,usda:169205
+artichoke,,,,,medium,,128,,1 each,no,usda:169205
+okra,Okra,,,,,,100,1 cup,,no,usda:169260
+ginger,Ginger,fresh ginger|ginger root,,,,,2,1 tsp,,no,usda:169231
+ginger,,,,,,,11,,5 slice,no,usda:169231
+ginger,,,,,sliced,,24,0.25 cup,,no,usda:169231
+horseradish,Horseradish,,,,,,15,1 tbsp,,no,usda:173472
+horseradish,,,,,,,5,1 tsp,,no,usda:173472
+avocado,Avocado,avocados,,,,,150,1 cup,,yes,usda:171705
+avocado,,,,,diced,,150,1 cup,,no,usda:171705
+avocado,,,,,sliced,,146,1 cup,,no,usda:171705
+apple,Apple,,,,,,182,,1 each,no,usda:171688
+apple,,,,,sliced,,109,1 cup,,no,usda:171688
+apple,,,,,large,,223,,1 each,no,usda:171688
+apple,,,,,medium,,182,,1 each,no,usda:171688
+apple,,,,,small,,149,,1 each,no,usda:171688
+banana,Banana,,,,,,118,,1 each,no,usda:173944
+banana,,,,,mashed,,225,1 cup,,no,usda:173944
+banana,,,,,sliced,,150,1 cup,,no,usda:173944
+banana,,,,,extra-large,,152,,1 each,no,usda:173944
+banana,,,,,large,,136,,1 each,no,usda:173944
+banana,,,,,medium,,118,,1 each,no,usda:173944
+banana,,,,,small,,101,,1 each,no,usda:173944
+orange,Orange,,,,,,180,1 cup,,no,usda:169097
+orange,,,,,,,131,,1 each,no,usda:169097
+orange,,,,,large,,184,,1 each,no,usda:169097
+orange,,,,,small,,96,,1 each,no,usda:169097
+lemon,Lemon,lemons,,,,,212,1 cup,,no,usda:167746
+lemon,,,,,,,58,,1 each,no,usda:167746
+lemon-zest,Lemon Zest,lemon zest|zest of lemon|grated lemon peel|lemon peel,,,,,96,1 cup,,no,sr-legacy:09156
+lemon-zest,,,,,,,6,1 tbsp,,no,sr-legacy:09156
+lime,Lime,limes,,,,,67,,1 each,no,usda:168155
+grapefruit,Grapefruit,,,,,,128,,0.5 each,no,usda:173033
+grapefruit,,,,,large,,166,,0.5 each,no,usda:173033
+grapefruit,,,,,medium,,128,,0.5 each,no,usda:173033
+grapefruit,,,,,small,,100,,0.5 each,no,usda:173033
+strawberry,Strawberry,,,,,,12,,1 each,no,usda:167762
+strawberry,,,,,,,144,1 cup,,no,usda:167762
+strawberry,,,,,halved,,152,1 cup,,no,usda:167762
+strawberry,,,,,sliced,,166,1 cup,,no,usda:167762
+strawberry,,,,,extra-large,,27,,1 each,no,usda:167762
+strawberry,,,,,large,,18,,1 each,no,usda:167762
+strawberry,,,,,medium,,12,,1 each,no,usda:167762
+strawberry,,,,,small,,7,,1 each,no,usda:167762
+blueberry,Blueberry,,,,,,148,1 cup,,no,usda:171711
+raspberry,Raspberry,,,,,,123,1 cup,,no,usda:167755
+blackberry,Blackberry,,,,,,144,1 cup,,no,usda:173946
+grape,Grape,,,,,,151,1 cup,,no,usda:174683
+pear,Pear,,,,,,178,,1 each,no,usda:169118
+pear,,,,,diced,,161,1 cup,,no,usda:169118
+pear,,,,,sliced,,140,1 cup,,no,usda:169118
+pear,,,,,large,,230,,1 each,no,usda:169118
+pear,,,,,medium,,178,,1 each,no,usda:169118
+pear,,,,,small,,148,,1 each,no,usda:169118
+peach,Peach,,stone_fruit,,,,150,,1 each,no,usda:169928
+peach,,,,,sliced,,154,1 cup,,no,usda:169928
+peach,,,,,extra-large,,224,,1 each,no,usda:169928
+peach,,,,,large,,175,,1 each,no,usda:169928
+peach,,,,,medium,,150,,1 each,no,usda:169928
+peach,,,,,small,,130,,1 each,no,usda:169928
+plum,Plum,,stone_fruit,,,,66,,1 each,no,usda:169949
+plum,,,,,sliced,,165,1 cup,,no,usda:169949
+cherry,Cherry,,stone_fruit,,,,154,1 cup,,no,usda:171719
+cherry,,,,,,,8.2,,1 each,no,usda:171719
+pineapple,Pineapple,,,,,,905,,1 each,no,usda:169124
+pineapple,,,,,,,166,,1 slice,no,usda:169124
+mango,Mango,,stone_fruit,,,,165,1 cup,,no,usda:169910
+watermelon,Watermelon,,,,,,152,1 cup,,yes,usda:167765
+watermelon,,,,,diced,,152,1 cup,,no,usda:167765
+cantaloupe,Cantaloupe,,,,,,160,1 cup,,yes,usda:169092
+cantaloupe,,,,,diced,,160,1 cup,,no,usda:169092
+kiwi,Kiwi,,,,,,69,,1 each,no,usda:168153
+kiwi,,,,,sliced,,180,1 cup,,no,usda:168153
+pomegranate,Pomegranate,,,,,,282,,1 each,yes,
+cranberry,Cranberry,,,,,,100,1 cup,,no,usda:171722
+cranberry,,,,,chopped,,110,1 cup,,no,usda:171722
+coconut-shredded,Shredded Coconut,desiccated coconut|dried coconut,,,,,80,1 cup,,yes,
+raisin,Raisin,raisins|golden raisins,sulphites,,,,145,1 cup,,no,usda:168164
+raisin,,,,,packed,,165,1 cup,,no,usda:168164
+date,Date,medjool dates,,sulphites,,,24,,1 each,no,usda:168191
+dried-apricot,Dried Apricot,,sulphites|stone_fruit,,,,130,1 cup,,yes,usda:173941
+dried-apricot,,,,,halved,,130,1 cup,,no,usda:173941
+prune,Prune,,stone_fruit,sulphites,,,174,1 cup,,no,usda:168162
+prune,,,,,,,9.5,,1 each,no,usda:168162
+basil,Basil,fresh basil,,,,,6,0.25 cup,,no,usda:172232
+basil,,,,,,,2.5,,5 leaf,no,usda:172232
+basil,,,,,chopped,,5.3,2 tbsp,,no,usda:172232
+parsley,Parsley,fresh parsley|flat-leaf parsley,,,,,3.8,1 tbsp,,no,usda:170416
+parsley,,,,,,,10,,10 sprig,no,usda:170416
+parsley,,,,,chopped,,60,1 cup,,no,usda:170416
+cilantro,Cilantro,fresh coriander|coriander leaves,,,,,4,0.25 cup,,no,usda:169997
+cilantro,,,,,,,20,,9 sprig,no,usda:169997
+mint,Mint,fresh mint,,,,,3.2,2 tbsp,,no,usda:173474
+mint,,,,,,,0.1,,2 leaf,no,usda:173474
+rosemary,Rosemary,fresh rosemary,,,,,1.7,1 tbsp,,no,usda:173473
+rosemary,,,,,,,0.7,1 tsp,,no,usda:173473
+thyme,Thyme,fresh thyme,,,,,0.8,1 tsp,,no,usda:173470
+sage,Sage,ground sage|dried sage,,,,,2,1 tbsp,,no,usda:170935
+sage,,,,,,,0.7,1 tsp,,no,usda:170935
+oregano-dried,Dried Oregano,oregano|dried oregano,,,,,1,1 tsp,,no,usda:171328
+dill,Dill,fresh dill,,,,,1,,5 sprig,no,usda:172233
+chives,Chives,fresh chives,allium,,,,3,1 tbsp,,yes,usda:169994
+chives,,,,,chopped,,3,1 tbsp,,no,usda:169994
+chives,,,,,chopped,,1,1 tsp,,no,usda:169994
+bay-leaf,Bay Leaf,bay leaves,,,,,1.8,1 tbsp,,no,usda:170917
+bay-leaf,,,,,,,0.6,1 tsp,,no,usda:170917
+milk,Milk,whole milk|full-fat milk,milk,,,,244,1 cup,,no,usda:172217
+milk,,,,,,,15,1 tbsp,,no,usda:172217
+milk,,,,,,,30.5,1 fl-oz,,no,usda:172217
+heavy-cream,Heavy Cream,whipping cream|double cream,milk,,,,15,1 tbsp,,no,usda:170859
+heavy-cream,,,,,,,29.8,1 fl-oz,,no,usda:170859
+half-and-half,Half and Half,single cream,milk,,,,242,1 cup,,no,usda:171255
+half-and-half,,,,,,,15,1 tbsp,,no,usda:171255
+half-and-half,,,,,,,30.2,1 fl-oz,,no,usda:171255
+sour-cream,Sour Cream,soured cream,milk,,,,230,1 cup,,no,usda:171257
+sour-cream,,,,,,,12,1 tbsp,,no,usda:171257
+buttermilk,Buttermilk,,milk,,,,245,1 cup,,no,usda:170874
+buttermilk,,,,,,,30.6,1 fl-oz,,no,usda:170874
+yogurt,Yogurt,plain yogurt|natural yogurt,milk,,,,245,1 cup,,no,usda:171284
+greek-yogurt,Greek Yogurt,greek-style yogurt,milk,,,,245,1 cup,,yes,
+butter,Butter,salted butter,milk,,,,227,1 cup,,no,usda:173410
+butter,,,,,,,14.2,1 tbsp,,no,usda:173410
+butter,,,,,,,113,,1 stick,no,usda:173410
+unsalted-butter,Unsalted Butter,sweet butter,milk,,,,227,1 cup,,no,usda:173430
+unsalted-butter,,,,,,,14.2,1 tbsp,,no,usda:173430
+unsalted-butter,,,,,,,113,,1 stick,no,usda:173430
+cream-cheese,Cream Cheese,,milk,,,,232,1 cup,,no,usda:173418
+cream-cheese,,,,,,,14.5,1 tbsp,,no,usda:173418
+cheddar,Cheddar Cheese,cheddar,milk,,,,28,,1 slice,no,usda:173414
+cheddar,,,,,diced,,132,1 cup,,no,usda:173414
+cheddar,,,,,melted,,244,1 cup,,no,usda:173414
+cheddar,,,,,shredded,,113,1 cup,,no,usda:173414
+mozzarella,Mozzarella Cheese,fresh mozzarella,milk,,,,170,,6 slice,no,usda:170845
+mozzarella,,,,,shredded,,112,1 cup,,no,usda:170845
+parmesan,Parmesan Cheese,parmigiano reggiano|grated parmesan,milk,,,,100,1 cup,,no,usda:171247
+parmesan,,,,,,,5,1 tbsp,,no,usda:171247
+feta,Feta Cheese,,milk,,,,150,1 cup,,no,usda:173420
+ricotta,Ricotta Cheese,,milk,,,,124,0.5 cup,,no,usda:170851
+swiss-cheese,Swiss Cheese,,milk,,,,28,,1 slice,no,usda:171251
+swiss-cheese,,,,,diced,,132,1 cup,,no,usda:171251
+swiss-cheese,,,,,melted,,244,1 cup,,no,usda:171251
+swiss-cheese,,,,,shredded,,108,1 cup,,no,usda:171251
+goat-cheese,Goat Cheese,,milk,,,,135,1 cup,,yes,
+blue-cheese,Blue Cheese,,milk,,,,135,1 cup,,no,usda:172175
+egg,Egg,eggs|whole egg|large egg,egg,,,,50,,1 each,no,usda:171287
+egg,,,,,,,243,1 cup,,no,usda:171287
+egg,,,,,extra-large,,56,,1 each,no,usda:171287
+egg,,,,,jumbo,,63,,1 each,no,usda:171287
+egg,,,,,large,,50,,1 each,no,usda:171287
+egg,,,,,medium,,44,,1 each,no,usda:171287
+egg,,,,,small,,38,,1 each,no,usda:171287
+egg-white,Egg White,egg whites,egg,,,,243,1 cup,,no,usda:172183
+egg-white,,,,,large,,33,,1 each,no,usda:172183
+egg-yolk,Egg Yolk,egg yolks,egg,,,,17,,1 each,no,usda:172184
+egg-yolk,,,,,,,243,1 cup,,no,usda:172184
+egg-yolk,,,,,large,,17,,1 each,no,usda:172184
+condensed-milk,Sweetened Condensed Milk,condensed milk,milk,,,,306,1 cup,,no,usda:171275
+condensed-milk,,,,,,,38.2,1 fl-oz,,no,usda:171275
+evaporated-milk,Evaporated Milk,,milk,,,,126,0.5 cup,,no,usda:172194
+evaporated-milk,,,,,,,31.5,1 fl-oz,,no,usda:172194
+flour-ap,Flour,all purpose flour|plain flour|ap flour|white flour,wheat|gluten_cereals,,,,125,1 cup,,no,usda:168894
+flour-bread,Bread Flour,strong flour,wheat|gluten_cereals,,,,137,1 cup,,no,usda:168896
+flour-cake,Cake Flour,,wheat|gluten_cereals,,,,137,1 cup,,no,usda:169723
+flour-whole-wheat,Whole Wheat Flour,wholemeal flour|whole wheat flour,wheat|gluten_cereals,,,,120,1 cup,,no,usda:168893
+cornmeal,Cornmeal,,,,,,122,1 cup,,no,usda:169697
+cornstarch,Cornstarch,corn starch|cornflour,,,,,128,1 cup,,no,usda:169698
+semolina,Semolina,semolina flour,wheat|gluten_cereals,,,,167,1 cup,,no,usda:169715
+rye-flour,Rye Flour,rye flour,gluten_cereals,,,,102,1 cup,,no,usda:168886
+almond-flour,Almond Flour,ground almonds|almond meal,tree_nuts,,,,145,1 cup,,no,usda:170568
+almond-flour,,,,,,,9.1,1 tbsp,,no,usda:170568
+oats,Rolled Oats,rolled oats|old-fashioned oats|porridge oats,gluten_cereals,wheat,,,156,1 cup,,no,usda:169705
+rice-white,White Rice,long grain rice,,,,,185,1 cup,,no,usda:168877
+rice-brown,Brown Rice,brown rice,,,,,185,1 cup,,no,usda:169703
+arborio-rice,Arborio Rice,risotto rice,,,,,200,1 cup,,no,usda:168931
+quinoa,Quinoa,quinoa,,,,,170,1 cup,,no,usda:168874
+couscous,Couscous,couscous,wheat|gluten_cereals,,,,173,1 cup,,no,usda:169699
+barley,Barley,,gluten_cereals,,,,200,1 cup,,no,usda:170284
+bulgur,Bulgur,cracked wheat,wheat|gluten_cereals,,,,140,1 cup,,no,usda:170688
+farro,Farro,durum wheat|emmer,wheat|gluten_cereals,,,,192,1 cup,,no,usda:169721
+polenta,Polenta,cornmeal|grits,,,,,157,1 cup,,no,usda:168929
+pasta-dry,Dry Pasta,dried pasta|penne|macaroni,wheat|gluten_cereals,,,,100,1 cup,,yes,
+egg-noodles,Egg Noodles,egg noodles,egg|wheat|gluten_cereals,,,,38,1 cup,,no,usda:169731
+breadcrumbs,Breadcrumbs,dried breadcrumbs,wheat|gluten_cereals,milk|soy|sesame,,,108,1 cup,,no,usda:174928
+panko,Panko Breadcrumbs,japanese breadcrumbs,wheat|gluten_cereals,milk|soy|sesame,,,120,1 cup,,no,usda:172806
+tortilla-corn,Corn Tortilla,corn tortillas,,,,,24,,1 each,no,usda:175036
+tortilla-flour,Flour Tortilla,flour tortillas,wheat|gluten_cereals,milk|soy,,,49,,1 each,no,usda:167535
+sugar,Granulated Sugar,white sugar|caster sugar|granulated sugar,,,,,200,1 cup,,no,usda:169655
+sugar,,,,,,,4.2,1 tsp,,no,usda:169655
+brown-sugar,Brown Sugar,light brown sugar|dark brown sugar,,,,,220,1 cup,,yes,usda:168833
+brown-sugar,,,,,packed,,220,1 cup,,no,usda:168833
+brown-sugar,,,,,packed,,4.6,1 tsp,,no,usda:168833
+powdered-sugar,Powdered Sugar,confectioners sugar|icing sugar,,,,,120,1 cup,,no,usda:169656
+powdered-sugar,,,,,,,8,1 tbsp,,no,usda:169656
+powdered-sugar,,,,,,,2.5,1 tsp,,no,usda:169656
+powdered-sugar,,,,,sifted,,100,1 cup,,no,usda:169656
+honey,Honey,,,,,,339,1 cup,,no,usda:169640
+honey,,,,,,,21,1 tbsp,,no,usda:169640
+maple-syrup,Maple Syrup,pure maple syrup,,,,,315,1 cup,,no,usda:169661
+maple-syrup,,,,,,,20,1 tbsp,,no,usda:169661
+molasses,Molasses,,,,,,337,1 cup,,no,usda:168820
+corn-syrup,Corn Syrup,,,,,,341,1 cup,,no,usda:168837
+corn-syrup,,,,,,,22,1 tbsp,,no,usda:168837
+agave,Agave Nectar,,,,,,55,0.25 cup,,no,usda:170277
+agave,,,,,,,6.9,1 tsp,,no,usda:170277
+olive-oil,Olive Oil,extra virgin olive oil|evoo,,,,,216,1 cup,,no,usda:171413
+olive-oil,,,,,,,13.5,1 tbsp,,no,usda:171413
+olive-oil,,,,,,,4.5,1 tsp,,no,usda:171413
+vegetable-oil,Vegetable Oil,soybean oil|cooking oil,soy|legumes,,,,218,1 cup,,no,usda:171411
+vegetable-oil,,,,,,,13.6,1 tbsp,,no,usda:171411
+vegetable-oil,,,,,,,4.5,1 tsp,,no,usda:171411
+canola-oil,Canola Oil,rapeseed oil,,,,,218,1 cup,,no,usda:172336
+canola-oil,,,,,,,14,1 tbsp,,no,usda:172336
+canola-oil,,,,,,,4.5,1 tsp,,no,usda:172336
+coconut-oil,Coconut Oil,,,,,,218,1 cup,,no,usda:171412
+coconut-oil,,,,,,,13.6,1 tbsp,,no,usda:171412
+coconut-oil,,,,,,,4.5,1 tsp,,no,usda:171412
+sesame-oil,Sesame Oil,toasted sesame oil,sesame,,,,218,1 cup,,no,usda:171016
+sesame-oil,,,,,,,13.6,1 tbsp,,no,usda:171016
+sesame-oil,,,,,,,4.5,1 tsp,,no,usda:171016
+peanut-oil,Peanut Oil,,peanut|legumes,,,,216,1 cup,,no,usda:171410
+peanut-oil,,,,,,,13.5,1 tbsp,,no,usda:171410
+peanut-oil,,,,,,,4.5,1 tsp,,no,usda:171410
+sunflower-oil,Sunflower Oil,,,,,,218,1 cup,,no,usda:171025
+sunflower-oil,,,,,,,13.6,1 tbsp,,no,usda:171025
+sunflower-oil,,,,,,,4.5,1 tsp,,no,usda:171025
+avocado-oil,Avocado Oil,,,,,,218,1 cup,,no,usda:173573
+avocado-oil,,,,,,,14,1 tbsp,,no,usda:173573
+avocado-oil,,,,,,,4.5,1 tsp,,no,usda:173573
+shortening,Shortening,vegetable shortening,,,,,205,1 cup,,no,usda:172327
+shortening,,,,,,,12.8,1 tbsp,,no,usda:172327
+lard,Lard,,,,,,205,1 cup,,no,usda:171401
+lard,,,,,,,12.8,1 tbsp,,no,usda:171401
+ghee,Ghee,,milk,,,,205,1 cup,,no,usda:173412
+ghee,,,,,,,12.8,1 tbsp,,no,usda:173412
+mayonnaise,Mayonnaise,mayo,egg,mustard,,,220,1 cup,,no,usda:171009
+mayonnaise,,,,,,,13.8,1 tbsp,,no,usda:171009
+vinegar-white,White Vinegar,distilled vinegar|white vinegar,,,,,238,1 cup,,no,usda:172237
+vinegar-white,,,,,,,14.9,1 tbsp,,no,usda:172237
+vinegar-white,,,,,,,5,1 tsp,,no,usda:172237
+vinegar-cider,Cider Vinegar,apple cider vinegar,sulphites,,,,239,1 cup,,no,usda:173469
+vinegar-cider,,,,,,,14.9,1 tbsp,,no,usda:173469
+vinegar-cider,,,,,,,5,1 tsp,,no,usda:173469
+vinegar-balsamic,Balsamic Vinegar,,sulphites,,,,255,1 cup,,no,usda:172241
+vinegar-balsamic,,,,,,,16,1 tbsp,,no,usda:172241
+vinegar-balsamic,,,,,,,5.3,1 tsp,,no,usda:172241
+vinegar-red-wine,Red Wine Vinegar,,sulphites,,,,239,1 cup,,no,usda:172240
+vinegar-red-wine,,,,,,,14.9,1 tbsp,,no,usda:172240
+vinegar-red-wine,,,,,,,5,1 tsp,,no,usda:172240
+soy-sauce,Soy Sauce,shoyu|light soy sauce,wheat|soy|gluten_cereals|legumes,,,,255,1 cup,,no,usda:174277
+soy-sauce,,,,,,,16,1 tbsp,,no,usda:174277
+soy-sauce,,,,,,,5.3,1 tsp,,no,usda:174277
+fish-sauce,Fish Sauce,,fish,shellfish,,,18,1 tbsp,,no,usda:174531
+worcestershire,Worcestershire Sauce,worcestershire,fish,gluten_cereals|sulphites|soy,,,275,1 cup,,no,usda:171610
+worcestershire,,,,,,,17,1 tbsp,,no,usda:171610
+hot-sauce,Hot Sauce,chili sauce|tabasco,nightshades,sulphites,,,4.7,1 tsp,,no,usda:174527
+ketchup,Ketchup,tomato ketchup|catsup,nightshades,celery,,,240,1 cup,,no,usda:168556
+ketchup,,,,,,,17,1 tbsp,,no,usda:168556
+mustard,Mustard,yellow mustard|dijon mustard|prepared mustard,mustard,sulphites|gluten_cereals,,,249,1 cup,,no,usda:172234
+bbq-sauce,Barbecue Sauce,,nightshades,mustard|sulphites|soy,,,143,0.5 cup,,no,usda:174523
+bbq-sauce,,,,,,,17,1 tbsp,,no,usda:174523
+salsa,Salsa,,allium|nightshades,,,,130,0.5 cup,,no,usda:174524
+salsa,,,,,,,36,2 tbsp,,no,usda:174524
+tahini,Tahini,,sesame,,,,15,1 tbsp,,no,usda:168604
+peanut-butter,Peanut Butter,smooth peanut butter,peanut|legumes,,,,258,1 cup,,no,usda:174266
+peanut-butter,,,,,,,32,2 tbsp,,no,usda:174266
+hummus,Hummus,,sesame|allium|legumes,,,,246,1 cup,,no,usda:174289
+hummus,,,,,,,15,1 tbsp,,no,usda:174289
+pickles,Pickles,dill pickles|gherkins,sulphites,mustard,,,155,1 cup,,no,usda:168558
+pickles,,,,,,,7,,1 slice,no,usda:168558
+pickles,,,,,chopped,,143,1 cup,,no,usda:168558
+pickles,,,,,large,,135,,1 each,no,usda:168558
+olives-green,Green Olives,,,sulphites,,,2.7,,1 each,no,usda:169096
+olives-black,Black Olives,ripe olives,,sulphites,,,8.4,1 tbsp,,no,usda:169094
+olives-black,,,,,large,,4.4,,1 each,no,usda:169094
+olives-black,,,,,small,,3.2,,1 each,no,usda:169094
+capers,Capers,,,sulphites,,,8.6,1 tbsp,,no,usda:172238
+coconut-milk,Coconut Milk,canned coconut milk,,,,,226,1 cup,,no,usda:170173
+coconut-milk,,,,,,,15,1 tbsp,,no,usda:170173
+chicken-breast,Chicken Breast,boneless chicken breast,,,,,174,,1 each,yes,
+chicken-thigh,Chicken Thigh,chicken thighs,,,,,100,,1 each,yes,
+chicken-whole,Whole Chicken,,,,,,1600,,1 each,yes,
+ground-chicken,Ground Chicken,minced chicken,,,,,225,1 cup,,yes,
+turkey-breast,Turkey Breast,,,,,,1800,,1 each,yes,
+ground-turkey,Ground Turkey,minced turkey,,,,,225,1 cup,,yes,
+ground-beef,Ground Beef,minced beef|hamburger,,,,,225,1 cup,,yes,
+beef-chuck,Beef Chuck,stewing beef|chuck roast,,,,,225,1 cup,,yes,
+beef-brisket,Brisket,,,,,,2270,,1 each,yes,
+beef-sirloin,Sirloin Steak,sirloin,,,,,227,,1 each,yes,
+ribeye,Ribeye Steak,rib eye,,,,,340,,1 each,yes,
+beef-short-ribs,Short Ribs,,,,,,434,,1 each,no,usda:170783
+pork-shoulder,Pork Shoulder,,,,,,2270,,1 each,yes,
+pork-chop,Pork Chop,,,,,,170,,1 each,yes,
+pork-belly,Pork Belly,,,,,,225,1 cup,,yes,
+ground-pork,Ground Pork,minced pork,,,,,225,1 cup,,yes,
+bacon,Bacon,streaky bacon|bacon rashers,,,,,28,,1 slice,yes,
+ham,Ham,,,,,,28,,1 slice,no,usda:173864
+sausage-italian,Italian Sausage,italian sausage,,gluten_cereals|sulphites,,,85,,1 each,yes,
+chorizo,Chorizo,,allium|nightshades,gluten_cereals|sulphites,,,85,,1 each,yes,
+lamb-shoulder,Lamb Shoulder,,,,,,1800,,1 each,yes,
+lamb-chop,Lamb Chop,,,,,,100,,1 each,yes,
+salmon,Salmon,,fish,,,,170,,1 each,yes,
+tuna-canned,Canned Tuna,tinned tuna,fish,,,,142,,1 can,yes,
+cod,Cod,,fish,,,,170,,1 each,yes,
+halibut,Halibut,,fish,,,,170,,1 each,yes,
+tilapia,Tilapia,,fish,,,,115,,1 each,yes,
+trout,Trout,,fish,,,,140,,1 each,yes,
+anchovy,Anchovy,,fish,,,,4,,1 each,no,usda:174183
+sardine,Sardine,,fish,,,,149,1 cup,,no,usda:175139
+sardine,,,,,small,,12,,1 each,no,usda:175139
+shrimp,Shrimp,prawns,shellfish,,,,6,,1 each,no,usda:174210
+shrimp,,,,,large,,28,,4 each,no,usda:174210
+shrimp,,,,,medium,,6,,1 each,no,usda:174210
+shrimp,,,,,small,,5,,1 each,no,usda:174210
+crab,Crab,,shellfish,,,,135,1 cup,,yes,
+lobster,Lobster,,shellfish,,,,700,,1 each,yes,
+scallop,Scallop,,mollusks,,,,30,,1 each,yes,
+mussel,Mussel,,mollusks,,,,16,,1 each,no,usda:174216
+mussel,,,,,,,150,1 cup,,no,usda:174216
+mussel,,,,,large,,20,,1 each,no,usda:174216
+mussel,,,,,medium,,16,,1 each,no,usda:174216
+mussel,,,,,small,,10,,1 each,no,usda:174216
+clam,Clam,,mollusks,,,,14.5,,1 each,no,usda:174214
+clam,,,,,,,227,1 cup,,no,usda:174214
+clam,,,,,large,,20,,1 each,no,usda:174214
+clam,,,,,medium,,14.5,,1 each,no,usda:174214
+clam,,,,,small,,9,,1 each,no,usda:174214
+oyster,Oyster,,mollusks,,,,84,,6 each,no,usda:171978
+oyster,,,,,,,248,1 cup,,no,usda:171978
+oyster,,,,,medium,,84,,6 each,no,usda:171978
+squid,Squid,calamari,mollusks,,,,40,,1 each,yes,
+tofu,Tofu,firm tofu|bean curd,soy|legumes,,,,126,0.5 cup,,no,usda:172475
+tempeh,Tempeh,,soy|legumes,,,,166,1 cup,,no,usda:174272
+edamame,Edamame,,soy|legumes,,,,256,1 cup,,no,usda:169282
+black-beans,Black Beans,turtle beans,legumes,,,,194,1 cup,,no,usda:173734
+black-beans,,,,,,,12.1,1 tbsp,,no,usda:173734
+kidney-beans,Kidney Beans,red kidney beans,legumes,,,,184,1 cup,,no,usda:175193
+pinto-beans,Pinto Beans,pinto beans,legumes,,,,193,1 cup,,no,usda:175199
+pinto-beans,,,,,,,12,1 tbsp,,no,usda:175199
+chickpeas,Chickpeas,garbanzo beans|garbanzos,legumes,,,,200,1 cup,,no,usda:173756
+chickpeas,,,,,,,12.5,1 tbsp,,no,usda:173756
+cannellini-beans,Cannellini Beans,white beans,legumes,,,,202,1 cup,,no,usda:175202
+cannellini-beans,,,,,,,12.6,1 tbsp,,no,usda:175202
+lentils,Lentils,brown lentils|green lentils,legumes,,,,192,1 cup,,no,usda:172420
+lentils,,,,,,,12,1 tbsp,,no,usda:172420
+split-peas,Split Peas,yellow split peas,legumes,,,,196,1 cup,,no,usda:172429
+split-peas,,,,,,,12.2,1 tbsp,,no,usda:172429
+navy-beans,Navy Beans,haricot beans,legumes,,,,208,1 cup,,no,usda:173745
+almond,Almond,almonds|whole almonds,tree_nuts,,,,143,1 cup,,no,usda:170567
+almond,,,,,sliced,,92,1 cup,,no,usda:170567
+walnut,Walnut,walnuts,tree_nuts,,,,80,1 cup,,no,usda:170187
+walnut,,,,,chopped,,117,1 cup,,no,usda:170187
+pecan,Pecan,pecans,tree_nuts,,,,109,1 cup,,yes,usda:170182
+pecan,,,,,chopped,,109,1 cup,,no,usda:170182
+pecan,,,,,halved,,99,1 cup,,no,usda:170182
+cashew,Cashew,cashews,tree_nuts,,,,130,1 cup,,yes,
+pistachio,Pistachio,pistachios,tree_nuts,,,,123,1 cup,,no,usda:170184
+hazelnut,Hazelnut,hazelnuts|filberts,tree_nuts,,,,75,1 cup,,no,usda:170581
+hazelnut,,,,,chopped,,115,1 cup,,no,usda:170581
+macadamia,Macadamia Nut,,tree_nuts,,,,134,1 cup,,yes,
+pine-nut,Pine Nut,pine nuts|pignoli,tree_nuts,,,,135,1 cup,,no,usda:170591
+peanut,Peanut,peanuts,peanut|legumes,,,,146,1 cup,,no,usda:172430
+sesame-seed,Sesame Seed,sesame seeds,sesame,,,,144,1 cup,,no,usda:170150
+sesame-seed,,,,,,,9,1 tbsp,,no,usda:170150
+sunflower-seed,Sunflower Seed,sunflower seeds,,,,,140,1 cup,,no,usda:170562
+pumpkin-seed,Pumpkin Seed,pumpkin seeds|pepitas,,,,,129,1 cup,,no,usda:170556
+chia-seed,Chia Seed,chia seeds,,,,,170,1 cup,,yes,
+chia-seed,,,,,,,12,1 tbsp,,yes,
+flaxseed,Flaxseed,linseed|ground flaxseed,,,,,168,1 cup,,no,usda:169414
+flaxseed,,,,,,,10.3,1 tbsp,,no,usda:169414
+flaxseed,,,,,,,3.4,1 tsp,,no,usda:169414
+poppy-seed,Poppy Seed,,,,,,8.8,1 tbsp,,no,usda:171330
+poppy-seed,,,,,,,2.8,1 tsp,,no,usda:171330
+salt,Salt,table salt|fine salt,,,,,292,1 cup,,no,usda:173468
+salt,,,,,,,18,1 tbsp,,no,usda:173468
+salt,,,,,,,6,1 tsp,,no,usda:173468
+kosher-salt,Kosher Salt,kosher salt|diamond crystal kosher salt|coarse kosher salt,,,,,137,1 cup,,no,diamond crystal kosher salt package
+kosher-salt,,,,,,,8.5,1 tbsp,,no,diamond crystal kosher salt package
+kosher-salt,,,,,,,2.8,1 tsp,,no,diamond crystal kosher salt package
+pepper-black,Black Pepper,black pepper|ground black pepper|cracked pepper,,,,,6.9,1 tbsp,,no,usda:170931
+pepper-black,,,,,,,2.3,1 tsp,,no,usda:170931
+white-pepper,White Pepper,,,,,,7.1,1 tbsp,,no,usda:170933
+white-pepper,,,,,,,2.4,1 tsp,,no,usda:170933
+cayenne,Cayenne Pepper,cayenne|red pepper flakes|crushed red pepper,nightshades,,,,5.3,1 tbsp,,no,usda:170932
+cayenne,,,,,,,1.8,1 tsp,,no,usda:170932
+paprika,Paprika,,nightshades,,,,6.8,1 tbsp,,no,usda:171329
+paprika,,,,,,,2.3,1 tsp,,no,usda:171329
+chili-powder,Chili Powder,,nightshades,allium,,,8,1 tbsp,,no,usda:171319
+chili-powder,,,,,,,2.7,1 tsp,,no,usda:171319
+cumin,Ground Cumin,cumin|ground cumin,,,,,6,1 tbsp,,no,usda:170923
+cumin,,,,,,,2.1,1 tsp,,no,usda:170923
+coriander-ground,Ground Coriander,ground coriander seed,,,,,5,1 tbsp,,no,usda:170922
+coriander-ground,,,,,,,1.8,1 tsp,,no,usda:170922
+turmeric,Turmeric,,,,,,9.4,1 tbsp,,no,usda:172231
+turmeric,,,,,,,3,1 tsp,,no,usda:172231
+curry-powder,Curry Powder,,,mustard|nightshades,,,6.3,1 tbsp,,no,usda:170924
+curry-powder,,,,,,,2,1 tsp,,no,usda:170924
+garlic-powder,Garlic Powder,,allium,,,,9.7,1 tbsp,,no,usda:171325
+garlic-powder,,,,,,,3.1,1 tsp,,no,usda:171325
+onion-powder,Onion Powder,,allium,,,,6.9,1 tbsp,,no,usda:171327
+onion-powder,,,,,,,2.4,1 tsp,,no,usda:171327
+cinnamon,Ground Cinnamon,cinnamon,,,,,7.8,1 tbsp,,no,usda:171320
+cinnamon,,,,,,,2.6,1 tsp,,no,usda:171320
+nutmeg,Ground Nutmeg,nutmeg,,,,,7,1 tbsp,,no,usda:171326
+nutmeg,,,,,,,2.2,1 tsp,,no,usda:171326
+ginger-ground,Ground Ginger,,,,,,5.2,1 tbsp,,no,usda:170926
+ginger-ground,,,,,,,1.8,1 tsp,,no,usda:170926
+cloves-ground,Ground Cloves,cloves,,,,,6.5,1 tbsp,,no,usda:171321
+cloves-ground,,,,,,,2.1,1 tsp,,no,usda:171321
+allspice,Allspice,,,,,,6,1 tbsp,,no,usda:171315
+allspice,,,,,,,1.9,1 tsp,,no,usda:171315
+cardamom,Cardamom,ground cardamom,,,,,5.8,1 tbsp,,no,usda:170919
+cardamom,,,,,,,2,1 tsp,,no,usda:170919
+fennel-seed,Fennel Seed,,,,,,5.8,1 tbsp,,no,usda:171323
+fennel-seed,,,,,,,2,1 tsp,,no,usda:171323
+mustard-seed,Mustard Seed,,mustard,,,,6.3,1 tbsp,,no,usda:170929
+mustard-seed,,,,,,,2,1 tsp,,no,usda:170929
+celery-seed,Celery Seed,,celery,,,,6.5,1 tbsp,,no,usda:170920
+celery-seed,,,,,,,2,1 tsp,,no,usda:170920
+caraway,Caraway Seed,,,,,,6.7,1 tbsp,,no,usda:170918
+caraway,,,,,,,2.1,1 tsp,,no,usda:170918
+saffron,Saffron,,,,,,2.1,1 tbsp,,no,usda:170934
+saffron,,,,,,,0.7,1 tsp,,no,usda:170934
+star-anise,Star Anise,anise seed,,,,,6.7,1 tbsp,,no,usda:171316
+star-anise,,,,,,,2.1,1 tsp,,no,usda:171316
+dried-basil,Dried Basil,dried basil,,,,,2.1,1 tbsp,,no,usda:171317
+dried-basil,,,,,,,0.7,1 tsp,,no,usda:171317
+dried-thyme,Dried Thyme,dried thyme,,,,,2.7,1 tbsp,,no,usda:170938
+dried-thyme,,,,,,,1,1 tsp,,no,usda:170938
+dried-rosemary,Dried Rosemary,dried rosemary,,,,,3.3,1 tbsp,,no,usda:171333
+dried-rosemary,,,,,,,1.2,1 tsp,,no,usda:171333
+dried-parsley,Dried Parsley,dried parsley,,,,,1.6,1 tbsp,,no,usda:170930
+dried-parsley,,,,,,,0.5,1 tsp,,no,usda:170930
+dried-dill,Dried Dill,dried dill,,,,,3.1,1 tbsp,,no,usda:171322
+dried-dill,,,,,,,1,1 tsp,,no,usda:171322
+dried-marjoram,Dried Marjoram,dried marjoram,,,,,1.7,1 tbsp,,no,usda:170928
+dried-marjoram,,,,,,,0.6,1 tsp,,no,usda:170928
+dried-tarragon,Dried Tarragon,dried tarragon,,,,,1.8,1 tbsp,,no,usda:170937
+dried-tarragon,,,,,,,0.6,1 tsp,,no,usda:170937
+baking-powder,Baking Powder,,,,,,4.6,1 tsp,,no,usda:172804
+baking-soda,Baking Soda,bicarbonate of soda|bicarb,,,,,4.6,1 tsp,,no,usda:175040
+yeast-active-dry,Active Dry Yeast,dry yeast|instant yeast,,,,,12,1 tbsp,,no,usda:175043
+yeast-active-dry,,,,,,,4,1 tsp,,no,usda:175043
+cocoa-powder,Cocoa Powder,unsweetened cocoa,,soy,,,86,1 cup,,no,usda:169593
+cocoa-powder,,,,,,,5.4,1 tbsp,,no,usda:169593
+chocolate-dark,Dark Chocolate,bittersweet chocolate|dark chocolate,milk,soy,,,170,1 cup,,yes,
+chocolate-chips,Chocolate Chips,semisweet chocolate|chocolate morsels,milk,soy,,,170,1 cup,,yes,
+vanilla-extract,Vanilla Extract,vanilla,,,,,208,1 cup,,no,usda:173471
+vanilla-extract,,,,,,,13,1 tbsp,,no,usda:173471
+vanilla-extract,,,,,,,4.2,1 tsp,,no,usda:173471
+gelatin,Gelatin,,,,,,7,1 tbsp,,yes,
+cornflakes,Cornflakes,,gluten_cereals,,,,28,1 cup,,no,usda:174648
+bread-white,White Bread,white sandwich bread,wheat|gluten_cereals,milk|soy|sesame,,,29,,1 slice,no,usda:174924
+bread-white,,,,,diced,,35,1 cup,,no,usda:174924
+bread-white,,,,,large,,30,,1 slice,no,usda:174924
+chicken-stock,Chicken Stock,chicken broth|chicken stock,celery|allium,soy|gluten_cereals,,,240,1 cup,,no,usda:172884
+beef-stock,Beef Stock,beef broth,celery|allium,soy|gluten_cereals,,,240,1 cup,,no,usda:172883
+vegetable-broth,Vegetable Broth,vegetable stock,celery|allium,soy|gluten_cereals,,,221,1 cup,,no,usda:171583
+wine-white,White Wine,dry white wine,sulphites,,,,29.4,1 fl-oz,,no,usda:174837
+wine-red,Red Wine,dry red wine,sulphites,,,,29.4,1 fl-oz,,no,usda:173190
+orange-juice,Orange Juice,fresh orange juice,,sulphites,,,248,1 cup,,no,usda:169098
+orange-juice,,,,,,,31,1 fl-oz,,no,usda:169098
+lemon-juice,Lemon Juice,fresh lemon juice,,sulphites,,,15,1 tbsp,,no,usda:167747
+lemon-juice,,,,,,,244,1 cup,,no,usda:167747
+lemon-juice,,,,,,,30.5,1 fl-oz,,no,usda:167747
+lime-juice,Lime Juice,fresh lime juice,,sulphites,,,242,1 cup,,no,usda:168156
+lime-juice,,,,,,,30.8,1 fl-oz,,no,usda:168156
+apple-juice,Apple Juice,,,sulphites,,,248,1 cup,,no,usda:167771
+apple-juice,,,,,,,31,1 fl-oz,,no,usda:167771
+coffee,Brewed Coffee,,,,,,237,1 cup,,no,usda:171890
+coffee,,,,,,,29.6,1 fl-oz,,no,usda:171890
+provolone,Provolone,provolone cheese|sharp provolone,milk,,,,28,,1 slice,no,usda:170850
+provolone,,,,,diced,,132,1 cup,,no,usda:170850
+puff-pastry,Puff Pastry,puff pastry sheets|puff pastry dough|pastry dough|butter puff pastry,wheat|gluten_cereals,milk|soy|egg,,,245,,1 sheet,yes,
+pumpkin-pie-spice,Pumpkin Pie Spice,pumpkin spice|pumpkin pie spice blend,,,,,5.6,1 tbsp,,no,usda:171332
+pumpkin-pie-spice,,,,,,,1.7,1 tsp,,no,usda:171332
+pumpkin-puree,Pumpkin Puree,canned pumpkin|pureed pumpkin|pumpkin pulp,,,,,245,1 cup,,no,usda:168450
+quail-whole,Quail,whole quail|quails|semi-boneless quail,,,,,180,,1 each,yes,
+queso-fresco,Queso Fresco,queso fresco cheese|fresh mexican cheese|queso blanco fresco,milk,,,,122,1 cup,,no,usda:172223
+radicchio,Radicchio,radicchio chicory|chioggia radicchio|red chicory,,,,,250,,1 head,yes,
+radicchio,,,,,,,8,,1 leaf,no,usda:168564
+radicchio,,,,,shredded,,40,1 cup,,no,usda:168564
+raspberry-puree,Raspberry Puree,pureed raspberry|raspberry fruit puree|raspberry coulis,,sulphites,,,250,1 cup,,yes,
+red-grape,Red Grape,red grapes|red seedless grapes,,,,,151,1 cup,,no,usda:174683
+red-leaf-lettuce,Red Leaf Lettuce,red leaf|red lettuce|lettuce red leaf,,,,,309,,1 head,no,usda:168431
+red-leaf-lettuce,,,,,shredded,,28,1 cup,,no,usda:168431
+red-lentil,Red Lentils,masoor dal|split red lentils|dried red lentils,legumes,,,,192,1 cup,,no,usda:174284
+onion-red,Red Onion,red onions|purple onion,allium,,,,110,,1 each,yes,
+rhubarb,Rhubarb,fresh rhubarb|rhubarb stalks|red rhubarb,,,,,51,,1 stalk,no,usda:167758
+rhubarb,,,,,diced,,122,1 cup,,no,usda:167758
+rice-noodle,Rice Noodles,rice stick noodles|banh pho|dried rice noodles,,,,,400,,1 bag,yes,
+rice-paper-wrapper,Rice Paper Wrapper,rice paper wrappers|rice paper|banh trang|spring roll wrapper,,,,,12,,1 sheet,yes,
+ripe-plantain,Ripe Plantain,ripe plantains|yellow plantain|platano maduro,,,,,180,,1 each,yes,
+ripe-plantain,,,,,sliced,,148,1 cup,,no,usda:169130
+roquefort,Roquefort,roquefort cheese|french blue cheese,milk,,,,135,1 cup,,yes,
+rum,Rum,white rum|light rum,,sulphites,,,27.8,1 fl-oz,,no,usda:174817
+rye-bread,Rye Bread,rye loaf|pumpernickel rye|deli rye,gluten_cereals,wheat|soy|sesame|milk,,,32,,1 slice,yes,
+salami,Salami,hard salami|salami stick|genoa salami|sliced salami,,milk|soy|sulphites|nightshades|allium,,,9.8,,1 slice,no,usda:174582
+salt-cod,Salt Cod,salted cod|bacalao|baccala|bacalhau|bacala,fish,,,,450,,1 each,yes,
+satsuma-mandarin,Satsuma Mandarin,satsuma|satsumas|satsuma mandarins|mandarin,,,,,80,,1 each,yes,
+satsuma-mandarin,,,,,,,195,1 cup,,no,usda:169105
+satsuma-mandarin,,,,,large,,120,,1 each,no,usda:169105
+satsuma-mandarin,,,,,medium,,88,,1 each,no,usda:169105
+satsuma-mandarin,,,,,small,,76,,1 each,no,usda:169105
+sauerkraut,Sauerkraut,kraut|sour kraut|sourkraut,,sulphites,,,142,1 cup,,no,usda:169279
+sauvignon-blanc,Sauvignon Blanc,sauvignon blanc wine|white wine sauvignon blanc|sauv blanc,sulphites,,,,240,1 cup,,yes,
+sauvignon-blanc,,,,,,,29.3,1 fl-oz,,no,usda:173201
+savoy-cabbage,Savoy Cabbage,savoy cabbages|savoy,,,,,900,,1 head,yes,
+savoy-cabbage,,,,,shredded,,70,1 cup,,no,usda:170388
+sea-bass,Sea Bass,seabass|whole sea bass,fish,,,,1400,,1 each,yes,
+self-rising-flour,Self-Rising Flour,self-raising flour|self rising baking flour,wheat|gluten_cereals,,,,125,1 cup,,no,usda:168895
+shimeji-mushroom,Shimeji Mushroom,hon shimeji mushrooms|hon shimeji|shimeji mushrooms|beech mushroom|buna shimeji,,,,,70,1 cup,,yes,
+sliced-almond,Sliced Almond,sliced almonds|almonds sliced|flaked almonds,tree_nuts|stone_fruit,,,,143,1 cup,,no,usda:170567
+sliced-almond,,,,,sliced,,92,1 cup,,no,usda:170567
+slivered-almond,Slivered Almond,slivered almonds|almonds slivered,tree_nuts|stone_fruit,,,,143,1 cup,,no,usda:170567
+slivered-almond,,,,,sliced,,92,1 cup,,no,usda:170567
+smoked-salmon,Smoked Salmon,cold smoked salmon|lox|nova salmon,fish,,,,20,,1 slice,yes,
+smoked-whitefish,Smoked Whitefish,smoked white fish|whitefish smoked,fish,,,,700,,1 each,yes,
+smoked-whitefish,,,,,,,136,1 cup,,no,usda:173712
+snow-crab-meat,Snow Crab Meat,snow crab|crab meat snow|picked snow crab,shellfish,,,,130,1 cup,,yes,
+soba-noodle,Soba Noodles,soba|buckwheat noodles,,wheat|gluten_cereals,,,270,,1 bag,yes,
+soft-shell-crab,Soft-Shell Crab,soft shell crabs|softshell crab,shellfish,,,,85,,1 each,yes,
+sole,Sole,sole fillet|dover sole|lemon sole|whole sole,fish,,,,450,,1 each,yes,
+sour-cherry,Sour Cherry,sour cherries|tart cherries|morello cherries,stone_fruit,,,,155,1 cup,,no,usda:173954
+sourdough-bread,Sourdough Bread,sourdough|sour dough bread|sourdough loaf|Sourdough batard|batard|sourdough batard bread|sourdough loaf batard,wheat|gluten_cereals,,,,600,,1 loaf,yes,
+sourdough-bread,,,,,,,139,,1 slice,no,usda:172675
+soy-milk,Soy Milk,soymilk|soya milk|unsweetened soy milk,soy,,,,243,1 cup,,no,usda:175215
+spaghetti,Spaghetti,spaghetti pasta|dry spaghetti|spaghetti noodles,wheat|gluten_cereals,egg,,,100,1 cup,,yes,
+spaghetti-squash,Spaghetti Squash,spaghetti squashes|squash spaghetti,,,,,1400,,1 each,yes,
+spaghetti-squash,,,,,diced,,101,1 cup,,no,usda:169298
+spanish-mackerel,Spanish Mackerel,mackerel spanish|whole spanish mackerel|sierra mackerel,fish,,,,1300,,1 each,yes,
+spelt-flour,Spelt Flour,flour spelt|whole spelt flour|dinkel flour,wheat|gluten_cereals,,,,110,1 cup,,yes,
+sriracha,Sriracha,sriracha sauce|sriracha hot sauce|siracha|sirracha|rooster sauce,nightshades|allium,sulphites|fish,,,17,1 tbsp,,yes,
+sriracha,,,,,,,6.5,1 tsp,,no,usda:171186
+filet-mignon,Filet Mignon,beef filet|beef tenderloin steak|tenderloin steak,,,,,225,,1 each,yes,
+flaxseed-oil,Flaxseed Oil,flax seed oil|flax oil|linseed oil,,,,,218,1 cup,,no,usda:167702
+flaxseed-oil,,,,,,,13.6,1 tbsp,,no,usda:167702
+flounder,Flounder,whole flounder|flounder fillet|fresh flounder,fish,,,,700,,1 each,yes,
+focaccia,Focaccia,focaccia bread|focaccia loaf|schiacciata,wheat|gluten_cereals,milk|egg|sesame,,,500,,1 loaf,yes,
+focaccia,,,,,,,57,,1 each,no,usda:167945
+fontina,Fontina,fontina cheese|fontina val d'aosta|fontina val daosta|fontal,milk,,,,113,1 cup,,yes,
+fontina,,,,,,,28,,1 slice,no,usda:170843
+fontina,,,,,diced,,132,1 cup,,no,usda:170843
+fontina,,,,,shredded,,108,1 cup,,no,usda:170843
+fresh-coconut,Fresh Coconut,"coconut, fresh|whole coconut|mature coconut",,,,,1400,,1 each,yes,
+fresh-coconut,,,,,shredded,,80,1 cup,,no,usda:170169
+fresh-coconut,,,,,medium,,397,,1 each,no,usda:170169
+yeast-fresh,Fresh Yeast,compressed yeast|cake yeast|compressed fresh yeast|baker's yeast fresh,,,,,17,,1 each,yes,
+freshwater-eel,Freshwater Eel,fresh water eel|unagi|eel freshwater,fish,,,,500,,1 each,yes,
+fried-tofu,Fried Tofu,tofu fried|aburaage|fried bean curd|tofu puffs,soy|legumes,wheat|gluten_cereals,,,80,1 cup,,yes,
+fried-tofu,,,,,,,13,,1 each,no,usda:172451
+frozen-apple,Frozen Apple,iqf apples|apples frozen,,sulphites,,,120,1 cup,,yes,
+frozen-apple,,,,,sliced,,173,1 cup,,no,usda:171694
+frozen-blackberry,Frozen Blackberry,iqf blackberries|blackberries frozen|frozen blackberries,,,,,140,1 cup,,yes,
+frozen-blueberry,Frozen Blueberry,iqf blueberries|blueberries frozen|frozen blueberries,,,,,150,1 cup,,yes,
+frozen-boysenberry,Frozen Boysenberry,frozen boysenberries|iqf boysenberries|boysenberries frozen,,,,,150,1 cup,,yes,
+frozen-french-fries,Frozen French Fries,frozen fries|french fries frozen|frozen shoestring fries|frozen french fry,nightshades,wheat|gluten_cereals|milk|soy,,,900,,1 bag,yes,
+frozen-raspberry,Frozen Raspberry,frozen raspberries|raspberries frozen|raspberry frozen|frzn raspberries|iqf raspberries,,,,,150,1 cup,,yes,
+frozen-spinach,Frozen Spinach,spinach frozen|frzn spinach|iqf spinach|chopped frozen spinach,,,,,156,1 cup,,no,usda:169287
+frozen-strawberry,Frozen Strawberry,frozen strawberries|iqf strawberries|frozen whole strawberries,,,,,150,1 cup,,yes,
+frozen-strawberry,,,,,,,10.6,,1 each,no,usda:168173
+fuji-apple,Fuji Apple,fuji apples|apple fuji|fuji,,,,,200,,1 each,yes,
+fuji-apple,,,,,sliced,,109,1 cup,,no,usda:167793
+fuji-apple,,,,,large,,236,,1 each,no,usda:167793
+fuji-apple,,,,,medium,,192,,1 each,no,usda:167793
+fuji-apple,,,,,small,,158,,1 each,no,usda:167793
+fuyu-persimmon,Fuyu Persimmon,fuyu persimmons|persimmon fuyu|fuyu|persimmon,,,,,168,,1 each,no,usda:169941
+gala-apple,Gala Apple,gala apples|apple gala|gala,,,,,180,,1 each,yes,
+gala-apple,,,,,sliced,,109,1 cup,,no,usda:168204
+gala-apple,,,,,large,,200,,1 each,no,usda:168204
+gala-apple,,,,,medium,,172,,1 each,no,usda:168204
+gala-apple,,,,,small,,157,,1 each,no,usda:168204
+ginger-ale,Ginger Ale,ale ginger|dry ginger ale|ginger ale soda,,sulphites,,,240,1 cup,,yes,
+ginger-ale,,,,,,,30.5,1 fl-oz,,no,usda:174846
+glass-noodle,Glass Noodles,cellophane noodles|bean thread noodles|mung bean noodles|dangmyeon,,legumes|soy,,,100,,1 packet,yes,
+glass-noodle,,,,,,,140,1 cup,,no,usda:174258
+glutinous-rice-flour,Glutinous Rice Flour,sweet rice flour|mochiko|glutinous rice powder|sticky rice flour,,,,,160,1 cup,,yes,
+goji-berry,Goji Berry,goji berries|dried goji berries|wolfberry|wolfberries,,sulphites,,,110,1 cup,,yes,
+goji-berry,,,,,,,28,5 tbsp,,no,usda:173032
+golden-delicious-apple,Golden Delicious Apple,golden delicious|apple golden delicious|golden apple,,,,,180,,1 each,yes,
+golden-delicious-apple,,,,,sliced,,109,1 cup,,no,usda:168202
+golden-delicious-apple,,,,,large,,215,,1 each,no,usda:168202
+golden-delicious-apple,,,,,medium,,169,,1 each,no,usda:168202
+golden-delicious-apple,,,,,small,,129,,1 each,no,usda:168202
+gooseberry,Gooseberry,gooseberries|fresh gooseberries|cape gooseberry,,,,,150,1 cup,,no,usda:173030
+gouda,Gouda,gouda cheese|gouda wheel,milk,,,,113,1 cup,,yes,
+graham-cracker,Graham Crackers,"graham cracker sheets|crackers, graham",wheat|gluten_cereals,milk|soy|egg,,,14,,1 sheet,yes,
+milk-2-percent,2% Milk,milk 2%|2 percent milk|reduced fat milk|2% fat milk,milk,,,,244,1 cup,,no,usda:171267
+milk-2-percent,,,,,,,30.5,1 fl-oz,,no,usda:171267
+abalone,Abalone,fresh abalone|awabi|abalones,mollusks,,,,120,,1 each,yes,
+agar-agar,Agar Agar,agar|agar powder|kanten|agar agar powder,,,,,2,1 tsp,,yes,
+tuna-ahi,Ahi Tuna,ahi|yellowfin tuna|tuna loin|yellow fin tuna|tuna yellowfin,fish,,,,170,,1 each,yes,
+alfalfa-sprout,Alfalfa Sprouts,,,,,,33,1 cup,,no,usda:168384
+alfalfa-sprout,,,,,,,3,1 tbsp,,no,usda:168384
+almond-butter,Almond Butter,smooth almond butter|creamy almond butter,tree_nuts|stone_fruit,peanut,,,250,1 cup,,no,usda:168588
+almond-butter,,,,,,,16,1 tbsp,,no,usda:168588
+almond-milk,Almond Milk,unsweetened almond milk|almond beverage,tree_nuts|stone_fruit,,,,244,1 cup,,no,usda:2705409
+almond-milk,,,,,,,30.5,1 fl-oz,,no,usda:2705409
+almond-paste,Almond Paste,blanched almond paste|marzipan,tree_nuts|stone_fruit,egg,,,230,1 cup,,yes,
+amaranth-greens,Amaranth Greens,callaloo|chinese spinach|een choy|amaranth leaves,,,,,150,,1 bunch,yes,
+amaranth-greens,,,,,,,28,1 cup,,no,usda:168385
+amaranth-greens,,,,,,,14,,1 leaf,no,usda:168385
+american-cheese,American Cheese,american cheese block|processed cheese|yellow american cheese,milk,soy,,,21,,1 slice,no,usda:171290
+american-cheese,,,,,diced,,140,1 cup,,no,usda:171290
+american-cheese,,,,,melted,,244,1 cup,,no,usda:171290
+american-cheese,,,,,shredded,,113,1 cup,,no,usda:171290
+ancho-chile,Ancho Chile,ancho chilies|anchos|ancho peppers|dried poblano,nightshades,sulphites,,,14,,1 each,yes,
+applesauce,Applesauce,apple sauce|smooth applesauce|unsweetened applesauce|Unsweetened apple sauce|apple sauce unsweetened|no sugar added applesauce,,sulphites,,,244,1 cup,,no,usda:171695
+apricot,Apricot,apricots|fresh apricots,stone_fruit,,,,35,,1 each,yes,
+apricot,,,,,halved,,155,1 cup,,no,usda:171697
+apricot,,,,,sliced,,165,1 cup,,no,usda:171697
+apricot-jam,Apricot Jam,apricot preserves|apricot jelly,stone_fruit,sulphites,,,20,1 tbsp,,no,usda:170645
+arrowroot,Arrowroot,arrowroot powder|arrowroot starch|arrow root,,,,,8,1 tbsp,,yes,
+arrowroot,,,,,,,128,1 cup,,no,usda:170684
+asian-pear,Asian Pear,asian pears|korean pear|nashi pear|apple pear,,,,,275,,1 each,yes,
+baby-back-ribs,Baby Back Ribs,bb ribs|pork loin back ribs|baby back rib,,,,,1400,,1 each,yes,
+baby-carrot,Baby Carrot,baby carrots|petite carrots|carrots baby,,,,,10,,1 each,no,usda:168568
+baby-carrot,,,,,,,130,1 cup,,yes,
+baby-carrot,,,,,large,,15,,1 each,no,usda:168568
+baby-carrot,,,,,medium,,10,,1 each,no,usda:168568
+bagel,Bagel,bagels|plain bagel|bagel bread,wheat|gluten_cereals,sesame|egg|milk|soy,,,100,,1 each,yes,
+baguette,Baguette,french bread|baguette bread,wheat|gluten_cereals,milk|soy|sesame,,,250,,1 loaf,yes,
+baguette,,,,,,,139,,1 slice,no,usda:172675
+bamboo-shoot,Bamboo Shoot,bamboo shoots|canned bamboo shoots|sliced bamboo shoots,,,,,131,1 cup,,no,usda:169212
+steel-cut-oats,Steel-Cut Oats,irish oats|irish oatmeal|pinhead oats,gluten_cereals,,,,160,1 cup,,yes,
+steelhead-trout-filet,Steelhead Trout Fillet,steelhead filet|steelhead trout|steelhead trout filet,fish,,,,700,,1 each,yes,
+striped-bass,Striped Bass,striper|rockfish|stripe bass,fish,,,,2000,,1 each,yes,
+snap-pea,Sugar Snap Peas,snap peas,legumes,,,,63,1 cup,,no,usda:170010
+snap-pea,,,,,chopped,,98,1 cup,,no,usda:170010
+sunchoke,Sunchoke,sunchokes|jerusalem artichoke|jerusalem artichokes,,,,,150,1 cup,,yes,
+sunchoke,,,,,sliced,,150,1 cup,,no,usda:169236
+sundried-tomato,Sun-Dried Tomato,sun dried tomatoes|sundried tomatoes|sundried tomato,nightshades,sulphites,,,54,1 cup,,no,usda:168567
+sundried-tomato,,,,,,,2,,1 each,no,usda:168567
+sweet-onion,Sweet Onion,sweet onions|vidalia onion|walla walla onion,allium,,,,331,,1 each,no,usda:170008
+swordfish,Swordfish,sword fish|swordfish steak|swordfish loin,fish,,,,136,,1 each,no,usda:173703
+tamari,Tamari,tamari soy sauce|gluten free soy sauce,soy,wheat|gluten_cereals,,,18,1 tbsp,,no,usda:174278
+tamari,,,,,,,6,1 tsp,,no,usda:174278
+tangerine,Tangerine,tangerines|mandarin tangerine,,,,,88,,1 each,yes,
+tangerine,,,,,,,195,1 cup,,no,usda:169105
+tangerine,,,,,large,,120,,1 each,no,usda:169105
+tangerine,,,,,medium,,88,,1 each,no,usda:169105
+tangerine,,,,,small,,76,,1 each,no,usda:169105
+taro-root,Taro Root,taro|taro roots|dasheen|eddo,,,,,400,,1 each,yes,
+taro-root,,,,,sliced,,104,1 cup,,no,usda:169308
+tequila,Tequila,blanco tequila|silver tequila|tequila blanco,,,,,28,1 fl-oz,,no,usda:2710705
+teriyaki-sauce,Teriyaki Sauce,teriyaki|teriyaki glaze|prepared teriyaki sauce,soy|wheat|gluten_cereals,sesame|allium,,,288,1 cup,,no,usda:171167
+teriyaki-sauce,,,,,,,18,1 tbsp,,no,usda:171167
+teriyaki-sauce,,,,,,,36,1 fl-oz,,no,usda:171167
+tomatillo,Tomatillo,tomatillos|husk tomato,nightshades,,,,35,,1 each,yes,
+tomatillo,,,,,chopped,,66,0.5 cup,,no,usda:168566
+tomatillo,,,,,medium,,34,,1 each,no,usda:168566
+tomato-juice,Tomato Juice,juice tomato|bottled tomato juice,nightshades,celery,,,243,1 cup,,no,usda:170545
+tomato-juice,,,,,,,30.4,1 fl-oz,,no,usda:170545
+tortilla-chip,Tortilla Chips,tortilla chip|corn tortilla chips|chips tortilla,,milk|soy|wheat|gluten_cereals,,,300,,1 bag,yes,
+turbinado-sugar,Turbinado Sugar,turbinado|raw sugar|sugar in the raw,,,,,202,1 cup,,no,usda:170674
+turbinado-sugar,,,,,,,4.6,1 tsp,,no,usda:170674
+unsweetened-chocolate,Unsweetened Chocolate,baking chocolate|bitter chocolate|unsweetened baking chocolate|100% cacao chocolate,,milk|soy|tree_nuts,,,170,1 cup,,yes,
+unsweetened-chocolate,,,,,grated,,132,1 cup,,no,usda:167568
+vodka,Vodka,plain vodka|vodka liquor,,gluten_cereals,,,27.8,1 fl-oz,,no,usda:174818
+wakame,Wakame,fresh wakame|raw wakame|wakame seaweed,,,,,60,1 cup,,yes,
+wakame,,,,,,,10,2 tbsp,,no,usda:170496
+wasabi-paste,Wasabi Paste,wasabi|prepared wasabi|wasabi pastes,,mustard|soy|milk,,,6,1 tsp,,yes,
+wasabi-paste,,,,,,,16,1 tbsp,,no,usda:2710103
+watercress,Watercress,water cress|fresh watercress|cress,,,,,40,,1 bunch,yes,
+watercress,,,,,,,2.5,,1 sprig,no,usda:170068
+watercress,,,,,chopped,,34,1 cup,,no,usda:170068
+wax-bean,Wax Beans,yellow wax beans|yellow beans,legumes,,,,100,1 cup,,no,usda:169320
+whisky,Whisky,whiskey|scotch whisky,,gluten_cereals,,,27.8,1 fl-oz,,no,usda:174819
+chocolate-white,White Chocolate,white choc|white couverture,milk,soy|tree_nuts,,,170,1 cup,,yes,
+chocolate-white,,,,,,,14,1 tbsp,,no,usda:167571
+white-chocolate-chip,White Chocolate Chips,white choc chips|white chocolate morsels,milk,soy|tree_nuts,,,170,1 cup,,yes,
+white-chocolate-chip,,,,,,,14,1 tbsp,,no,usda:167571
+white-corn,White Corn,corn white|white sweet corn|white corn on the cob,,,,,100,,1 ear,yes,
+white-corn,,,,,,,154,1 cup,,no,usda:168538
+white-corn,,,,,large,,143,,1 ear,no,usda:168538
+white-corn,,,,,medium,,90,,1 ear,no,usda:168538
+white-corn,,,,,small,,73,,1 ear,no,usda:168538
+white-rice-flour,White Rice Flour,rice flour|flour white rice|fine rice flour,,,,,158,1 cup,,no,usda:169714
+sticky-rice-white,White Sticky Rice,sticky rice|glutinous rice|sweet rice|sticky rice white,,,,,185,1 cup,,no,usda:168883
+whole-duck,Whole Duck,duck|whole ducks|pekin duck|duckling,,,,,2000,,1 each,yes,
+king-crab-whole,Whole King Crab,king crab|alaskan king crab|red king crab,shellfish,,,,2700,,1 each,yes,
+rabbit-whole,Whole Rabbit,rabbit|fryer rabbit|whole fryer rabbit|rabbit whole,,,,,1400,,1 each,yes,
+turkey-whole,Whole Turkey,turkey|whole turkeys|fresh whole turkey|turkey whole|turkey meat|fresh turkey,,,,,6400,,1 each,yes,
+bread-whole-wheat,Whole Wheat Bread,wholewheat bread|ww bread|whole wheat loaf|wholemeal bread|brown bread,wheat|gluten_cereals,soy|milk|egg|sesame,,,680,,1 loaf,yes,
+bread-whole-wheat,,,,,,,32,,1 slice,no,usda:172688
+wild-rice,Wild Rice,wild rice grain|wild rices|lake wild rice,,,,,160,1 cup,,no,usda:169726
+wonton-wrapper,Wonton Wrapper,wonton wrappers|wonton skins|wonton wrap|wonton skin,wheat|gluten_cereals,egg|soy,,,8,,1 sheet,yes,
+wood-ear-mushroom,Wood Ear Mushroom,wood ear mushrooms|woodear mushroom|black fungus|cloud ear mushroom,,,,,60,1 cup,,yes,
+wood-ear-mushroom,,,,,,,6,,1 each,no,usda:169237
+wood-ear-mushroom,,,,,sliced,,99,1 cup,,no,usda:169237
+bell-pepper-yellow,Yellow Bell Pepper,yellow pepper|yellow peppers|yellow capsicum,nightshades,,,,150,,1 each,yes,
+bell-pepper-yellow,,,,,large,,186,,1 each,no,usda:169383
+yellowtail,Yellowtail,hamachi|yellowtail amberjack|whole yellowtail|buri,fish,,,,3000,,1 each,yes,
+yellowtail-filet,Yellowtail Fillet,hamachi filet|yellowtail amberjack filet|hamachi loin|yellowtail filet,fish,,,,800,,1 each,yes,
+yuca,Yuca,cassava|yuca root|manioc|yucca root|yucas,,,,,700,,1 each,yes,
+yuca,,,,,,,206,1 cup,,no,usda:169985
+maraschino-cherry,Maraschino Cherry,maraschino cherries|cocktail cherries|cherries in syrup,stone_fruit|sulphites,,,,5,,1 each,no,usda:167766
+margarine,Margarine,margarine spread|vegetable margarine|oleo,,milk|soy,,,227,1 cup,,no,usda:172346
+margarine,,,,,,,14,1 tbsp,,no,usda:172346
+margarine,,,,,,,4.7,1 tsp,,no,usda:172346
+margarine,,,,,,,113,,1 stick,no,usda:172346
+masa-harina,Masa Harina,"masa harina, instant|instant masa harina|instant masa|nixtamalized corn flour|Masa flour|masa|corn masa flour|flour, masa",,,,,114,1 cup,,no,usda:169694
+mesclun,Mesclun,mesclun mix|mesclun greens|spring mix|mixed baby greens|Mixed greens|salad mix|salad greens|mixed salad greens,,,,,35,1 cup,,no,usda:2709792
+milk-chocolate,Milk Chocolate,milk chocolate chips|milk choc|milk chocolate couverture,milk,soy|tree_nuts|wheat|gluten_cereals,,,170,1 cup,,yes,
+milk-powder,Milk Powder,dry milk powder|nonfat dry milk|powdered milk|dried milk,milk,,,,30,0.25 cup,,no,usda:170877
+milk-powder,,,,,,,23,5 tbsp,,no,usda:170877
+miso,Miso,miso paste,soy,wheat|gluten_cereals,,,275,1 cup,,no,usda:172442
+miso,,,,,,,17,1 tbsp,,no,usda:172442
+monterey-jack,Monterey Jack,monterrey jack|jack cheese|monterey jack cheese|Shredded Monterey Jack|shredded monterrey jack|shredded monterey jack cheese|monterey jack shredded|jack cheese shredded,milk,,,,113,1 cup,,yes,
+monterey-jack,,,,,,,28,,1 slice,no,usda:170844
+monterey-jack,,,,,diced,,132,1 cup,,no,usda:170844
+monterey-jack,,,,,shredded,,113,1 cup,,no,usda:170844
+mortadella,Mortadella,"italian mortadella|mortadella ham|bologna, mortadella",,tree_nuts|milk|soy|sulphites,,,15,,1 slice,no,usda:174573
+muenster,Muenster,muenster cheese|munster cheese,milk,,,,28,,1 slice,no,usda:171245
+muenster,,,,,diced,,132,1 cup,,no,usda:171245
+muenster,,,,,shredded,,113,1 cup,,no,usda:171245
+multigrain-bread,Multigrain Bread,"multi grain bread|multigrain loaf|bread, multigrain",wheat|gluten_cereals,milk|soy|sesame|tree_nuts,,,40,,1 slice,yes,
+mustard-green,Mustard Greens,gai choy|indian mustard greens,,mustard,,,200,,1 bunch,yes,
+mustard-green,,,,,chopped,,56,1 cup,,no,usda:169256
+mustard-powder,Mustard Powder,ground mustard|dry mustard|dried mustard|mustard flour,mustard,,,,6.3,1 tbsp,,no,usda:170929
+mustard-powder,,,,,,,2,1 tsp,,no,usda:170929
+naan,Naan,naan bread|naan flatbread|garlic naan,wheat|gluten_cereals,milk|egg|soy,,,90,,1 each,no,usda:171845
+nectarine,Nectarine,nectarines|fresh nectarine,stone_fruit,,,,140,,1 each,yes,
+nectarine,,,,,sliced,,143,1 cup,,no,usda:169914
+nectarine,,,,,large,,156,,1 each,no,usda:169914
+nectarine,,,,,medium,,142,,1 each,no,usda:169914
+nectarine,,,,,small,,129,,1 each,no,usda:169914
+ny-strip-steak,New York Strip Steak,ny strip|new york strip|strip steak|ny strip steak|striploin steak,,,,,340,,1 each,yes,
+oat-flour,Oat Flour,flour oat|ground oats|oats flour,gluten_cereals,wheat,,,104,1 cup,,no,usda:169741
+oat-milk,Oat Milk,oatmilk|oat beverage|non dairy oat milk,gluten_cereals,wheat|soy,,,244,1 cup,,no,usda:2705412
+oat-milk,,,,,,,30.5,1 fl-oz,,no,usda:2705412
+octopus,Octopus,whole octopus|pulpo|fresh octopus,mollusks,,,,1800,,1 each,yes,
+onion-flake,Onion Flakes,dried onion flakes|dehydrated onion flakes|dried onion|minced dried onion,allium,,,,2,1 tsp,,yes,
+onion-flake,,,,,,,14,0.25 cup,,no,usda:170002
+onion-flake,,,,,,,5,1 tbsp,,no,usda:170002
+orange-marmalade,Orange Marmalade,marmalade|seville orange marmalade|orange preserve,,sulphites,,,320,1 cup,,no,usda:168819
+orange-marmalade,,,,,,,20,1 tbsp,,no,usda:168819
+oxtail,Oxtail,beef oxtail|oxtails|whole oxtail,,,,,1400,,1 each,yes,
+oxtail,,,,,,,135,1 cup,,no,usda:2705843
+oyster-mushroom,Oyster Mushroom,oyster mushrooms|pleurotus,,,,,85,1 cup,,yes,
+oyster-sauce,Oyster Sauce,oyster flavored sauce,mollusks,wheat|gluten_cereals|soy,,,16,1 tbsp,,no,usda:2707150
+papaya,Papaya,papayas|fresh papaya|pawpaw,,,,,500,,1 each,yes,
+papaya,,,,,,,145,1 cup,,no,usda:169926
+papaya,,,,,mashed,,230,1 cup,,no,usda:169926
+papaya,,,,,large,,781,,1 each,no,usda:169926
+papaya,,,,,small,,157,,1 each,no,usda:169926
+pasilla-chile,Pasilla Chile,pasilla|pasillas|pasilla chilies|dried pasilla chile|chile negro,nightshades,sulphites,,,8,,1 each,yes,
+passion-fruit,Passion Fruit,passionfruit|maracuya|granadilla,,,,,40,,1 each,yes,
+passion-fruit,,,,,,,236,1 cup,,no,usda:169108
+pecorino-romano,Pecorino Romano,pecorino|romano cheese|pecorino cheese|Grated pecorino|pecorino grated|grated pecorino cheese|pecorino romano grated,milk,,,,100,1 cup,,yes,
+pectin,Pectin,pectin powder|powdered pectin|fruit pectin|Apple pectin|apple pectin powder,,,,,3,1 tsp,,yes,
+pepperoni,Pepperoni,peperoni|pepperoni stick|sliced pepperoni|pepperoni salami,nightshades,milk|soy|sulphites,,,2.5,,1 slice,yes,
+pepperoni,,,,,,,2,,1 each,no,usda:174575
+phyllo-dough,Phyllo Dough,filo dough|phyllo|filo pastry|phyllo sheets,wheat|gluten_cereals,soy|milk,,,18,,1 sheet,yes,
+pickled-ginger,Pickled Ginger,gari|sushi ginger|beni shoga,,sulphites,,,15,1 tbsp,,yes,
+pickled-ginger,,,,,,,240,1 cup,,no,usda:2710082
+pickled-jalapeno,Pickled Jalapeno,pickled jalapenos|jalapenos en escabeche|nacho jalapenos,nightshades,sulphites,,,15,1 tbsp,,yes,
+pickled-jalapeno,,,,,chopped,,136,1 cup,,no,usda:170080
+pickled-jalapeno,,,,,sliced,,104,1 cup,,no,usda:170080
+pineapple-juice,Pineapple Juice,juice pineapple|canned pineapple juice|bottled pineapple juice,,sulphites,,,250,1 cup,,no,usda:169947
+pineapple-juice,,,,,,,31.3,1 fl-oz,,no,usda:169947
+pink-grapefruit,Pink Grapefruit,ruby red grapefruit|grapefruit pink,,,,,123,,0.5 each,no,usda:174673
+pita,Pita,pita bread|pitas|pocket bread|pita breads,wheat|gluten_cereals,sesame|soy|milk,,,60,,1 each,yes,
+poblano,Poblano Pepper,poblano|poblanos|poblano chile|poblano peppers,nightshades,,,,100,,1 each,yes,
+pomegranate-juice,Pomegranate Juice,pom juice|bottled pomegranate juice,,sulphites,,,249,1 cup,,no,usda:167787
+pomegranate-juice,,,,,,,31.4,1 fl-oz,,no,usda:167787
+popcorn,Popcorn,popped corn|popped popcorn,,milk|soy,,,8,1 cup,,no,usda:167959
+pork-bone,Pork Bones,pork neck bones|pork soup bones,,,,,400,,1 each,yes,
+pork-bone,,,,,,,55,1 cup,,no,usda:2705897
+pork-fat,Pork Fat,pig fat,,,,,200,1 cup,,yes,
+pork-hock,Pork Hock,pork hocks|ham hock|ham hocks|pork knuckle,,sulphites,,,700,,1 each,yes,
+pork-hock,,,,,,,140,1 cup,,no,usda:2705900
+pork-loin,Pork Loin,pork loins|boneless pork loin|center cut pork loin,,,,,1600,,1 each,yes,
+pork-rib,Pork Ribs,pork rib|spare ribs|rack of pork ribs,,,,,1100,,1 each,yes,
+pork-sausage,Pork Sausage,raw pork sausage|sausage pork|fresh pork sausage|italian pork sausage,,milk|soy|wheat|gluten_cereals|sulphites|allium,,,85,,1 each,yes,
+pork-tenderloin,Pork Tenderloin,pork tender|pork filet|pork loin tenderloin,,,,,450,,1 each,yes,
+prosciutto,Prosciutto,dry cured ham,,sulphites|milk,,,15,,1 slice,yes,
+prosciutto,,,,,,,56,1 cup,,no,usda:2705879
+dried-chickpea,Dried Chickpeas,dry chickpeas|dried garbanzo beans|dry garbanzos,legumes,,,,200,1 cup,,no,usda:173756
+dried-chickpea,,,,,,,12.5,1 tbsp,,no,usda:173756
+dried-cilantro,Dried Cilantro,"cilantro, dried|dried cilantro leaf|dried coriander leaf|cilantro flakes",,,,,1.8,1 tbsp,,no,usda:170921
+dried-cilantro,,,,,,,0.6,1 tsp,,no,usda:170921
+dried-cranberry,Dried Cranberry,dried cranberries|craisins|dry cranberries|sweetened dried cranberries,,sulphites,,,40,0.25 cup,,no,usda:171723
+dried-cranberry-bean,Dried Cranberry Beans,cranberry beans dried|romano beans|Dried borlotti bean|borlotti beans dried|dried borlotti beans|cranberry beans,legumes,,,,195,1 cup,,no,usda:175189
+dried-currant,Dried Currant,dried currants|zante currants|dry currants,,sulphites,,,144,1 cup,,no,usda:171724
+dried-fava-bean,Dried Fava Beans,dried fava bean|dry fava beans|fava beans dried|dried broad beans,legumes,,,,150,1 cup,,no,usda:175205
+dried-fava-bean,,,,,,,9.4,1 tbsp,,no,usda:175205
+dried-fig,Dried Fig,"figs, dried|dried figs|mission figs dried|dried mission fig",,sulphites,,,149,1 cup,,no,usda:174665
+great-northern-bean,Dried Great Northern Beans,great northern beans dried|great northern beans,legumes,,,,183,1 cup,,no,usda:175190
+dried-mango,Dried Mango,dried mangoes|dried mangos|dry mango|mango dried,,sulphites,,,160,1 cup,,no,usda:2709205
+dried-peach,Dried Peach,dried peaches|dehydrated peach|peaches dried,stone_fruit,sulphites,,,130,1 cup,,yes,
+dried-peach,,,,,halved,,160,1 cup,,no,usda:169934
+dried-pear,Dried Pear,dried pears|dehydrated pear|pears dried,,sulphites,,,130,1 cup,,yes,
+dried-pear,,,,,halved,,180,1 cup,,no,usda:169121
+dried-pineapple,Dried Pineapple,pineapple dried|dried pineapple chunks|dry pineapple,,sulphites,,,160,1 cup,,no,usda:2709210
+dried-shiitake,Dried Shiitake,dried shiitakes|dried shiitake mushrooms|dried shitake|dry shiitake,,sulphites,,,30,1 cup,,yes,
+dried-sour-cherry,Dried Sour Cherry,dried sour cherries|dry sour cherry|dried montmorency cherries,stone_fruit,sulphites,,,40,0.25 cup,,no,usda:171708
+dried-soybean,Dried Soybeans,dried soy beans|dry soybeans|soy beans dried|soybean,soy|legumes,,,,186,1 cup,,no,usda:174270
+duck-egg,Duck Egg,duck eggs|fresh duck eggs|whole duck egg,egg,,,,70,,1 each,yes,
+duck-liver,Duck Liver,duck livers|fresh duck livers|livers duck,,,,,50,,1 each,yes,
+duck-sauce,Duck Sauce,sauce duck|prepared duck sauce|plum duck sauce,,soy|wheat|gluten_cereals|sulphites,,,33,2 tbsp,,no,usda:171823
+dulce-de-leche,Dulce de Leche,"dulce de leche, canned|canned dulce de leche|cajeta|milk caramel",milk,,,,380,,1 can,yes,
+dulce-de-leche,,,,,,,300,1 cup,,no,usda:2705699
+dungeness-crab-meat,Dungeness Crab Meat,dungenous crab meat|dungeness crabmeat|picked dungeness crab|dungeness crab,shellfish,sulphites,,,135,1 cup,,yes,
+durian,Durian,durian fruit|fresh durian,,,,,2000,,1 each,yes,
+durian,,,,,chopped,,243,1 cup,,no,usda:168192
+egg-powder,Egg Powder,"egg powder, sifted|dried egg powder|dry egg powder|powdered egg|Whole egg powder|egg whole powder|dried whole egg|powdered whole egg",egg,,,,85,1 cup,,yes,
+egg-powder,,,,,,,5,1 tbsp,,no,usda:172188
+egg-powder,,,,,sifted,,85,1 cup,,no,usda:172188
+egg-yolk-powder,Egg Yolk Powder,powdered egg yolk|dried egg yolk|eggyolk powder,egg,,,,90,1 cup,,yes,
+egg-yolk-powder,,,,,,,4,1 tbsp,,no,usda:173428
+egg-yolk-powder,,,,,sifted,,67,1 cup,,no,usda:173428
+endive,Endive,endives|belgian endive|belgium endive|witloof,,,,,45,0.5 cup,,no,usda:170404
+endive,,,,,,,53,,1 head,no,usda:170404
+english-muffin,English Muffin,english muffins|muffin english,wheat|gluten_cereals,milk|soy|egg|sesame,,,60,,1 each,yes,
+enoki,Enoki Mushroom,enoki mushrooms|enoki|enokis|enokitake,,,,,3,,1 each,no,usda:169382
+enoki,,,,,,,150,,1 packet,yes,
+enoki,,,,,,,64,1 cup,,no,usda:169382
+enoki,,,,,sliced,,65,1 cup,,no,usda:169382
+enoki,,,,,large,,5,,1 each,no,usda:169382
+enoki,,,,,medium,,3,,1 each,no,usda:169382
+epazote,Epazote,fresh epazote|herb epazote|epazote leaves,,,,,30,,1 bunch,yes,
+epazote,,,,,,,0.8,1 tbsp,,no,usda:169398
+epazote,,,,,,,2,,1 sprig,no,usda:169398
+espresso,Espresso,brewed espresso|espresso shot|pulled espresso,,,,,29.6,1 fl-oz,,no,usda:171891
+farfalle,Farfalle,farfalle pasta|bow tie pasta|bowtie pasta|butterfly pasta,wheat|gluten_cereals,egg,,,100,1 cup,,yes,
+fatback,Fatback,fat back|back fat|pork fatback|pork back fat,,sulphites,,,200,1 cup,,yes,
+fenugreek-seed,Fenugreek Seed,fenugreek seeds|fenugreek|methi seeds|whole fenugreek,,,,,11.1,1 tbsp,,no,usda:171324
+fenugreek-seed,,,,,,,3.7,1 tsp,,no,usda:171324
+black-bean-sauce,Fermented Black Bean Sauce,black bean garlic sauce|douchi sauce,soy|legumes,wheat|gluten_cereals|allium|sesame,,,16,1 tbsp,,no,usda:2707404
+fig,Fig,figs|fresh figs|brown turkey figs,,,,,50,,1 each,yes,
+fig,,,,,large,,64,,1 each,no,usda:173021
+fig,,,,,medium,,50,,1 each,no,usda:173021
+fig,,,,,small,,40,,1 each,no,usda:173021
+banana-pepper,Banana Pepper,banana peppers|hungarian wax pepper,nightshades,,,,35,,1 each,yes,
+banana-pepper,,,,,,,124,1 cup,,no,usda:169394
+banana-pepper,,,,,large,,75,,1 each,no,usda:169394
+banana-pepper,,,,,medium,,46,,1 each,no,usda:169394
+banana-pepper,,,,,small,,33,,1 each,no,usda:169394
+pear-bartlett,Bartlett Pear,bartlett pears|williams pear,,,,,180,,1 each,yes,
+pear-bartlett,,,,,sliced,,140,1 cup,,no,usda:746773
+bean-sprout,Bean Sprouts,mung bean sprouts|beansprouts,legumes,,,,104,1 cup,,no,usda:169957
+beef-bottom-round,Beef Bottom Round,bottom round|bottom round roast|beef round bottom|gooseneck round,,,,,4500,,1 each,yes,
+beef-bouillon,Beef Bouillon,beef bouillon cubes|beef stock concentrate,,soy|wheat|gluten_cereals|celery|milk|allium,,,6,1 tsp,,yes,
+beef-coulotte,Beef Coulotte,coulotte|picanha|top sirloin cap|culotte steak,,,,,1100,,1 each,yes,
+beef-flank-steak,Beef Flank Steak,flank steak|flank steaks,,,,,900,,1 each,yes,
+flat-iron-steak,Beef Flat Iron Steak,beef flat iron|flat iron steaks|top blade steak|flat iron|flat iron steak,,,,,230,,1 each,yes,
+beef-heart,Beef Heart,beef hearts|heart beef|ox heart,,,,,1800,,1 each,yes,
+beef-liver,Beef Liver,beef livers|ox liver|liver beef,,,,,1500,,1 each,yes,
+beef-plate-steak,Beef Short Plate,plate steak|plate steaks|beef plate|outside skirt plate|beef plate steak|short plate,,,,,340,,1 each,yes,
+beef-porterhouse,Beef Porterhouse,porterhouse|porterhouse steak|beef porterhouse steak|porterhouse steaks,,,,,700,,1 each,yes,
+prime-rib,Beef Prime Rib,prime rib|prime rib roast|beef prime rib roast|standing rib roast|rib roast,,,,,4500,,1 each,yes,
+beef-rib,Beef Back Ribs,beef ribs|bone-in beef rib|beef rib|back ribs,,,,,300,,1 each,yes,
+beef-shank,Beef Shank,beef shanks|cross cut beef shank|osso buco beef,,,,,400,,1 each,yes,
+beef-shoulder-clod,Beef Shoulder Clod,shoulder clod|beef clod|clod heart|chuck shoulder clod,,,,,6500,,1 each,yes,
+skirt-steak,Beef Skirt Steak,skirt steak|skirt steaks|outside skirt|inside skirt,,,,,450,,1 each,yes,
+strip-loin,Beef Strip Loin,striploin|beef striploin|strip loin|new york strip loin|ny strip loin,,,,,5000,,1 each,yes,
+t-bone-steak,Beef T-Bone Steak,t-bone|tbone|tbone steak|beef t-bone|t-bone steak,,,,,500,,1 each,yes,
+beef-tallow,Beef Tallow,tallow|rendered beef fat|beef fat,,,,,205,1 cup,,no,usda:171400
+beef-tallow,,,,,,,12.8,1 tbsp,,no,usda:171400
+beef-tenderloin,Beef Tenderloin,psmo|beef psmo|whole beef filet|tenderloin,,,,,2300,,1 each,yes,
+beef-tongue,Beef Tongue,beef tongues|ox tongue|lengua|tongue beef,,,,,1400,,1 each,yes,
+beef-top-blade,Beef Top Blade,top blade|top blade roast,,,,,1100,,1 each,yes,
+top-round,Beef Top Round,top round|beef top round roast|top round roast|inside round,,,,,2500,,1 each,yes,
+tri-tip,Beef Tri-Tip,tri-tip|tri-tip roast|tri tip steak,,,,,900,,1 each,yes,
+beer,Beer,beers|lager|ale|draft beer,gluten_cereals,wheat|sulphites,,,355,,1 bottle,yes,
+beer,,,,,,,29.7,1 fl-oz,,no,usda:168746
+beet-juice,Beet Juice,beetroot juice|beet root juice|fresh beet juice,,,,,240,1 cup,,yes,
+beet-juice,,,,,,,31,1 fl-oz,,no,usda:2709682
+bibb-lettuce,Bibb Lettuce,boston bibb lettuce|boston lettuce|bibb|limestone lettuce,,,,,163,,1 head,no,usda:168429
+bibb-lettuce,,,,,,,5,,1 leaf,no,usda:168429
+bibb-lettuce,,,,,large,,15,,1 leaf,no,usda:168429
+bibb-lettuce,,,,,medium,,7.5,,1 leaf,no,usda:168429
+bitter-melon,Bitter Melon,bitter gourd|karela|bitter squash,,,,,200,,1 each,yes,
+bitter-melon,,,,,,,93,1 cup,,no,usda:168393
+black-bass,Black Bass,black sea bass|sea bass black|whole black bass,fish,,,,1400,,1 each,yes,
+black-cod,Black Cod,sablefish|butterfish|black cod fillet,fish,,,,900,,1 each,yes,
+blackcurrant,Blackcurrant,black currants|black currant|cassis,,,,,112,1 cup,,no,usda:173963
+blood-sausage,Blood Sausage,blood sausages|black pudding|morcilla|boudin noir,,milk|allium|sulphites|gluten_cereals|wheat,,,100,,1 each,yes,
+blood-sausage,,,,,,,100,,4 slice,no,usda:171618
+chocolate-sprinkles,Chocolate Sprinkles,chocolate jimmies|jimmies|chocolate vermicelli,,milk|soy|wheat|gluten_cereals|tree_nuts,,,10,1 tbsp,,yes,
+chocolate-sprinkles,,,,,,,160,1 cup,,no,usda:2710334
+chocolate-syrup,Chocolate Syrup,chocolate sauce|hersheys syrup|chocolate flavored syrup,,milk|soy|wheat,,,19,1 tbsp,,yes,
+chocolate-syrup,,,,,,,300,1 cup,,no,usda:174117
+clarified-butter,Clarified Butter,drawn butter|clarified sweet butter,milk,,,,224,1 cup,,no,usda:2710168
+clarified-butter,,,,,,,14,1 tbsp,,no,usda:2710168
+club-soda,Club Soda,soda water|club soda water|seltzer,,,,,240,1 cup,,yes,
+club-soda,,,,,,,29.6,1 fl-oz,,no,usda:174842
+cockle,Cockle,cockles|cockle clams|berberechos,mollusks,,,,150,1 cup,,yes,
+cocktail-sauce,Cocktail Sauce,seafood cocktail sauce|shrimp cocktail sauce|cocktail sauces,nightshades,fish|shellfish|soy|wheat|gluten_cereals|sulphites|allium,,,17,1 tbsp,,no,usda:2709753
+cocoa-butter,Cocoa Butter,coco butter|cacao butter|cocoa butter wafers,,milk,,,218,1 cup,,no,usda:171421
+cocoa-butter,,,,,,,13.6,1 tbsp,,no,usda:171421
+cocoa-butter,,,,,,,4.5,1 tsp,,no,usda:171421
+coconut-cream,Coconut Cream,cream of coconut|canned coconut cream|thick coconut milk,,tree_nuts|sulphites,,,240,1 cup,,no,usda:170580
+coconut-cream,,,,,,,15,1 tbsp,,no,usda:170580
+coconut-flour,Coconut Flour,coco flour|coconut flours|organic coconut flour,,tree_nuts,,,112,1 cup,,yes,
+coconut-water,Coconut Water,coco water|young coconut water,,tree_nuts,,,245,1 cup,,no,usda:174831
+coconut-yogurt,Coconut Yogurt,coconut milk yogurt|dairy free coconut yogurt,,tree_nuts|soy,,,226,1 cup,,no,usda:2707569
+colby-jack,Colby Jack,colby jack cheese|colby jack block|marbled colby jack,milk,,,,113,1 cup,,yes,
+colby-jack,,,,,,,21,,1 slice,no,usda:2705713
+colby-jack,,,,,,,28.35,,1 stick,no,usda:2705713
+colby-jack,,,,,diced,,132,1 cup,,no,usda:2705713
+colby-jack,,,,,melted,,244,1 cup,,no,usda:2705713
+colby-jack,,,,,shredded,,113,1 cup,,no,usda:2705713
+concord-grape,Concord Grape,concord grapes|concords,,,,,92,1 cup,,no,usda:174682
+coriander-seed,Coriander Seed,coriander seeds|whole coriander|coriander|corriander seed|whole coriander seed,,,,,5,1 tbsp,,no,usda:170922
+coriander-seed,,,,,,,1.8,1 tsp,,no,usda:170922
+corn-flour,Corn Flour,white corn flour|yellow corn flour|fine corn flour,,gluten_cereals,,,117,1 cup,,no,usda:170290
+corn-oil,Corn Oil,cornoil|refined corn oil,,,,,218,1 cup,,no,usda:171029
+corn-oil,,,,,,,13.6,1 tbsp,,no,usda:171029
+corn-oil,,,,,,,4.5,1 tsp,,no,usda:171029
+cornish-hen,Cornish Hen,cornish game hen|whole cornish hen|cornish hens|poussin,,,,,700,,1 each,yes,
+cotija,Cotija,cotija cheese|queso cotija|cotija block|Crumbled cotija|cotija crumbles|cotija crumbled|crumbled cotija cheese|cotija cheese crumbles,milk,,,,100,1 cup,,yes,
+cotija,,,,,,,5,2 tsp,,no,usda:170898
+cottage-cheese,Cottage Cheese,cottage cheeses|curd cheese|small curd cottage cheese,milk,,,,210,1 cup,,no,usda:2705748
+cranberry-juice,Cranberry Juice,cranberry juices|cranberry juice cocktail|unsweetened cranberry juice,,sulphites,,,253,1 cup,,no,usda:168117
+cranberry-juice,,,,,,,31.6,1 fl-oz,,no,usda:168117
+cranberry-sauce,Cranberry Sauce,cranberry sauces|whole berry cranberry sauce|jellied cranberry sauce,,sulphites,,,20,1 tbsp,,yes,
+cranberry-sauce,,,,,,,277,1 cup,,no,usda:173961
+cranberry-sauce,,,,,,,57,,1 slice,no,usda:173961
+crayfish,Crayfish,crawfish|crawdads|craw fish|whole crawfish,shellfish,,,,30,,1 each,yes,
+cream-of-tartar,Cream of Tartar,cream of tartar powder|potassium bitartrate|tartaric acid powder,,,,,3,1 tsp,,no,usda:175041
+cream-of-wheat,Cream of Wheat,farina|wheat farina|hot wheat cereal,wheat|gluten_cereals,,,,194,1 cup,,no,usda:173010
+cream-of-wheat,,,,,,,33,3 tbsp,,no,usda:173010
+crouton,Croutons,salad croutons|seasoned croutons,wheat|gluten_cereals,milk|soy|egg|allium,,,30,1 cup,,no,usda:172751
+curly-parsley,Curly Parsley,curly leaf parsley|curled parsley|parsley curly,,,,,60,,1 bunch,yes,
+curly-parsley,,,,,,,3.8,1 tbsp,,no,usda:170416
+curly-parsley,,,,,,,10,,10 sprig,no,usda:170416
+curly-parsley,,,,,chopped,,60,1 cup,,no,usda:170416
+currant,Currant,currants|fresh currants|red currants,,,,,112,1 cup,,no,usda:173964
+cuttlefish,Cuttlefish,cuttle fish|seppia|fresh cuttlefish,mollusks,,,,300,,1 each,yes,
+daikon,Daikon Radish,daikon|white radish|mooli|daikon radishes,,,,,600,,1 each,yes,
+daikon,,,,,sliced,,116,1 cup,,no,usda:168451
+dandelion-greens,Dandelion Greens,dandelion green|dandelion leaves|italian dandelion,,,,,150,,1 bunch,yes,
+dandelion-greens,,,,,chopped,,55,1 cup,,no,usda:169226
+corn-syrup-dark,Dark Corn Syrup,"corn syrup, dark|dark karo syrup|dark karo",,sulphites,,,328,1 cup,,no,usda:168836
+corn-syrup-dark,,,,,,,20,1 tbsp,,no,usda:168836
+dark-rum,Dark Rum,dark rums|black rum|aged rum,,sulphites,,,27.8,1 fl-oz,,no,usda:174817
+deglet-noor-date,Deglet Noor Date,deglet noor dates|deglet nour dates|deglet noor,,sulphites,,,7.1,,1 each,no,usda:171726
+deglet-noor-date,,,,,chopped,,147,1 cup,,no,usda:171726
+diastatic-malt-powder,Diastatic Malt Powder,diastatic malt|malted barley flour|diastatic barley malt powder,gluten_cereals,wheat,,,3,1 tsp,,yes,
+diastatic-malt-powder,,,,,,,162,1 cup,,no,usda:169740
+dill-seed,Dill Seed,dill seeds|whole dill seed,,,,,6.6,1 tbsp,,no,usda:170925
+dill-seed,,,,,,,2.1,1 tsp,,no,usda:170925
+dragon-fruit,Dragon Fruit,pitaya|pitahaya|dragonfruit,,,,,400,,1 each,yes,
+dragon-fruit,,,,,,,180,1 cup,,no,usda:2709234
+dragon-fruit,,,,,,,7,,1 slice,no,usda:2709234
+adzuki-bean,Dried Adzuki Beans,adzuki beans|azuki beans,legumes,,,,197,1 cup,,no,usda:173727
+dried-apple,Dried Apple,dried apples|dry apple|apple dried|dehydrated apple,,sulphites,,,86,1 cup,,no,usda:171691
+black-eyed-pea-dried,Dried Black-Eyed Peas,black eyed peas dried|black-eyed peas|cowpeas,legumes,,,,167,1 cup,,no,usda:173758
+black-eyed-pea-dried,,,,,,,10.5,1 tbsp,,no,usda:173758
+dried-blueberry,Dried Blueberry,dried blueberries|blueberries dried,,sulphites,,,40,0.25 cup,,no,usda:168158
+butter-bean-dried,Dried Lima Beans,butter beans dried|dried butter beans|dry butter beans|dried butter bean,legumes,,,,178,1 cup,,no,usda:174252
+butter-bean-dried,,,,,,,11.1,1 tbsp,,no,usda:174252
+dried-cherry,Dried Cherry,dried cherries|cherries dried|dried tart cherries,stone_fruit,sulphites,,,160,1 cup,,no,usda:2709199
+dried-cherry,,,,,,,1,,1 each,no,usda:2709199
+canned-pimento,Canned Pimento Pepper,canned pimento peppers|pimentos|canned pimientos|jarred pimento,nightshades,,,,113,,1 can,yes,
+canned-pimento,,,,,,,192,1 cup,,no,usda:168559
+canned-pimento,,,,,,,12,1 tbsp,,no,usda:168559
+canned-pimento,,,,,,,1,,1 slice,no,usda:168559
+canned-pineapple,Canned Pineapple,pineapple canned|tinned pineapple|pineapple chunks canned|pineapple rings canned,,sulphites,,,570,,1 can,yes,
+tomato-canned,Canned Tomato,canned tomatoes|tinned tomatoes|peeled canned tomatoes|tomatoes canned,nightshades,,,,111,,1 each,no,usda:170051
+tomato-canned,,,,,,,794,,1 can,yes,
+tomato-canned,,,,,,,240,1 cup,,no,usda:170051
+tomato-canned,,,,,,,15,1 tbsp,,no,usda:170051
+tomato-canned,,,,,large,,164,,1 each,no,usda:170051
+tomato-canned,,,,,medium,,111,,1 each,no,usda:170051
+tomato-canned,,,,,small,,82,,1 each,no,usda:170051
+white-hominy-canned,Canned White Hominy,white hominy canned|white hominy|pozole corn,,,,,425,,1 can,yes,
+white-hominy-canned,,,,,,,165,1 cup,,no,usda:169701
+tomato-whole-peeled-canned,Canned Whole Peeled Tomato,whole peeled tomatoes|canned whole peeled tomatoes,nightshades,,,,111,,1 each,no,usda:170051
+tomato-whole-peeled-canned,,,,,,,794,,1 can,yes,
+tomato-whole-peeled-canned,,,,,,,240,1 cup,,no,usda:170051
+tomato-whole-peeled-canned,,,,,,,15,1 tbsp,,no,usda:170051
+tomato-whole-peeled-canned,,,,,large,,164,,1 each,no,usda:170051
+tomato-whole-peeled-canned,,,,,medium,,111,,1 each,no,usda:170051
+tomato-whole-peeled-canned,,,,,small,,82,,1 each,no,usda:170051
+capon,Capon,whole capon|capon chicken,,,,,3500,,1 each,yes,
+cardoon,Cardoon,cardoons|cardi|fresh cardoon,,,,,80,,1 stalk,yes,
+cardoon,,,,,shredded,,178,1 cup,,no,usda:169981
+carob-powder,Carob Powder,carob|carob flour|roasted carob powder|powdered carob,,,,,103,1 cup,,no,usda:173755
+carob-powder,,,,,,,6,1 tbsp,,no,usda:173755
+casaba-melon,Casaba Melon,casaba|casabas|casaba melons,,,,,164,,0.1 each,no,usda:169093
+casaba-melon,,,,,diced,,170,1 cup,,no,usda:169093
+cashew-butter,Cashew Butter,cashew nut butter|raw cashew butter,tree_nuts,peanut|soy,,,250,1 cup,,yes,
+cashew-butter,,,,,,,16,1 tbsp,,no,usda:170163
+catfish,Catfish,catfish fillet|whole catfish|channel catfish,fish,,,,200,,1 each,yes,
+caviar,Caviar,sturgeon caviar|osetra caviar|fish roe,fish,,,,16,1 tbsp,,no,usda:174188
+celery-root,Celery Root,celeriac|knob celery|celery knob,celery,,,,600,,1 each,yes,
+celery-root,,,,,,,156,1 cup,,no,usda:170400
+challah,Challah,challah bread|challah loaf|egg bread,wheat|gluten_cereals|egg,sesame|soy|milk,,,500,,1 loaf,yes,
+challah,,,,,,,40,,1 slice,no,usda:172673
+chanterelle,Chanterelle,chanterelles|chanterelle mushrooms|girolle,,,,,54,1 cup,,no,usda:168422
+chanterelle,,,,,,,5.4,,1 each,no,usda:168422
+chardonnay,Chardonnay,chardonnay wine|white wine chardonnay,sulphites,egg|fish|milk,,,235,1 cup,,yes,
+chardonnay,,,,,,,29.3,1 fl-oz,,no,usda:174110
+chayote,Chayote,chayote squash|mirliton|vegetable pear|christophine,,,,,200,,1 each,yes,
+chayote,,,,,,,132,1 cup,,no,usda:170402
+cherimoya,Cherimoya,custard apple|cherimoya fruit,,,,,500,,1 each,yes,
+cherimoya,,,,,,,160,1 cup,,no,usda:173953
+cherry-juice,Cherry Juice,cherry juices|tart cherry juice|sour cherry juice,stone_fruit,sulphites,,,269,1 cup,,no,usda:167807
+cherry-juice,,,,,,,31.5,1 fl-oz,,no,usda:167807
+chestnut-flour,Chestnut Flour,chestnut flours|farina di castagne|chest nut flour,tree_nuts,wheat|gluten_cereals,,,100,1 cup,,yes,
+chicken-bouillon,Chicken Bouillon,chicken bouillon cubes,,soy|wheat|gluten_cereals|celery|milk|egg,,,2,1 tsp,,no,usda:171562
+chicken-drumstick,Chicken Drumstick,chicken drumsticks|ck drumsticks|drumsticks,,,,,110,,1 each,yes,
+chicken-fat,Chicken Fat,schmaltz|rendered chicken fat,,,,,205,1 cup,,no,usda:173564
+chicken-fat,,,,,,,12.8,1 tbsp,,no,usda:173564
+chicken-gizzard,Chicken Gizzard,chicken gizzards|ck gizzards,,,,,35,,1 each,yes,
+chicken-heart,Chicken Heart,chicken hearts|ck hearts,,,,,6,,1 each,yes,
+chicken-leg,Chicken Leg,chicken legs|ck legs|chx legs,,,,,250,,1 each,yes,
+chicken-liver,Chicken Liver,chicken livers|ck livers|ck liver,,,,,220,1 cup,,yes,
+chicken-neck,Chicken Neck,ck neck|chicken necks for stock,,,,,50,,1 each,yes,
+chicken-skin,Chicken Skin,chx skin|ck skin|chicken skins,,,,,30,,1 each,yes,
+chicken-wing,Chicken Wing,chicken wings|ck wings|party wings,,,,,107,,1 each,no,usda:172390
+chickpea-flour,Chickpea Flour,garbanzo flour|garbanzo bean flour|gram flour|besan|besan flour,legumes,,,,92,1 cup,,no,usda:174288
+chilean-sea-bass,Chilean Sea Bass,patagonian toothfish|sea bass chilean|chilean seabass,fish,,,,170,,1 each,yes,
+chinese-broccoli,Chinese Broccoli,gai lan|kai lan|chinese kale,,,,,300,,1 bunch,yes,
+chinese-broccoli,,,,,,,36,1 cup,,no,usda:2709657
+apple-granny-smith,Granny Smith Apple,granny smith|green apple,,,,,180,,1 each,yes,
+apple-granny-smith,,,,,sliced,,109,1 cup,,no,usda:168203
+apple-granny-smith,,,,,large,,206,,1 each,no,usda:168203
+apple-granny-smith,,,,,medium,,167,,1 each,no,usda:168203
+apple-granny-smith,,,,,small,,144,,1 each,no,usda:168203
+grape-juice,Grape Juice,juice grape|concord grape juice|bottled grape juice|purple grape juice,,sulphites,,,253,1 cup,,no,usda:173042
+grape-juice,,,,,,,31.6,1 fl-oz,,no,usda:173042
+tomato-grape,Grape Tomato,grape tomatoes,nightshades,,,,152,1 cup,,no,usda:321360
+grapefruit-juice,Grapefruit Juice,juice grapefruit|grape fruit juice|fresh grapefruit juice|bottled grapefruit juice,,sulphites,,,247,1 cup,,no,usda:173039
+grapefruit-juice,,,,,,,30.9,1 fl-oz,,no,usda:173039
+grapeseed-oil,Grapeseed Oil,grape seed oil|grapeseed oils,,,,,218,1 cup,,no,usda:171028
+grapeseed-oil,,,,,,,13.6,1 tbsp,,no,usda:171028
+grapeseed-oil,,,,,,,4.5,1 tsp,,no,usda:171028
+green-leaf-lettuce,Green Leaf Lettuce,"green leaf|leaf lettuce|lettuce, green leaf",,,,,360,,1 head,no,usda:169249
+green-leaf-lettuce,,,,,shredded,,36,1 cup,,no,usda:169249
+green-plantain,Green Plantain,"green plantains|unripe plantain|plantain, green",,,,,200,,1 each,yes,
+green-tomato,Green Tomato,"green tomatoes|unripe tomato|tomatoes, green",nightshades,,,,130,,1 each,yes,
+green-tomato,,,,,,,180,1 cup,,no,usda:170456
+green-tomato,,,,,large,,182,,1 each,no,usda:170456
+green-tomato,,,,,medium,,123,,1 each,no,usda:170456
+green-tomato,,,,,small,,91,,1 each,no,usda:170456
+grenadine,Grenadine,grenadine syrup,,sulphites,,,38,1 fl-oz,,yes,
+grenadine,,,,,,,20,1 tbsp,,no,usda:168088
+grenadine,,,,,,,6.7,1 tsp,,no,usda:168088
+ground-bison,Ground Bison,bison ground|ground buffalo|minced bison|bison mince,,,,,225,1 cup,,yes,
+ground-lamb,Ground Lamb,"lamb mince|minced lamb|lamb, ground|grnd lamb",,,,,225,1 cup,,yes,
+ground-mace,Ground Mace,mace ground|mace powder|powdered mace,,,,,5.3,1 tbsp,,no,usda:170927
+ground-mace,,,,,,,1.7,1 tsp,,no,usda:170927
+ground-veal,Ground Veal,"veal mince|minced veal|veal, ground",,,,,225,1 cup,,yes,
+grouper,Grouper,grouper fish|whole grouper|fresh grouper,fish,,,,3000,,1 each,yes,
+gruyere,Gruyere,gruyere cheese|gruyère|swiss gruyere,milk,,,,113,1 cup,,yes,
+gruyere,,,,,,,28,,1 slice,no,usda:171242
+gruyere,,,,,diced,,132,1 cup,,no,usda:171242
+gruyere,,,,,shredded,,108,1 cup,,no,usda:171242
+guava,Guava,guavas|fresh guava|guava fruit,,,,,55,,1 each,yes,
+guava,,,,,,,165,1 cup,,no,usda:173044
+haddock,Haddock,haddock fish|whole haddock|fresh haddock,fish,,,,1800,,1 each,yes,
+hamburger-bun,Hamburger Bun,"hamburger buns|burger buns|bun, hamburger",wheat|gluten_cereals,milk|egg|soy|sesame,,,60,,1 each,yes,
+herring,Herring,fresh herring|whole herring|herring fish,fish,,,,250,,1 each,yes,
+hoisin-sauce,Hoisin Sauce,hoisin,soy|wheat|gluten_cereals,sesame|fish,,,16,1 tbsp,,no,usda:172886
+honeydew-melon,Honeydew Melon,"honeydew|melon, honeydew|green melon",,,,,1600,,1 each,yes,
+honeydew-melon,,,,,diced,,170,1 cup,,no,usda:169911
+imitation-crab,Imitation Crab,crab stick|crab sticks|surimi|krab|imitation crab meat,fish,shellfish|wheat|gluten_cereals|egg|soy,,,17,,1 stick,yes,
+italian-bread,Italian Bread,"italian loaf|italian bread loaf|bread, italian",wheat|gluten_cereals,milk|soy|sesame,,,450,,1 loaf,yes,
+italian-bread,,,,,,,29,,1 slice,no,usda:174913
+jicama,Jicama,jicama root|mexican turnip|yam bean,,,,,500,,1 each,yes,
+jicama,,,,,,,130,1 cup,,no,usda:170073
+jicama,,,,,,,6,,1 slice,no,usda:170073
+jicama,,,,,sliced,,120,1 cup,,no,usda:170073
+jicama,,,,,large,,1200,,1 each,no,usda:170073
+jicama,,,,,medium,,659,,1 each,no,usda:170073
+jicama,,,,,small,,365,,1 each,no,usda:170073
+kielbasa,Kielbasa,kielbasa sausage|polish sausage|kielbasa sausages,allium,milk|soy|wheat|gluten_cereals|sulphites|mustard,,,400,,1 each,yes,
+kimchi,Kimchi,cabbage kimchi|napa kimchi|kim chee,allium,fish|shellfish|wheat|gluten_cereals|soy,,,150,1 cup,,no,usda:170392
+king-salmon,King Salmon,"chinook salmon|king salmon fillet|salmon, king",fish,,,,4000,,1 each,yes,
+kohlrabi,Kohlrabi,fresh kohlrabi|german turnip|kohlrabies,,,,,250,,1 each,yes,
+kohlrabi,,,,,,,135,1 cup,,no,usda:168424
+kohlrabi,,,,,,,16,,1 slice,no,usda:168424
+lamb-loin,Lamb Loin,loin of lamb|boneless lamb loin|lamb loin roast,,,,,450,,1 each,yes,
+leg-of-lamb,Leg of Lamb,lamb leg|lamb legs|boneless leg of lamb,,,,,2700,,1 each,yes,
+lemongrass,Lemongrass,lemon grass|lemongrass stalk,,,,,20,,1 stalk,yes,
+lemongrass,,,,,,,67,1 cup,,no,usda:168573
+lemongrass,,,,,,,4.8,1 tbsp,,no,usda:168573
+lima-bean,Lima Beans,butter beans|fresh lima beans,legumes,,,,156,1 cup,,no,usda:168396
+lobster-meat,Lobster Meat,picked lobster meat|cooked lobster meat|lobster claw meat,shellfish,,,,145,1 cup,,no,usda:174209
+lotus-root,Lotus Root,lotus roots|renkon|fresh lotus root,,,,,250,,1 each,yes,
+lotus-root,,,,,,,81,,10 slice,no,usda:169250
+lychee,Lychee,fresh lychee|litchi|lychee fruit|lichi|lychee nut,,,,,15,,1 each,yes,
+lychee,,,,,,,190,1 cup,,no,usda:169086
+mahi-mahi,Mahi Mahi,mahi|dorado|dolphinfish|mahi mahi fillet,fish,,,,180,,1 each,yes,
+maitake-mushroom,Maitake Mushroom,maitake mushrooms|maitakes|hen of the woods,,,,,70,1 cup,,yes,
+maitake-mushroom,,,,,,,1.1,,1 each,no,usda:169403
+maitake-mushroom,,,,,diced,,70,1 cup,,no,usda:169403
+blue-crab,Blue Crab,whole blue crabs|blue crabs|maryland blue crabs,shellfish,,,,150,,1 each,yes,
+blueberry-juice,Blueberry Juice,blue berry juice|blueberry fruit juice,,sulphites,,,250,1 cup,,yes,
+blueberry-juice,,,,,,,31,1 fl-oz,,no,usda:2709323
+bluefin-tuna,Bluefin Tuna,bluefin|bluefin tuna loin|bluefin loin,fish,,,,170,,1 each,yes,
+bluefish,Bluefish,whole bluefish|fresh bluefish,fish,,,,1400,,1 each,yes,
+bluefish-fillet,Bluefish Fillet,bluefish filet|filet of bluefish|bluefish fillets,fish,,,,200,,1 each,yes,
+chicken-breast-bone-in,Bone-In Chicken Breast,"split chicken breast|chicken breasts bone in|chicken brst bone in|ck breast bone in|ck brst bone in|bone-in skin-on chicken breast|airline chicken breast|chicken breast, bone-in",,,,,280,,1 each,yes,
+chicken-thigh-bone-in,Bone-In Chicken Thigh,"bone-in skin-on chicken thigh|chicken thighs bone in skin on|ck thigh bone in skin on|chicken thigh bi so|skin-on chicken thigh|chicken thigh, bone-in skin-on",,,,,170,,1 each,yes,
+leg-of-lamb-bone-in,Bone-In Leg of Lamb,leg of lamb bone in|lamb leg bone in,,,,,3200,,1 each,yes,
+chicken-leg-boneless,Boneless Chicken Leg,"boneless chicken legs|chicken legs boneless|bnls chicken leg|ck leg bnls|boneless leg meat|chicken leg, boneless",,,,,150,,1 each,yes,
+chicken-thigh-boneless,Boneless Chicken Thigh,"boneless skinless chicken thigh|chicken thigh bnls|ck thigh bnls|bnls chicken thigh|chicken thighs boneless|bnls skls chicken thigh|chicken thigh, boneless",,,,,110,,1 each,yes,
+bosc-pear,Bosc Pear,bosc pears|brown pear,,,,,180,,1 each,yes,
+bosc-pear,,,,,sliced,,140,1 cup,,no,usda:167778
+bosc-pear,,,,,large,,219,,1 each,no,usda:167778
+bosc-pear,,,,,medium,,179,,1 each,no,usda:167778
+bosc-pear,,,,,small,,159,,1 each,no,usda:167778
+boston-mackerel,Boston Mackerel,atlantic mackerel|whole boston mackerel,fish,,,,500,,1 each,yes,
+bourbon,Bourbon,bourbon whiskey|kentucky bourbon,,gluten_cereals,,,27.8,1 fl-oz,,no,usda:174815
+brandy,Brandy,brandy liquor|vs brandy,,sulphites,,,28,1 fl-oz,,no,usda:2710699
+bratwurst,Bratwurst,bratwurst sausage|bratwursts|brats|brat sausage,,milk|wheat|gluten_cereals|sulphites|mustard|allium,,,85,,1 each,yes,
+brazil-nut,Brazil Nut,brazil nuts|brazilnut,tree_nuts,,,,133,1 cup,,no,usda:170569
+bread-and-butter-pickle,Bread and Butter Pickles,sweet pickle chips,,mustard|sulphites|allium,,,130,1 cup,,yes,
+bread-and-butter-pickle,,,,,chopped,,160,1 cup,,no,usda:169378
+breadfruit,Breadfruit,bread fruit|fresh breadfruit,,,,,1500,,1 each,yes,
+breadfruit,,,,,,,220,1 cup,,no,usda:171714
+breadfruit,,,,,small,,96,,0.25 each,no,usda:171714
+brie,Brie,brie cheese|brie wheel|brie de meaux|double cream brie,milk,,,,120,1 cup,,yes,
+brie,,,,,melted,,240,1 cup,,no,usda:172177
+brie,,,,,sliced,,144,1 cup,,no,usda:172177
+broccoli-rabe,Broccoli Rabe,rapini|broccoli raab|rabe,,,,,340,,1 bunch,yes,
+broccoli-rabe,,,,,,,19,,1 stalk,no,usda:170381
+broccoli-rabe,,,,,chopped,,40,1 cup,,no,usda:170381
+brown-rice-flour,Brown Rice Flour,rice flour brown|whole grain rice flour,,,,,158,1 cup,,no,usda:168898
+buckwheat-flour,Buckwheat Flour,buckwheat flours|soba flour|farine de sarrasin,,wheat|gluten_cereals,,,120,1 cup,,no,usda:170687
+buckwheat-groats,Buckwheat Groats,buckwheat|kasha|whole buckwheat groats,,gluten_cereals,,,164,1 cup,,no,usda:170685
+burdock-root,Burdock Root,burdock|gobo|burdock roots,,,,,150,,1 each,yes,
+burdock-root,,,,,,,118,1 cup,,no,usda:169974
+butterhead-lettuce,Butterhead Lettuce,butter lettuce|butterhead,,,,,163,,1 head,no,usda:168429
+butterhead-lettuce,,,,,,,5,,1 leaf,no,usda:168429
+butterhead-lettuce,,,,,large,,15,,1 leaf,no,usda:168429
+butterhead-lettuce,,,,,medium,,7.5,,1 leaf,no,usda:168429
+cabernet-wine,Cabernet Sauvignon,cabernet|red cabernet|cabernet wine,sulphites,,,,240,1 cup,,yes,
+cabernet-wine,,,,,,,29.4,1 fl-oz,,no,usda:174833
+calf-liver,Calf Liver,calves liver|calf livers|veal liver,,,,,170,,1 each,yes,
+camembert,Camembert,camembert cheese|camembert wheel,milk,,,,250,,1 each,yes,
+camembert,,,,,,,246,1 cup,,no,usda:172178
+canadian-bacon,Canadian Bacon,back bacon|peameal bacon|canadian style bacon,,sulphites|milk|celery|soy,,,57,,2 slice,no,usda:167869
+cane-syrup,Cane Syrup,cane sugar syrup|sugarcane syrup|steen's cane syrup,,sulphites,,,330,1 cup,,yes,
+canned-apricot,Canned Apricot,canned apricots|canned apricots in syrup|tinned apricots,stone_fruit,sulphites,,,425,,1 can,yes,
+canned-apricot,,,,,,,240,1 cup,,no,usda:171699
+canned-apricot,,,,,halved,,258,1 cup,,no,usda:171699
+canned-black-eyed-pea,Canned Black-Eyed Peas,canned black eye peas|black eye peas canned|tinned black eyed peas,legumes,,,,425,,1 can,yes,
+canned-black-eyed-pea,,,,,,,240,1 cup,,no,usda:173760
+canned-clam,Canned Clam,canned clams|chopped clams canned|tinned clams|canned clams in brine,mollusks,,,,184,,1 can,yes,
+canned-clam,,,,,,,160,1 cup,,no,usda:171976
+canned-corn,Canned Corn,canned corn kernels|tinned corn|whole kernel corn,,,,,425,,1 can,yes,
+canned-corn,,,,,,,164,1 cup,,no,usda:169214
+canned-green-chile,Canned Diced Green Chile,canned diced green chilies|diced green chiles|canned green chilies|green chiles in can|hatch green chiles canned,nightshades,,,,113,,1 can,yes,
+canned-green-chile,,,,,chopped,,68,0.5 cup,,no,usda:170426
+canned-great-northern-bean,Canned Great Northern Beans,canned great northerns|great northern beans canned,legumes,,,,439,,1 can,yes,
+canned-great-northern-bean,,,,,,,262,1 cup,,no,usda:175192
+canned-peach,Canned Peach,canned peaches|canned peaches in syrup|tinned peaches,stone_fruit,sulphites,,,425,,1 can,yes,
+canned-peach,,,,,,,262,1 cup,,no,usda:169112
+canned-pear,Canned Pear,canned pears|canned pears in syrup|tinned pears,,sulphites,,,425,,1 can,yes,
+canned-pear,,,,,,,266,1 cup,,no,usda:169939
+flour-00,00 Flour,double zero flour|doppio zero flour|pizza flour|oo flour,wheat|gluten_cereals,,,,125,1 cup,,yes,
+acai,Acai,acai berry|acai berries|acai fruit|assai,,,,,140,1 cup,,yes,
+acai-puree,Acai Puree,acai pulp|frozen acai puree|acai packs|puree acai,,,,,240,1 cup,,yes,
+achiote-paste,Achiote Paste,annatto paste|recado rojo,,nightshades|wheat|gluten_cereals,,,16,1 tbsp,,yes,
+achiote-powder,Achiote Powder,achiote|ground annatto|annatto powder|achiote ground,,nightshades|allium,,,2.5,1 tsp,,yes,
+adobo-seasoning,Adobo Seasoning,adobo|adobo spice|adobo spice mix|adobo seasonings,allium,nightshades,,,4,1 tsp,,yes,
+gouda-aged,Aged Gouda,aged gouda cheese|oude kaas,milk,,,,100,1 cup,,yes,
+vinegar-sherry-aged,Aged Sherry Vinegar,aged sherry vin|reserva sherry vinegar|sherry vinegar aged,sulphites,,,,15,1 tbsp,,yes,
+agretti,Agretti,monk's beard|barba di frate|salsola soda|fresh agretti,,,,,100,,1 bunch,yes,
+aji-amarillo,Aji Amarillo,aji amarillo paste|aji amarillo pepper|yellow chili pepper,nightshades,,,,16,1 tbsp,,yes,
+aji-dulce-pepper,Aji Dulce Pepper,aji dulce peppers|aji dulce|ajicito|sweet aji pepper,nightshades,,,,12,,1 each,yes,
+aji-panca,Aji Panca,aji panca pepper|aji panca chili|dried aji panca|panca chile,nightshades,,,,5,,1 each,yes,
+aji-panca-paste,Aji Panca Paste,aji panca pepper paste|pasta de aji panca|panca chile paste,nightshades,sulphites|allium,,,16,1 tbsp,,yes,
+aji-rocoto-paste,Aji Rocoto Paste,rocoto paste|rocoto pepper paste|pasta de rocoto|aji rocoto,nightshades,sulphites|allium,,,16,1 tbsp,,yes,
+ajwain,Ajwain,ajowan|carom seeds|bishop's weed|ajwain seeds,,,,,2.5,1 tsp,,yes,
+tuna-albacore,Albacore Tuna,albacore|white tuna,fish,,,,170,,1 each,yes,
+aleppo-pepper,Aleppo Pepper,aleppo|aleppo chili|pul biber|aleppo chili flakes|aleppo powder,nightshades,,,,2.5,1 tsp,,yes,
+allulose-syrup,Allulose Syrup,allulose|allulose sweetener|liquid allulose,,,,,320,1 cup,,yes,
+almond-extract,Almond Extract,almond flavoring|almond essence|almond flavor,,tree_nuts,,,4,1 tsp,,yes,
+amaebi,Amaebi,sweet shrimp|amaebi shrimp|spot prawn|amaebi (sweet shrimp),shellfish,sulphites,,,12,,1 each,yes,
+amarena-cherry,Amarena Cherry in Syrup,amarena cherries|amarena cherries in syrup|wild cherries in syrup|fabbri cherries,stone_fruit,sulphites,,,600,,1 jar,yes,
+ambrosia-melon,Ambrosia Melon,ambrosia melons|ambrosia cantaloupe|melon ambrosia,,,,,1800,,1 each,yes,
+amchar-masala,Amchar Masala,amchar powder|amchar|anchar masala|trinidadian amchar masala,mustard,nightshades,,,2.5,1 tsp,,yes,
+american-caviar,American Caviar,american sturgeon caviar|american white sturgeon caviar|domestic caviar,fish,,,,15,1 tbsp,,yes,
+ammonium-bicarbonate,Ammonium Bicarbonate,bakers ammonia|hartshorn|hirschhornsalz|ammonium carbonate,,,,,4,1 tsp,,yes,
+sherry-amontillado,Amontillado Sherry,amontillado|amontillado sherry wine|sherry amontillado,sulphites,,,,29,1 fl-oz,,yes,
+anaheim-pepper,Anaheim Pepper,anaheim|anaheim chile|anaheim peppers|anaheims,nightshades,,,,65,,1 each,yes,
+ancho-chili-powder,Ancho Chili Powder,ancho powder|ground ancho chile,nightshades,,,,2.5,1 tsp,,yes,
+anchovy-paste,Anchovy Paste,anchovies paste,fish,,,,15,1 tbsp,,yes,
+andouille-sausage,Andouille Sausage,andouille|andouille sausages,,milk|soy|sulphites|mustard,,,85,,1 each,yes,
+anise-hyssop,Anise Hyssop,licorice mint|agastache|anise hyssop herb,,,,,40,,1 bunch,yes,
+annatto-seed,Annatto Seed,annatto seeds|achiote seeds|achiote seed|bixa seeds,,,,,3,1 tsp,,yes,
+apple-cider,Apple Cider,fresh apple cider|sweet cider|unfiltered apple juice|cider,,sulphites,,,240,1 cup,,yes,
+apricot-glaze,Apricot Glaze,apricot nappage|pastry glaze apricot|nappage|apricot pastry glaze,stone_fruit,sulphites,,,20,1 tbsp,,yes,
+apricot-puree,Apricot Puree,pureed apricot|apricot pulp|puree of apricot,stone_fruit,sulphites,,,250,1 cup,,yes,
+aquafaba,Aquafaba,chickpea water|chickpea cooking liquid|garbanzo water|aqua faba,legumes,,,,240,1 cup,,yes,
+aquavit,Aquavit,akvavit|aqua vit|aquavit liquor,,,,,28,1 fl-oz,,yes,
+arbequina-olive,Arbequina Olives,arbequinas|spanish arbequina olives,,sulphites,,,135,1 cup,,yes,
+arbol-chile,Arbol Chile,chile de arbol|arbol chilies|arbol,nightshades,sulphites,,,1,,1 each,yes,
+arctic-char,Arctic Char,char|whole arctic char,fish,,,,2000,,1 each,yes,
+argan-oil,Argan Oil,culinary argan oil|pure argan oil|roasted argan oil,,tree_nuts,,,14,1 tbsp,,yes,
+asafoetida,Asafoetida,asafoteda|hing|asafetida|devil's dung|Asafoetida powder|hing powder|ground hing|powdered asafoetida,,wheat|gluten_cereals,,,3,1 tsp,,yes,
+ascorbic-acid,Ascorbic Acid,vitamin c powder|powdered ascorbic acid|ascorbic acid powder,,,,,4,1 tsp,,yes,
+ashwagandha,Ashwagandha,ashwagandha powder|ashwagandha root|withania,,,,,2,1 tsp,,yes,
+asiago,Asiago,asiago cheese|aged asiago,milk,,,,100,1 cup,,yes,
+avocado-leaf,Avocado Leaf,avocado leaves|dried avocado leaf|hoja de aguacate,,,,,1,,1 leaf,yes,
+baby-artichoke,Baby Artichoke,baby artichokes,,,,,60,,1 each,yes,
+baby-arugula,Baby Arugula,baby rocket|wild arugula|arugula baby,,,,,20,1 cup,,yes,
+asian-pear-baby,Baby Asian Pear,asian pear tiny|tiny asian pear|baby asian pears|mini asian pear,,,,,90,,1 each,yes,
+baby-beet,Baby Beet,baby beets,,,,,40,,1 each,yes,
+baby-bell-pepper,Baby Bell Pepper,baby bell peppers|mini bell peppers|mini sweet peppers|baby sweet peppers,nightshades,,,,25,,1 each,yes,
+baby-bok-choy,Baby Bok Choy,shanghai bok choy|baby pak choi,,,,,80,,1 head,yes,
+baby-brussels-sprout,Baby Brussels Sprout,baby brussel sprouts|baby brussels|petite brussels sprouts,,,,,90,1 cup,,yes,
+baby-chioggia-beet,Baby Candy Cane Beet,baby candy cane beets|baby chioggia beets|candy stripe beets|baby candycane beets,,,,,40,,1 each,yes,
+baby-corn,Baby Corn,cornlets|baby sweet corn|canned baby corn,,,,,425,,1 can,yes,
+baby-fennel,Baby Fennel,petite fennel|baby fennel bulb|fennel baby,,,,,90,,1 each,yes,
+baby-gem-lettuce,Baby Gem Lettuce,gem lettuce|little gem lettuce,,,,,90,,1 head,yes,
+baby-golden-beet,Baby Golden Beet,baby golden beets|baby yellow beets|golden baby beets,,,,,40,,1 each,yes,
+baby-kale,Baby Kale,baby kale leaves|kale baby,,,,,20,1 cup,,yes,
+baby-leek,Baby Leek,baby leeks|petite leeks|young leeks,allium,,,,200,,1 bunch,yes,
+baby-octopus,Baby Octopus,moscardini|baby octopi,mollusks,,,,60,,1 each,yes,
+baby-romaine,Baby Romaine,baby romaine lettuce,,,,,30,1 cup,,yes,
+baby-spinach,Baby Spinach,baby leaf spinach|spinach baby,,,,,30,1 cup,,yes,
+baby-turnip,Baby Turnip,baby turnips|baby white turnips|tokyo turnips|hakurei turnips,,,,,250,,1 bunch,yes,
+baby-yukon-gold-potato,Baby Yukon Gold Potato,baby yukon golds|yukon gold creamers|baby yukon gold potatoes,nightshades,,,,150,1 cup,,yes,
+badger-flame-beet,Badger Flame Beet,badger flame beets|badger flames|badger flame beetroot,,,,,150,,1 each,yes,
+baldo-rice,Baldo Rice,baldo|turkish baldo rice|rice baldo,,,,,195,1 cup,,yes,
+balsamic-glaze,Balsamic Glaze,balsamic reduction|balsamic vinegar glaze|aged balsamic glaze|glassa di balsamico,sulphites,,,,20,1 tbsp,,yes,
+balsamic-powder,Balsamic Powder,balsamic vinegar powder|powdered balsamic|dried balsamic vinegar,sulphites,,,,2.5,1 tsp,,yes,
+banana-extract,Banana Extract,banana flavoring|banana essence|extract of banana,,,,,4,1 tsp,,yes,
+banana-fingerling-potato,Banana Fingerling Potato,banana fingerlings|banana fingerling potatoes|russian banana fingerlings|banana fingerling,nightshades,,,,150,1 cup,,yes,
+banana-leaf,Banana Leaf,banana leaves|frozen banana leaves|hoja de platano,,,,,120,,1 leaf,yes,
+banana-puree,Banana Puree,pureed banana|banana pulp|puree of banana,,sulphites,,,240,1 cup,,yes,
+banyuls-vinegar,Banyuls Vinegar,banyuls vin|vinaigre de banyuls|banyuls wine vinegar,sulphites,,,,15,1 tbsp,,yes,
+barley-malt-syrup,Barley Malt Syrup,malt syrup|malted barley syrup|barley malt extract,gluten_cereals,,,,21,1 tbsp,,yes,
+barramundi,Barramundi,asian sea bass|barramundi fish|fresh barramundi,fish,,,,600,,1 each,yes,
+basil-seed,Basil Seed,basil seeds|sabja seeds|tukmaria|falooda seeds,,,,,3,1 tsp,,yes,
+rice-basmati,Basmati Rice,basmati|long grain basmati|indian basmati rice,,,,,185,1 cup,,yes,
+bay-scallop,Bay Scallop,bay scallops,mollusks,,,,220,1 cup,,yes,
+bee-pollen,Bee Pollen,bee pollen granules|pollen granules|raw bee pollen,,,,,3,1 tsp,,yes,
+beef-base,Beef Base,soup base beef|beef bouillon base|beef soup base|beef bouillon paste,,soy|wheat|gluten_cereals|celery|milk,,,6,1 tsp,,yes,
+beef-bone,Beef Bones,beef bone|soup bones,,,,,500,,1 each,yes,
+beef-cheek,Beef Cheek,beef cheeks,,,,,340,,1 each,yes,
+beef-demi-glace,Beef Demi-Glace,beef demi,,wheat|gluten_cereals|celery|milk|soy|sulphites,,,240,1 cup,,yes,
+hanger-steak,Beef Hanger Steak,hanger steak|hanger steaks|onglet,,,,,340,,1 each,yes,
+beef-knuckle,Beef Knuckle,beef knuckles|knuckle beef|sirloin tip knuckle,,,,,5000,,1 each,yes,
+beef-marrow-bone,Beef Marrow Bones,marrow bones|marrow bone,,,,,250,,1 each,yes,
+beef-short-loin,Beef Short Loin,short loin|beef shortloin|short loin primal,,,,,7000,,1 each,yes,
+beef-sirloin-flap,Beef Sirloin Flap,sirloin flap|flap meat|bavette|flap steak|beef bavette|bavette steak,,,,,1100,,1 each,yes,
+beefsteak-tomato,Beefsteak Tomato,beefsteak tomatoes|beef steak tomato|slicing tomato,nightshades,,,,250,,1 each,yes,
+beer-vinegar,Beer Vinegar,beer vin|malt beer vinegar|beer vinegars,gluten_cereals,wheat|sulphites,,,15,1 tbsp,,yes,
+benedictine,Benedictine,benedictine liqueur|dom benedictine|benedictine liquor,,sulphites,,,33,1 fl-oz,,yes,
+betel-leaf,Betel Leaf,betel leaves|paan leaf|betal leaf,,,,,2,,1 leaf,yes,
+bialy,Bialy,biyali|bialys|bialy roll|onion bialy,wheat|gluten_cereals,allium|milk|egg|sesame|soy,,,85,,1 each,yes,
+bigeye-tuna,Bigeye Tuna,big eye tuna|bigeye tuna loin,fish,,,,170,,1 each,yes,
+birch-extract,Birch Extract,birch flavor extract|extract of birch|birch flavoring,,,,,5,1 tsp,,yes,
+birds-eye-chile,Bird's Eye Chile,birds eye chile|birds eye pepper|birds eye chiles|thai bird chile|thai bird chili|bird's eye chili|thai chile|prik kee noo|thai chili|red thai chili|thai chili red|red thai chile|thai bird chili red,nightshades,,,,1,,1 each,yes,
+cocktail-bitters,Bitters,cocktail bitters|aromatic bitters|angostura bitters,,gluten_cereals|sulphites,,,5,1 tsp,,yes,
+black-bean-paste,Black Bean Paste,fermented black bean paste|black bean sauce|douchi paste,soy|legumes,wheat|gluten_cereals|sesame|allium,,,18,1 tbsp,,yes,
+black-cardamom,Black Cardamom,black cardamom pods|brown cardamom|badi elaichi,,,,,1,,1 each,yes,
+black-cherry-puree,Black Cherry Puree,pureed black cherry|black cherry fruit puree,stone_fruit,sulphites,,,250,1 cup,,yes,
+black-cherry-tomato,Black Cherry Tomato,black cherry tomatoes|kumato cherry tomato|dark cherry tomato,nightshades,,,,150,1 cup,,yes,
+black-cumin,Black Cumin,black cumin seed|black cumin seeds|nigella seed|kalonji|roman coriander,,,,,3,1 tsp,,yes,
+black-garlic,Black Garlic,aged black garlic|black garlic cloves|black garlics,allium,,,,5,,1 clove,yes,
+black-garlic-paste,Black Garlic Paste,black garlic spread|black garlic puree,allium,,,,18,1 tbsp,,yes,
+black-lentil,Black Lentils,beluga lentils|beluga lentil|urad dal|black beluga lentils|caviar lentils,legumes,,,,190,1 cup,,yes,
+black-lime,Black Lime,black limes|dried black lime|loomi|limu omani|Dried lime|dried limes|dry lime,,,,,10,,1 each,yes,
+black-mission-fig,Black Mission Fig,black mission figs|mission figs|mission fig|black figs,,,,,50,,1 each,yes,
+black-radish,Black Radish,black radishes|spanish black radish,,,,,120,,1 each,yes,
+black-raspberry,Black Raspberry,black raspberries|blackcap raspberry,,,,,125,1 cup,,yes,
+black-rice,Black Rice,forbidden rice|forbidden black rice|purple rice,,,,,185,1 cup,,yes,
+black-salt,Black Salt,kala namak|black sea salt|himalayan black salt,,,,,6,1 tsp,,yes,
+black-sesame-seed,Black Sesame Seed,black sesame seeds|black sesame|kuro goma,sesame,,,,3,1 tsp,,yes,
+black-tea,Black Tea,loose black tea|black tea leaves|loose leaf black tea,,,,,2,1 tsp,,yes,
+black-truffle,Black Truffle,black truffles|fresh black truffle|perigord truffle,,,,,30,,1 each,yes,
+truffle-butter,Black Truffle Butter,truffle butter|black truffle compound butter,milk,,,,14,1 tbsp,,yes,
+black-truffle-oil,Black Truffle Oil,truffle oil|black truffle infused oil|oil truffle|truffle infused oil,,,,,14,1 tbsp,,yes,
+black-truffle-paste,Black Truffle Paste,truffle paste|black truffle puree,,sulphites|allium,,,15,1 tbsp,,yes,
+black-truffle-pate,Black Truffle Pate,truffle pate|black truffles pate,,milk|sulphites|allium,,,15,1 tbsp,,yes,
+black-trumpet-mushroom,Black Trumpet Mushroom,black trumpet mushrooms|black trumpets|trompette de la mort|horn of plenty,,,,,60,1 cup,,yes,
+black-vinegar,Black Vinegar,chinkiang vinegar|chinese black vinegar|zhenjiang vinegar|black vinegars,,wheat|gluten_cereals|sulphites,,,15,1 tbsp,,yes,
+blackberry-jam,Blackberry Jam,blackberry preserves|black berry jam|blackberry jams,,sulphites,,,20,1 tbsp,,yes,
+blackberry-puree,Blackberry Puree,pureed blackberry|blackberry fruit puree,,sulphites,,,250,1 cup,,yes,
+blackcurrant-puree,Blackcurrant Puree,black currant puree|cassis puree|pureed black currants,,sulphites,,,250,1 cup,,yes,
+blended-oil,Blended Oil,blend oil|salad oil|house blend oil|Olive and canola oil blend|blended olive oil / canola|blended olive oil|olive canola blend|90/10 blend oil,,soy,,,218,1 cup,,yes,
+blond-chocolate,Blond Chocolate,blonde chocolate|caramelized white chocolate|dulcey chocolate,milk,soy|tree_nuts|wheat|gluten_cereals,,,170,1 cup,,yes,
+blood-orange,Blood Orange,blood oranges|moro orange|tarocco orange,,,,,140,,1 each,yes,
+blood-orange-olive-oil,Blood Orange Olive Oil,blood orange oil|blood orange infused olive oil,,,,,14,1 tbsp,,yes,
+blood-orange-puree,Blood Orange Puree,pureed blood orange|blood orange fruit puree,,sulphites,,,245,1 cup,,yes,
+bloomsdale-spinach,Bloomsdale Spinach,savoy spinach|bloomsdale long standing spinach,,,,,200,,1 bunch,yes,
+blue-corn-tortilla,Blue Corn Tortilla,blue tortilla|blue corn tortillas,,wheat|gluten_cereals,,,30,,1 each,yes,
+blue-foot-mushroom,Blue Foot Mushroom,blue foot mushrooms|bluefoot mushroom|pied bleu|blewit,,,,,70,1 cup,,yes,
+blueberry-jam,Blueberry Jam,blueberry preserves|blue berry jam,,sulphites,,,20,1 tbsp,,yes,
+blueberry-puree,Blueberry Puree,pureed blueberry|blueberry fruit puree,,sulphites,,,250,1 cup,,yes,
+bologna,Bologna,bologna sausage|baloney|bologna meat,,milk|soy|wheat|gluten_cereals|sulphites|mustard|allium,,,28,,1 slice,yes,
+bomba-calabrese,Bomba Calabrese,bomba calabrese spread|calabrian bomba|spicy calabrian spread,nightshades,allium|sulphites,,,15,1 tbsp,,yes,
+bomba-rice,Bomba Rice,arroz bomba|paella rice|valencia bomba rice,,,,,195,1 cup,,yes,
+bone-marrow,Bone Marrow,beef bone marrow|canoe cut marrow|marrow,,,,,150,,1 each,yes,
+boniato,Boniato,boniato yam|boniato yams|cuban sweet potato|batata,,,,,400,,1 each,yes,
+bonito-flake,Bonito Flakes,katsuobushi|dried bonito flakes|dried bonito,fish,,,,12,1 cup,,yes,
+boquerones,Boquerones,boquerones anchovies|spanish boquerones|white anchovy|marinated anchovy,fish,sulphites|allium,,,10,,1 each,yes,
+botifarra,Botifarra,butifarra|catalan pork sausage|fresh botifarra,,sulphites|milk|allium|gluten_cereals,,,120,,1 each,yes,
+botillo,Botillo,botillo sausage|botillo del bierzo|stuffed pork sausage,,sulphites|allium|gluten_cereals,,,1000,,1 each,yes,
+bottarga,Bottarga,dried bottarga|cured mullet roe|bottarga di muggine,fish,,,,120,,1 each,yes,
+boudin-blanc,Boudin Blanc,boudin blanc sausage|white sausage,,milk|egg|wheat|gluten_cereals|allium|sulphites,,,120,,1 each,yes,
+bowfin-caviar,Bowfin Caviar,bowfin roe|choupique caviar|cajun caviar,fish,,,,15,1 tbsp,,yes,
+boysenberry,Boysenberry,boysenberries|fresh boysenberries,,,,,140,1 cup,,yes,
+braeburn-apple,Braeburn Apple,braeburn apples|braeburn,,,,,180,,1 each,yes,
+branzino,Branzino,whole branzino|european sea bass|loup de mer|bronzino,fish,,,,450,,1 each,yes,
+breaded-chicken-cutlet,Breaded Chicken Cutlet,breaded chicken cutlets|frozen chicken cutlet|chicken cutlet frozen|breaded chicken breast|chicken schnitzel|milanesa de pollo,wheat|gluten_cereals|egg,milk|soy,,,140,,1 each,yes,
+bresaola,Bresaola,bresola|cured beef bresaola|bresaola della valtellina,,sulphites|milk|celery,,,12,,1 slice,yes,
+brewers-yeast,Brewer's Yeast,brewers yeast|brewer yeast|brewers yeast flakes,,gluten_cereals,,,8,1 tbsp,,yes,
+brick-pastry,Brick Pastry,feuilles de brick|feuille de brick|brick pastry sheets|warqa,wheat|gluten_cereals,egg|milk|soy,,,25,,1 sheet,yes,
+brioche-loaf,Brioche,brioche bread|brioche loaf|pain brioche,wheat|gluten_cereals|egg|milk,soy|sesame,,,500,,1 loaf,yes,
+brioche-bun,Brioche Bun,brioche buns|brioche burger bun|brioche hamburger bun,wheat|gluten_cereals|egg|milk,soy|sesame,,,70,,1 each,yes,
+broccolini,Broccolini,baby broccoli|brocolini|broccollini,,,,,175,,1 bunch,yes,
+brown-basmati-rice,Brown Basmati Rice,basmati brown rice|brown rice basmati,,,,,185,1 cup,,yes,
+brown-rice-miso,Brown Rice Miso,genmai miso|brown rice miso paste,soy,wheat|gluten_cereals,,,17,1 tbsp,,yes,
+buddhas-hand,Buddha's Hand,buddhas hand|buddha's hand citron|fingered citron|buddha's hand lemon,,,,,500,,1 each,yes,
+burrata,Burrata,burrata cheese|fresh burrata|burrata ball,milk,,,,125,,1 each,yes,
+cabernet-vinegar,Cabernet Vinegar,cabernet wine vinegar|cabernet sauvignon vinegar,sulphites,,,,15,1 tbsp,,yes,
+cabrales,Cabrales,cabrales blue|cabrales bleu|cabrales blue cheese,milk,,,,135,1 cup,,yes,
+cajun-seasoning,Cajun Seasoning,cajun spice|cajun spice mix|creole seasoning|blackening seasoning,allium|nightshades,celery|mustard,,,3,1 tsp,,yes,
+calabrian-chili-in-oil,Calabrian Chili in Oil,calabrian chilies in oil|calabrian chilies|calabrian chili oil|calabrian chile|hot calabrian peppers,nightshades,sulphites|allium,,,15,1 tbsp,,yes,
+calabrian-chili-paste,Calabrian Chili Paste,calabrian chile paste|calabrian pepper paste|calabrian paste,nightshades,sulphites|allium,,,16,1 tbsp,,yes,
+calamansi,Calamansi,calamansi lime|kalamansi|calamansi limes|philippine lime,,,,,20,,1 each,yes,
+calamansi-puree,Calamansi Puree,kalamansi puree|calamansi fruit puree,,sulphites,,,245,1 cup,,yes,
+calf-foot,Calf Feet,calves foot|calves feet|calf foot|calf's feet,,,,,700,,1 each,yes,
+cameo-apple,Cameo Apple,cameo apples|cameo,,,,,180,,1 each,yes,
+campanelle,Campanelle,campanalle pasta|campanalle|campanelle pasta|bellflower pasta,wheat|gluten_cereals,egg,,,100,1 cup,,yes,
+campari,Campari,campari liqueur|red bitter aperitivo,,sulphites,,,30,1 fl-oz,,yes,
+canary-melon,Canary Melon,juan canary melon|yellow canary melon,,,,,1600,,1 each,yes,
+candied-lemon-peel,Candied Lemon Peel,candied lemon peels|lemon peel candied,,sulphites,,,170,1 cup,,yes,
+candied-orange-peel,Candied Orange Peel,candied orange peels|orange peel candied,,sulphites,,,170,1 cup,,yes,
+candlenut,Candlenut,candlenuts|candle nuts|kukui nut|kukui nuts|buah keras,tree_nuts,,,,130,1 cup,,yes,
+candy-cane-beet,Candy Cane Beet,candy cane beets|candycane beets|chioggia beet|striped beet,,,,,120,,1 each,yes,
+cane-vinegar,Cane Vinegar,sugarcane vinegar|cane sugar vinegar|sukang maasim,,sulphites,,,15,1 tbsp,,yes,
+canned-apple,Canned Apple,canned apples|canned apples in syrup|apple pie filling,,sulphites,,,570,,1 can,yes,
+canned-artichoke,Canned Artichoke,canned artichokes|artichoke hearts canned|tinned artichokes|artichoke hearts in brine,,sulphites,,,400,,1 can,yes,
+canned-gigante-bean,Canned Gigante Beans,gigante beans canned|canned gigantes|gigandes,legumes,,,,400,,1 can,yes,
+canned-hatch-chile,Canned Hatch Chile,canned hatch chilies|canned green hatch chilies|canned hatch green chiles,nightshades,,,,113,,1 can,yes,
+canned-herring,Canned Herring,tinned herring|herring in can|kippered herring,fish,mustard|sulphites|allium|soy,,,200,,1 can,yes,
+canned-jackfruit,Canned Jackfruit,tinned jackfruit|canned jack fruit|young green jackfruit in brine,,,,,565,,1 can,yes,
+canned-mackerel,Canned Mackerel,tinned mackerel|mackerel in can,fish,soy|sulphites|mustard,,,425,,1 can,yes,
+canned-mandarin,Canned Mandarin,canned mandarins|canned mandarin oranges|mandarin segments in syrup,,sulphites,,,312,,1 can,yes,
+canned-peruano-bean,Canned Peruano Beans,canned mayocoba beans|peruano beans canned,legumes,,,,439,,1 can,yes,
+canned-tomatillo,Canned Tomatillo,tomatillo canned|canned tomatillos|tinned tomatillos,nightshades,,,,310,,1 can,yes,
+caperberry,Caperberries,caper berries|caper berry|caperberry,,sulphites,,,120,1 cup,,yes,
+cara-cara-orange,Cara Cara Orange,cara cara|caracara orange|cara cara oranges|pink navel orange,,,,,200,,1 each,yes,
+carabinero,Carabinero Prawn,carabineros|carabineros prawns|carabineros shrimp|red carabinero,shellfish,sulphites,,,60,,1 each,yes,
+caraflex-cabbage,Caraflex Cabbage,caraflex|sweetheart cabbage|pointed cabbage,,,,,900,,1 head,yes,
+caraway-leaf,Caraway Leaf,caraway leaves|fresh caraway leaf|caraway greens,,,,,40,,1 bunch,yes,
+carnaroli-rice,Carnaroli Rice,carnaroli|riso carnaroli,,,,,195,1 cup,,yes,
+carolina-reaper,Carolina Reaper Pepper,carolina reaper|carolina reapers|reaper pepper|reaper chile,nightshades,,,,8,,1 each,yes,
+carrot-juice,Carrot Juice,carrot juices|fresh carrot juice,,,,,240,1 cup,,yes,
+cascabel-chile,Cascabel Chile,cascabel chili peppers|cascabel chilies|cascabel chili|cascabel pepper|cascabel peppers|chile cascabel,nightshades,,,,3,,1 each,yes,
+cashew-milk,Cashew Milk,cashew nut milk|unsweetened cashew milk,tree_nuts,soy,,,240,1 cup,,yes,
+castelfranco-radicchio,Castelfranco Radicchio,castlefranco chicory|castelfranco chicory|castelfranco|castlefranco radicchio|variegated chicory,,,,,200,,1 head,yes,
+castelvetrano-olive,Castelvetrano Olives,castelvetranos|castelvetrano|green sicilian olives,,sulphites,,,135,1 cup,,yes,
+caul-fat,Caul Fat,crepinette fat|pork caul fat|caul,,,,,200,,1 sheet,yes,
+caulilini,Caulilini,baby flowering cauliflower|sweet stem cauliflower|fioretto,,,,,300,,1 bunch,yes,
+cecina,Cecina,cecina de leon|cured beef cecina|dried beef cecina,,sulphites|celery,,,15,,1 slice,yes,
+celery-salt,Celery Salt,celery seasoning salt|salt celery,celery,,,,5,1 tsp,,yes,
+ceylon-cinnamon-stick,Ceylon Cinnamon Stick,ceylon cinnamon|true cinnamon stick|ceylon cinnamon quill|canela,,,,,2,,1 stick,yes,
+chaat-masala,Chaat Masala,chat masala|chaat masala powder|chaat masala spice mix,,wheat|gluten_cereals|mustard,,,2.5,1 tsp,,yes,
+chablis,Chablis,chablis wine|white burgundy chablis,sulphites,,,,240,1 cup,,yes,
+champagne,Champagne,champagne wine|sparkling wine,sulphites,,,,30,1 fl-oz,,yes,
+champagne-grape,Champagne Grape,champagne grapes|zante currant grapes|black corinth grapes,,,,,150,1 cup,,yes,
+champagne-vinegar,Champagne Vinegar,champagne vin|vinegar champagne,sulphites,,,,15,1 tbsp,,yes,
+chardonnay-vinegar,Chardonnay Vinegar,chardonnay wine vinegar|white wine vinegar chardonnay,sulphites,,,,15,1 tbsp,,yes,
+cheese-curd,Cheese Curds,fresh cheese curds|squeaky cheese,milk,,,,130,1 cup,,yes,
+cherokee-purple-tomato,Cherokee Purple Tomato,cherokee purple tomatoes|cherokee purple heirloom tomato|cherokee purple,nightshades,,,,250,,1 each,yes,
+cherry-jam,Cherry Jam,cherry jams|cherry preserves|sour cherry jam,stone_fruit,sulphites,,,20,1 tbsp,,yes,
+cherry-puree,Cherry Puree,cherry purees|pureed cherry|cherry pulp,stone_fruit,sulphites,,,240,1 cup,,yes,
+tomato-cherry,Cherry Tomato,cherry tomatoes,nightshades,,,,150,1 cup,,yes,
+cherrystone-clam,Cherrystone Clam,cherrystone clams|cherrystones|hard shell clams,mollusks,,,,100,,1 each,yes,
+chervil,Chervil,fresh chervil|french parsley|cerfeuil,,,,,30,,1 bunch,yes,
+chestnut-honey,Chestnut Honey,miele di castagno|honey chestnut,,tree_nuts,,,21,1 tbsp,,yes,
+chicken-back-and-neck,Chicken Backs and Necks,chicken backs & necks|ck backs & necks|chicken backs,,,,,250,,1 each,yes,
+chicken-base,Chicken Base,chicken bouillon base|soup base chicken|chicken bouillon paste|chicken soup base,,soy|wheat|gluten_cereals|celery|milk|egg|allium,,,18,1 tbsp,,yes,
+chicken-bone,Chicken Bones,chx bones|ck bones|chicken frames|chicken carcass|chicken carcasses|chicken frame|chicken bones for stock|stock chicken carcass,,,,,400,,1 each,yes,
+chicken-cutlet,Chicken Cutlet,chicken cutlets|chicken breast cutlet|thin sliced chicken breast|chicken paillard|ck cutlet,,,,,110,,1 each,yes,
+chicken-demi-glace,Chicken Demi-Glace,chicken demi|demi glace chicken,,soy|wheat|gluten_cereals|celery|milk,,,20,1 tbsp,,yes,
+chicken-foot,Chicken Feet,chx feet|ck feet|chicken foot,,,,,50,,1 each,yes,
+chicken-leg-quarter,Chicken Leg Quarter,chicken leg quarters|leg quarter|chicken quarter|chicken hindquarter|ck leg qtr|chicken leg qtr,,,,,340,,1 each,yes,
+chicken-of-the-woods,Chicken of the Woods Mushroom,chicken of the woods|sulphur shelf mushroom|laetiporus,,,,,70,1 cup,,yes,
+chicken-tender,Chicken Tenders,chicken tenderloin|ck tenders|chicken tenderloins,,,,,40,,1 each,yes,
+chicken-wing-drumette,Chicken Wing Drumette,chicken wing drumettes|drumette|drumettes|chicken drumette|wing drumette,,,,,40,,1 each,yes,
+chicken-wing-flat,Chicken Wing Flat,chicken wing flats|wing flat|wing flats|chicken flat|chicken wingette|wingette,,,,,35,,1 each,yes,
+chicory,Chicory,curly endive|chicory greens,,,,,200,,1 head,yes,
+chihuahua-cheese,Chihuahua Cheese,queso chihuahua|queso menonita,milk,,,,113,1 cup,,yes,
+chili-thread,Chile Threads,chili threads|korean chili threads|silgochu|chili pepper threads|angel hair chili,nightshades,,,,1,1 tbsp,,yes,
+toban-djan,Chili Bean Sauce,toban djan|tobanjan|doubanjiang|chili bean sauce (toban djan)|chile bean sauce|broad bean chili paste,soy|legumes|nightshades,wheat|gluten_cereals|sesame|allium,,,18,1 tbsp,,yes,
+chinese-celery,Chinese Celery,kintsai|leaf celery|celery chinese,celery,,,,150,,1 bunch,yes,
+chinese-eggplant,Chinese Eggplant,chinese eggplants|asian eggplant|long eggplant,nightshades,,,,180,,1 each,yes,
+five-spice,Chinese Five Spice,five spice|five spice powder|chinese 5 spice,,,,,2.5,1 tsp,,yes,
+chinese-sausage,Chinese Sausage,lap cheong|lap chong|chinese dried sausage|cantonese sausage,,soy|wheat|gluten_cereals|sulphites,,,40,,1 each,yes,
+chipotle-flakes,Chipotle Chile Flakes,chipotle chili flakes|chipotle flakes|chipotle pepper flakes|crushed chipotle,nightshades,,,,2,1 tsp,,yes,
+chipotle-powder,Chipotle Chili Powder,chipotle powder|ground chipotle|chipotle chile powder,nightshades,allium,,,2.5,1 tsp,,yes,
+chipotle-in-adobo,Chipotle in Adobo,chipotle peppers in adobo|chipotles in adobo|canned chipotle in adobo|chipotle chilies in adobo|canned chipotle|chipotle adobo,nightshades,wheat|gluten_cereals|allium|sulphites,,,15,1 tbsp,,yes,
+chipotle-pepper,Chipotle Pepper,chipotle peppers|chipotle chiles|dried chipotle|chipotle chili peppers|morita chile,nightshades,sulphites,,,3,,1 each,yes,
+chistorra,Chistorra,chistorra sausage|txistorra,allium,sulphites|milk|soy|nightshades,,,100,,1 each,yes,
+chive-blossom,Chive Blossom,chive blossoms|chive flowers|chive flower|chives blossoms,allium,,,,3,1 tbsp,,yes,
+chocolate-extract,Chocolate Extract,choc extract|pure chocolate extract,,milk|soy,,,4,1 tsp,,yes,
+chocolate-habanero,Chocolate Habanero Pepper,chocolate habanero|chocolate habaneros|chocolate habanero chile,nightshades,,,,9,,1 each,yes,
+chocolate-mint,Chocolate Mint,chocolate mint herb|fresh chocolate mint|chocolate peppermint,,,,,40,,1 bunch,yes,
+ciabatta,Ciabatta,ciabatta bread|ciabatta loaf|chiabatta,wheat|gluten_cereals,soy|sesame|milk,,,400,,1 loaf,yes,
+cinnamon-extract,Cinnamon Extract,cinn extract|pure cinnamon extract,,,,,4,1 tsp,,yes,
+cinnamon-stick,Cinnamon Stick,cinnamon sticks|whole cinnamon|cassia stick|cassia cinnamon stick,,,,,2.5,,1 stick,yes,
+cipollini-onion,Cipollini Onion,cipollini|cipollinis|cipolini onion,allium,,,,40,,1 each,yes,
+citric-acid,Citric Acid,citric acid powder|sour salt|citric powder,,,,,4.5,1 tsp,,yes,
+clam-juice,Clam Juice,bottled clam juice|canned clam juice|clam nectar,mollusks,,,,240,1 cup,,yes,
+clementine,Clementine,clementines|mandarin clementine|cuties,,,,,75,,1 each,yes,
+coarse-cornmeal,Coarse Cornmeal,"cornmeal, coarse|coarse ground cornmeal|stone ground cornmeal|coarse corn meal",,wheat|gluten_cereals,,,160,1 cup,,yes,
+cocoa-nib,Cocoa Nibs,cacao nib|cacao nibs|roasted cacao nibs,,milk|soy|tree_nuts,,,120,1 cup,,yes,
+coconut-aminos,Coconut Aminos,coconut liquid aminos|coconut amino sauce|liquid coconut aminos|coconut secret aminos,,soy,,,15,1 tbsp,,yes,
+coconut-extract,Coconut Extract,coco extract|pure coconut extract,,,,,4,1 tsp,,yes,
+coconut-nectar,Coconut Nectar,coconut blossom nectar|coco nectar|coconut syrup,,,,,20,1 tbsp,,yes,
+coconut-puree,Coconut Puree,coconut purees|pureed coconut|coconut pulp puree,,sulphites,,,240,1 cup,,yes,
+cod-liver,Cod Liver,cod livers|fresh cod liver,fish,,,,120,,1 each,yes,
+coffee-bean,Coffee Beans,whole coffee beans|whole bean coffee|roasted coffee beans,,,,,90,1 cup,,yes,
+coffee-extract,Coffee Extract,coffee extracts|pure coffee extract|espresso extract,,,,,4,1 tsp,,yes,
+cognac,Cognac,cognac brandy|vs cognac|vsop cognac,,sulphites,,,28,1 fl-oz,,yes,
+colatura,Colatura,colatura di alici|anchovy colatura|colatura sauce,fish,,,,5,1 tsp,,yes,
+comice-pear,Comice Pear,comice pears|doyenne du comice,,,,,200,,1 each,yes,
+comte,Comte,comte cheese|comté|comte wheel|gruyere de comte,milk,,,,100,1 cup,,yes,
+conch,Conch,queen conch|conch meat|sea snail conch,mollusks,,,,200,,1 each,yes,
+coppa,Coppa,capicola|capocollo|pork coppa|cured coppa|gabagool|cured capicola,,sulphites|milk|celery,,,15,,1 slice,yes,
+corno-di-toro-pepper,Corno di Toro Pepper,corno di toro peppers|corno di toro|bull horn pepper,nightshades,,,,90,,1 each,yes,
+country-ham,Country Ham,country hams|salt cured ham|virginia ham,,sulphites|milk,,,30,,1 slice,yes,
+crab-base,Crab Base,crab soup base|crab bouillon base|crab stock base,shellfish,soy|wheat|gluten_cereals|celery|milk,,,6,1 tsp,,yes,
+crane-melon,Crane Melon,crane melons|whole crane melon,,,,,1800,,1 each,yes,
+crema,Crema,mexican crema|crema mexicana|table cream,milk,,,,240,1 cup,,yes,
+creme-de-cassis,Creme de Cassis,cassis liqueur|creme cassis|black currant liqueur,,sulphites,,,33,1 fl-oz,,yes,
+creme-fraiche,Creme Fraiche,crème fraîche|creme fraiche cultured cream|cultured cream,milk,,,,230,1 cup,,yes,
+crenshaw-melon,Crenshaw Melon,crenshaw melons|cranshaw melon,,,,,2500,,1 each,yes,
+creole-mustard,Creole Mustard,creole mustards|louisiana creole mustard|whole grain creole mustard,mustard,sulphites|celery,,,16,1 tbsp,,yes,
+crispy-shallot,Crispy Fried Shallots,crispy shallots|fried shallots|fried shallot,allium,wheat|gluten_cereals|soy,,,6,1 tbsp,,yes,
+crosne,Crosne,crosnes|chinese artichoke|japanese artichoke,,,,,100,1 cup,,yes,
+crystallized-ginger,Crystallized Ginger,candied ginger|ginger candied|sugared ginger,,sulphites,,,180,1 cup,,yes,
+cubanelle-pepper,Cubanelle Pepper,cubanelle peppers|cubanelle|cubanelles|italian frying pepper,nightshades,,,,90,,1 each,yes,
+cucamelon,Cucamelon,cucamelons|mouse melon|mexican sour gherkin|sandita,,,,,5,,1 each,yes,
+culatello,Culatello,culatello di zibello|culatello ham|cured culatello,,sulphites|milk,,,15,,1 slice,yes,
+curing-salt,Curing Salt,curing salts|pink curing salt|prague powder|insta cure,,,,,6,1 tsp,,yes,
+curry-leaf,Curry Leaf,curry leaves|fresh curry leaves|kadi patta,,,,,5,,1 sprig,yes,
+curry-paste,Curry Paste,curry pastes|thai curry paste,,shellfish|fish|soy|allium|mustard,,,16,1 tbsp,,yes,
+dark-soy-sauce,Dark Soy Sauce,dark soy|soy sauce dark|lao chou|thick soy sauce,soy|wheat|gluten_cereals,sulphites,,,18,1 tbsp,,yes,
+dashi-powder,Dashi Powder,hondashi|instant dashi|dashi granules|bonito dashi powder,fish,soy|wheat|gluten_cereals,,,3,1 tsp,,yes,
+delicata-squash,Delicata Squash,delicata|sweet potato squash|squash delicata,,,,,500,,1 each,yes,
+demerara-sugar,Demerara Sugar,demerara|demarara|raw cane sugar,,,,,200,1 cup,,yes,
+dextrose,Dextrose,dextrose sugar|corn sugar,,,,,200,1 cup,,yes,
+dried-abalone,Dried Abalone,abalone dried|dried abalone meat,mollusks,,,,40,,1 each,yes,
+anasazi-beans,Dried Anasazi Beans,anasazi beans|dry anasazi beans|anasazi bean|cave beans,legumes,,,,190,1 cup,,yes,
+dried-anchovy,Dried Anchovy,dried anchovies|niboshi|myeolchi|anchovies dried,fish,,,,40,1 cup,,yes,
+dried-chamomile,Dried Chamomile Flower,"chamomile flowers, dried|dried chamomile flowers|chamomile flowers|dried camomile",,,,,1,1 tsp,,yes,
+chilhuacle-chile,Dried Chilhuacle Chile,chilhuacle chilies dried|chilhuacle|chilhuacle chili|chilhuacle negro,nightshades,,,,5,,1 each,yes,
+chiltepin,Dried Chiltepin Pepper,chiltepin peppers dried|chiltepin|chiltepin chile|chile tepin|bird pepper,nightshades,,,,1.5,1 tsp,,yes,
+dried-chive,Dried Chives,dried chive|dry chives|chives dried,allium,,,,1,1 tsp,,yes,
+dried-corn,Dried Corn,dry corn|corn dried|dried corn kernels|dried whole corn|dried corn cobs,,,,,175,1 cup,,yes,
+corn-husk,Dried Corn Husks,corn husks|corn husk|hojas para tamales|tamale husks,,,,,5,,1 each,yes,
+dried-dulse,Dried Dulse,dulse|dry dulse|dulse seaweed|dried dulse seaweed,,,,,20,1 cup,,yes,
+dried-epazote,Dried Epazote,epazote dried|dry epazote,,,,,1,1 tsp,,yes,
+dried-galangal,Dried Galangal,galangal dried|dry galangal|dried galangal slices,,,,,2.5,1 tsp,,yes,
+dried-hibiscus,Dried Hibiscus,dried hibiscus flowers|dry hibiscus|flor de jamaica|jamaica flower,,sulphites,,,30,1 cup,,yes,
+dried-hijiki,Dried Hijiki,hijiki|dry hijiki|hijiki seaweed|dried hijiki seaweed,,,,,25,1 cup,,yes,
+dried-irish-moss,Dried Irish Moss,irish moss|dry irish moss|sea moss|dried sea moss,,,,,20,1 cup,,yes,
+dried-lavender,Dried Lavender,lavender|lavender buds|dry lavender|dried lavender flowers,,,,,1,1 tsp,,yes,
+dried-lemon-balm,Dried Lemon Balm,lemon balm dried|dry lemon balm|dried melissa,,,,,1,1 tsp,,yes,
+dried-mexican-oregano,Dried Mexican Oregano,mexican oregano leaves|oregano mexicano,,,,,1,1 tsp,,yes,
+dried-mint,Dried Mint,dried mint leaves|dry mint|mint flakes|nane,,,,,1,1 tsp,,yes,
+dried-morel,Dried Morel,dried morels|dried morel mushrooms|dry morels,,sulphites,,,25,1 cup,,yes,
+dried-mulberry,Dried Mulberry,mulberries dried|dry mulberries|dried mulberries,,sulphites,,,110,1 cup,,yes,
+dried-ogo,Dried Ogo,dried ogo seaweed|ogo|ogo seaweed|limu ogo|dry ogo,,,,,20,1 cup,,yes,
+dried-orange-peel,Dried Orange Peel,dried orange rind|orange peel dried|dry orange peel|chenpi,,,,,2,1 tsp,,yes,
+dried-porcini,Dried Porcini,dried porcini mushrooms|dry porcini|porcini secchi|dried cepes,,sulphites,,,25,1 cup,,yes,
+red-beans-dried,Dried Red Beans,red beans dried|small red beans|red beans,legumes,,,,190,1 cup,,yes,
+dried-scallop,Dried Scallop,dried scallops|conpoy|scallops dried|dried conpoy,mollusks,,,,8,,1 each,yes,
+dried-sea-lettuce,Dried Sea Lettuce,sea lettuce|dry sea lettuce|aonori|sea lettuce seaweed,,,,,15,1 cup,,yes,
+dried-shrimp,Dried Shrimp,dried shrimps|dry shrimp|ebi|hae bee,shellfish,sulphites,,,60,1 cup,,yes,
+dried-thai-chili,Dried Thai Chile,dried thai chilies|dry thai chili|dried bird's eye chili|prik haeng|dried thai chili,nightshades,sulphites,,,1,,1 each,yes,
+dried-wakame,Dried Wakame,dry wakame|dried wakame seaweed|wakame flakes|dried seaweed wakame,,fish|soy,,,4,1 tbsp,,yes,
+dried-wild-mushroom-mix,Dried Wild Mushroom Mix,dried wild mushrooms|dried mushrooms|dried forest mix|dry wild mushrooms,,,,,25,1 cup,,yes,
+dry-vermouth,Dry Vermouth,french vermouth|white vermouth|vermouth|vermouth liquor,sulphites,,,,29,1 fl-oz,,yes,
+duck-bacon,Duck Bacon,bacon duck|duck breast bacon|smoked duck bacon|cured duck bacon,,sulphites|celery|milk|soy,,,20,,1 slice,yes,
+duck-bone,Duck Bones,duck bone|duck carcass|duck frame|poultry bones duck,,,,,500,,1 each,yes,
+duck-breast,Duck Breast,duck breasts|magret|magret de canard|moulard duck breast,,,,,350,,1 each,yes,
+duck-fat,Duck Fat,rendered duck fat|graisse de canard,,,,,205,1 cup,,yes,
+duck-foot,Duck Feet,duck foot|ducks feet|fresh duck feet,,,,,40,,1 each,yes,
+duck-heart,Duck Heart,duck hearts|fresh duck hearts|hearts duck,,,,,10,,1 each,yes,
+duck-leg,Duck Leg,duck legs|duck leg quarter|whole duck leg|duck maryland,,,,,300,,1 each,yes,
+duck-neck,Duck Neck,duck necks|fresh duck necks|necks duck,,,,,100,,1 each,yes,
+duck-prosciutto,Duck Prosciutto,duck proscuitto|duck breast prosciutto|prosciutto duck|cured duck breast,,sulphites|celery,,,10,,1 slice,yes,
+duck-wing,Duck Wing,duck wings|fresh duck wings|wings duck,,,,,90,,1 each,yes,
+dulse-flake,Dulse Flakes,dulse flake|dried dulse flakes|flaked dulse,,,,,1,1 tsp,,yes,
+dulse-seasoning,Dulse Seasoning,dulse mix|dulse seasoning mix|dulse spice mix,,sesame|fish,,,2,1 tsp,,yes,
+durum-flour,Durum Flour,durum wheat flour|pasta flour|fine durum flour,wheat|gluten_cereals,,,,130,1 cup,,yes,
+easter-egg-radish,Easter Egg Radish,easter egg radishes|radish easter egg,,,,,150,,1 bunch,yes,
+edible-flower,Edible Flower,edible flowers|micro flowers|flower petals,,,,,20,,1 packet,yes,
+eel-sauce,Eel Sauce,unagi sauce|kabayaki sauce|sauce eel|unagi tare,soy|wheat|gluten_cereals,fish|sesame,,,20,1 tbsp,,yes,
+egg-white-powder,Egg White Powder,dried egg white powder|dried egg whites|powdered egg white|albumen powder,egg,,,,100,1 cup,,yes,
+egyptian-onion,Egyptian Onion,egyptian onions|walking onion|walking onions|tree onion,allium,,,,100,,1 bunch,yes,
+elderflower,Elderflower,elder flower|fresh elderflower|elderflower heads,,,,,15,,1 each,yes,
+elderflower-extract,Elderflower Extract,elder flower extract|extract elderflower|elderflower essence,,,,,5,1 tsp,,yes,
+elderflower-syrup,Elderflower Syrup,elder flower syrup|syrup elderflower|elderflower cordial,,sulphites,,,21,1 tbsp,,yes,
+empire-apple,Empire Apple,empire apples|apple empire|fresh empire apple,,,,,150,,1 each,yes,
+cucumber-english,English Cucumber,english cuke|hot house cucumber|seedless cucumber,,,,,300,,1 each,yes,
+escarole,Escarole,broad leaf endive|escarole lettuce|chicory escarole,,,,,400,,1 head,yes,
+espelette,Espelette Pepper,espelette|espelette powder|piment d'espelette|ground espelette,nightshades,,,,2.5,1 tsp,,yes,
+espresso-powder,Espresso Powder,instant espresso|instant espresso powder|powdered espresso|ground espresso,,,,,2,1 tsp,,yes,
+fairy-tale-eggplant,Fairy Tale Eggplant,fairytale eggplant|eggplant fairy tale|fairy tale aubergine,nightshades,,,,40,,1 each,yes,
+fava-bean,Fava Beans,broad beans|broad bean|fresh fava beans,legumes,,,,150,1 cup,,yes,
+fennel-pollen,Fennel Pollen,fennel pollen spice|wild fennel pollen,,,,,1.5,1 tsp,,yes,
+fenugreek-leaf,Fenugreek Leaf,dried fenugreek leaves|kasoori methi|methi leaves|fenugreek leaves,,,,,1,1 tsp,,yes,
+feuilletine,Feuilletine,feulletine|paillete feuilletine|feuilletine flakes|pailleté feuilletine,wheat|gluten_cereals,milk|soy|egg,,,60,1 cup,,yes,
+fig-puree,Fig Puree,pureed fig|puree fig|fig pulp,,sulphites,,,250,1 cup,,yes,
+vinegar-fig,Fig Vinegar,vinegar fig|fig vin|vinegar of figs,sulphites,,,,15,1 tbsp,,yes,
+fine-cornmeal,Fine Cornmeal,"cornmeal, fine|fine ground cornmeal|fine corn meal",,wheat|gluten_cereals,,,150,1 cup,,yes,
+finger-lime,Finger Lime,finger limes|citrus caviar|caviar lime,,,,,15,,1 each,yes,
+fingerling-potato,Fingerling Potato,fingerling potatoes|fingerlings|fingerling|russian banana potato,nightshades,,,,30,,1 each,yes,
+sherry-fino,Fino Sherry,sherry fino|fino sherry wine|dry sherry,sulphites,,,,29,1 fl-oz,,yes,
+finocchiona,Finocchiona,finocchiona salami|fennel salami|finocchiona sausage,,sulphites|milk|celery,,,15,,1 slice,yes,
+fish-bone,Fish Bones,fish bone|fish frames|fish frame|fish carcass,fish,,,,500,,1 each,yes,
+flageolet-bean,Flageolet Beans,flageolets dried|dried flageolets|flageolet bean|dried flageolet beans,legumes,,,,190,1 cup,,yes,
+fleur-de-sel,Fleur de Sel,fleur de sel salt|flur de sel|finishing salt|sel de guerande,,,,,5,1 tsp,,yes,
+flowering-cilantro,Flowering Cilantro,cilantro flowers|flowering coriander|cilantro blossoms,,,,,40,,1 bunch,yes,
+fluke,Fluke,whole fluke|summer flounder|fluke fillet,fish,,,,1500,,1 each,yes,
+foie-gras,Foie Gras,foie|duck foie gras|fattened duck liver|Grade A foie gras|foie gras a|a grade foie gras|grade a duck foie gras|grade a goose foie gras,,milk|sulphites,,,550,,1 each,yes,
+fourme-dambert,Fourme d'Ambert,fourme d'ambert cheese|fourme dambert,milk,,,,135,1 cup,,yes,
+freekeh,Freekeh,freekah|frikeh|farik|green wheat,wheat|gluten_cereals,,,,180,1 cup,,yes,
+freeze-dried-apple,Freeze-Dried Apple,freeze dried apples,,,,,20,1 cup,,yes,
+freeze-dried-apricot,Freeze-Dried Apricot,freeze dried apricots,stone_fruit,,,,20,1 cup,,yes,
+freeze-dried-blueberry,Freeze-Dried Blueberry,freeze-dried blueberries,,,,,30,1 cup,,yes,
+freeze-dried-peach,Freeze-Dried Peach,,stone_fruit,,,,20,1 cup,,yes,
+freeze-dried-raspberry,Freeze-Dried Raspberry,freeze-dried raspberries,,,,,25,1 cup,,yes,
+freeze-dried-strawberry,Freeze-Dried Strawberry,freeze-dried strawberries,,,,,25,1 cup,,yes,
+fregola,Fregola,fregola sardo|fregola sarda|sardinian fregola,wheat|gluten_cereals,egg,,,180,1 cup,,yes,
+fresh-cranberry-bean,Fresh Cranberry Beans,cranberry bean|borlotti beans|shell beans,legumes,,,,150,1 cup,,yes,
+ramen-noodle-fresh,Fresh Ramen Noodles,ramen noodles|ramen noodle|fresh ramen,wheat|gluten_cereals,egg|soy,,,130,,1 packet,yes,
+rice-noodle-fresh,Fresh Rice Noodles,rice noodles fresh|ho fun|chow fun noodles,,,,,150,1 cup,,yes,
+turmeric-fresh,Fresh Turmeric,fresh tumeric|turmeric root|tumeric root|raw turmeric,,,,,20,,1 each,yes,
+fresno-pepper,Fresno Pepper,fresno peppers|fresno chili|fresno chilies|red fresno pepper|fresnos,nightshades,,,,25,,1 each,yes,
+fried-garlic,Fried Garlic,crispy garlic|fried garlic chips|garlic fried,allium,soy|wheat|gluten_cereals,,,7,1 tbsp,,yes,
+fried-onion,Fried Onions,fried onion|crispy onions|crispy fried onions|onions fried,allium,wheat|gluten_cereals|soy|milk,,,45,1 cup,,yes,
+frisee,Frisee,frisée|chicory frisee,,,,,200,,1 head,yes,
+fromage-blanc,Fromage Blanc,formage blanc|fromage frais|fresh fromage blanc,milk,,,,230,1 cup,,yes,
+frozen-berry,Frozen Mixed Berries,frozen berry|iqf berries|mixed frozen berries|berries frozen|frozen berries,,,,,140,1 cup,,yes,
+frozen-cranberry,Frozen Cranberry,iqf cranberries|cranberries frozen|frozen cranberries,,,,,110,1 cup,,yes,
+frozen-huckleberry,Frozen Huckleberry,iqf huckleberries|huckleberries frozen|frozen huckleberries,,,,,140,1 cup,,yes,
+frozen-octopus,Frozen Octopus,octopus frozen|whole frozen octopus|frozen whole octopus,mollusks,sulphites,,,1500,,1 each,yes,
+frozen-papaya,Frozen Papaya,papaya frozen|iqf papaya|frozen papaya chunks,,,,,140,1 cup,,yes,
+frozen-peach,Frozen Peach,iqf peaches|peaches frozen|frozen peach slices,stone_fruit,,,,160,1 cup,,yes,
+furikake,Furikake,furikake seasoning|furikake spice mix|rice seasoning|nori komi furikake,sesame|fish,soy|wheat|gluten_cereals|egg|shellfish,,,2.5,1 tsp,,yes,
+fusilli,Fusilli,fusilli pasta|rotini|corkscrew pasta|spiral pasta,wheat|gluten_cereals,egg,,,90,1 cup,,yes,
+galangal,Galangal,galangal root|fresh galangal|blue ginger|kha,,,,,30,,1 each,yes,
+galia-melon,Galia Melon,galia melons|melon galia|galia,,,,,1100,,1 each,yes,
+garam-masala,Garam Masala,garam|garam masala powder,,mustard,,,2.5,1 tsp,,yes,
+garlic-chive,Garlic Chive,garlic chives|chinese chives|chinese chive|nira|flowering chives,allium,,,,50,,1 bunch,yes,
+garlic-flake,Garlic Flakes,dried garlic flakes|dried garlic chips|garlic flake|dehydrated garlic,allium,,,,2.5,1 tsp,,yes,
+garlic-salt,Garlic Salt,garlic seasoning salt|seasoned garlic salt|garlic salt seasoning,allium,,,,6,1 tsp,,yes,
+garlic-scape,Garlic Scape,garlic scapes|scapes|green garlic scapes|garlic shoots,allium,,,,120,,1 bunch,yes,
+ghost-pepper,Ghost Pepper,ghost peppers|bhut jolokia|ghost chili|ghost chilli|bhut jolokia pepper,nightshades,,,,8,,1 each,yes,
+gianduja-chocolate,Gianduja Chocolate,gianduja|gianduia|hazelnut chocolate|gianduja choc,tree_nuts,milk|soy|gluten_cereals,,,170,1 cup,,yes,
+gin,Gin,london dry gin|dry gin|gin liquor,,,,,28,1 fl-oz,,yes,
+ginger-beer,Ginger Beer,beer ginger|spicy ginger beer,,sulphites,,,240,1 cup,,yes,
+glucose-powder,Glucose Powder,powdered glucose|dextrose powder|glucose pwdr|atomized glucose,,,,,170,1 cup,,yes,
+glucose-syrup,Glucose Syrup,glucose|liquid glucose|confectioners glucose,,sulphites|wheat|gluten_cereals,,,330,1 cup,,yes,
+gluten-free-ap-flour,Gluten-Free All-Purpose Flour,gluten free ap flour|gf ap flour|gf all purpose flour|Gluten free flour|gf flour|flour gluten free|gluten-free flour blend,,milk|soy|tree_nuts|legumes,,,140,1 cup,,yes,
+gluten-free-bread,Gluten-Free Bread,gf bread|gluten free breads,,egg|soy|milk,,,500,,1 loaf,yes,
+gluten-free-breadcrumb,Gluten-Free Breadcrumbs,gf breadcrumbs|gf breadcrumb,,egg|soy|milk,,,110,1 cup,,yes,
+gluten-free-pasta,Gluten-Free Pasta,gf pasta|pasta gluten free|gluten-free dry pasta|rice pasta,,egg|legumes|milk,,,100,1 cup,,yes,
+goat-yogurt,Goat Yogurt,goat milk yogurt|goats milk yogurt|yogurt goat,milk,,,,245,1 cup,,yes,
+gochugaru,Gochugaru,korean chili powder|korean red pepper powder|gochu garu|Gochugaru flakes|gochugaru chili flakes|korean chili flakes|korean red pepper flakes|coarse gochugaru,nightshades,,,,2.5,1 tsp,,yes,
+gochujang,Gochujang,gochujang paste|korean chili paste|red pepper paste,soy|nightshades,wheat|gluten_cereals,,,18,1 tbsp,,yes,
+golden-beet,Golden Beet,golden beets|gold beet|gold beets|yellow beet,,,,,120,,1 each,yes,
+golden-fig,Golden Fig,golden figs|dried golden figs|calimyrna fig|calimyrna figs,,sulphites,,,150,1 cup,,yes,
+golden-syrup,Golden Syrup,light golden syrup|lyles golden syrup|cane golden syrup,,,,,330,1 cup,,yes,
+gordal-olive,Gordal Olives,gordal|queen olives|sevillano olives,,sulphites,,,135,1 cup,,yes,
+gorgonzola,Gorgonzola,gorgonzola cheese|gorgonzola dolce|italian blue cheese,milk,,,,120,1 cup,,yes,
+grains-of-paradise,Grains of Paradise,grain of paradise|melegueta pepper|guinea pepper|alligator pepper,,,,,3,1 tsp,,yes,
+grana-padano,Grana Padano,grana|grana padano cheese|Grated Grana Padano|grana padano grated|grated grana padano cheese|grana padano cheese grated,milk,egg,,,100,1 cup,,yes,
+grand-marnier,Grand Marnier,orange liqueur|grand marnier liqueur|curacao liqueur,,sulphites,,,30,1 fl-oz,,yes,
+grape-jelly,Grape Jelly,jelly grape|concord grape jelly|grape jam,,,,,20,1 tbsp,,yes,
+gray-salt,Gray Salt,grey salt|sel gris|french gray salt|gray sea salt|grey sea salt,,,,,6,1 tsp,,yes,
+greek-basil,Greek Basil,basil greek|bush basil|fine leaf basil|greek bush basil,,,,,40,,1 bunch,yes,
+green-chartreuse,Green Chartreuse,chartreuse verte|chartreuse green|chartreuse,,,,,30,1 fl-oz,,yes,
+green-chickpea,Green Chickpeas,cholia|hara chana|fresh green chickpeas,legumes,,,,165,1 cup,,yes,
+green-curry-paste,Green Curry Paste,"thai green curry paste|green curry|curry paste, green",allium|nightshades,fish|shellfish|soy,,,16,1 tbsp,,yes,
+green-garlic,Green Garlic,spring garlic|young garlic|green garlics,allium,,,,150,,1 bunch,yes,
+green-mango,Green Mango,green mangos|green mangoes|unripe mango|raw mango,,,,,300,,1 each,yes,
+green-papaya,Green Papaya,green papayas|unripe papaya|som tam papaya,,,,,900,,1 each,yes,
+green-peppercorn,Green Peppercorn,"green peppercorns|peppercorns, green",,sulphites,,,3,1 tsp,,yes,
+green-peppercorn-in-brine,Green Peppercorn in Brine,green peppercorns in brine|brined green peppercorns|green peppercorns brined|poivre vert,,,,,15,1 tbsp,,yes,
+green-shiso,Green Shiso,shiso|perilla leaf|ooba|aojiso,,,,,1.5,,1 leaf,yes,
+green-tea,Green Tea,loose green tea|green tea leaves|sencha,,,,,2,1 tsp,,yes,
+ground-chicory-root,Ground Chicory Root,chicory root ground|roasted chicory root|chicory root powder|ground chicory,,,,,2.5,1 tsp,,yes,
+ground-sichuan-pepper,Ground Sichuan Pepper,sichuan pepper ground|ground szechuan pepper|szechuan peppercorn ground,,,,,2.5,1 tsp,,yes,
+guajillo-chile,Guajillo Chile,guajillo chili peppers|guajillo chilies|guajillo peppers|dried guajillo chile|guajillos,nightshades,sulphites,,,5,,1 each,yes,
+guanciale,Guanciale,cured pork jowl|pork guanciale|italian guanciale,,sulphites|milk|celery,,,20,,1 slice,yes,
+guar-gum,Guar Gum,guargum|guar|guar flour,,,,,3,1 tsp,,yes,
+guava-puree,Guava Puree,pureed guava|guava pulp|guava fruit puree,,sulphites,,,250,1 cup,,yes,
+habanero-pepper,Habanero Pepper,habanero|habaneros|habanero peppers|habanero chile,nightshades,,,,6,,1 each,yes,
+halloumi,Halloumi,halloumi cheese|haloumi|grilling cheese,milk,,,,30,,1 slice,yes,
+halvah,Halvah,halva|halwa|sesame halva|tahini halva,sesame,tree_nuts|milk,,,180,1 cup,,yes,
+harissa,Harissa,harissa paste|harissa sauce|harisa,nightshades|allium,sulphites,,,15,1 tbsp,,yes,
+hatch-chile,Hatch Chile,hatch chile peppers fresh|hatch chiles|hatch chili|hatch peppers|Green hatch chile|green hatch chilies|green hatch chili|hatch green chile|hatch green chiles,nightshades,,,,45,,1 each,yes,
+havarti,Havarti,havarti cheese|creamy havarti|danish havarti,milk,,,,28,,1 slice,yes,
+heirloom-cherry-tomato,Heirloom Cherry Tomato,heirloom cherry tomatoes|cherry tomatoes heirloom|heirloom cherry tomato mix,nightshades,,,,150,1 cup,,yes,
+tomato-heirloom,Heirloom Tomato,heirloom tomatoes,nightshades,,,,200,,1 each,yes,
+herbes-de-provence,Herbes de Provence,herbs de provence|herb de provence|provencal herb blend,,,,,1,1 tsp,,yes,
+horseradish-root,Horseradish Root,fresh horseradish|horseradish roots,,,,,180,,1 each,yes,
+israeli-couscous,Israeli Couscous,"pearl couscous|ptitim|couscous, israeli",wheat|gluten_cereals,,,,180,1 cup,,yes,
+italian-seasoning,Italian Seasoning,italian seasoning mix|italian herb blend|italian spice mix,,allium,,,1,1 tsp,,yes,
+jamon-serrano,Jamón Serrano,jamon serrano|serrano ham|spanish serrano ham|Jamón|jamon|spanish ham|jamón ibérico|jamon iberico,,sulphites|milk,,,15,,1 slice,yes,
+japanese-cucumber,Japanese Cucumber,cucumber japanese|japanese cucumbers|japanese cukes|kyuri,,,,,150,,1 each,yes,
+japanese-eggplant,Japanese Eggplant,japanese eggplants|japanese aubergine|nasu,nightshades,,,,150,,1 each,yes,
+jasmine-rice,Jasmine Rice,"thai jasmine rice|white jasmine rice|rice, jasmine",,,,,185,1 cup,,yes,
+jerk-seasoning,Jerk Seasoning,jerk spice|jamaican jerk seasoning|jerk rub|jamaican jerk spice,nightshades|allium,,,,2.5,1 tsp,,yes,
+juniper-berry,Juniper Berry,juniper berries|dried juniper berries,,,,,2,1 tsp,,yes,
+kabocha-squash,Kabocha Squash,"kabocha|japanese pumpkin|squash, kabocha",,,,,1500,,1 each,yes,
+kaffir-lime,Makrut Lime,kaffir limes|thai lime|kaffir lime,,,,,45,,1 each,yes,
+kaffir-lime-leaf,Makrut Lime Leaf,kaffir lime leaves|makrut lime leaves|lime leaves|kaffir lime leaf,,,,,0.5,,1 leaf,yes,
+kalamata-olive,Kalamata Olives,"calamata olives|greek olives|olives, kalamata|Pitted kalamata olive|kalamata olives, pitted|pitted kalamata olives|pitted calamata olives",,sulphites,,,135,1 cup,,yes,
+key-lime,Key Lime,"key limes|mexican lime|limes, key",,,,,30,,1 each,yes,
+king-trumpet-mushroom,King Trumpet Mushroom,king oyster mushroom|king trumpets|eryngii|king oyster mushrooms,,,,,60,,1 each,yes,
+kombu,Kombu,konbu|kombu seaweed|dried kelp|kelp,,,,,10,,1 sheet,yes,
+labneh,Labneh,labne|strained yogurt|yogurt cheese,milk,,,,240,1 cup,,yes,
+lamb-shank,Lamb Shank,lamb shanks|shank of lamb,,,,,400,,1 each,yes,
+langoustine,Langoustine,dublin bay prawns|dublin bay prawn|langoustines|scampi|norway lobster,shellfish,sulphites,,,40,,1 each,yes,
+lemon-extract,Lemon Extract,"extract, lemon|pure lemon extract|lemon flavoring",,,,,4,1 tsp,,yes,
+liquid-smoke,Liquid Smoke,hickory liquid smoke|mesquite liquid smoke|smoke flavoring,,,,,5,1 tsp,,yes,
+lo-mein-noodle,Lo Mein Noodles,lo mein,wheat|gluten_cereals,egg|soy,,,140,1 cup,,yes,
+long-bean,Long Beans,chinese long beans|yardlong bean|snake bean|asparagus bean|chinese long bean|asparagus beans,legumes,,,,200,,1 bunch,yes,
+lump-crab-meat,Lump Crab Meat,jumbo lump crab meat|crab meat lump|lump crabmeat,shellfish,,,,135,1 cup,,yes,
+madeira,Madeira,madeira wine|fortified madeira,sulphites,,,,240,1 cup,,yes,
+malt-vinegar,Malt Vinegar,"malted vinegar|vinegar, malt|brown malt vinegar",gluten_cereals|sulphites,,,,15,1 tbsp,,yes,
+manchego,Manchego,manchego cheese|queso manchego,milk,,,,28,,1 slice,yes,
+mango-puree,Mango Puree,pureed mango|mango pulp|mango fruit puree,,sulphites,,,250,1 cup,,yes,
+marcona-almond,Marcona Almond,marcona almonds|spanish almonds|fried marcona almonds,tree_nuts|stone_fruit,milk,,,140,1 cup,,yes,
+marjoram,Marjoram,fresh marjoram|sweet marjoram,,,,,30,,1 bunch,yes,
+marsala,Marsala,marsala wine|sweet marsala|dry marsala|cooking marsala,sulphites,,,,240,1 cup,,yes,
+masago,Masago,capelin roe|smelt roe|masago fish eggs|Orange masago|orange smelt roe,fish,soy|wheat|gluten_cereals,,,15,1 tbsp,,yes,
+mascarpone,Mascarpone,mascarpone cheese|italian cream cheese,milk,,,,230,1 cup,,yes,
+matcha-powder,Matcha Powder,matcha|matcha green tea powder|green tea powder|macha powder,,,,,2,1 tsp,,yes,
+mexican-oregano,Mexican Oregano,fresh mexican oregano|mexican oregano fresh|mex oregano,,,,,30,,1 bunch,yes,
+meyer-lemon,Meyer Lemon,"meyer lemons|lemons, meyer",,,,,100,,1 each,yes,
+microgreen,Microgreens,micro greens|micro green|micro mix,,,,,20,1 cup,,yes,
+mirin,Mirin,sweet mirin|mirin cooking wine|aji mirin,,wheat|gluten_cereals|sulphites,,,15,1 tbsp,,yes,
+msg,MSG,monosodium glutamate|aji no moto|msg powder,,,,,5,1 tsp,,yes,
+muscovado-sugar,Muscovado Sugar,mascavado sugar|dark muscovado|brown muscovado sugar,,,,,220,1 cup,,yes,
+nduja,Nduja,pork nduja|spreadable salami,nightshades,milk|sulphites,,,15,1 tbsp,,yes,
+new-mexico-chile,New Mexico Chile,new mexico chilies|dried new mexico chile|hatch chile dried|chile new mexico,nightshades,sulphites,,,6,,1 each,yes,
+new-potato,New Potato,new potatoes|baby potato|baby potatoes|creamer potatoes|creamer potato,nightshades,,,,50,,1 each,yes,
+nicoise-olive,Nicoise Olives,olives nicoise,,sulphites,,,135,1 cup,,yes,
+nori,Nori,nori sheets|seaweed sheets|dried seaweed|nori seaweed,,,,,3,,1 sheet,yes,
+nutritional-yeast,Nutritional Yeast,nutritional yeast flakes|nooch|yeast flakes,,,,,60,1 cup,,yes,
+bell-pepper-orange,Orange Bell Pepper,orange bell peppers|orange pepper|orange capsicum,nightshades,,,,150,,1 each,yes,
+orange-blossom-water,Orange Blossom Water,orange flower water|mazahar|water orange blossom,,,,,5,1 tsp,,yes,
+orzo,Orzo,orzo pasta|risoni|dried orzo,wheat|gluten_cereals,egg,,,190,1 cup,,yes,
+padron-pepper,Padron Pepper,padron peppers|pimientos de padron|padrons,nightshades,,,,8,,1 each,yes,
+palm-sugar,Palm Sugar,coconut palm sugar|gula melaka|jaggery palm,,,,,200,1 cup,,yes,
+pancetta,Pancetta,cured pancetta|italian pancetta|diced pancetta|pork pancetta,,milk|sulphites|celery,,,140,1 cup,,yes,
+passion-fruit-paste,Passion Fruit Paste,passionfruit paste|maracuya paste,,sulphites,,,20,1 tbsp,,yes,
+passion-fruit-puree,Passion Fruit Puree,passionfruit puree|maracuya puree|passion fruit pulp,,sulphites,,,250,1 cup,,yes,
+flour-pastry,Pastry Flour,soft wheat flour|flour pastry,wheat|gluten_cereals,,,,115,1 cup,,yes,
+pearl-onion,Pearl Onion,pearl onions|boiler onions|baby onions,allium,,,,160,1 cup,,yes,
+pepper-jack,Pepper Jack Cheese,pepperjack|pepper jack|monterey jack with peppers,milk|nightshades,,,,113,1 cup,,yes,
+pepperoncini,Pepperoncini,pepperoncini peppers|peperoncini|banana pepper pickled,nightshades,sulphites,,,12,,1 each,yes,
+persian-cucumber,Persian Cucumber,persian cucumbers|mini cucumber|persian cuke,,,,,80,,1 each,yes,
+peruano-bean,Peruano Beans,dried peruano beans|peruano bean|canary beans|mayocoba beans|frijol peruano,legumes,,,,190,1 cup,,yes,
+pickled-cherry-pepper,Pickled Hot Cherry Pepper,pickled hot cherry peppers|hot cherry peppers|pickled cherry peppers,nightshades,sulphites,,,20,,1 each,yes,
+pickling-spice,Pickling Spice,pickle spice|pickling spice blend,,mustard|celery,,,7,1 tbsp,,yes,
+pink-peppercorn,Pink Peppercorn,pink peppercorns|baie rose,,tree_nuts,,,2.5,1 tsp,,yes,
+piquillo-pepper,Piquillo Pepper,piquillo peppers|piquillos|roasted piquillo peppers|pequillo peppers,nightshades,sulphites,,,15,,1 each,yes,
+pistachio-paste,Pistachio Paste,pistachio butter|paste of pistachio|pure pistachio paste,tree_nuts,milk|soy,,,18,1 tbsp,,yes,
+tomato-plum,Plum Tomato,plum tomatoes|roma tomato|roma tomatoes,nightshades,,,,62,,1 each,yes,
+pomegranate-molasses,Pomegranate Molasses,pom molasses|pomegranate syrup|dibs rumman,,sulphites,,,21,1 tbsp,,yes,
+ponzu,Ponzu Sauce,ponzu|ponzu shoyu|citrus ponzu|ponzu soy sauce,soy|fish,wheat|gluten_cereals,,,16,1 tbsp,,yes,
+porcini,Porcini Mushroom,fresh porcini|porcini|porcini mushrooms|cepes|cep,,,,,80,,1 each,yes,
+port-wine,Port Wine,port|tawny port|fortified port wine|ruby port|ruby port wine|port ruby,sulphites,,,,240,1 cup,,yes,
+potato-starch,Potato Starch,starch potato|potato flour starch|katakuriko,nightshades,,,,150,1 cup,,yes,
+preserved-lemon,Preserved Lemon,preserved lemons|pickled lemon|salted lemon|lemon confit,,sulphites,,,60,,1 each,yes,
+prosciutto-di-parma,Prosciutto di Parma,parma ham|parma prosciutto|prosciutto parma,,sulphites,,,15,,1 slice,yes,
+pulla-chile,Pulla Chile,dried pulla chilies|pulla chiles|puya chile|chile puya|dried pulla,nightshades,,,,2,,1 each,yes,
+puy-lentil,Puy Lentils,lentils du puy|du puy lentils|french green lentils|le puy lentils,legumes,,,,190,1 cup,,yes,
+rack-of-lamb,Rack of Lamb,lamb rack|frenched rack of lamb|lamb rib rack,,,,,700,,1 each,yes,
+rainbow-carrot,Rainbow Carrot,rainbow carrots|heirloom carrots|multicolor carrots,,,,,60,,1 each,yes,
+ras-el-hanout,Ras el Hanout,ras el hanout spice|moroccan spice blend,,tree_nuts|sesame,,,2.5,1 tsp,,yes,
+raspberry-jam,Raspberry Jam,raspberry preserves|seedless raspberry jam|jam raspberry,,sulphites,,,20,1 tbsp,,yes,
+red-bean-paste,Red Bean Paste,anko|adzuki bean paste|sweet red bean paste,legumes,soy|wheat|gluten_cereals,,,20,1 tbsp,,yes,
+red-bliss-potato,Red Bliss Potato,red bliss potatoes|red bliss|red creamer potato,nightshades,,,,100,,1 each,yes,
+red-curry-paste,Red Curry Paste,thai red curry paste|prik gaeng ped|curry paste red,nightshades|allium,fish|shellfish|soy|sesame,,,16,1 tbsp,,yes,
+red-endive,Red Endive,red belgian endive|red endive hearts|endive red,,,,,90,,1 head,yes,
+red-finger-chile,Red Finger Chile,red finger chilies|red finger chili|finger chile|long red chile,nightshades,,,,8,,1 each,yes,
+red-grouper,Red Grouper,whole red grouper|grouper fillet,fish,,,,2500,,1 each,yes,
+red-miso,Red Miso Paste,aka miso|red miso|dark miso paste,soy,wheat|gluten_cereals,,,18,1 tbsp,,yes,
+red-snapper,Red Snapper,snapper|whole red snapper|huachinango|whole snapper|snapper fillet,fish,,,,1500,,1 each,yes,
+bacon-fat,Rendered Bacon Fat,"bacon fat|bacon grease|bacon drippings|bacon fat, rendered",,sulphites|celery,,,205,1 cup,,yes,
+rice-vermicelli,Rice Vermicelli,vermicelli|vermicelli noodles|vermicelli rice noodles,,wheat|gluten_cereals,,,400,,1 bag,yes,
+vinegar-rice,Rice Vinegar,rice wine vinegar|rice vin,,sulphites,,,15,1 tbsp,,yes,
+rice-wine,Rice Wine,chinese rice wine|cooking rice wine,,sulphites|wheat|gluten_cereals,,,240,1 cup,,yes,
+ricotta-salata,Ricotta Salata,ricotta salata cheese|salted ricotta,milk,,,,100,1 cup,,yes,
+roasted-red-pepper,Roasted Red Pepper,roasted red peppers|fire roasted red peppers|roasted peppers|piquillo style roasted peppers,nightshades,sulphites,,,140,1 cup,,yes,
+romaine-heart,Romaine Heart,romaine hearts|hearts of romaine,,,,,220,,1 head,yes,
+romanesco,Romanesco,green romanesco cauliflower|romanesco cauliflower|green romanesco|romanesco broccoli,,,,,500,,1 head,yes,
+rosa-bianca-eggplant,Rosa Bianca Eggplant,bianca eggplant|rosa bianca eggplants|italian white eggplant,nightshades,,,,400,,1 each,yes,
+rose-water,Rose Water,rosewater|mai ward,,,,,5,1 tsp,,yes,
+sake,Sake,rice wine sake|japanese rice wine|junmai sake,,sulphites,,,240,1 cup,,yes,
+salmon-roe,Salmon Roe,ikura|salmon caviar|salmon eggs,fish,soy|wheat|gluten_cereals,,,17,1 tbsp,,yes,
+sambal-oelek,Sambal Oelek,sambal|sambal olek|chili paste sambal,nightshades,sulphites|allium|fish|shellfish,,,15,1 tbsp,,yes,
+san-marzano-tomato,San Marzano Tomato,san marzano tomatoes|canned san marzano tomatoes|san marzanos,nightshades,,,,800,,1 can,yes,
+scotch-bonnet,Scotch Bonnet Pepper,scotch bonnet|scotch bonnets|scotch bonnet peppers,nightshades,,,,8,,1 each,yes,
+sea-salt,Sea Salt,fine sea salt|flaky sea salt|sea salts,,,,,6,1 tsp,,yes,
+seasoned-rice-vinegar,Seasoned Rice Vinegar,sushi vinegar|seasoned rice wine vinegar|rice vinegar seasoned,sulphites,,,,15,1 tbsp,,yes,
+shaoxing-wine,Shaoxing Wine,shaoxing cooking wine|shao xing wine,sulphites,wheat|gluten_cereals,,,240,1 cup,,yes,
+sherry,Sherry,sherry wine|cooking sherry,sulphites,,,,240,1 cup,,yes,
+vinegar-sherry,Sherry Vinegar,sherry wine vinegar|vinagre de jerez|sherry vin,sulphites,,,,15,1 tbsp,,yes,
+shishito-pepper,Shishito Pepper,shishito peppers|shishitos,nightshades,,,,8,,1 each,yes,
+shrimp-paste,Shrimp Paste,dried shrimp paste|belacan|kapi|prawn paste,shellfish,fish,,,16,1 tbsp,,yes,
+sichuan-peppercorn,Sichuan Peppercorn,sichuan peppercorns|szechuan peppercorns|szechuan pepper,,,,,3,1 tsp,,yes,
+silken-tofu,Silken Tofu,tofu silken|soft silken tofu|silken bean curd|Soft tofu|tofu soft|soft bean curd|soft style tofu,soy,,,,250,1 cup,,yes,
+slab-bacon,Slab Bacon,bacon slab|pork slab bacon|unsliced bacon,,sulphites|celery|milk,,,30,,1 slice,yes,
+smoked-gouda,Smoked Gouda,smoked gouda cheese|gouda smoked,milk,,,,113,1 cup,,yes,
+smoked-ham-hock,Smoked Ham Hock,smoked ham hocks|smoked pork hock,,sulphites|celery,,,700,,1 each,yes,
+smoked-mozzarella,Smoked Mozzarella,smoked mozz|scamorza|smoked mozzarella cheese,milk,,,,113,1 cup,,yes,
+smoked-paprika,Smoked Paprika,pimenton|pimenton de la vera|spanish smoked paprika|Sweet smoked paprika|pimenton dulce|sweet pimenton,nightshades,,,,2.5,1 tsp,,yes,
+sorrel,Sorrel,fresh sorrel|french sorrel|sour grass,,,,,60,,1 bunch,yes,
+spanish-onion,Spanish Onion,spanish onions|yellow spanish onion,allium,,,,200,,1 each,yes,
+spicy-brown-mustard,Spicy Brown Mustard,brown mustard|deli mustard|spicy mustard,mustard,sulphites,,,16,1 tbsp,,yes,
+squid-ink,Squid Ink,black squid ink|cuttlefish ink|nero di seppia,mollusks,,,,5,1 tsp,,yes,
+stone-ground-grits,Stone-Ground Grits,stone ground corn grits,,gluten_cereals,,,160,1 cup,,yes,
+strawberry-jam,Strawberry Jam,strawberry preserves|strawberry fruit jam|jam strawberry,,sulphites,,,20,1 tbsp,,yes,
+strawberry-puree,Strawberry Puree,strawberry pulp|pureed strawberry|strawberry pure,,sulphites,,,250,1 cup,,yes,
+sumac,Sumac,ground sumac|sumac powder|dried sumac,,,,,2.5,1 tsp,,yes,
+sushi-rice,Sushi Rice,japanese sushi rice|short grain rice|calrose rice,,,,,190,1 cup,,yes,
+sweet-chili-sauce,Sweet Chili Sauce,thai sweet chili sauce|sweet chilli sauce|sweet chile sauce,nightshades|allium,soy|fish|sulphites,,,20,1 tbsp,,yes,
+sweet-vermouth,Sweet Vermouth,red vermouth|rosso vermouth|italian vermouth,sulphites,,,,30,1 fl-oz,,yes,
+tamarind-paste,Tamarind Paste,tamarind concentrate|paste of tamarind|tamarind pastes,,sulphites,,,16,1 tbsp,,yes,
+tamarind-pulp,Tamarind Pulp,tamarind block|wet tamarind|pulp of tamarind,,sulphites,,,15,1 tbsp,,yes,
+tapioca-starch,Tapioca Starch,starch tapioca|tapioca powder|Tapioca flour|tapioca root flour|cassava flour|flour tapioca,,,,,120,1 cup,,yes,
+tarragon,Tarragon,fresh tarragon|french tarragon|taragon,,,,,30,,1 bunch,yes,
+thai-basil,Thai Basil,basil thai|horapha|asian basil,,,,,40,,1 bunch,yes,
+tobiko,Tobiko,flying fish roe|tobiko eggs|tobiko roe|Orange tobiko|orange flying fish roe,fish,soy|wheat|gluten_cereals,,,15,1 tbsp,,yes,
+togarashi,Togarashi,shichimi togarashi|shichimi|seven spice|nanami togarashi,nightshades|sesame,fish|soy,,,2.5,1 tsp,,yes,
+treviso,Treviso,radicchio di treviso|rosso di treviso|treviso radicchio,,,,,250,,1 head,yes,
+tuscan-kale,Tuscan Kale,kale tuscan|lacinato kale|dinosaur kale|cavolo nero|black kale,,,,,200,,1 bunch,yes,
+udon-noodle,Udon Noodles,udon|fresh udon,wheat|gluten_cereals,,,,200,,1 packet,yes,
+urfa-chile-powder,Urfa Chile Powder,black urfa chile powder|urfa biber|urfa pepper flakes,nightshades,,,,2.5,1 tsp,,yes,
+vanilla-bean,Vanilla Bean,vanilla beans|vanilla pod|madagascar vanilla beans|bourbon vanilla bean,,,,,3,,1 each,yes,
+vanilla-paste,Vanilla Bean Paste,vanilla paste|paste vanilla,,,,,6,1 tsp,,yes,
+veal-bone,Veal Bones,veal marrow bones|veal knuckle bones,,,,,500,,1 each,yes,
+veal-demi-glace,Veal Demi-Glace,demi glace|veal demi,,celery|milk|wheat|gluten_cereals|sulphites|allium,,,240,1 cup,,yes,
+vegan-butter,Vegan Butter,plant based butter|dairy free butter|vegan butter substitute,,soy|tree_nuts,,,113,,1 stick,yes,
+wasabi-powder,Wasabi Powder,dry wasabi powder|ground wasabi powder|powdered wasabi,,mustard,,,3,1 tsp,,yes,
+white-asparagus,White Asparagus,asparagus white|white asparagus spears,,,,,450,,1 bunch,yes,
+white-balsamic-vinegar,White Balsamic Vinegar,white balsamic|balsamic bianco|white balsamic vinegar condiment,sulphites,,,,15,1 tbsp,,yes,
+white-miso-paste,White Miso Paste,white miso|shiro miso|miso paste white,soy,wheat|gluten_cereals,,,17,1 tbsp,,yes,
+onion-white,White Onion,white onions,allium,,,,110,,1 each,yes,
+white-peach,White Peach,white peaches|peach white,stone_fruit,,,,150,,1 each,yes,
+white-truffle-oil,White Truffle Oil,white truffle infused oil|oil white truffle,,,,,14,1 tbsp,,yes,
+vinegar-white-wine,White Wine Vinegar,white wine vin,sulphites,,,,15,1 tbsp,,yes,
+goat-kid-whole,Whole Baby Goat,baby goat whole|baby goat|cabrito|whole kid goat,,,,,9000,,1 each,yes,
+baby-lamb-whole,Whole Baby Lamb,baby lamb whole|baby lamb|whole spring lamb|milk-fed lamb,,,,,12000,,1 each,yes,
+whole-grain-mustard,Whole Grain Mustard,grainy mustard|wholegrain mustard|wg mustard|moutarde a l'ancienne|coarse ground mustard,mustard,sulphites|wheat|gluten_cereals|celery,,,16,1 tbsp,,yes,
+winter-savory,Winter Savory,fresh winter savory|herb winter savory|savory,,,,,30,,1 bunch,yes,
+wonton-noodle,Wonton Noodles,egg noodles wonton|hong kong noodles|chinese egg noodles,wheat|gluten_cereals|egg,soy|sesame,,,450,,1 bag,yes,
+potato-yukon-gold,Yukon Gold Potato,yukon golds|yukon gold potatoes,nightshades,,,,170,,1 each,yes,
+yuzu,Yuzu,fresh yuzu|whole yuzu|yuzu citrus,,,,,90,,1 each,yes,
+yuzu-juice,Yuzu Juice,bottled yuzu juice|yuzu citrus juice|juice yuzu,,sulphites,,,15,1 tbsp,,yes,
+yuzu-kosho,Yuzu Kosho,yuzu koshu|yuzukosho|yuzukoshu|yuzu pepper paste,nightshades,,,,6,1 tsp,,yes,
+zaatar,Za'atar,zaatar|zahtar|zatar|za'atar spice blend,sesame,wheat|gluten_cereals,,,7,1 tbsp,,yes,

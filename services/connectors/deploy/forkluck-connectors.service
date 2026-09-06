@@ -1,0 +1,18 @@
+[Unit]
+Description=Forkluck private connector HTTP service
+After=network.target postgresql.service
+
+[Service]
+User=forkluck-connectors
+Group=forkluck-connectors
+WorkingDirectory=/opt/forkluck-connectors/current
+EnvironmentFile=/etc/forkluck-connectors/connectors.env
+ExecStart=/opt/forkluck-connectors/shared/venv/bin/gunicorn --bind 127.0.0.1:8010 --workers 2 --access-logfile - config.wsgi:application
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

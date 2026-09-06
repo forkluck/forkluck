@@ -1,0 +1,24 @@
+import { describe, expect, it } from "vitest"
+import { safeAuthNext } from "@/lib/auth-next"
+
+describe("auth continuation", () => {
+  it.each([
+    undefined,
+    ["/recipes", "/"],
+    "https://evil.test",
+    "//evil.test",
+    "/\\evil.test",
+    "/\n/evil.test",
+    "/\t/evil.test",
+    "javascript:alert(1)",
+  ])("rejects an unsafe or ambiguous destination %j", (next) => {
+    expect(safeAuthNext(next)).toBe("/")
+  })
+
+  it.each([
+    "/recipes?selected=one",
+    "/api/auth/feedback/authorize?state=opaque&scope=profile",
+  ])("preserves a local continuation %s", (next) => {
+    expect(safeAuthNext(next)).toBe(next)
+  })
+})

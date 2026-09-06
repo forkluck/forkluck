@@ -1,0 +1,60 @@
+{% extends "admin/index.html" %}
+{# The stock index renders admin/app_list.html, which has no room for a
+   sentence under each heading. This is that table with a description row. #}
+
+{% block extrastyle %}{{ block.super }}
+<style>.dashboard .module td.description { white-space: normal; }</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% if app_list %}
+    {% for app in app_list %}
+      <div class="app-{{ app.app_label }} module"{% if app.anchor %} id="{{ app.anchor }}"{% endif %}>
+        <table>
+          <caption>{{ app.name }}</caption>
+          <thead class="visually-hidden">
+            <tr>
+              <th scope="col">Table</th>
+              <th scope="col">Add link</th>
+              <th scope="col">Change or view list link</th>
+            </tr>
+          </thead>
+          {% if app.description %}
+            <tr><td colspan="3" class="quiet description">{{ app.description }}</td></tr>
+          {% endif %}
+          {% for model in app.models %}
+            {% with model_name=model.object_name|lower %}
+              <tr class="model-{{ model_name }}">
+                <th scope="row" id="{{ app.app_label }}-{{ model_name }}">
+                  {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                  {% else %}
+                    {{ model.name }}
+                  {% endif %}
+                </th>
+                {% if model.add_url %}
+                  <td><a href="{{ model.add_url }}" class="addlink" aria-describedby="{{ app.app_label }}-{{ model_name }}">Add</a></td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+                {% if model.admin_url %}
+                  {% if model.view_only %}
+                    <td><a href="{{ model.admin_url }}" class="viewlink" aria-describedby="{{ app.app_label }}-{{ model_name }}">View</a></td>
+                  {% else %}
+                    <td><a href="{{ model.admin_url }}" class="changelink" aria-describedby="{{ app.app_label }}-{{ model_name }}">Change</a></td>
+                  {% endif %}
+                {% else %}
+                  <td></td>
+                {% endif %}
+              </tr>
+            {% endwith %}
+          {% endfor %}
+        </table>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You don’t have permission to view or edit anything.</p>
+  {% endif %}
+</div>
+{% endblock %}

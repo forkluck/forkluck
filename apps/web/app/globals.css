@@ -1,0 +1,348 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* One family, app-wide: Inter at 400/500/600. Nothing here, including the
+     text a user types into an input, is set in anything else. */
+  --font-heading: var(--font-body);
+  --font-sans: var(--font-body);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand: var(--brand);
+  --color-brand-fill: var(--brand-fill);
+  --color-brand-tile: var(--brand-tile);
+  --color-brand-selected: var(--brand-selected);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-line-strong: var(--line-strong);
+  --color-disabled-foreground: var(--disabled-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-fill: var(--destructive-fill);
+  --color-destructive-strong: var(--destructive-strong);
+  --color-destructive-tint: var(--destructive-tint);
+  --color-success: var(--success);
+  --color-success-fill: var(--success-fill);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-fill: var(--warning-fill);
+  --color-warning-fill-hover: var(--warning-fill-hover);
+  --color-warning-border: var(--warning-border);
+  --color-warning-strong: var(--warning-strong);
+  --color-warning-hover: var(--warning-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-ink-soft: var(--ink-soft);
+  --color-fill-soft: var(--fill-soft);
+  --color-secondary-strong: var(--secondary-strong);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover-border: var(--popover-border);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+  --color-background: var(--background);
+  /* Five steps, and nothing between them. Each is written out rather than
+     derived from --radius, because the scale's job is to name the radii the
+     design actually draws — a calc chain forces every step to move when one
+     of them needs to.
+
+       sm   4px  row tags and small chips
+       md   6px  menu items, row badges
+       lg  10px  buttons, inputs, selects, nav items, popovers
+       xl  14px  cards, metric cards, dialogs, the empty state
+       2xl 18px  the app frame
+       full      badges, tab pills, the switch, the spinner, avatars
+
+     A radius that is not one of these does not exist. See the radius rule in
+     AGENTS.md before reaching for rounded-[13px]. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+
+  /* Type scale: ten steps and nothing between them (AGENTS.md "Type scale").
+     Tailwind's own sizes are cleared so `text-sm` is 13px here, not 14, and
+     no step carries a line-height: `normal` stays the default and prose opts
+     in with `leading-*`. tests/type-scale-pins.test.ts refuses any other size. */
+  --text-*: initial;
+  --text-2xs: 11.5px;
+  --text-xs: 12.5px;
+  --text-sm: 13px;
+  --text-base: 13.5px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 17px;
+  --text-2xl: 24px;
+  --text-3xl: 26px;
+  --text-4xl: 42px;
+  /* No elevation anywhere in this design: depth is one 1px --border hairline
+     plus the modal scrim. Zeroing the scale means a stray shadow-* utility
+     can't reintroduce a drop shadow. */
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+}
+
+@keyframes primo-word-arrival {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.primo-word-arrival {
+  display: inline-block;
+  animation: primo-word-arrival 250ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primo-word-arrival {
+    animation: none;
+  }
+}
+
+:root {
+  /* Neutrals are the handoff palette and nothing else — ten values, no other
+     greys. The app frame, cards, modals and popovers are all white; --canvas
+     is the ground the frame sits on, so it is the only surface that is not
+     white or a fill. */
+  /* A literal hex declares a colour; `var(--other)` declares that this name is
+     the same colour on purpose. Nine values were repeated as literals across
+     the palette — four names for one grey, three for one hairline — which read
+     as separate decisions but moved as one, and would have moved apart the
+     first time someone edited a single line. Give a name its own literal only
+     when it genuinely needs to diverge. */
+  --canvas: #e9e7e2;
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  /* Same hairline as everything else. The handoff draws one line color across
+     cards, tables, inputs and popovers; a floating edge is not special. */
+  --popover-border: var(--border);
+  /* --primary stays the blue accent (links, selection marks); --brand is its
+     single source. The handoff's primary *button* is the ink pill, so that
+     fill comes from --foreground at the call site, not from here. */
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  /* The grey "Actions" pill: fill on rest, one step darker on hover. */
+  --secondary: #f4f4f5;
+  --secondary-foreground: var(--muted-foreground);
+  --secondary-strong: #e4e4e7;
+  --muted: var(--secondary);
+  /* Clears 4.5:1 on white and on --muted for normal-size text. */
+  --muted-foreground: #52525b;
+  /* Tertiary — placeholders, sub-lines, unit suffixes. It used to sit at
+     3.42:1 with a note saying not to use it for text that has to be read on
+     its own, which the affixes inside an input ($, %, / hour) do: they name
+     the unit the number is in. Now 4.83:1 on white, 4.67:1 on --fill-soft. */
+  --faint: #71717a;
+  /* Table headers and the primary button's hover fill. */
+  --ink-soft: #3f3f46;
+  /* Table row hover and inset panel fill, a half step above --muted. */
+  --fill-soft: #fbfbfc;
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+  /* One red and one green, each in the ink plus the pale fill it sits on. The
+     app used to carry a second pair of each — a softer red for negative
+     deltas, a cooler green for chips inside a table row — on the theory that a
+     state reads differently from an action. The theory cost contrast: the
+     cooler green failed AA on its own fill (3.55:1 against 11.5px text).
+     One pair each now, and the red is the vivid one, which is the point of a
+     destructive action. --destructive-fill sits a shade lighter than the
+     #fef3f2 it replaced so a red chip's text clears 4.5:1 (4.60) against the
+     brighter ink; white on --destructive is 4.83:1, --success on its own fill
+     4.65:1. */
+  --destructive: #d92d20;
+  --destructive-fill: #fef8f7;
+  /* The two derived steps off --destructive, on its hue and saturation so a
+     hover reads as one step darker rather than a different red. Both were hex
+     literals at call sites before they were named. */
+  --destructive-strong: #b42318;
+  --destructive-tint: #f97066;
+  --success: #2f7a4f;
+  --success-fill: #eaf4ee;
+  /* Needs-attention yellow: icon, text, banner fill, banner border, and the
+     border the ghost button inside a banner uses. The two hover values are
+     the fills the handoff gives a yellow control: --warning-hover for the
+     row's alert-triangle button, --warning-fill-hover for a ghost button
+     sitting on a --warning-fill banner. */
+  --warning: #c8880c;
+  --warning-foreground: #6b4708;
+  --warning-fill: #fdf8ec;
+  --warning-fill-hover: #f8eed6;
+  --warning-border: #f6e6bf;
+  --warning-strong: #e3cd97;
+  --warning-hover: #fbf1d8;
+  /* The single hairline in the app. Every edge resolves here — card, table,
+     input and popover borders — so they can't drift apart. */
+  --border: #e4e4e7;
+  /* A field's edge is the same hairline as everything else, by choice. It was
+     briefly darkened to #909098 so a control would clear WCAG 1.4.11's 3:1 —
+     the hairline manages 1.27:1 — but only the eleven fields built on the
+     `Input` primitive picked it up, while the hand-rolled ones stayed light,
+     and the split was worse than the original. If the contrast is worth
+     fixing, the fix is to make the field identifiable by its fill rather than
+     its edge, so one value covers both kinds of field at once. */
+  --input: var(--border);
+  /* The firm-up state for a control's edge: input and outline-button hover,
+     sort chevrons, dashed drop zones. One step past --input, wherever that
+     sits — it went to #6e6e77 while the field edge was dark, because a hover
+     that lightens the border is worse than no hover at all. */
+  --line-strong: #c9c9cf;
+  /* Disabled text and the inert status dot. This carried --line-strong's old
+     value and shared its token, which made the two impossible to move apart:
+     a disabled label wants to stay quiet exactly when a hovered border wants
+     to get louder. Disabled content is exempt from contrast minimums. */
+  --disabled-foreground: #c9c9cf;
+  /* There are no focus rings. Focus turns the border ink, so anything that
+     still resolves --ring lands on the same ink value. */
+  --ring: var(--foreground);
+  /* The chart ramp keeps its own literals even where it samples the same
+     values as the palette: a chart series has to stay legible against the
+     others, so it must be free to move when a UI colour does not. */
+  --chart-1: #3273dc;
+  --chart-2: #d8e4f7;
+  --chart-3: #18181b;
+  --chart-4: #52525b;
+  --chart-5: #c9c9cf;
+  --radius: 10px;
+  /* Blue is data and selection: the peak bar and progress fill, the pale bar
+     body, the icon tile, and the fill of a selected card. */
+  --brand: #3273dc;
+  --brand-foreground: var(--background);
+  --brand-fill: #d8e4f7;
+  --brand-tile: #e7effb;
+  --brand-selected: #f6f9fe;
+  /* The sidebar is the one column that is not white: a half step of fill
+     separates it from the main column, and on desktop a hairline in --muted
+     marks the edge. */
+  --sidebar: var(--fill-soft);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--foreground);
+  --sidebar-primary-foreground: var(--background);
+  /* The one grey in the nav. It means hover *and* active — the label color
+     never changes, only its weight, so the fill carries both states. */
+  --sidebar-hover: var(--secondary);
+  --sidebar-accent: var(--sidebar-hover);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-foreground;
+  }
+
+  html {
+    @apply bg-background font-sans text-foreground;
+    scrollbar-gutter: stable;
+  }
+
+  html:has([data-app-shell]) {
+    scrollbar-gutter: auto;
+  }
+
+  body {
+    @apply min-h-svh bg-background text-foreground;
+    /* Every piece of type in the handoff is written with the `font:`
+       shorthand, which resets line-height to the font's own metric — Inter's
+       normal, ~1.21. Preflight's 1.5 inflates a two-line settings row by 10px
+       and every stacked table cell with it, which is why the first pass drifted
+       screen to screen. `normal` is the app's default leading; prose opts back
+       in explicitly (leading-[1.55] help text, [1.6] dialog copy, [1.65] empty
+       states, [1.7] the recipe textarea). Auth sits outside this design and
+       restores 1.5 on its own root. */
+    line-height: normal;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Every number in the app is tabular, so columns of money and counts line
+     up without each call site remembering to ask. */
+  input,
+  table,
+  output {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Search fields are plain pills here — the platform's clear button and
+     magnifier are chrome the design does not draw. */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    appearance: none;
+  }
+
+  ::selection {
+    @apply bg-foreground text-white;
+  }
+}
+
+/* @shopify/draggable state classes for step reordering. */
+.draggable-mirror {
+  z-index: 50;
+}
+
+.draggable-source--is-dragging {
+  opacity: 0.4;
+}
+
+.root {
+  min-height: 100svh;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

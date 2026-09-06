@@ -1,0 +1,167 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Contributor code runs on disposable hosted runners without deployment secrets.
+# The main-only release workflow owns production verification and deployment.
+jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+  backend:
+    name: Backend and catalog
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: forkluck
+          POSTGRES_PASSWORD: forkluck
+          POSTGRES_DB: forkluck_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://forkluck:forkluck@127.0.0.1:5432/forkluck_ci
+      FORKLUCK_ENVIRONMENT: development
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/api/requirements*.txt
+      - name: Install backend dependencies
+        run: |
+          python3 -m venv apps/api/.venv
+          apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
+      - run: pnpm db:migrate
+      - run: pnpm verify:backend
+      - name: Validate catalog
+        run: |
+          apps/api/.venv/bin/python data/catalog/scripts/validate.py data/catalog/catalog.csv
+          apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
+
+  acceptance:
+    name: Browser acceptance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/api/requirements*.txt
+      - run: pnpm install --frozen-lockfile
+      - name: Install backend dependencies
+        run: |
+          python3 -m venv apps/api/.venv
+          apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
+      - run: pnpm --filter @forkluck/web exec playwright install --with-deps chromium
+      - run: pnpm test:acceptance
+
+  connectors:
+    name: Connectors
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: services/connectors
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: connectors
+          POSTGRES_PASSWORD: connectors
+          POSTGRES_DB: connectors
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CONNECTORS_DATABASE_URL: postgresql://connectors:connectors@127.0.0.1:5432/connectors
+      CONNECTORS_ENCRYPTION_KEY: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: services/connectors/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff format --check config connectors manage.py
+      - run: ruff check config connectors manage.py
+      - run: python manage.py migrate --noinput
+      - run: python manage.py test
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python manage.py check
+
+  skills:
+    name: Agent skills
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - run: pip install -r skills/requirements-dev.txt
+      - run: python scripts/validate-skills.py
+      - run: bash -n scripts/install-codex-links.sh

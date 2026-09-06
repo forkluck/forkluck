@@ -1,0 +1,133 @@
+[project]
+name = "forkluck-api"
+version = "0.0.1"
+license = "AGPL-3.0-or-later"
+requires-python = ">=3.12"
+
+[tool.importlinter]
+root_package = "forkluck"
+
+# ignore_imports below is an allowlist of real, deliberate exceptions. It is
+# shrink-only: an entry may be deleted once the import it names is gone, but
+# a new entry means a boundary is being crossed and needs a better answer
+# first.
+
+[[tool.importlinter.contracts]]
+name = "Request flow runs one way"
+type = "layers"
+layers = [
+    "forkluck.internal_urls | forkluck.public_urls",
+    "forkluck.http.dispatch",
+    "forkluck.domains",
+    "forkluck.integrations",
+    "forkluck.models",
+]
+
+[[tool.importlinter.contracts]]
+name = "Dispatch reaches integrations only through domains"
+type = "forbidden"
+# The layers contract permits dispatch -> integrations because integrations
+# sits below it. That is too permissive for the one action route: an action
+# handler registered from an integration module puts a user-facing write
+# below the domain layer, where nothing owns tenant scoping or the JSON
+# shape. Only direct imports are forbidden — reaching an integration
+# *through* a domain is the whole point of the layering.
+allow_indirect_imports = true
+source_modules = ["forkluck.http.dispatch"]
+# Every integration except token_crypto, whose exception type the error
+# funnel must name to keep key ids out of the response body. Listed one by
+# one rather than as `forkluck.integrations` so that single exception does
+# not need an ignore_imports entry.
+forbidden_modules = [
+    "forkluck.integrations.emails",
+    "forkluck.integrations.exchange_rates",
+    "forkluck.integrations.pos_oauth",
+    "forkluck.integrations.pos_sync",
+    "forkluck.integrations.shopify",
+    "forkluck.integrations.square",
+]
+
+[[tool.importlinter.contracts]]
+name = "Leaf modules stay leaves"
+type = "forbidden"
+source_modules = [
+    "forkluck.http.request",
+    "forkluck.http.auth",
+    "forkluck.domains.shared",
+]
+forbidden_modules = [
+    "forkluck.domains.accounts",
+    "forkluck.domains.ingredients",
+    "forkluck.domains.invoices",
+    "forkluck.domains.labor",
+    "forkluck.domains.primo",
+    "forkluck.domains.recipes",
+    "forkluck.domains.sales",
+    "forkluck.domains.search",
+    "forkluck.domains.workspace",
+    "forkluck.integrations",
+    "forkluck.http.dispatch",
+]
+
+[[tool.importlinter.contracts]]
+name = "Domains are independent"
+type = "independence"
+modules = [
+    "forkluck.domains.accounts",
+    "forkluck.domains.ingredients",
+    "forkluck.domains.invoices",
+    "forkluck.domains.labor",
+    "forkluck.domains.primo",
+    "forkluck.domains.recipes",
+    "forkluck.domains.sales",
+    "forkluck.domains.search",
+    "forkluck.domains.workspace",
+]
+ignore_imports = [
+    # The menu worksheet lives with recipes but a product row's food cost and
+    # units sold are sales facts; the same numbers the product page shows.
+    "forkluck.domains.recipes.health -> forkluck.domains.sales.bundles",
+    "forkluck.domains.recipes.health -> forkluck.domains.sales.core",
+    "forkluck.domains.recipes.actions -> forkluck.domains.sales.bundles",
+]
+
+[[tool.importlinter.contracts]]
+name = "Vendor clients are reached through the sync and OAuth flows"
+type = "protected"
+# Stated as "nothing may import these except", not "these may not import":
+# the rule holds for a module written next month without anyone remembering
+# to list it. Only direct imports count, so reaching a client *through*
+# pos_sync — which is what that module is for — stays fine.
+protected_modules = [
+    "forkluck.integrations.square",
+    "forkluck.integrations.shopify",
+]
+allowed_importers = [
+    "forkluck.integrations.pos_sync",
+    "forkluck.integrations.pos_oauth",
+]
+ignore_imports = [
+    # These two exercise the vendor clients directly, which is the point of
+    # them — they are the only tests that stub the HTTP layer.
+    "forkluck.test_pos_sync -> forkluck.integrations.square",
+    "forkluck.test_pos_sync -> forkluck.integrations.shopify",
+    "forkluck.test_modifier_catalog -> forkluck.integrations.square",
+]
+
+# A defect-only select: every rule here fires on code that is wrong, not on
+# code that is unfashionable, which is why there is no ignore list. The
+# formatter is deliberately not used — our Python is hand-wrapped narrower
+# than ruff's default and reformatting it would fix no defect.
+[tool.ruff.lint]
+select = ["F", "E9", "DTZ", "B006", "B008", "B017", "B023", "PLE"]
+
+[tool.ruff.lint.per-file-ignores]
+# A calendar month is a date, not an instant: both of these parse "2026-07"
+# and immediately take .date(), so the datetime never survives the
+# expression and an offset would be meaningless.
+"forkluck/domains/invoices/views.py" = ["DTZ007"]
+"forkluck/domains/shared/values.py" = ["DTZ007"]
+# These two suites have naive wall-clock times as their subject — the
+# daylight-saving edges and the naive-timestamp fallback are what they test.
+"forkluck/test_local_time_policy.py" = ["DTZ001"]
+"forkluck/test_daily_sales_rollup.py" = ["DTZ001"]

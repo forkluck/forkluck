@@ -1,0 +1,18 @@
+[Unit]
+Description=Forkluck private connector worker
+After=network.target postgresql.service
+
+[Service]
+User=forkluck-connectors
+Group=forkluck-connectors
+WorkingDirectory=/opt/forkluck-connectors/current
+EnvironmentFile=/etc/forkluck-connectors/connectors.env
+ExecStart=/opt/forkluck-connectors/shared/venv/bin/python manage.py run_connector_worker
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,803 @@
+diff --git a/app/actions/signin.go b/app/actions/signin.go
+index 28efb1e..7edfdfd 100644
+--- a/app/actions/signin.go
++++ b/app/actions/signin.go
+@@ -133,8 +133,8 @@ func NewSignInByEmailWithName() *SignInByEmailWithName {
+ // IsAuthorized returns true if current user is authorized to perform this action
+ func (action *SignInByEmailWithName) IsAuthorized(ctx context.Context, user *entity.User) bool {
+ 	tenant := ctx.Value(app.TenantCtxKey).(*entity.Tenant)
+-	// New users can only sign in if tenant allows email auth or is not private
+-	return tenant.IsEmailAuthAllowed || !tenant.IsPrivate
++	// A public OAuth-only board must not expose a second registration path.
++	return tenant.IsEmailAuthAllowed && !tenant.IsPrivate
+ }
+ 
+ // Validate if current model is valid
+diff --git a/app/cmd/routes.go b/app/cmd/routes.go
+index 10dc455..5742442 100644
+--- a/app/cmd/routes.go
++++ b/app/cmd/routes.go
+@@ -298,6 +298,7 @@ func routes(r *web.Engine) *web.Engine {
+ 		adminApi.Use(middlewares.IsAuthorized(enum.RoleAdministrator))
+ 
+ 		adminApi.Post("/api/v1/users", apiv1.CreateUser())
++		adminApi.Delete("/api/v1/users/by-provider/:provider/:uid", apiv1.DeleteUserByProvider())
+ 		adminApi.Post("/api/v1/tags", apiv1.CreateEditTag())
+ 		adminApi.Put("/api/v1/tags/:slug", apiv1.CreateEditTag())
+ 		adminApi.Delete("/api/v1/tags/:slug", apiv1.DeleteTag())
+diff --git a/app/handlers/apiv1/user.go b/app/handlers/apiv1/user.go
+index cb99dc8..ba934ab 100644
+--- a/app/handlers/apiv1/user.go
++++ b/app/handlers/apiv1/user.go
+@@ -12,6 +12,32 @@ import (
+ 	"github.com/getfider/fider/app/pkg/web"
+ )
+ 
++// DeleteUserByProvider lets the owning identity service erase its linked user.
++// The route is administrator-only; lookup remains scoped to this board.
++func DeleteUserByProvider() web.HandlerFunc {
++	return func(c *web.Context) error {
++		if !c.IsAuthenticated() || c.User().Role != enum.RoleAdministrator {
++			return c.Forbidden()
++		}
++		lookup := &query.GetUserByProvider{Provider: c.Param("provider"), UID: c.Param("uid")}
++		if err := bus.Dispatch(c, lookup); err != nil {
++			if errors.Cause(err) == app.ErrNotFound {
++				return c.Ok(web.Map{})
++			}
++			return c.Failure(err)
++		}
++		// The service account must remain available to process future deletes.
++		if lookup.Result.ID == c.User().ID {
++			return c.Forbidden()
++		}
++		c.SetUser(lookup.Result)
++		if err := bus.Dispatch(c, &cmd.DeleteCurrentUser{}); err != nil {
++			return c.Failure(err)
++		}
++		return c.Ok(web.Map{})
++	}
++}
++
+ // ListUsers returns paginated registered users
+ func ListUsers() web.HandlerFunc {
+ 	return func(c *web.Context) error {
+diff --git a/app/handlers/apiv1/user_test.go b/app/handlers/apiv1/user_test.go
+index 1b6a2ec..55a1c5a 100644
+--- a/app/handlers/apiv1/user_test.go
++++ b/app/handlers/apiv1/user_test.go
+@@ -14,9 +14,48 @@ import (
+ 	"github.com/getfider/fider/app/models/query"
+ 	. "github.com/getfider/fider/app/pkg/assert"
+ 	"github.com/getfider/fider/app/pkg/bus"
++	"github.com/getfider/fider/app/pkg/errors"
+ 	"github.com/getfider/fider/app/pkg/mock"
+ )
+ 
++func TestDeleteUserByProvider(t *testing.T) {
++	admin := &entity.User{ID: 100, Role: enum.RoleAdministrator}
++	for _, role := range []enum.Role{enum.RoleVisitor, enum.RoleCollaborator} {
++		status, _ := mock.NewServer().AsUser(&entity.User{ID: 1, Role: role}).Execute(apiv1.DeleteUserByProvider())
++		if status != http.StatusForbidden {
++			t.Fatalf("role %v could delete: %d", role, status)
++		}
++	}
++	deleted := 0
++	bus.AddHandler(func(ctx context.Context, q *query.GetUserByProvider) error {
++		if q.Provider != "_forkluck" || q.UID != "verified-uuid" {
++			t.Fatal("provider identity changed")
++		}
++		q.Result = &entity.User{ID: 42, Role: enum.RoleVisitor}
++		return nil
++	})
++	bus.AddHandler(func(ctx context.Context, c *cmd.DeleteCurrentUser) error {
++		deleted = ctx.Value(app.UserCtxKey).(*entity.User).ID
++		return nil
++	})
++	status, _ := mock.NewServer().AsUser(admin).AddParam("provider", "_forkluck").AddParam("uid", "verified-uuid").Execute(apiv1.DeleteUserByProvider())
++	if status != http.StatusOK || deleted != 42 {
++		t.Fatalf("delete: status=%d user=%d", status, deleted)
++	}
++	bus.AddHandler(func(ctx context.Context, q *query.GetUserByProvider) error {
++		return errors.Wrap(app.ErrNotFound, "missing")
++	})
++	status, _ = mock.NewServer().AsUser(admin).Execute(apiv1.DeleteUserByProvider())
++	if status != http.StatusOK {
++		t.Fatalf("retry: %d", status)
++	}
++	bus.AddHandler(func(ctx context.Context, q *query.GetUserByProvider) error { q.Result = admin; return nil })
++	status, _ = mock.NewServer().AsUser(admin).Execute(apiv1.DeleteUserByProvider())
++	if status != http.StatusForbidden {
++		t.Fatalf("service deleted itself: %d", status)
++	}
++}
++
+ func TestListUsersHandler(t *testing.T) {
+ 	RegisterT(t)
+ 
+diff --git a/app/handlers/signin_test.go b/app/handlers/signin_test.go
+index ca027bf..c9d1e8f 100644
+--- a/app/handlers/signin_test.go
++++ b/app/handlers/signin_test.go
+@@ -134,6 +134,14 @@ func TestSignInByEmailWithNameHandler_ExistingUser(t *testing.T) {
+ 	Expect(response.Body.String()).ContainsSubstring("already exists")
+ }
+ 
++func TestSignInByEmailWithNameHandler_EmailAuthDisabled(t *testing.T) {
++	RegisterT(t)
++	publicTenant := &entity.Tenant{ID: 1, Name: "OAuth board", Subdomain: "oauth"}
++	code, _ := mock.NewServer().OnTenant(publicTenant).
++		ExecutePost(handlers.SignInByEmailWithName(), `{ "email": "new.user@got.com", "name": "New User" }`)
++	Expect(code).Equals(http.StatusForbidden)
++}
++
+ func TestSignInByEmailWithNameHandler_PrivateTenant(t *testing.T) {
+ 	RegisterT(t)
+ 
+diff --git a/app/pkg/env/env.go b/app/pkg/env/env.go
+index 39b113e..33c62da 100644
+--- a/app/pkg/env/env.go
++++ b/app/pkg/env/env.go
+@@ -114,9 +114,10 @@ type config struct {
+ 			SecretAccessKey string `env:"EMAIL_AWSSES_SECRET_ACCESS_KEY"`
+ 		}
+ 		Mailgun struct {
+-			APIKey string `env:"EMAIL_MAILGUN_API"`
+-			Domain string `env:"EMAIL_MAILGUN_DOMAIN"`
+-			Region string `env:"EMAIL_MAILGUN_REGION,default=US"` // possible values: US or EU
++			BaseURL string `env:"EMAIL_MAILGUN_BASE_URL"`
++			APIKey  string `env:"EMAIL_MAILGUN_API"`
++			Domain  string `env:"EMAIL_MAILGUN_DOMAIN"`
++			Region  string `env:"EMAIL_MAILGUN_REGION,default=US"` // possible values: US or EU
+ 		}
+ 		SMTP struct {
+ 			Host              string `env:"EMAIL_SMTP_HOST"`
+diff --git a/app/services/email/mailgun/sendmail_test.go b/app/services/email/mailgun/sendmail_test.go
+index bcebec1..048593a 100644
+--- a/app/services/email/mailgun/sendmail_test.go
++++ b/app/services/email/mailgun/sendmail_test.go
+@@ -317,5 +317,9 @@ func TestGetBaseURL(t *testing.T) {
+ 	env.Config.Email.Mailgun.Region = "Mars"
+ 	bus.Publish(ctx, sendMail)
+ 	Expect(httpclientmock.RequestsHistory[5].URL.String()).Equals("https://api.mailgun.net/v3/mydomain.com/messages")
++	env.Config.Email.Mailgun.BaseURL = "http://ghost-mail-bridge:3003/v3/"
++	defer func() { env.Config.Email.Mailgun.BaseURL = "" }()
++	bus.Publish(ctx, sendMail)
++	Expect(httpclientmock.RequestsHistory[6].URL.String()).Equals("http://ghost-mail-bridge:3003/v3/mydomain.com/messages")
+ 
+ }
+diff --git a/app/services/email/mailgun/service.go b/app/services/email/mailgun/service.go
+index 0f9f8d8..d1d4b1c 100644
+--- a/app/services/email/mailgun/service.go
++++ b/app/services/email/mailgun/service.go
+@@ -3,6 +3,7 @@ package mailgun
+ import (
+ 	"context"
+ 	"fmt"
++	"net/url"
+ 	"strings"
+ 
+ 	"github.com/getfider/fider/app/models/dto"
+@@ -45,6 +46,9 @@ func (s Service) Init() {
+ // Try getting the URL of the Mailgun API using Environment vars and the Sender's domain
+ // Fall back to the URL for the US region if that fails to maintain compatibility with older installs
+ func getEndpoint(ctx context.Context, domain, path string) string {
++	if env.Config.Email.Mailgun.BaseURL != "" {
++		return strings.TrimRight(env.Config.Email.Mailgun.BaseURL, "/") + "/" + url.PathEscape(domain) + path
++	}
+ 	var regionCode = env.Config.Email.Mailgun.Region
+ 	regionCode = strings.ToUpper(regionCode)
+ 
+diff --git a/public/assets/styles/reset.scss b/public/assets/styles/reset.scss
+index 45566a2..ffaf68d 100644
+--- a/public/assets/styles/reset.scss
++++ b/public/assets/styles/reset.scss
+@@ -17,7 +17,7 @@ body {
+   min-width: 320px;
+ 
+   color: var(--colors-gray-800);
+-  background-color: var(--colors-gray-100);
++  background-color: var(--colors-white);
+   font-size: get("font.size.base");
+   font-family: $font-base;
+   line-height: 1.6;
+diff --git a/public/assets/styles/variables/_colors.scss b/public/assets/styles/variables/_colors.scss
+index 7b8f282..ee4ce80 100644
+--- a/public/assets/styles/variables/_colors.scss
++++ b/public/assets/styles/variables/_colors.scss
+@@ -1,15 +1,16 @@
+ $light-colors: (
++  // Forkluck neutrals, from the marketing site's --fl-* tokens.
+   "gray": (
+-    "100": #fcfafa,
+-    "200": #eeebeb,
+-    "300": #e0dcdd,
+-    "400": #d2cdcf,
+-    "500": #c4bec0,
+-    "600": #9d9598,
+-    "700": #756e71,
+-    "800": #4e474b,
+-    "900": #262225,
+-    "50": #f9fafb,
++    "100": #f4f4f5,
++    "200": #e4e4e7,
++    "300": #d4d4d8,
++    "400": #a1a1aa,
++    "500": #8a8a93,
++    "600": #71717a,
++    "700": #3f3f46,
++    "800": #27272a,
++    "900": #18181b,
++    "50": #fafafa,
+   ),
+   "green": (
+     "900": #14532d,
+@@ -36,17 +37,18 @@ $light-colors: (
+     "100": #fef3c7,
+     "50": #fffbeb,
+   ),
++  // Forkluck accent #3273dc and its hover #2a62bd.
+   "blue": (
+-    "100": #f2f2ff,
+-    "200": #c2c4ff,
+-    "300": #909bfd,
+-    "400": #5e76f7,
+-    "500": #2d57ed,
+-    "600": #0f3ebb,
+-    "700": #03308a,
+-    "800": #002358,
+-    "900": #001126,
+-    "50": #f0f9ff,
++    "100": #eef4fc,
++    "200": #c9dbf6,
++    "300": #9dbdee,
++    "400": #6b98e5,
++    "500": #3273dc,
++    "600": #2a62bd,
++    "700": #234f9a,
++    "800": #0f2a66,
++    "900": #08183a,
++    "50": #f5f8fd,
+   ),
+   "red": (
+     "900": #7f1d1d,
+@@ -61,10 +63,10 @@ $light-colors: (
+     "50": #fef2f2,
+   ),
+   "primary": (
+-    "light": var(--primary-color-light, #c2c4ff),
+-    "base": var(--primary-color, #2d57ed),
+-    "dark": var(--primary-color-dark, #03308a),
++    "light": var(--primary-color-light, #eef4fc),
++    "base": var(--primary-color, #3273dc),
++    "dark": var(--primary-color-dark, #2a62bd),
+   ),
+   "white": #fff,
+-  "black": #262225,
++  "black": #18181b,
+ );
+diff --git a/public/components/Header.scss b/public/components/Header.scss
+index a2fc8eb..c19b4ed 100644
+--- a/public/components/Header.scss
++++ b/public/components/Header.scss
+@@ -1,6 +1,18 @@
+ @use "~@fider/assets/styles/variables.scss" as *;
+ 
+ #c-header {
++  // Match the marketing navigation: 80px tall, bold wordmark, darker links.
++  .c-menu {
++    padding-top: spacing(6);
++    padding-bottom: spacing(6);
++  }
++
++  .c-header__brand h1 {
++    font-size: 24px;
++    font-weight: 700;
++    letter-spacing: -0.015em;
++  }
++
+   .c-header__row {
+     display: flex;
+     flex-wrap: wrap;
+@@ -69,9 +81,9 @@
+   }
+ 
+   .c-header__nav-link {
+-    font-size: 0.875rem;
++    font-size: 15px;
+     font-weight: 500;
+-    color: var(--colors-gray-500);
++    color: var(--colors-gray-700);
+     text-decoration: none;
+     transition: color 0.15s ease, box-shadow 0.15s ease;
+ 
+diff --git a/public/components/Header.tsx b/public/components/Header.tsx
+index 70f1d5c..82d02fd 100644
+--- a/public/components/Header.tsx
++++ b/public/components/Header.tsx
+@@ -1,5 +1,5 @@
+ import React, { useState } from "react"
+-import { SignInModal, RSSModal, TenantLogo, NotificationIndicator, UserMenu, ThemeSwitcher, Icon, Button, ModerationIndicator } from "@fider/components"
++import { SignInModal, RSSModal, TenantLogo, NotificationIndicator, UserMenu, Icon, Button, ModerationIndicator } from "@fider/components"
+ import { useFider } from "@fider/hooks"
+ import { HStack } from "./layout"
+ import { Trans } from "@lingui/react/macro"
+@@ -34,7 +34,7 @@ export const Header = (props: HeaderProps) => {
+   const hideRSSModal = () => setIsRSSModalOpen(false)
+ 
+   return (
+-    <div id="c-header" className="bg-white" style={{ borderBottom: "1px solid var(--colors-gray-200)" }} {...(props.hasInert && { inert: "true" })}>
++    <div id="c-header" className="bg-white" {...(props.hasInert && { inert: "true" })}>
+       <SignInModal isOpen={isSignInModalOpen} onClose={hideSignInModal} />
+       <RSSModal isOpen={isRSSModalOpen} onClose={hideRSSModal} url={`${fider.settings.baseURL}/feed/global.atom`} />
+       <HStack className="c-menu p-4 w-full">
+@@ -64,7 +64,6 @@ export const Header = (props: HeaderProps) => {
+                     <Icon sprite={IconRss} className="h-6 text-gray-500" />
+                   </button>
+                 )}
+-                <ThemeSwitcher />
+                 <NotificationIndicator />
+                 <UserMenu />
+               </HStack>
+@@ -76,7 +75,6 @@ export const Header = (props: HeaderProps) => {
+                     <Icon sprite={IconRss} className="h-6 text-gray-500" />
+                   </button>
+                 )}
+-                <ThemeSwitcher />
+                 <Button variant="primary" size="default" onClick={handleSignInClick}>
+                   <HStack spacing={1} className="flex-items-center">
+                     <span>
+diff --git a/public/components/PostDetails/PostDetails.tsx b/public/components/PostDetails/PostDetails.tsx
+index b11593e..f819382 100644
+--- a/public/components/PostDetails/PostDetails.tsx
++++ b/public/components/PostDetails/PostDetails.tsx
+@@ -10,7 +10,7 @@ import IconRSS from "@fider/assets/images/heroicons-rss.svg"
+ import IconPencil from "@fider/assets/images/heroicons-pencil-alt.svg"
+ import IconChat from "@fider/assets/images/heroicons-chat-alt-2.svg"
+ 
+-import { ResponseDetails, Button, UserName, Moment, Markdown, Input, Form, Icon, Avatar, PoweredByFider, RSSModal, ResponseLozenge } from "@fider/components"
++import { ResponseDetails, Button, UserName, Moment, Markdown, Input, Form, Icon, Avatar, RSSModal, ResponseLozenge } from "@fider/components"
+ import { CommentInput } from "@fider/pages/ShowPost/components/CommentInput"
+ import { ShowComment } from "@fider/pages/ShowPost/components/ShowComment"
+ import { VoteSection } from "@fider/pages/ShowPost/components/VoteSection"
+@@ -305,8 +305,6 @@ export const PostDetails: React.FC<PostDetailsProps> = (props) => {
+       {/* Left Sidebar - hidden on mobile, shown on desktop */}
+       <div className="p-show-post__action-col p-show-post__action-col--desktop">
+         <VotesPanel post={post} votes={votes} />
+-
+-        <PoweredByFider slot="show-post" className="mt-3" />
+       </div>
+ 
+       <div className="p-show-post__main-col">
+@@ -496,11 +494,6 @@ export const PostDetails: React.FC<PostDetailsProps> = (props) => {
+             </VStack>
+           )}
+         </div>
+-
+-        {/* Powered by Fider - bottom of page on mobile only */}
+-        <div className="p-show-post__powered-by-mobile">
+-          <PoweredByFider slot="show-post" />
+-        </div>
+       </div>
+ 
+       {/* Modals */}
+diff --git a/public/components/SignInModal.tsx b/public/components/SignInModal.tsx
+index c27a657..bd1c07d 100644
+--- a/public/components/SignInModal.tsx
++++ b/public/components/SignInModal.tsx
+@@ -1,5 +1,6 @@
+ import React from "react"
+ import { Modal, SignInControl, LegalFooter, TenantLogo } from "@fider/components"
++import { useFider } from "@fider/hooks"
+ import { CloseIcon } from "./common"
+ import { Trans } from "@lingui/react/macro"
+ import { HStack, VStack } from "./layout"
+@@ -10,6 +11,7 @@ interface SignInModalProps {
+ }
+ 
+ export const SignInModal: React.FC<SignInModalProps> = (props) => {
++  const fider = useFider()
+   const onCodeVerified = (): void => {
+     // User is authenticated - close modal and reload to refresh the page
+     props.onClose()
+@@ -21,7 +23,10 @@ export const SignInModal: React.FC<SignInModalProps> = (props) => {
+       <Modal.Header>
+         <VStack spacing={8}>
+           <HStack justify="between">
+-            <TenantLogo size={24} useFiderIfEmpty={true} />
++            <span className="c-signin-wordmark">
++              <TenantLogo size={24} />
++              {fider.session.tenant.name}
++            </span>
+             <CloseIcon closeModal={props.onClose} />
+           </HStack>
+           <p>
+@@ -30,7 +35,8 @@ export const SignInModal: React.FC<SignInModalProps> = (props) => {
+         </VStack>
+       </Modal.Header>
+       <Modal.Content>
+-        <SignInControl useEmail={true} onCodeVerified={onCodeVerified} />
++        {/* The board is OAuth-only; the /signin page keeps the owner's email recovery path. */}
++        <SignInControl useEmail={fider.session.tenant.isEmailAuthAllowed} onCodeVerified={onCodeVerified} />
+       </Modal.Content>
+       <LegalFooter />
+     </Modal.Window>
+diff --git a/public/components/common/Footer.scss b/public/components/common/Footer.scss
+new file mode 100644
+index 0000000..3faa24d
+--- /dev/null
++++ b/public/components/common/Footer.scss
+@@ -0,0 +1,78 @@
++@use "~@fider/assets/styles/variables.scss" as *;
++
++.c-footer {
++  margin-top: auto;
++  border-top: 1px solid var(--colors-gray-200);
++  background-color: var(--colors-white);
++  padding: 52px 0 40px;
++  font-size: 13.5px;
++  line-height: 1.2;
++  color: var(--colors-gray-700);
++
++  a {
++    color: var(--colors-gray-700);
++    text-decoration: none;
++    transition: color 130ms;
++
++    &:hover {
++      color: var(--colors-gray-900);
++    }
++  }
++
++  h2 {
++    margin: 0;
++    font-size: 13px;
++    font-weight: 600;
++    color: var(--colors-gray-900);
++  }
++
++  &__cols {
++    display: grid;
++    grid-template-columns: 2fr 1fr 1fr;
++    gap: 32px;
++
++    @include media("sm") {
++      grid-template-columns: 1fr;
++      gap: 28px;
++    }
++  }
++
++  &__wordmark {
++    font-size: 15px;
++    font-weight: 600;
++    letter-spacing: -0.01em;
++    color: var(--colors-gray-900);
++  }
++
++  &__blurb {
++    margin: 12px 0 0;
++    max-width: 260px;
++    line-height: 1.6;
++  }
++
++  &__links {
++    display: flex;
++    flex-direction: column;
++    gap: 9px;
++    margin-top: 12px;
++  }
++
++  &__bar {
++    display: flex;
++    flex-wrap: wrap;
++    align-items: center;
++    justify-content: space-between;
++    gap: 8px 18px;
++    margin-top: 40px;
++    padding-top: 18px;
++    border-top: 1px solid var(--colors-gray-100);
++    font-size: 12.5px;
++    color: var(--colors-gray-500);
++  }
++
++  &__legal {
++    display: flex;
++    flex-wrap: wrap;
++    gap: 18px;
++  }
++}
+diff --git a/public/components/common/Footer.tsx b/public/components/common/Footer.tsx
+new file mode 100644
+index 0000000..0266dfc
+--- /dev/null
++++ b/public/components/common/Footer.tsx
+@@ -0,0 +1,67 @@
++import React, { useEffect, useState } from "react"
++import "./Footer.scss"
++
++// Mirrors the marketing footer in forkluck-marketing/theme/partials/forkluck-footer.hbs.
++const marketingURL = "https://forkluck.com"
++const appURL = "https://app.forkluck.com"
++const sourceURL = "/static/assets/forkluck-fider-source.tar.gz"
++
++export const Footer = () => {
++  // app.forkluck.com sets forkluck_signed_in=1 on the parent domain, so a
++  // signed-in visitor sees Log out / Dashboard like on the marketing site.
++  const [isSignedIn, setIsSignedIn] = useState(false)
++  useEffect(() => {
++    setIsSignedIn(document.cookie.indexOf("forkluck_signed_in=1") !== -1)
++  }, [])
++
++  return (
++    <footer className="c-footer">
++      <div className="container">
++        <div className="c-footer__cols">
++          <div>
++            <a className="c-footer__wordmark" href={`${marketingURL}/`}>
++              Forkluck
++            </a>
++            <p className="c-footer__blurb">Recipe formulation and costing for working kitchens.</p>
++          </div>
++          <div>
++            <h2>Product</h2>
++            <div className="c-footer__links">
++              <a href={`${marketingURL}/pricing/`}>Pricing</a>
++              <a href="https://github.com/forkluck">Github</a>
++              <a href={`${marketingURL}/changelog/`}>Changelog</a>
++              <a href="/">Ideas</a>
++            </div>
++          </div>
++          <div>
++            <h2>Account</h2>
++            <div className="c-footer__links">
++              {isSignedIn ? (
++                <>
++                  <a href={`${appURL}/logout`}>Log out</a>
++                  <a href={`${appURL}/`}>Dashboard</a>
++                </>
++              ) : (
++                <>
++                  <a href={`${appURL}/login`}>Sign in</a>
++                  <a href={`${appURL}/signup`}>Sign up</a>
++                </>
++              )}
++            </div>
++          </div>
++        </div>
++        <div className="c-footer__bar">
++          <span>© {new Date().getFullYear()} Forkluck</span>
++          <span className="c-footer__legal">
++            <a href={`${marketingURL}/privacy/`}>Privacy</a>
++            <a href={`${marketingURL}/terms/`}>Terms</a>
++            <a href={sourceURL}>Source</a>
++            <a rel="noopener" href="https://fider.io" target="_blank">
++              Powered by Fider
++            </a>
++          </span>
++        </div>
++      </div>
++    </footer>
++  )
++}
+diff --git a/public/components/common/Modal.tsx b/public/components/common/Modal.tsx
+index d34dd94..44741b0 100644
+--- a/public/components/common/Modal.tsx
++++ b/public/components/common/Modal.tsx
+@@ -69,7 +69,7 @@ const ModalWindow: React.FunctionComponent<ModalWindowProps> = ({ size = "small"
+   })
+ 
+   return ReactDOM.createPortal(
+-    <div aria-disabled={true} className="c-modal-dimmer" onClick={close}>
++    <div className="c-modal-dimmer" onClick={close}>
+       <div className="c-modal-scroller">
+         <div className={className} data-testid="modal" onClick={swallow}>
+           {props.children}
+diff --git a/public/components/common/SignInControl.scss b/public/components/common/SignInControl.scss
+index c2494e0..1b9f108 100644
+--- a/public/components/common/SignInControl.scss
++++ b/public/components/common/SignInControl.scss
+@@ -20,22 +20,39 @@
+   }
+ }
+ 
++// Styled as the primary action, like the marketing site's Sign up button.
+ .c-signin-social-button {
+-  background: none;
+-  border: 1px solid get("colors.gray.700");
+-  border-radius: 6px;
++  background-color: var(--colors-primary-base);
++  border: 1px solid var(--colors-primary-base);
++  border-radius: 8px;
+   display: inline-flex;
+   justify-content: center;
+   align-items: center;
+   padding-top: spacing(3);
+   padding-bottom: spacing(3);
++  transition: background-color 130ms;
++
++  &:hover {
++    background-color: var(--colors-primary-dark);
++  }
++
+   img {
+     height: sizing(5);
+     padding-right: spacing(3);
+   }
+   span {
+-    color: get("colors.gray.700");
++    color: var(--colors-white);
+     font-size: get("font.size.base");
+-    font-weight: 500;
++    font-weight: 600;
+   }
+ }
++
++.c-signin-wordmark {
++  display: inline-flex;
++  align-items: center;
++  gap: spacing(2);
++  font-size: 20px;
++  font-weight: 700;
++  letter-spacing: -0.015em;
++  color: var(--colors-gray-900);
++}
+diff --git a/public/components/common/index.tsx b/public/components/common/index.tsx
+index 4bea87a..99b22a8 100644
+--- a/public/components/common/index.tsx
++++ b/public/components/common/index.tsx
+@@ -27,6 +27,7 @@ export * from "./Loader"
+ export * from "./Logo"
+ export * from "./Toggle"
+ export * from "./PoweredByFider"
++export * from "./Footer"
+ export * from "./PageTitle"
+ export * from "./Dropdown"
+ export * from "./Money"
+diff --git a/public/pages/Administration/pages/ContentModeration.page.scss b/public/pages/Administration/pages/ContentModeration.page.scss
+index b0d6968..97d77b2 100644
+--- a/public/pages/Administration/pages/ContentModeration.page.scss
++++ b/public/pages/Administration/pages/ContentModeration.page.scss
+@@ -1,7 +1,7 @@
+ @use "~@fider/assets/styles/variables.scss" as *;
+ 
+ #p-admin-moderation {
+-  background-color: var(--colors-gray-100);
++  background-color: var(--colors-white);
+   padding-top: spacing(8);
+   padding-bottom: spacing(12);
+ }
+diff --git a/public/pages/Home/Home.page.scss b/public/pages/Home/Home.page.scss
+index 74475f8..1a55748 100644
+--- a/public/pages/Home/Home.page.scss
++++ b/public/pages/Home/Home.page.scss
+@@ -5,7 +5,7 @@
+   grid-template-columns: 1fr;
+   column-gap: 0;
+   row-gap: spacing(8);
+-  background-color: var(--colors-gray-100);
++  background-color: var(--colors-white);
+   padding-top: spacing(12);
+   padding-bottom: spacing(12);
+ 
+diff --git a/public/pages/Home/Home.page.tsx b/public/pages/Home/Home.page.tsx
+index 076415b..26b0f71 100644
+--- a/public/pages/Home/Home.page.tsx
++++ b/public/pages/Home/Home.page.tsx
+@@ -5,7 +5,7 @@ import IconArrowLeft from "@fider/assets/images/heroicons-arrowleft.svg"
+ 
+ import React, { useEffect, useState, useRef } from "react"
+ import { Post, Tag, PostStatus } from "@fider/models"
+-import { Markdown, Hint, PoweredByFider, Icon, Header, Button } from "@fider/components"
++import { Markdown, Hint, Footer, Icon, Header, Button } from "@fider/components"
+ import { PostsContainer } from "./components/PostsContainer"
+ import { useFider, usePostOverlay } from "@fider/hooks"
+ import { HStack, VStack } from "@fider/components/layout"
+@@ -143,9 +143,6 @@ What can we do better? This is the place for you to vote, discuss and share idea
+                 <Markdown className="p-home__welcome-body" text={fider.session.tenant.welcomeMessage || defaultWelcomeMessage} style="full" />
+               </div>
+             </VStack>
+-            <div>
+-              <PoweredByFider slot="home-input" className="sm:hidden md:hidden lg:block mt-3" />
+-            </div>
+           </div>
+           <div className="p-home__posts-col">
+             <button className="p-home__add-idea-btn" onClick={handleNewPost}>
+@@ -165,7 +162,6 @@ What can we do better? This is the place for you to vote, discuss and share idea
+                 onPostClick={handlePostClick}
+               />
+             )}
+-            <PoweredByFider slot="home-footer" className="lg:hidden xl:hidden mt-8" />
+           </div>
+         </div>
+         {selectedPostId !== null && (
+@@ -181,6 +177,7 @@ What can we do better? This is the place for you to vote, discuss and share idea
+             <PostDetails postNumber={selectedPostId} onDataChanged={() => setIsPostDirty(true)} />
+           </div>
+         )}
++        <Footer />
+       </div>
+     </>
+   )
+diff --git a/public/pages/Home/components/ShareFeedback.tsx b/public/pages/Home/components/ShareFeedback.tsx
+index cfe6591..1171a8a 100644
+--- a/public/pages/Home/components/ShareFeedback.tsx
++++ b/public/pages/Home/components/ShareFeedback.tsx
+@@ -291,7 +291,7 @@ export const ShareFeedback: React.FC<ShareFeedbackProps> = (props) => {
+                 onSubmit={onSubmitFeedback}
+                 onCodeVerified={onCodeVerified}
+                 signInButtonText={i18n._({ id: "signin.message.email", message: "Continue with Email" })}
+-                useEmail={true}
++                useEmail={fider.session.tenant.isEmailAuthAllowed}
+                 redirectTo={fider.settings.baseURL}
+               />
+             </div>
+diff --git a/public/pages/Roadmap/Roadmap.page.scss b/public/pages/Roadmap/Roadmap.page.scss
+index 1499f23..c6f1a28 100644
+--- a/public/pages/Roadmap/Roadmap.page.scss
++++ b/public/pages/Roadmap/Roadmap.page.scss
+@@ -1,7 +1,7 @@
+ @use "~@fider/assets/styles/variables.scss" as *;
+ 
+ #p-roadmap {
+-  background-color: var(--colors-gray-100);
++  background-color: var(--colors-white);
+   padding-top: spacing(8);
+   padding-bottom: spacing(12);
+ }
+diff --git a/public/pages/Roadmap/Roadmap.page.tsx b/public/pages/Roadmap/Roadmap.page.tsx
+index 90b3371..ce16061 100644
+--- a/public/pages/Roadmap/Roadmap.page.tsx
++++ b/public/pages/Roadmap/Roadmap.page.tsx
+@@ -4,7 +4,7 @@ import IconCheckCircle from "@fider/assets/images/heroicons-check-circle.svg"
+ 
+ import React, { useState, useCallback } from "react"
+ import { Post, Tag } from "@fider/models"
+-import { Header, Button, Icon, ResponseLozenge, ShowTag, Moment } from "@fider/components"
++import { Header, Footer, Button, Icon, ResponseLozenge, ShowTag, Moment } from "@fider/components"
+ import { VStack, HStack } from "@fider/components/layout"
+ import { useFider, usePostOverlay } from "@fider/hooks"
+ import { actions } from "@fider/services"
+@@ -298,6 +298,7 @@ const RoadmapPage = (props: RoadmapPageProps) => {
+     <>
+       <Header />
+       {hasRoadmap ? <RoadmapBoard {...props} /> : <RoadmapUpsell />}
++      <Footer />
+     </>
+   )
+ }
+diff --git a/public/pages/ShowPost/ShowPost.page.scss b/public/pages/ShowPost/ShowPost.page.scss
+index 8bae087..9e4b934 100644
+--- a/public/pages/ShowPost/ShowPost.page.scss
++++ b/public/pages/ShowPost/ShowPost.page.scss
+@@ -1,7 +1,7 @@
+ @use "~@fider/assets/styles/variables.scss" as *;
+ 
+ #p-show-post {
+-  background-color: var(--colors-gray-100);
++  background-color: var(--colors-white);
+   padding-top: spacing(4);
+   padding-bottom: spacing(12);
+ 
+diff --git a/public/pages/ShowPost/ShowPost.page.tsx b/public/pages/ShowPost/ShowPost.page.tsx
+index 66decae..aa14c8e 100644
+--- a/public/pages/ShowPost/ShowPost.page.tsx
++++ b/public/pages/ShowPost/ShowPost.page.tsx
+@@ -3,7 +3,7 @@ import "./ShowPost.page.scss"
+ import React from "react"
+ 
+ import { Comment, Post, Tag, Vote } from "@fider/models"
+-import { Header, PoweredByFider } from "@fider/components"
++import { Header, Footer } from "@fider/components"
+ import { PostDetails } from "@fider/components/PostDetails"
+ 
+ interface ShowPostPageProps {
+@@ -29,8 +29,8 @@ export default function ShowPostPage(props: ShowPostPageProps) {
+           initialVotes={props.votes}
+           initialAttachments={props.attachments}
+         />
+-        <PoweredByFider slot="show-post" className="mt-3" />
+       </div>
++      <Footer />
+     </>
+   )
+ }

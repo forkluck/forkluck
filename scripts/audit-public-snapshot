@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="${1:-.}"
+if [[ ! -d "$root" ]]; then
+    echo "Snapshot directory does not exist: $root" >&2
+    exit 2
+fi
+root="$(cd "$root" && pwd -P)"
+
+status=0
+
+# Supplier implementation and upstream attribution are public source. Secrets
+# and operational material are not. Run this on a source export, not a checkout
+# containing local environment files and installed dependencies.
+unsafe_local_paths=(
+    apps/api/db.sqlite3
+    apps/api/.env
+    apps/web/.env.local
+    services/connectors/db.sqlite3
+    services/connectors/.env
+    .env.local
+    repomix-output.xml
+    research
+    secrets
+    receipt-golden
+    forkluck-marketing
+    forkluck-private-archive
+    .forkluck
+    output
+    .claude/worktrees
+)
+for path in "${unsafe_local_paths[@]}"; do
+    if [[ -e "$root/$path" ]]; then
+        echo "Unsafe local or generated path remains: $path" >&2
+        status=1
+    fi
+done
+
+# These are never part of an exported source snapshot. Checked-in .env.example
+# templates are documentation, not environment files.
+if find "$root" -path "$root/.git" -prune -o \( \
+    \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' ! -name '.env.advanced.example' -o \
+    -name '*.pem' -o -name '*.p12' -o -name '*.pfx' -o \
+    -name 'id_rsa' -o -name 'id_ed25519' -o \
+    -name '*.sqlite' -o -name '*.sqlite3' \
+\) -type f -print -quit | grep -q .; then
+    echo "Environment, private-key, or local database file remains in the snapshot." >&2
+    status=1
+fi
+
+# The snapshot is intentionally source-only. Build artifacts can contain source
+# maps or copied server files that evade a source-tree-only review.
+if find "$root" -path "$root/.git" -prune -o \( \
+    -name '.next' -o -name 'dist' -o -name 'build' -o -name 'coverage' -o \
+    -name 'playwright-report' -o -name 'test-results' \
+\) -type d -print -quit | grep -q .; then
+    echo "Generated build or test output remains in the snapshot." >&2
+    status=1
+fi
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+    echo "gitleaks is required for the publication audit." >&2
+    status=1
+else
+    set -- dir --no-banner --redact=100
+    if [[ -f "$root/.gitleaks.toml" ]]; then
+        set -- "$@" --config "$root/.gitleaks.toml"
+    fi
+    if ! gitleaks "$@" "$root"; then
+        status=1
+    fi
+fi
+
+if [[ "$status" -ne 0 ]]; then
+    echo "Public snapshot audit failed." >&2
+    exit "$status"
+fi
+
+echo "Public snapshot audit passed."

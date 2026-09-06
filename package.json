@@ -1,0 +1,66 @@
+{
+  "name": "forkluck-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "packageManager": "pnpm@10.23.0",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://forkluck.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forkluck/forkluck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/forkluck/forkluck/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @forkluck/web dev",
+    "build": "pnpm --filter @forkluck/web build",
+    "start": "pnpm --filter @forkluck/web start",
+    "lint": "pnpm --filter @forkluck/web lint",
+    "verify": "pnpm --filter @forkluck/web verify",
+    "test": "pnpm --filter @forkluck/web test",
+    "eval:extraction": "pnpm --filter @forkluck/web eval:extraction",
+    "eval:primo": "pnpm --filter @forkluck/web eval:primo",
+    "eval:primo:attachments": "pnpm --filter @forkluck/web eval:primo:attachments",
+    "test:components": "pnpm --filter @forkluck/web test:components",
+    "test:acceptance": "pnpm --filter @forkluck/web test:acceptance",
+    "test:acceptance:ui": "pnpm --filter @forkluck/web test:acceptance:ui",
+    "format": "pnpm --filter @forkluck/web format",
+    "format:check": "pnpm --filter @forkluck/web format:check",
+    "typecheck": "pnpm --filter @forkluck/web typecheck",
+    "verify:backend": "cd apps/api && .venv/bin/ruff check forkluck && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/python manage.py check && .venv/bin/lint-imports && .venv/bin/python manage.py test --parallel",
+    "verify:connectors": "cd services/connectors && .venv/bin/ruff format --check config connectors manage.py && .venv/bin/ruff check config connectors manage.py && .venv/bin/python manage.py test && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/python manage.py check",
+    "verify:skills": "python3 scripts/validate-skills.py",
+    "db:migrate": "apps/api/.venv/bin/python apps/api/manage.py migrate && apps/api/.venv/bin/python apps/api/manage.py sync_catalog",
+    "db:seed": "apps/api/.venv/bin/python apps/api/manage.py seed_demo_data",
+    "backend:dev": "apps/api/.venv/bin/python apps/api/manage.py runserver 127.0.0.1:8001",
+    "backend:worker": "apps/api/.venv/bin/python apps/api/manage.py run_pos_sync_worker",
+    "backend:test": "cd apps/api && .venv/bin/python manage.py test",
+    "context": "repomix",
+    "context:copy": "repomix --copy",
+    "context:stats": "repomix --token-count-tree 1000"
+  },
+  "devDependencies": {
+    "repomix": "^1.18.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@hono/node-server": "2.0.10",
+      "brace-expansion@<2.0.0": "1.1.18",
+      "brace-expansion@>=4.0.0": "5.0.9",
+      "fast-uri": "^3.1.6",
+      "hono": "4.12.34",
+      "ip-address": "10.3.1",
+      "js-yaml": "4.3.1",
+      "nanoid": "3.3.18",
+      "postcss": "8.5.23",
+      "sharp": "0.35.4",
+      "undici": "7.29.0",
+      "browserslist": ">=4.28.7",
+      "qs": ">=6.16.0"
+    }
+  }
+}

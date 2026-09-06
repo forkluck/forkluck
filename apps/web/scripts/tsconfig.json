@@ -1,0 +1,12 @@
+{
+  // tsx resolves the eval script's imports with this config. `server-only`
+  // is a Next-internal package with no bare specifier outside the bundler,
+  // so the marker points at its empty module.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../*"],
+      "server-only": ["../node_modules/next/dist/compiled/server-only/empty.js"]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+Date,Time,Time Zone,Category,Item,Qty,Price Point Name,SKU,Modifiers Applied,Gross Sales,Discounts,Net Sales,Tax,Transaction ID,Payment ID,Event Type,Location,Employee,Channel
+2026-07-01,9:15:02 AM,Eastern Time,Kitchen,Burger,2,Regular,BRG-1,Extra Cheese x2; Bacon,$18.00,$0.00,$18.00,$1.60,transaction-1,payment-1,Payment,Main,Sam,In Store
+2026-07-01,9:40:00 AM,Eastern Time,Kitchen,Latte,1,Regular,LAT-1,Oat Milk,$6.00,$0.00,$6.00,$0.53,transaction-2,payment-2,Payment,Main,Sam,In Store

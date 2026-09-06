@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="10" />
+    <title>Forkluck is updating</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: #24221f;
+        background: #f7f5f0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      main {
+        width: min(100%, 470px);
+        padding: 40px;
+        border: 1px solid #ded9cf;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 18px 50px rgb(46 42 35 / 8%);
+        text-align: center;
+      }
+
+      .mark {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: #24221f;
+        color: #fff;
+        font-size: 25px;
+        font-weight: 750;
+        letter-spacing: -0.06em;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(25px, 6vw, 32px);
+        line-height: 1.15;
+        letter-spacing: -0.035em;
+      }
+
+      p {
+        margin: 14px auto 0;
+        max-width: 34ch;
+        color: #68635b;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .status {
+        margin-top: 26px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #444039;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #24221f;
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        50% {
+          opacity: 0.3;
+          transform: scale(0.8);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .dot {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="mark" aria-hidden="true">F</div>
+      <h1>We’re making a quick update</h1>
+      <p>
+        Forkluck will be back in a moment. This page will retry automatically.
+      </p>
+      <div class="status" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        Updating Forkluck
+      </div>
+    </main>
+  </body>
+</html>

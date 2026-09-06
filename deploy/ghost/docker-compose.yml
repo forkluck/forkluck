@@ -1,0 +1,62 @@
+services:
+  ghost:
+    image: ghost:5
+    restart: unless-stopped
+    ports:
+      # nginx on the host terminates TLS and proxies to this loopback port.
+      - "127.0.0.1:2368:2368"
+    mem_limit: 512m
+    volumes:
+      - ./content:/var/lib/ghost/content
+    environment:
+      url: ${GHOST_URL}
+      NODE_ENV: production
+      database__client: sqlite3
+      database__connection__filename: /var/lib/ghost/content/data/ghost.db
+      mail__transport: SMTP
+      mail__from: ${GHOST_MAIL_FROM}
+      mail__options__host: smtp.azurecomm.net
+      mail__options__port: 587
+      mail__options__secure: "false"
+      mail__options__auth__user: ${ACS_SMTP_USER}
+      mail__options__auth__pass: ${ACS_SMTP_PASS}
+      # Newsletter bulk send via the Mailgun-compatible bridge.
+      bulkEmail__mailgun__baseUrl: http://ghost-mail-bridge:3003/v3
+      bulkEmail__mailgun__apiKey: ${BRIDGE_API_KEY}
+      bulkEmail__mailgun__domain: forkluck.com
+
+  # Newsletter bridge: built on the server from /opt/ghost-mail-bridge
+  # with its Azure mail provider enabled.
+  ghost-mail-bridge:
+    build: /opt/ghost-mail-bridge
+    image: ghost-mail-bridge:local
+    restart: unless-stopped
+    expose:
+      - "3003"
+    # Feedback uses the same queue, sender, delivery events and mail dashboard.
+    ports:
+      - "127.0.0.1:3003:3003"
+    mem_limit: 256m
+    volumes:
+      - ./bridge:/var/lib/ghost-mail-bridge
+    environment: &bridge_env
+      APP_ROLE: api
+      MAIL_PROVIDER: azure
+      AZURE_COMMUNICATION_CONNECTION_STRING: ${AZURE_COMMUNICATION_CONNECTION_STRING}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      AZURE_SEND_QUEUE_NAME: newsletter-send
+      AZURE_EVENTS_QUEUE_NAME: mail-events
+      DATABASE_URL: sqlite:///var/lib/ghost-mail-bridge/bridge.db
+      MAILGUN_DOMAIN: forkluck.com
+      PROXY_API_KEY: ${BRIDGE_API_KEY}
+      GHOST_ADMIN_URL: ${GHOST_URL}
+
+  ghost-mail-bridge-worker:
+    image: ghost-mail-bridge:local
+    restart: unless-stopped
+    mem_limit: 256m
+    volumes:
+      - ./bridge:/var/lib/ghost-mail-bridge
+    environment:
+      <<: *bridge_env
+      APP_ROLE: worker

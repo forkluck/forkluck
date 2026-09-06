@@ -1,0 +1,205 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    # The connector service and the agent skills ship through their own
+    # workflows; a change confined to them does not roll an app release.
+    paths-ignore:
+      - services/connectors/**
+      - skills/**
+  workflow_dispatch:
+
+concurrency:
+  group: forkluck-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+# Verification runs on the maintainer's self-hosted macOS runner, where the
+# whole suite takes minutes instead of the better part of an hour on a 2-core
+# hosted runner, and costs no Actions minutes. Only `main` ever reaches that
+# machine: every job in this workflow refuses other refs. Pull requests run
+# separately on disposable GitHub-hosted runners in ci.yml.
+#
+# Packaging stays on GitHub's Ubuntu runner because the release artifact must
+# match the Linux server: `sharp` and `@napi-rs/canvas` ship platform-specific
+# binaries, and a standalone build made on macOS would carry the wrong ones.
+# The two run side by side; the deploy waits for both.
+jobs:
+  verify:
+    name: Verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    env:
+      # Production is Postgres; SQLite silently ignores most `AlterField`
+      # type changes and index-name limits, so the migration chain and the
+      # backend suite run on the runner's local Postgres. The database is
+      # recreated below so every run starts from an empty schema, as the
+      # hosted service container did. The acceptance stack ignores this and
+      # brings up its own throwaway SQLite database.
+      DATABASE_URL: postgres://forkluck:forkluck@localhost:5432/forkluck_ci
+      # settings.py infers "production" from DATABASE_URL alone, which would
+      # trip the development-leftovers boot guard on every management command
+      # that is not `manage.py test`.
+      FORKLUCK_ENVIRONMENT: development
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      # No `cache:` inputs here: the runner keeps its own pnpm store and pip
+      # cache, so round-tripping them through GitHub's cache would only add
+      # transfer time.
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+      # No setup-python: its macOS builds are .pkg installers that assume the
+      # hosted image's `runner` account and fail on a self-hosted Mac with
+      # "mkdir: /Users/runner: Permission denied". Homebrew's python@3.12 is a
+      # runner-machine prerequisite instead (docs/DEPLOYMENT.md).
+      - name: Check the lockfile is committed
+        run: test -f pnpm-lock.yaml || { echo "pnpm-lock.yaml is missing"; exit 1; }
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+      # The same apps/api/.venv layout CONTRIBUTING.md documents, so
+      # `pnpm verify:backend` is one command everywhere.
+      - name: Install backend dependencies
+        run: |
+          python3.12 -m venv apps/api/.venv
+          apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
+      - name: Recreate the CI database
+        run: |
+          psql postgres://forkluck:forkluck@localhost:5432/postgres \
+            -v ON_ERROR_STOP=1 \
+            -c "DROP DATABASE IF EXISTS forkluck_ci" \
+            -c "CREATE DATABASE forkluck_ci"
+      - name: Migrate Postgres
+        working-directory: apps/api
+        run: .venv/bin/python manage.py migrate --noinput
+      - name: Validate the ingredient catalog
+        run: |
+          apps/api/.venv/bin/python data/catalog/scripts/validate.py data/catalog/catalog.csv
+          apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
+      - name: Verify backend
+        run: pnpm verify:backend
+      # Every check a contributor is asked to run lives in `pnpm verify`, so
+      # the list cannot drift from CONTRIBUTING.md. Its build is a compile
+      # check only; the release artifact comes from the package job.
+      - name: Verify frontend
+        run: pnpm verify
+      - name: Install acceptance browser
+        run: pnpm --filter @forkluck/web exec playwright install chromium
+      - name: Verify real app stack in Chromium
+        run: pnpm test:acceptance
+
+  package:
+    name: Package release
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build standalone frontend
+        env:
+          DEPLOYMENT_VERSION: ${{ github.sha }}
+          DJANGO_PUBLIC_ORIGIN: http://127.0.0.1:8001
+        run: pnpm build
+      - name: Stage and package release
+        run: |
+          # In the pnpm workspace the standalone tree nests the app at
+          # apps/web/ beside hoisted node_modules; flattening it would break
+          # pnpm's relative symlinks. The release keeps that shape and adds a
+          # one-line entry at frontend/server.js, the path the systemd unit
+          # and deploy-forkluck already expect.
+          mkdir -p release/frontend/.next release/backend
+          cp -R apps/web/.next/standalone/. release/frontend/
+          cp -R apps/web/.next/static release/frontend/.next/static
+          cp -R apps/web/.next/static release/frontend/apps/web/.next/static
+          cp -R apps/web/public release/frontend/apps/web/public
+          printf '%s\n' 'import("./apps/web/server.js")' > release/frontend/server.js
+          cp -R apps/api/config apps/api/forkluck release/backend/
+          cp apps/api/manage.py apps/api/requirements.txt release/backend/
+          # The density manifest is read at runtime from the release root by
+          # apps/api/forkluck/domains/shared/density.py (via forkluck/paths.py).
+          cp -R data release/data
+          tar -czf "forkluck-${GITHUB_SHA}.tar.gz" -C release frontend backend data
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: packaged-release
+          path: forkluck-${{ github.sha }}.tar.gz
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy release
+    needs: [verify, package]
+    if: needs.verify.result == 'success' && needs.package.result == 'success' && github.ref == 'refs/heads/main'
+    environment: production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: packaged-release
+          path: .
+      - name: Configure deployment SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/forkluck_deploy
+          chmod 600 ~/.ssh/forkluck_deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Upload and activate release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          expected_foundation="$(
+            sha256sum \
+              deploy/deploy-forkluck \
+              deploy/systemd/forkluck-pos-worker.service \
+              deploy/systemd/forkluck-connector-worker.service \
+              | awk '{print $1}'
+          )"
+          if ! remote_foundation="$(
+            ssh -i ~/.ssh/forkluck_deploy -p "$DEPLOY_PORT" \
+              "$DEPLOY_USER@$DEPLOY_HOST" \
+              "sha256sum /usr/local/sbin/deploy-forkluck /etc/systemd/system/forkluck-pos-worker.service /etc/systemd/system/forkluck-connector-worker.service" \
+              | awk '{print $1}'
+          )"; then
+            echo "Could not verify the production process foundation." >&2
+            exit 1
+          fi
+          if [[ "$remote_foundation" != "$expected_foundation" ]]; then
+            echo "Production process files differ from deploy/. Rerun provision-forkluck before this release." >&2
+            exit 1
+          fi
+          scp -i ~/.ssh/forkluck_deploy -P "$DEPLOY_PORT" \
+            "forkluck-${GITHUB_SHA}.tar.gz" \
+            "$DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/releases/$GITHUB_SHA.tar.gz"
+          ssh -i ~/.ssh/forkluck_deploy -p "$DEPLOY_PORT" \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "sudo /usr/local/sbin/deploy-forkluck '$GITHUB_SHA' '/home/$DEPLOY_USER/releases/$GITHUB_SHA.tar.gz'"

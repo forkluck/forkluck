@@ -1,0 +1,29 @@
+[Unit]
+Description=Forkluck Next.js frontend
+After=network.target forkluck-django.service
+Wants=forkluck-django.service
+
+[Service]
+Type=simple
+User=forkluck
+Group=forkluck
+WorkingDirectory=/opt/forkluck/current/frontend
+EnvironmentFile=/etc/forkluck/frontend.env
+Environment=NODE_ENV=production
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3000
+ExecStart=/usr/bin/node /opt/forkluck/current/frontend/server.js
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=35
+KillSignal=SIGTERM
+SuccessExitStatus=143
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+MemoryHigh=400M
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,728 @@
+{
+  "units": [
+    {
+      "slug": "half-sheet-tray",
+      "label": "Half Sheet Tray",
+      "short": "half sheet tray",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "(?:1/2|half)\\s*sheet\\s+trays?"
+    },
+    {
+      "slug": "heaping-tbsp",
+      "label": "Heaping Tablespoon",
+      "short": "heaping tbsp",
+      "family": "volume",
+      "perBase": 17.744117737499998,
+      "group": "cooking",
+      "pattern": "heaping\\s+(?:tablespoons?|tbsps?)"
+    },
+    {
+      "slug": "heaping-tsp",
+      "label": "Heaping Teaspoon",
+      "short": "heaping tsp",
+      "family": "volume",
+      "perBase": 5.323235321249999,
+      "group": "cooking",
+      "pattern": "heaping\\s+(?:teaspoons?|tsps?)"
+    },
+    {
+      "slug": "sheet-tray",
+      "label": "Sheet Tray",
+      "short": "sheet tray",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "(?:full\\s+)?sheet\\s+trays?"
+    },
+    {
+      "slug": "container",
+      "label": "Container",
+      "short": "container",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "containers?|conts?"
+    },
+    {
+      "slug": "sprinkle",
+      "label": "Sprinkle",
+      "short": "sprinkle",
+      "family": "dimensionless",
+      "perBase": null,
+      "group": "vague",
+      "pattern": "sprinkles?"
+    },
+    {
+      "slug": "drizzle",
+      "label": "Drizzle",
+      "short": "drizzle",
+      "family": "dimensionless",
+      "perBase": null,
+      "group": "vague",
+      "pattern": "drizzles?"
+    },
+    {
+      "slug": "portion",
+      "label": "Portion",
+      "short": "portion",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "portions?|prtns?"
+    },
+    {
+      "slug": "serving",
+      "label": "Serving",
+      "short": "serving",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "servings?|services?"
+    },
+    {
+      "slug": "carton",
+      "label": "Carton",
+      "short": "carton",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "cartons?|ctns?"
+    },
+    {
+      "slug": "splash",
+      "label": "Splash",
+      "short": "splash",
+      "family": "dimensionless",
+      "perBase": null,
+      "group": "vague",
+      "pattern": "splash(?:es)?"
+    },
+    {
+      "slug": "batch",
+      "label": "Batch",
+      "short": "batch",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "batch(?:es)?|bchs?"
+    },
+    {
+      "slug": "dozen",
+      "label": "Dozen (dz)",
+      "short": "dz",
+      "family": "count",
+      "perBase": 12,
+      "group": "produce",
+      "pattern": "dozens?|dzns?|doz"
+    },
+    {
+      "slug": "sheet",
+      "label": "Sheet",
+      "short": "sheet",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "sheets?|shts?"
+    },
+    {
+      "slug": "sprig",
+      "label": "Sprig",
+      "short": "sprig",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "sprigs?"
+    },
+    {
+      "slug": "stalk",
+      "label": "Stalk",
+      "short": "stalk",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "stalks?"
+    },
+    {
+      "slug": "case",
+      "label": "Case",
+      "short": "case",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "cases?|cs"
+    },
+    {
+      "slug": "drop",
+      "label": "Drop",
+      "short": "drop",
+      "family": "dimensionless",
+      "perBase": null,
+      "group": "vague",
+      "pattern": "drops?"
+    },
+    {
+      "slug": "head",
+      "label": "Head",
+      "short": "head",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "heads?"
+    },
+    {
+      "slug": "leaf",
+      "label": "Leaf",
+      "short": "leaf",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "leaves|leafs?"
+    },
+    {
+      "slug": "loaf",
+      "label": "Loaf",
+      "short": "loaf",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "loaves|loafs?"
+    },
+    {
+      "slug": "pack",
+      "label": "Pack",
+      "short": "pack",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "packs?"
+    },
+    {
+      "slug": "tray",
+      "label": "Tray",
+      "short": "tray",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "trays?"
+    },
+    {
+      "slug": "dab",
+      "label": "Dab",
+      "short": "dab",
+      "family": "dimensionless",
+      "perBase": null,
+      "group": "vague",
+      "pattern": "dabs?"
+    },
+    {
+      "slug": "ear",
+      "label": "Ear",
+      "short": "ear",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "ears?"
+    },
+    {
+      "slug": "fl-oz",
+      "label": "Fluid Ounce (fl oz)",
+      "short": "fl oz",
+      "family": "volume",
+      "perBase": 29.5735295625,
+      "group": "cooking",
+      "pattern": "fluid\\s+ounces?|fl\\.?[\\s-]*ozs?"
+    },
+    {
+      "slug": "tbsp",
+      "label": "Tablespoon (tbsp)",
+      "short": "tbsp",
+      "family": "volume",
+      "perBase": 14.78676478125,
+      "group": "cooking",
+      "pattern": "tablespoons?|tbsp"
+    },
+    {
+      "slug": "tsp",
+      "label": "Teaspoon (tsp)",
+      "short": "tsp",
+      "family": "volume",
+      "perBase": 4.92892159375,
+      "group": "cooking",
+      "pattern": "teaspoons?|tsp"
+    },
+    {
+      "slug": "ml",
+      "label": "Milliliter (ml)",
+      "short": "ml",
+      "family": "volume",
+      "perBase": 1,
+      "group": "metric",
+      "pattern": "millilit(?:er|re)s?|ml"
+    },
+    {
+      "slug": "kg",
+      "label": "Kilogram (kg)",
+      "short": "kg",
+      "family": "mass",
+      "perBase": 1000,
+      "group": "metric",
+      "pattern": "kilograms?|kgs?|kg"
+    },
+    {
+      "slug": "mg",
+      "label": "Milligram (mg)",
+      "short": "mg",
+      "family": "mass",
+      "perBase": 0.001,
+      "group": "metric",
+      "pattern": "milligrams?|mgs?|mg"
+    },
+    {
+      "slug": "l",
+      "label": "Liter (L)",
+      "short": "L",
+      "family": "volume",
+      "perBase": 1000,
+      "group": "metric",
+      "pattern": "lit(?:er|re)s?|l"
+    },
+    {
+      "slug": "oz",
+      "label": "Ounce (oz)",
+      "short": "oz",
+      "family": "mass",
+      "perBase": 28.349523125,
+      "group": "cooking",
+      "pattern": "ounces?|ozs?|oz"
+    },
+    {
+      "slug": "lb",
+      "label": "Pound (lb)",
+      "short": "lb",
+      "family": "mass",
+      "perBase": 453.59237,
+      "group": "cooking",
+      "pattern": "pounds?|lbs?|lb"
+    },
+    {
+      "slug": "g",
+      "label": "Gram (g)",
+      "short": "g",
+      "family": "mass",
+      "perBase": 1,
+      "group": "metric",
+      "pattern": "grams?|grs?|gr|g"
+    },
+    {
+      "slug": "gal",
+      "label": "Gallon (gal)",
+      "short": "gal",
+      "family": "volume",
+      "perBase": 3785.411784,
+      "group": "cooking",
+      "pattern": "gallons?|gal"
+    },
+    {
+      "slug": "qt",
+      "label": "Quart (qt)",
+      "short": "qt",
+      "family": "volume",
+      "perBase": 946.352946,
+      "group": "cooking",
+      "pattern": "quarts?|qt"
+    },
+    {
+      "slug": "pt",
+      "label": "Pint (pt)",
+      "short": "pt",
+      "family": "volume",
+      "perBase": 473.176473,
+      "group": "cooking",
+      "pattern": "pints?|pt"
+    },
+    {
+      "slug": "cup",
+      "label": "Cup (c)",
+      "short": "c",
+      "family": "volume",
+      "perBase": 236.5882365,
+      "group": "cooking",
+      "pattern": "cups?|cup|c"
+    },
+    {
+      "slug": "clove",
+      "label": "Clove",
+      "short": "clove",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "cloves?"
+    },
+    {
+      "slug": "stick",
+      "label": "Stick",
+      "short": "stick",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "sticks?"
+    },
+    {
+      "slug": "slice",
+      "label": "Slice",
+      "short": "slice",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "slices?"
+    },
+    {
+      "slug": "can",
+      "label": "Can",
+      "short": "can",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "cans?|tins?"
+    },
+    {
+      "slug": "jar",
+      "label": "Jar",
+      "short": "jar",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "jars?"
+    },
+    {
+      "slug": "bottle",
+      "label": "Bottle",
+      "short": "bottle",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "bottles?"
+    },
+    {
+      "slug": "bag",
+      "label": "Bag",
+      "short": "bag",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "bags?"
+    },
+    {
+      "slug": "box",
+      "label": "Box",
+      "short": "box",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "box(?:es)?"
+    },
+    {
+      "slug": "packet",
+      "label": "Packet",
+      "short": "packet",
+      "family": "count",
+      "perBase": null,
+      "group": "pack",
+      "pattern": "packets?|packages?|pkgs?|pks?"
+    },
+    {
+      "slug": "pinch",
+      "label": "Pinch",
+      "short": "pinch",
+      "family": "mass",
+      "perBase": 0.28349523125000003,
+      "group": "cooking",
+      "approximate": true,
+      "pattern": "pinch(?:es)?"
+    },
+    {
+      "slug": "dash",
+      "label": "Dash",
+      "short": "dash",
+      "family": "volume",
+      "perBase": 0.6594897092437499,
+      "group": "cooking",
+      "approximate": true,
+      "pattern": "dash(?:es)?"
+    },
+    {
+      "slug": "bunch",
+      "label": "Bunch",
+      "short": "bunch",
+      "family": "count",
+      "perBase": null,
+      "group": "produce",
+      "pattern": "bunch(?:es)?"
+    },
+    {
+      "slug": "each",
+      "label": "Each (ea)",
+      "short": "ea",
+      "family": "count",
+      "perBase": 1,
+      "group": "produce",
+      "pattern": "each|ea|pcs?|pieces?|[x×]"
+    },
+    {
+      "slug": "small",
+      "label": "Small",
+      "short": "small",
+      "family": "count",
+      "perBase": 1,
+      "group": "size"
+    },
+    {
+      "slug": "medium",
+      "label": "Medium",
+      "short": "medium",
+      "family": "count",
+      "perBase": 1,
+      "group": "size"
+    },
+    {
+      "slug": "large",
+      "label": "Large",
+      "short": "large",
+      "family": "count",
+      "perBase": 1,
+      "group": "size"
+    },
+    {
+      "slug": "extra-large",
+      "label": "Extra large",
+      "short": "extra large",
+      "family": "count",
+      "perBase": 1,
+      "group": "size"
+    },
+    {
+      "slug": "jumbo",
+      "label": "Jumbo",
+      "short": "jumbo",
+      "family": "count",
+      "perBase": 1,
+      "group": "size"
+    }
+  ],
+  "qualifierWords": [
+    "chopped",
+    "diced",
+    "minced",
+    "sliced",
+    "grated",
+    "shredded",
+    "ground",
+    "packed",
+    "unpacked",
+    "sifted",
+    "unsifted",
+    "drained",
+    "cooked",
+    "raw",
+    "frozen",
+    "dried",
+    "melted",
+    "softened",
+    "whole",
+    "crushed"
+  ],
+  "sizeWords": ["extra[- ]large", "small", "medium", "large", "jumbo"],
+  "nonMeasureAnnotations": [
+    "divided",
+    "room temperature",
+    "for garnish",
+    "for serving",
+    "for [a-z]+ing",
+    "to taste",
+    "to serve",
+    "optional",
+    "as needed",
+    "plus more(?: .*)?",
+    "or more(?: .*)?"
+  ],
+  "listMarkerGlyphs": [
+    "•",
+    "▪",
+    "◦",
+    "▫",
+    "‣",
+    "⁃",
+    "▢",
+    "□",
+    "☐",
+    "◻",
+    "❑",
+    "✓",
+    "✔",
+    "☑"
+  ],
+  "profileAnnotations": [
+    "sifted",
+    "chopped",
+    "minced",
+    "divided",
+    "melted",
+    "softened",
+    "room temperature"
+  ],
+  "vulgarFractions": {
+    "¼": "1/4",
+    "½": "1/2",
+    "¾": "3/4",
+    "⅐": "1/7",
+    "⅑": "1/9",
+    "⅒": "1/10",
+    "⅓": "1/3",
+    "⅔": "2/3",
+    "⅕": "1/5",
+    "⅖": "2/5",
+    "⅗": "3/5",
+    "⅘": "4/5",
+    "⅙": "1/6",
+    "⅚": "5/6",
+    "⅛": "1/8",
+    "⅜": "3/8",
+    "⅝": "5/8",
+    "⅞": "7/8"
+  },
+  "ingredientProfiles": [
+    {
+      "key": "bread-flour",
+      "name": "Bread flour",
+      "aliases": ["strong flour", "strong bread flour", "white bread flour"]
+    },
+    {
+      "key": "all-purpose-flour",
+      "name": "Flour",
+      "aliases": [
+        "all purpose flour",
+        "plain flour",
+        "stoneground plain flour",
+        "ap flour"
+      ]
+    },
+    {
+      "key": "hazelnut-flour",
+      "name": "Hazelnut flour",
+      "aliases": ["ground hazelnuts", "hazelnut meal"]
+    },
+    {
+      "key": "whole-wheat-flour",
+      "name": "Whole wheat flour",
+      "aliases": ["wholemeal flour", "whole grain flour"]
+    },
+    {
+      "key": "water",
+      "name": "Water",
+      "aliases": ["warm water", "cold water", "filtered water"]
+    },
+    {
+      "key": "whole-milk",
+      "name": "Whole milk",
+      "aliases": ["full fat milk", "full-fat milk"]
+    },
+    {
+      "key": "olive-oil",
+      "name": "Olive oil",
+      "aliases": ["extra virgin olive oil", "evoo"]
+    },
+    {
+      "key": "unsalted-butter",
+      "name": "Unsalted butter",
+      "aliases": ["butter unsalted", "butter"]
+    },
+    {
+      "key": "salted-butter",
+      "name": "Salted butter",
+      "aliases": ["butter salted"]
+    },
+    {
+      "key": "granulated-sugar",
+      "name": "Granulated sugar",
+      "aliases": ["sugar", "white sugar", "caster sugar", "cane sugar"]
+    },
+    {
+      "key": "honey",
+      "name": "Honey",
+      "aliases": ["raw honey"]
+    },
+    {
+      "key": "sea-salt",
+      "name": "Fine sea salt",
+      "aliases": ["sea salt", "fine salt", "kosher salt", "salt"]
+    },
+    {
+      "key": "instant-yeast",
+      "name": "Instant yeast",
+      "aliases": ["active dry yeast", "dry yeast", "bread yeast", "yeast"]
+    },
+    {
+      "key": "tomato",
+      "name": "Tomatoes",
+      "aliases": ["tomato", "plum tomatoes"],
+      "eachWeightG": 123
+    },
+    {
+      "key": "cherry-tomato",
+      "name": "Cherry tomatoes",
+      "aliases": ["cherry tomatoes", "cherry tomato"],
+      "eachWeightG": 17
+    },
+    {
+      "key": "rosemary",
+      "name": "Fresh rosemary",
+      "aliases": ["rosemary", "rosemary leaves"]
+    },
+    {
+      "key": "garlic",
+      "name": "Garlic",
+      "aliases": ["garlic cloves", "garlic clove", "fresh garlic"],
+      "eachWeightG": 5
+    },
+    {
+      "key": "egg",
+      "name": "Whole egg",
+      "aliases": ["egg", "eggs"],
+      "eachWeightG": 50
+    },
+    {
+      "key": "egg-yolk",
+      "name": "Egg yolk",
+      "aliases": ["egg yolk", "egg yolks", "yolk", "yolks"],
+      "eachWeightG": 18
+    },
+    {
+      "key": "egg-white",
+      "name": "Egg white",
+      "aliases": ["egg white", "egg whites"],
+      "eachWeightG": 33
+    },
+    {
+      "key": "vanilla-extract",
+      "name": "Vanilla extract",
+      "aliases": ["vanilla", "pure vanilla extract"]
+    },
+    {
+      "key": "baking-powder",
+      "name": "Baking powder",
+      "aliases": ["baking powder double acting", "double acting baking powder"]
+    },
+    {
+      "key": "mozzarella",
+      "name": "Mozzarella",
+      "aliases": ["fresh mozzarella", "mozzarella cheese"]
+    },
+    {
+      "key": "parmesan",
+      "name": "Parmesan",
+      "aliases": ["parmigiano reggiano", "parmesan cheese"]
+    }
+  ]
+}

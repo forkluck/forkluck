@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forkluck Deployment"
+  short_description: "Verify and deploy Forkluck releases safely."
+  default_prompt: "Use $deploying-forkluck to verify and release this Forkluck change safely."

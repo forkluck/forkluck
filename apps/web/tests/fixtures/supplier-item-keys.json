@@ -1,0 +1,65 @@
+{
+  "comment": "Parity cases for the supplier item key. Read by tests/invoice-import.test.ts (supplierItemKey) and backend/forkluck/test_invoices.py (supplier_item_key); the two rules must agree on every row.",
+  "cases": [
+    {
+      "sku": "DABUT11",
+      "description": "BUTTER UNSALTED 36X1 LB",
+      "key": "dabut11"
+    },
+    {
+      "sku": "  flour8c  ",
+      "description": "FLOUR AP 50 LB",
+      "key": "flour8c"
+    },
+    {
+      "sku": "",
+      "description": "OG HVY WHP CRM UHT",
+      "key": "desc:og hvy whp crm uht"
+    },
+    {
+      "sku": "",
+      "description": "  Crème  Fraîche, 8 oz.  ",
+      "key": "desc:creme fraiche 8 oz"
+    },
+    {
+      "sku": "",
+      "description": "味全 Soy Milk",
+      "key": "desc:味全 soy milk"
+    },
+    {
+      "sku": "",
+      "description": "---",
+      "key": ""
+    },
+    {
+      "sku": "",
+      "description": "",
+      "key": ""
+    },
+    {
+      "sku": "",
+      "description": "Chicken thigh boneless skinless fresh air chilled halal grade A family pack from the farm nearby, cut to order by the butcher on request",
+      "key": "desc:chicken thigh boneless skinless fresh air chilled halal grade a family pack from the farm nearby cut to order by th"
+    },
+    {
+      "sku": "0",
+      "description": "CHR7 - CHERRIES RED SOUR PITTED IQF",
+      "key": "desc:chr7 cherries red sour pitted iqf"
+    },
+    {
+      "sku": "000",
+      "description": "Yellow peach",
+      "key": "desc:yellow peach"
+    },
+    {
+      "sku": " -- ",
+      "description": "Ginger beer",
+      "key": "desc:ginger beer"
+    },
+    {
+      "sku": "0A",
+      "description": "Zero-A code is a code",
+      "key": "0a"
+    }
+  ]
+}

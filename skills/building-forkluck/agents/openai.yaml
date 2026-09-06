@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forkluck Architecture"
+  short_description: "Build safely across Forkluck's Next and Django seam."
+  default_prompt: "Use $building-forkluck to implement this Forkluck feature across the correct layers."

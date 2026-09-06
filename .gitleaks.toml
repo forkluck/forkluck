@@ -1,0 +1,20 @@
+title = "Forkluck publication secret scan"
+minVersion = "v8.25.0"
+
+[extend]
+useDefault = true
+
+# These values are test fixtures or non-secret source identifiers verified
+# against the publication snapshot. Match values rather than paths: every test
+# file remains subject to every built-in Gitleaks rule.
+[[allowlists]]
+description = "Exact synthetic fixtures and generic-rule false positives"
+regexTarget = "match"
+regexes = [
+  '''a-long-(?:test-)?passphrase-(?:123|1122|1357|1470|1590|2468|3344|3579|5566|7531|8642|9753)''',
+  '''a-strong-pass-(?:8642|9753)''',
+  '''owner-passphrase-2468''',
+  '''shpat_123456''',
+  '''unresolvedItem''',
+  '''max_length=(?:200|255|256|500|1024|2048|MATCH_KEY_MAX_LENGTH)''',
+]

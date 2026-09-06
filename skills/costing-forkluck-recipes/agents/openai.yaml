@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forkluck Recipe Costing"
+  short_description: "Change recipe measures, costing, or nutrition safely."
+  default_prompt: "Use $costing-forkluck-recipes to change this recipe measurement or costing behavior with frontend/backend parity."

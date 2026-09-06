@@ -1,0 +1,6 @@
+-r requirements.txt
+
+import-linter==2.5
+ruff==0.16.3
+# Lets the parallel test runner carry tracebacks between workers.
+tblib==3.2.2

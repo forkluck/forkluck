@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+release_id="${1:-}"
+archive="${2:-}"
+upload_root="/home/forkluck-connectors-deploy/releases"
+release_root="/opt/forkluck-connectors/releases"
+current_link="/opt/forkluck-connectors/current"
+
+if [[ ! "$release_id" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Invalid release id" >&2
+    exit 2
+fi
+expected_archive="$upload_root/$release_id.tar.gz"
+if [[ "$archive" != "$expected_archive" || ! -f "$archive" ]]; then
+    echo "Invalid release archive" >&2
+    exit 2
+fi
+if [[ "$(stat -c '%U' "$archive")" != "forkluck-connectors-deploy" ]]; then
+    echo "Unexpected archive owner" >&2
+    exit 2
+fi
+
+install -d -o forkluck-connectors -g forkluck-connectors \
+    "$release_root" /opt/forkluck-connectors/shared
+cd /opt/forkluck-connectors
+release_dir="$release_root/$release_id"
+incoming=""
+services_stopped=false
+
+cleanup() {
+    status=$?
+    if [[ -n "$incoming" && -d "$incoming" ]]; then
+        rm -rf -- "$incoming"
+    fi
+    if [[ "$status" -ne 0 && "$services_stopped" == true && -e "$current_link" ]]; then
+        systemctl start forkluck-connectors.service \
+            forkluck-connectors-worker.service || true
+    fi
+    trap - EXIT
+    exit "$status"
+}
+trap cleanup EXIT
+
+if [[ ! -d "$release_dir" ]]; then
+    incoming="$(mktemp -d "$release_root/.incoming-$release_id.XXXXXX")"
+    tar -xzf "$archive" --no-same-owner -C "$incoming"
+    test -f "$incoming/manage.py"
+    test -f "$incoming/config/wsgi.py"
+    chown -R forkluck-connectors:forkluck-connectors "$incoming"
+    chmod 755 "$incoming"
+    mv "$incoming" "$release_dir"
+    incoming=""
+fi
+
+if [[ ! -x /opt/forkluck-connectors/shared/venv/bin/python ]]; then
+    runuser -u forkluck-connectors -- env \
+        HOME=/opt/forkluck-connectors \
+        UV_CACHE_DIR=/opt/forkluck-connectors/shared/uv-cache \
+        /usr/local/bin/uv venv /opt/forkluck-connectors/shared/venv \
+        --python /usr/bin/python3
+fi
+runuser -u forkluck-connectors -- env \
+    HOME=/opt/forkluck-connectors \
+    UV_CACHE_DIR=/opt/forkluck-connectors/shared/uv-cache \
+    /usr/local/bin/uv pip install \
+    --python /opt/forkluck-connectors/shared/venv/bin/python \
+    -r "$release_dir/requirements.txt"
+
+set -a
+# shellcheck disable=SC1091
+source /etc/forkluck-connectors/connectors.env
+set +a
+runuser -u forkluck-connectors --preserve-environment -- \
+    /opt/forkluck-connectors/shared/venv/bin/python "$release_dir/manage.py" \
+    check --deploy --fail-level WARNING
+
+services_stopped=true
+systemctl stop forkluck-connectors-worker.service forkluck-connectors.service
+runuser -u forkluck-connectors --preserve-environment -- \
+    /opt/forkluck-connectors/shared/venv/bin/python "$release_dir/manage.py" \
+    migrate --noinput
+
+sync
+ln -sfn "$release_dir" /opt/forkluck-connectors/current.new
+mv -Tf /opt/forkluck-connectors/current.new "$current_link"
+systemctl restart forkluck-connectors.service forkluck-connectors-worker.service
+
+for _attempt in {1..20}; do
+    if curl --connect-timeout 1 --max-time 3 -fsS \
+        -H 'X-Forwarded-Proto: https' http://127.0.0.1:8010/readyz >/dev/null \
+        && systemctl is-active --quiet forkluck-connectors-worker.service; then
+        services_stopped=false
+        rm -f -- "$archive"
+        live="$(readlink -f "$current_link")"
+        ls -1dt "$release_root"/* 2>/dev/null | tail -n +11 | while read -r old; do
+            [[ "$old" == "$live" ]] && continue
+            [[ "$old" =~ ^"$release_root"/[0-9a-f]{40}$ ]] || continue
+            rm -rf -- "$old"
+        done
+        echo "Deployed $release_id"
+        exit 0
+    fi
+    sleep 1
+done
+
+echo "Connector health check failed" >&2
+exit 1

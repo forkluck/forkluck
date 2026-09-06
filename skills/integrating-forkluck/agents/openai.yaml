@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forkluck Integrations"
+  short_description: "Build POS, supplier, invoice, and connector integrations."
+  default_prompt: "Use $integrating-forkluck to implement this integration without breaking identity, accounting, or secret boundaries."

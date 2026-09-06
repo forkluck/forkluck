@@ -1,0 +1,2 @@
+Date,Time,Time Zone,Category,Item,Qty,Price Point Name,SKU,Gross Sales,Discounts,Net Sales,Tax,Transaction ID,Payment ID,Event Type,Location,Employee,Channel
+2026-07-01,9:15:02 AM,Eastern Time,Kitchen,Burger,2,Regular,BRG-1,$18.00,$0.00,$18.00,$1.60,transaction-1,payment-1,Payment,Main,Sam,In Store

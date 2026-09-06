@@ -1,0 +1,36 @@
+name: Branch cleanup
+
+# Deletes fully merged or superseded branches on demand. Session tooling can
+# push but not delete refs, so this runs the deletion with the Actions token.
+on:
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: Space-separated branch names to delete; main is refused
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  delete:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      # No checkout: the ref API deletes branches without a working copy, so
+      # the token never lands in a .git/config.
+      - name: Delete the named branches
+        env:
+          BRANCHES: ${{ inputs.branches }}
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          for branch in $BRANCHES; do
+            if [ "$branch" = "main" ]; then
+              echo "refusing to delete main"
+              exit 1
+            fi
+            gh api -X DELETE "repos/$REPOSITORY/git/refs/heads/$branch"
+            echo "deleted $branch"
+          done

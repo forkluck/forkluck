@@ -1,0 +1,51 @@
+# Products and Menu forecast invariant matrix
+
+This is the maintained cross-layer matrix for Products Hub and menu-scoped
+demand forecast changes. A change that alters one row must update the owning
+boundary and its parity tests before the change is considered complete.
+
+| Area | Invariant | Owning boundary / required check |
+| --- | --- | --- |
+| Identity | A public product reference is stable, tenant-scoped, and distinct from the internal product UUID. | Products read model and contract schemas; detail/row fixtures must reject cross-tenant lookup. |
+| Provider vs ledger | `square` and `shopify` are provider channels; manual entry is a ledger source with no provider account/object identity. Provider identity survives import. | Sales import/manual-entry boundary; contract and sync tests. |
+| Repeated identity | Repeated SKU/name text remains repeated source rows. Matching must not deduplicate by identity text or collapse source position. | Sales matcher and manual ledger boundary; repeated-SKU interpretation tests. |
+| Matching precedence | Provider object identity precedes approved variant, exact SKU, Shopify product+variant, and then name. Suggestions never silently attach a sale; disabled suggestion mode remains deterministic. | `interpret_line`/matcher; interpretation parity tests. |
+| Source lifecycle | Ledger facts retain source channel, import, timezone, currency, and source identity. Variant/product removal unlinks or deactivates mapping without deleting historical facts. | Sales persistence and sync ownership; import/undo/deactivation tests. |
+| Import and undo | Undo targets only the latest active provider import under lock/ownership rules. Manual monthly imports are hidden from history/latest and generic undo refuses them; projections are never undo targets. | Import history/latest/undo seams; locking and stale-recovery tests. |
+| Interpretation | Variant multipliers, bundle composition, and mapped modifiers affect physical units according to canonical interpretation. A sale of a bundle is one bundle unit and each member's count, recursively; units are per product and are never summed across products. | Sales interpretation; bundle/modifier/refund tests. |
+| Attribution | Net money is allocated as a view of the source sale. Attribution never creates extra revenue; an unallocated remainder stays unattributed. An expanded view moves a bundle's money to its members by relative standalone value (price → cost → count, chosen per bundle level), splitting all five money fields with the same integer, sign-aware, conserving allocation, recursively; the bundle's own row then carries zero money. Any one table shows one view. | Sales attribution and overview; view-parity oracles asserting expanded total = as-sold total = attributed ledger total. |
+| Returns | Refund/return quantity and net amount reverse the corresponding physical and financial signs without inventing a new positive sale. | Line interpretation and daily rollup; return parity tests. |
+| Daily consumption | `daily_product_consumption_rows` uses workspace-local calendar dates and canonical interpreted physical quantities, not revenue or inventory writes. | Daily rollup read model; timezone, currency, and modifier tests. |
+| Menu membership | Forecast candidates are products belonging to the selected menu through menu membership; tenant-wide catalog products are excluded. | Menu overview/query boundary; membership scope tests. |
+| Product composition | Forecast expansion uses the product's current linked recipe/material composition at read time; historical sales facts are unchanged. | Recipe/material expansion boundary; composition-change tests. |
+| Bundle composition | A component may be another product. A bundle is expanded exactly once, by the line interpreter; `_product_material_demand` skips product components, so a member's materials are counted once per member unit and the bundle's own materials once per bundle unit. A composition may not reach itself. | `domains/sales/bundles.py` and product cost; nested-bundle forecast, no-double-count and cycle tests. |
+| Menu components (non-goal) | `MenuItemComponent` has no product target and gets none. A menu row reaches a bundle through `MenuItem.product`, which already expands; a second product graph on a per-row costing snapshot would need its own cycle, tenant and uniqueness guards with no consumer. | Menu worksheet boundary; revisit only with a surface that needs it. |
+| Physical expansion | One shared model-agnostic expansion path applies line quantity, variant/member multipliers, nested recipes/materials, UOM conversion, yield, and efficiency. | Shared expansion owner; Python/TypeScript parity tests, no adapter-specific math. |
+| Health and cost | UOM/yield/unresolved/cycle health is explicit. Cost efficiency and after-cooking/nutrition efficiency remain distinct semantics. | Recipe health/cost boundary; unresolved/cycle/yield tests. |
+| Forecast basis | A forecast uses the selected menu and the eight prior matching weekdays in workspace timezone, each week back weighted at 80% of the one after it, with samples from before the product existed dropped; it is not an all-product or undifferentiated aggregate. Both the typical and the busy level are published, busy pooling variance across the horizon rather than summing daily peaks. A product that sold in both of last year's 364-day-shifted windows is scaled by the damped, clamped ratio between them, live and in every replayed backtest week alike. | Forecast query/read model; weekday scope, weighting, existence-anchor and timezone tests. |
+| Projection lifecycle | Projected demand is read-time and non-persisted: it creates no sale, import, sync run, variant, or undo record. Projected revenue, the chart series and the backtest are read-time too, computed from the one ledger read that serves the projection. | Forecast endpoint/service; read-only contract and single-read query-count tests. |
+| Contract shape | Product rows/detail expose public identity (`publicId`, `editVersion`, `sku`, `description`, `sellPriceCents`, `category`); detail alone adds nullable cost/margin fields, `currencyCode`, and `incompleteManualRevenue`. The forecast publishes `basis`, `coverage`, `revenue`, `series`, `backtest`, `products`, requirements and `unresolved`; forecast money prices menu members only, at current menu prices, and is projected demand rather than net sales. No alternate variant-by-channel/cost-summary/warning envelope is allowed. | `docs/CONTRACT.md`, backend contract tests, frontend schemas/types. |
+| Query behavior | Tenant-wide snapshots pin query counts and bulk writes do not grow with input; expansion must avoid N+1 reads. | Snapshot/read-model tests and query-count assertions. |
+| Layering | Provider adapters own provider translation/sync; Sales owns interpretation and ledger lifecycle; Recipes/Materials own health/UOM/yield; shared expansion owns model-agnostic physical math. | `lint-imports` plus import-linter boundary review. |
+| Security and locale | Every read/write is tenant-scoped; local business dates use the workspace timezone; currency remains attached to the source ledger fact. | API authorization, timezone, and currency contract tests. |
+
+## Existing test anchors
+
+The matrix is grounded by the current seams in:
+
+- `apps/api/forkluck/test_sales_interpretation.py`
+- `apps/api/forkluck/test_daily_sales_rollup.py`
+- `apps/api/forkluck/test_menu_overview_queries.py`
+- `apps/api/forkluck/test_pos_sync.py`
+- `apps/api/forkluck/test_pos_sync_jobs.py`
+- `apps/api/forkluck/test_undo_locking.py`
+- `apps/api/forkluck/test_product_catalog_rewrite.py`
+- `apps/api/forkluck/test_recipe_normalized.py`
+- `apps/api/forkluck/test_recipe_nutrition.py`
+- `apps/api/forkluck/test_ingredient_measures.py`
+- `apps/api/forkluck/test_preparation_yields.py`
+
+Future Products/forecast changes must add parity cases for public identity,
+manual/repeated-SKU rows, menu membership, weekday scope, timezone,
+Product-composition expansion, unresolved health, and non-persistence rather
+than only adding a happy-path endpoint test.

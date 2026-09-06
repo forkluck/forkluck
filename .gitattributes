@@ -1,0 +1,2 @@
+# Unified diff context deliberately includes a leading space before Go tabs.
+deploy/fider/forkluck.patch -whitespace

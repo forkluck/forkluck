@@ -1,0 +1,13 @@
+dist/
+node_modules/
+.next/
+.next-acceptance/
+.turbo/
+coverage/
+output/
+.forkluck/
+.playwright-cli/
+pnpm-lock.yaml
+.pnpm-store/
+next-env.d.ts
+*.tsbuildinfo

@@ -1,0 +1,7 @@
+[Service]
+Type=oneshot
+User=forkluck-connectors
+Group=forkluck-connectors
+WorkingDirectory=/opt/forkluck-connectors/current
+EnvironmentFile=/etc/forkluck-connectors/connectors.env
+ExecStart=/opt/forkluck-connectors/shared/venv/bin/python manage.py cleanup_connector_data

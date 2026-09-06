@@ -1,0 +1,4 @@
+Date,Time,Time Zone,Category,Item,Qty,Price Point Name,SKU,Modifiers Applied,Gross Sales,Discounts,Net Sales,Tax,Transaction ID,Payment ID,Event Type,Location,Employee,Channel
+2026-07-01,9:15:02 AM,Eastern Time,Kitchen,Sampler,1,Regular,SMP-1,"Chocolate Cookie, Vanilla Cookie, Ginger Cookie",$12.00,$0.00,$12.00,$1.07,transaction-1,payment-1,Payment,Main,Sam,In Store
+2026-07-01,10:02:00 AM,Eastern Time,Kitchen,Burger,2,Regular,BRG-1,"Extra Cheese, Extra Cheese",$18.00,-$2.00,$16.00,$1.42,transaction-2,payment-2,Payment,Main,Sam,In Store
+2026-07-02,1:05:00 PM,Eastern Time,Kitchen,Burger,-1,Regular,BRG-1,Extra Cheese,-$9.00,$0.00,-$9.00,-$0.80,transaction-3,payment-3,Refund,Main,,In Store

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+public_key="${1:-}"
+provision_files="${2:-}"
+if [[ ! -f "$public_key" || ! -f "$provision_files/deploy-connectors" ]]; then
+    echo "Public key and provisioning files are required" >&2
+    exit 2
+fi
+
+if ! id forkluck-connectors >/dev/null 2>&1; then
+    useradd --system --home-dir /opt/forkluck-connectors \
+        --shell /usr/sbin/nologin forkluck-connectors
+fi
+if ! id forkluck-connectors-deploy >/dev/null 2>&1; then
+    useradd --create-home --shell /bin/bash forkluck-connectors-deploy
+fi
+install -d -o forkluck-connectors -g forkluck-connectors \
+    /opt/forkluck-connectors /opt/forkluck-connectors/releases \
+    /opt/forkluck-connectors/shared
+install -d -o forkluck-connectors-deploy -g forkluck-connectors-deploy \
+    /home/forkluck-connectors-deploy/releases
+install -d -m 700 -o forkluck-connectors-deploy -g forkluck-connectors-deploy \
+    /home/forkluck-connectors-deploy/.ssh
+install -m 600 -o forkluck-connectors-deploy -g forkluck-connectors-deploy \
+    "$public_key" /home/forkluck-connectors-deploy/.ssh/authorized_keys
+install -d -m 750 -o root -g forkluck-connectors /etc/forkluck-connectors
+
+database_password="$(openssl rand -hex 24)"
+if ! runuser -u postgres -- psql -tAc \
+    "SELECT 1 FROM pg_roles WHERE rolname='forkluck_connectors'" | grep -qx 1; then
+    runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c \
+        "CREATE ROLE forkluck_connectors LOGIN PASSWORD '$database_password'"
+elif [[ ! -f /etc/forkluck-connectors/connectors.env ]]; then
+    runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c \
+        "ALTER ROLE forkluck_connectors PASSWORD '$database_password'"
+fi
+if ! runuser -u postgres -- psql -tAc \
+    "SELECT 1 FROM pg_database WHERE datname='forkluck_connectors_prod'" | grep -qx 1; then
+    runuser -u postgres -- createdb \
+        --owner=forkluck_connectors forkluck_connectors_prod
+fi
+
+if [[ ! -f /etc/forkluck-connectors/connectors.env ]]; then
+    umask 027
+    {
+        printf 'CONNECTORS_ENVIRONMENT=production\n'
+        printf 'CONNECTORS_DJANGO_SECRET_KEY=%s\n' "$(openssl rand -hex 48)"
+        printf 'CONNECTORS_DATABASE_URL=postgresql://forkluck_connectors:%s@127.0.0.1:5432/forkluck_connectors_prod\n' "$database_password"
+        printf 'CONNECTORS_ENCRYPTION_KEY=%s\n' "$(openssl rand -hex 32)"
+        printf 'CONNECTORS_ENCRYPTION_KEY_ID=production-v1\n'
+        printf 'CONNECTORS_PUBLIC_BASE_URL=https://connectors.forkluck.com\n'
+        printf 'CONNECTORS_ALLOWED_HOSTS=connectors.forkluck.com,localhost,127.0.0.1\n'
+        printf 'CONNECTORS_SECURE_COOKIES=true\n'
+        printf 'CONNECTORS_ALLOWED_SUBJECTS=\n'
+        printf '%s\n' 'CONNECTORS_PROVIDER_ALLOWLIST='"'"'{"baldor":[]}'"'"''
+    } > /etc/forkluck-connectors/connectors.env
+    chown root:forkluck-connectors /etc/forkluck-connectors/connectors.env
+    chmod 640 /etc/forkluck-connectors/connectors.env
+fi
+
+install -m 755 "$provision_files/deploy-connectors" \
+    /usr/local/sbin/deploy-forkluck-connectors
+for unit in forkluck-connectors.service forkluck-connectors-worker.service \
+    forkluck-connectors-cleanup.service forkluck-connectors-cleanup.timer; do
+    install -m 644 "$provision_files/$unit" "/etc/systemd/system/$unit"
+done
+printf '%s\n' \
+    'forkluck-connectors-deploy ALL=(root) NOPASSWD: /usr/local/sbin/deploy-forkluck-connectors *' \
+    > /etc/sudoers.d/forkluck-connectors-deploy
+chmod 440 /etc/sudoers.d/forkluck-connectors-deploy
+visudo -cf /etc/sudoers.d/forkluck-connectors-deploy
+
+systemctl daemon-reload
+systemctl enable forkluck-connectors.service \
+    forkluck-connectors-worker.service
+systemctl enable --now forkluck-connectors-cleanup.timer
+echo "Forkluck connector server foundation is ready"

@@ -1,0 +1,29 @@
+{
+  "supplierName": "Baldor Specialty Foods Inc.",
+  "documentType": "credit_memo",
+  "invoiceNumber": "CR101-0000000001",
+  "invoiceDate": "2026-01-07",
+  "totalAmount": "-73.50",
+  "currency": "USD",
+  "otherChargesAmount": null,
+  "dueDate": null,
+  "subtotalAmount": "-73.50",
+  "taxAmount": "0.00",
+  "lines": [
+    {
+      "lineNumber": 1,
+      "sku": "TEST-CARROT",
+      "description": "CARROTS BABY ORANGE — RETURNED",
+      "quantity": "-3",
+      "unit": "CS",
+      "packSize": "24 X 1 LB",
+      "unitPrice": "24.50",
+      "lineAmount": "(73.50)",
+      "suggestedCategory": "Ingredients",
+      "uncertain": false,
+      "uncertainReason": null,
+      "box": null
+    }
+  ],
+  "notUsable": null
+}

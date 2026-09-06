@@ -1,0 +1,25 @@
+[Unit]
+Description=Forkluck Django backend
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=forkluck
+Group=forkluck
+WorkingDirectory=/opt/forkluck/current/backend
+EnvironmentFile=/etc/forkluck/backend.env
+# Avoid Gunicorn 25's threaded control server in the pre-fork master.
+ExecStart=/opt/forkluck/shared/venv/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8001 --workers 2 --worker-class gthread --threads 4 --max-requests 1000 --max-requests-jitter 100 --no-control-socket --timeout 60 --graceful-timeout 30
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=35
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+MemoryHigh=350M
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+# Django migrations and Meta classes use mutable class attributes by design.
+# Provider boundaries intentionally collapse arbitrary third-party failures to
+# redacted service errors, and protocol type failures are client ValueErrors.
+ignore = ["BLE001", "RUF012", "TRY004"]
+
+[tool.ruff.lint.per-file-ignores]
+"connectors/providers/__init__.py" = ["F401"]

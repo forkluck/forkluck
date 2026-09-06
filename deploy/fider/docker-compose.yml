@@ -1,0 +1,19 @@
+services:
+  feedback:
+    image: ${FIDER_IMAGE:?Set the tested image tag}
+    restart: unless-stopped
+    mem_limit: 256m
+    network_mode: host
+    environment:
+      BASE_URL: https://feedback.forkluck.com
+      HOST: 127.0.0.1
+      PORT: "3004"
+      DATABASE_URL: ${FIDER_DATABASE_URL:?Set the dedicated database URL}
+      JWT_SECRET: ${FIDER_JWT_SECRET:?Set a unique session secret}
+      EMAIL: mailgun
+      EMAIL_NOREPLY: ${FIDER_EMAIL_FROM:?Set the verified Forkluck sender}
+      EMAIL_MAILGUN_DOMAIN: forkluck.com
+      EMAIL_MAILGUN_API: ${BRIDGE_API_KEY:?Use the existing Ghost bridge key}
+      EMAIL_MAILGUN_BASE_URL: http://127.0.0.1:3003/v3
+      LOG_LEVEL: WARN
+      LOG_SQL: "false"

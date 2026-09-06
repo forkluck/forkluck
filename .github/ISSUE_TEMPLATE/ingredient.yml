@@ -1,0 +1,44 @@
+name: Suggest an ingredient
+description: An ingredient the catalog should have, with whatever numbers you know.
+title: "Add "
+labels: [ingredient]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: Nduja
+    validations:
+      required: true
+  - type: input
+    id: synonyms
+    attributes:
+      label: Other names
+      placeholder: 'nduja|spreadable salami'
+  - type: textarea
+    id: numbers
+    attributes:
+      label: Weights you know
+      description: One per line — what a cup, a piece or a bunch weighs, and yields after prep.
+      placeholder: |
+        1 tbsp = 15 g
+        1 each = 250 g
+  - type: input
+    id: source
+    attributes:
+      label: Where the numbers come from
+      placeholder: weighed it / usda:173344 / package label
+  - type: checkboxes
+    id: allergens
+    attributes:
+      label: Allergens
+      options:
+        - label: milk
+        - label: egg
+        - label: fish
+        - label: shellfish
+        - label: tree nuts
+        - label: peanut
+        - label: wheat
+        - label: soy
+        - label: sesame

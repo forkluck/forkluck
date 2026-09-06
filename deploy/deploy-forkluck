@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == "--version" ]]; then
+    echo "6"
+    exit 0
+fi
+
+release_id="${1:-}"
+archive="${2:-}"
+upload_root="/home/forkluck-deploy/releases"
+release_root="/opt/forkluck/releases"
+current_link="/opt/forkluck/current"
+
+if [[ ! "$release_id" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Invalid release id" >&2
+    exit 2
+fi
+
+expected_archive="$upload_root/$release_id.tar.gz"
+if [[ "$archive" != "$expected_archive" || ! -f "$archive" ]]; then
+    echo "Invalid release archive" >&2
+    exit 2
+fi
+
+if [[ "$(stat -c '%U' "$archive")" != "forkluck-deploy" ]]; then
+    echo "Unexpected archive owner" >&2
+    exit 2
+fi
+
+install -d -o forkluck -g forkluck "$release_root" /opt/forkluck/shared
+cd /opt/forkluck
+release_dir="$release_root/$release_id"
+incoming=""
+services_stopped=false
+schema_migrated=false
+migrations_pending=false
+
+# Invoked by the EXIT trap below.
+# shellcheck disable=SC2329
+cleanup() {
+    status=$?
+    if [[ -n "$incoming" && -d "$incoming" ]]; then
+        rm -rf -- "$incoming"
+    fi
+    if [[ "$status" -ne 0 && "$services_stopped" == true && "$schema_migrated" == false ]]; then
+        systemctl start \
+            forkluck-django.service \
+            forkluck-pos-worker.service \
+            forkluck-connector-worker.service \
+            forkluck-next.service \
+            || true
+    fi
+    trap - EXIT
+    exit "$status"
+}
+trap cleanup EXIT
+
+if [[ ! -d "$release_dir" ]]; then
+    incoming="$(mktemp -d "$release_root/.incoming-$release_id.XXXXXX")"
+    tar -xzf "$archive" --no-same-owner -C "$incoming"
+    test -f "$incoming/frontend/server.js"
+    test -f "$incoming/backend/manage.py"
+    chown -R forkluck:forkluck "$incoming"
+    chmod 755 "$incoming"
+    mv "$incoming" "$release_dir"
+    incoming=""
+fi
+
+if [[ ! -x /opt/forkluck/shared/venv/bin/python ]]; then
+    runuser -u forkluck -- env \
+        HOME=/opt/forkluck \
+        UV_CACHE_DIR=/opt/forkluck/shared/uv-cache \
+        /usr/local/bin/uv venv \
+        /opt/forkluck/shared/venv --python /usr/bin/python3
+fi
+
+runuser -u forkluck -- env \
+    HOME=/opt/forkluck \
+    UV_CACHE_DIR=/opt/forkluck/shared/uv-cache \
+    /usr/local/bin/uv pip install \
+    --python /opt/forkluck/shared/venv/bin/python \
+    -r "$release_dir/backend/requirements.txt"
+
+set -a
+# shellcheck disable=SC1091
+source /etc/forkluck/backend.env
+set +a
+
+# Verify the release's configuration before it is allowed to touch the
+# database. Settings already refuse to import with development defaults; this
+# adds Django's own deployment checks on top, with warnings treated as fatal.
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    check --deploy --fail-level WARNING
+
+# Verify the live Stripe account, product, price, and endpoint without touching
+# the database. A bad provider configuration cannot hold the migration lock or
+# stop the currently running release.
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    validate_stripe_billing --preflight
+
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    collectstatic --noinput --clear
+
+# Remember whether this release will change migration state. A later catalog or
+# billing failure may safely restart the previous release when migrate was a
+# no-op; after a real migration, recovery still requires the new release.
+if ! runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    migrate --check; then
+    migrations_pending=true
+fi
+
+# Migrations can remove columns that the old release still writes. Stop every
+# application process before changing the schema, not only the background
+# worker. If migration fails, the EXIT trap brings the old release back up.
+services_stopped=true
+systemctl stop \
+    forkluck-next.service \
+    forkluck-pos-worker.service \
+    forkluck-connector-worker.service \
+    forkluck-django.service
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    migrate --noinput
+schema_migrated="$migrations_pending"
+
+# Persist the verified object identities and secret digests. The first release
+# may start with its webhook proof pending so Stripe can deliver the signed
+# event; once a row exists, every later deployment requires that proof.
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    validate_stripe_billing --bootstrap-pending-webhook-secret
+
+# The pinned catalog release ships in data/ and is loaded from there; the
+# command is idempotent, so a release that changes nothing costs one hash.
+runuser -u forkluck --preserve-environment -- env HOME=/opt/forkluck \
+    /opt/forkluck/shared/venv/bin/python "$release_dir/backend/manage.py" \
+    sync_catalog "$release_dir/data/catalog/catalog.csv"
+
+# Force the extracted release and venv writes to disk before switching to
+# them: a hard power-off (e.g. a VPS resize) minutes after a deploy destroyed
+# a live release that existed only in the page cache.
+sync
+
+ln -sfn "$release_dir" /opt/forkluck/current.new
+mv -Tf /opt/forkluck/current.new "$current_link"
+
+# A rollback across a worker's first release must not leave systemd
+# crash-looping a command the older release does not contain.
+worker_units() {
+    local commands="$current_link/backend/forkluck/management/commands"
+    [[ -f "$commands/run_pos_sync_worker.py" ]] && echo forkluck-pos-worker.service
+    [[ -f "$commands/run_connector_sync_worker.py" ]] && echo forkluck-connector-worker.service
+    return 0
+}
+
+restart_current_services() {
+    local workers
+    workers="$(worker_units)"
+    for unit in \
+        forkluck-pos-worker.service \
+        forkluck-connector-worker.service; do
+        if ! grep -qx "$unit" <<<"$workers"; then
+            systemctl stop "$unit"
+        fi
+    done
+    # shellcheck disable=SC2086
+    systemctl restart forkluck-django.service $workers forkluck-next.service
+}
+
+if ! restart_current_services; then
+    echo "Service restart failed; the migrated schema requires the new release" >&2
+    exit 1
+fi
+systemctl daemon-reload
+services_stopped=false
+
+prune_old_releases() {
+    local keep=10 live
+    live="$(readlink -f "$current_link" || true)"
+    ls -1dt "$release_root"/* 2>/dev/null | tail -n +$((keep + 1)) | while read -r old; do
+        [[ -n "$live" && "$old" == "$live" ]] && continue
+        [[ "$old" =~ ^"$release_root"/[0-9a-f]{40}$ ]] || continue
+        rm -rf -- "$old"
+    done
+}
+
+for _attempt in {1..20}; do
+    if curl --connect-timeout 1 --max-time 3 -fsS \
+        http://127.0.0.1:8001/api/auth/csrf >/dev/null \
+        && curl --connect-timeout 1 --max-time 3 -fsS \
+            http://127.0.0.1:3000/login >/dev/null \
+        && systemctl is-active --quiet $(worker_units); then
+        rm -f -- "$archive"
+        prune_old_releases
+        echo "Deployed $release_id"
+        exit 0
+    fi
+    sleep 1
+done
+
+echo "Health check failed; the migrated schema requires the new release" >&2
+exit 1

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forkluck UI"
+  short_description: "Design clear workflows for professional kitchens."
+  default_prompt: "Use $designing-forkluck-ui to design and implement this chef-facing Forkluck interface."

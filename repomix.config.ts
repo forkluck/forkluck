@@ -1,0 +1,82 @@
+import { defineConfig } from "repomix"
+
+export default defineConfig({
+  output: {
+    filePath: "repomix-output.xml",
+    style: "xml",
+    filePathStyle: "target-relative",
+    headerText:
+      "Curated Forkluck engineering context. AGENTS.md contains repository rules. Implementation, tests, deployment files, and authoritative internal contracts are included; generated assets, binary media, dependency locks, and community-facing documentation are intentionally omitted.",
+    fileSummary: true,
+    directoryStructure: true,
+    files: true,
+    removeComments: false,
+    removeEmptyLines: true,
+    compress: false,
+    patterns: [
+      {
+        pattern: "apps/api/forkluck/migrations/**/*",
+        directoryStructureOnly: true,
+      },
+      {
+        pattern: "services/connectors/connectors/migrations/**/*",
+        directoryStructureOnly: true,
+      },
+    ],
+    topFilesLength: 20,
+    showLineNumbers: false,
+    truncateBase64: true,
+    copyToClipboard: false,
+    includeFullDirectoryStructure: false,
+    git: {
+      sortByChanges: true,
+      sortByChangesMaxCommits: 100,
+      includeDiffs: false,
+      includeLogs: false,
+    },
+  },
+  include: [
+    "apps/web/app/**/*",
+    "apps/web/components/**/*",
+    "apps/web/hooks/**/*",
+    "apps/web/lib/**/*",
+    "apps/web/tests/**/*",
+    "apps/web/scripts/**/*",
+    "apps/web/*.ts",
+    "apps/web/*.mjs",
+    "apps/web/*.json",
+    "apps/web/.env.example",
+    "apps/api/**/*",
+    "services/connectors/**/*",
+    "skills/**/*",
+    "scripts/**/*",
+    "deploy/**/*",
+    ".github/workflows/**/*",
+    "docs/**/*",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "SALES_INTERPRETATION_SPEC.md",
+    "*.ts",
+    "*.mjs",
+    "*.json",
+    "pnpm-workspace.yaml",
+  ],
+  ignore: {
+    useGitignore: true,
+    useDotIgnore: true,
+    useDefaultPatterns: true,
+    customPatterns: [
+      "**/README.md",
+      "apps/web/app/fonts/**",
+      "apps/web/public/**",
+      "pnpm-lock.yaml",
+      "repomix-output.*",
+    ],
+  },
+  security: {
+    enableSecurityCheck: true,
+  },
+  tokenCount: {
+    encoding: "o200k_base",
+  },
+})
