@@ -17,7 +17,7 @@ test("signs into the seeded synthetic workspace and reads its recipes", async ({
   page,
 }) => {
   await signIn(page)
-  await page.getByRole("link", { name: "Activity", exact: true }).click()
+  await page.getByRole("link", { name: "Analytics", exact: true }).click()
 
   await expect(
     page.getByRole("heading", { level: 1, name: "Analytics" })
@@ -94,7 +94,7 @@ test("creates a new account only inside the temporary acceptance database", asyn
   await page.getByRole("button", { name: "Create account" }).click()
 
   await expect(page).toHaveURL(/\/$/)
-  await page.goto("/?tab=activity")
+  await page.goto("/analytics")
   await expect(
     page.getByRole("heading", { level: 1, name: "Analytics" })
   ).toBeVisible()

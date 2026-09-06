@@ -85,6 +85,10 @@ export function MainHeader({
           aria-controls="primo-rail"
           aria-expanded={primoOpen}
           title="Primo"
+          // Held back while a page loads, so it arrives with the page rather
+          // than ahead of it: globals.css hides it while the content column
+          // holds a route loader.
+          data-primo-trigger=""
         >
           <HatGlasses strokeWidth={1.8} aria-hidden="true" />
         </Button>

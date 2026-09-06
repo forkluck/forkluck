@@ -320,8 +320,19 @@ export function SupplierConnectorCatalog({
       />
       {!connectors.configured ? (
         <p className="p-4 text-sm leading-[1.55] text-faint">
-          <span>No supplier connectors configured</span> — this deployment has
-          no connector service yet. The Drive folder and uploads work as usual.
+          <span>No supplier connectors configured</span>. The Drive folder and
+          uploads work as usual. To connect Baldor, run the connector service
+          and point this deployment at it with the three connector settings. The
+          steps are in the{" "}
+          <a
+            href="https://github.com/forkluck/forkluck/blob/main/docs/DEPLOYMENT.md#supplier-connector-service"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            deployment guide
+          </a>
+          .
         </p>
       ) : connectors.providers.length ? (
         connectors.providers.map((provider) => (

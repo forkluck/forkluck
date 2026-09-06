@@ -17,6 +17,7 @@ import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import { Switch } from "@/components/ui/switch"
 import { LoadingRegion } from "@/components/ui/loading-region"
+import { Spinner } from "@/components/ui/spinner"
 import { groupConversationsByDate } from "@/lib/primo/conversation-groups"
 import type { PrimoConversationSummary } from "@/lib/backend/types"
 
@@ -135,8 +136,11 @@ function RecentList({ close }: { close: () => void }) {
           </Button>
         </div>
       ) : null}
-      <LoadingRegion pending={loading} label="Loading chats">
-        <div className="-mx-2 max-h-[55dvh] min-h-32 overflow-y-auto px-2 pb-2">
+      {/* The first load is one ring centered in the room the rows will take,
+          so the dialog opens at its working height; a reload over rows that
+          are already showing dims them under the ring instead. */}
+      <LoadingRegion pending={loading && rows.length > 0} label="Loading chats">
+        <div className="-mx-2 max-h-[55dvh] min-h-60 overflow-y-auto px-2 pb-2">
           {rows.length ? (
             groupConversationsByDate(rows).map((group) => (
               <section key={group.label} className="mb-3">
@@ -244,7 +248,11 @@ function RecentList({ close }: { close: () => void }) {
                 ))}
               </section>
             ))
-          ) : !loading && !error ? (
+          ) : loading ? (
+            <div className="grid min-h-60 place-items-center">
+              <Spinner size="md" delayed label="Loading chats" />
+            </div>
+          ) : !error ? (
             <p className="py-8 text-center text-base text-muted-foreground">
               {query
                 ? "No chats match your search."
@@ -299,6 +307,7 @@ export function PrimoRecent() {
       <Button
         variant="ghost"
         aria-label="Recent chats"
+        className="text-ink-soft"
         onClick={() => setOpen(true)}
       >
         <Clock aria-hidden="true" />

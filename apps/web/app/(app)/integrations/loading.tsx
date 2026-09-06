@@ -1,14 +1,10 @@
-import { Spinner } from "@/components/ui/spinner"
+import { SegmentLoading } from "@/components/ui/route-loading"
 
 /**
- * Shown instantly when moving between the Integrations pages. The shared
- * layout keeps the frame and breadcrumb mounted, so this renders bare — no
- * <Page> wrapper — centered in the space the page's own content will fill.
+ * Entering Integrations, the full-height mark with the title and tabs held
+ * back; moving between the family's pages, a shorter mark under the chrome
+ * that stays.
  */
 export default function Loading() {
-  return (
-    <div className="grid min-h-[50dvh] place-items-center" aria-busy="true">
-      <Spinner size="lg" delayed label="Loading page" />
-    </div>
-  )
+  return <SegmentLoading />
 }
