@@ -612,7 +612,7 @@ export function PrimoConversation({
         conversationId={conversationId}
       />
       {empty && !conversationLoading && !conversationError ? (
-        <div className="px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
+        <div className="mt-8 px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
           <p className="mb-2 px-1 text-xs text-muted-foreground">
             Try one of these
           </p>
