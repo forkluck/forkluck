@@ -152,6 +152,37 @@ export function recipeUnitOptions(): UnitOption[] {
   })
 }
 
+const PORTION_UNITS = new Set(["portion", "serving"])
+
+/**
+ * The units a product may take a recipe in: whatever the batch is stated in
+ * and the server can convert (a 20 kg yield offers grams and pounds, a 48 pcs
+ * yield offers each and dozen), plus portion and serving when the recipe has a
+ * portion to divide by. Blank is not an option here; the picker itself reads
+ * "batches" when nothing is chosen.
+ */
+export function batchUnitOptions(recipe: {
+  batchMeasures: readonly { amount: number; unit: string }[]
+  servingAmount: number | null
+  servingUnit: string | null
+}): UnitOption[] {
+  const families = new Set<UnitFamily>()
+  for (const measure of recipe.batchMeasures) {
+    const family = unitDefinition(countedAsEach(measure.unit))?.family
+    if (family && family !== "dimensionless") families.add(family)
+  }
+  const portions =
+    (recipe.servingAmount !== null && recipe.servingUnit !== null) ||
+    recipe.batchMeasures.some((measure) => PORTION_UNITS.has(measure.unit))
+  return recipeUnitOptions().filter((option) => {
+    if (PORTION_UNITS.has(option.slug)) return portions
+    const unit = KNOWN_UNITS[option.slug]
+    return (
+      unit !== undefined && families.has(unit.family) && unit.perBase !== null
+    )
+  })
+}
+
 /** The units a batch is counted, weighed or poured in: no pinches, no mg. */
 const YIELD_UNIT_SLUGS = [
   "g",

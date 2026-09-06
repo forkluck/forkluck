@@ -21,7 +21,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { UnitCombobox } from "@/components/ingredients/unit-combobox"
-import { recipeUnitOptions } from "@/lib/unit-registry"
+import {
+  batchUnitOptions,
+  recipeUnitOptions,
+  unitShort,
+} from "@/lib/unit-registry"
 import type { FormErrors } from "@/hooks/use-form-save"
 import type {
   MenuIngredientOption,
@@ -158,17 +162,31 @@ export function validateComponents(rows: ProductComponentDraft[]): FormErrors {
         [`component-quantity-${component.key}`]:
           "A product component needs a whole number of units.",
       }
-    const needsUnit = component.ingredientId !== null
-    if (needsUnit ? !component.unit.trim() : component.unit !== "")
+    // An ingredient is measured; a product counts whole members; a recipe
+    // takes either, blank meaning whole batches.
+    if (component.ingredientId !== null && !component.unit.trim())
       return {
-        [`component-unit-${component.key}`]: needsUnit
-          ? "Ingredient components need a unit."
-          : component.productId
-            ? "Product components do not use a unit."
-            : "Recipe components do not use a unit.",
+        [`component-unit-${component.key}`]:
+          "Ingredient components need a unit.",
+      }
+    if (component.productId !== null && component.unit !== "")
+      return {
+        [`component-unit-${component.key}`]:
+          "Product components do not use a unit.",
       }
   }
   return {}
+}
+
+/** "1 batch = 20 kg · 40 pcs": what a recipe row's measured unit divides. */
+export function batchHint(recipe: MenuRecipeOption) {
+  if (recipe.batchMeasures.length === 0) return null
+  return `1 batch = ${recipe.batchMeasures
+    .map(
+      (measure) =>
+        `${measure.amount.toLocaleString(undefined, { maximumFractionDigits: 3 })} ${unitShort(measure.unit)}`
+    )
+    .join(" · ")}`
 }
 
 function componentName(component: ProductComponentDraft) {
@@ -194,15 +212,19 @@ function componentHref(component: ProductComponentDraft) {
 
 function ComponentRow({
   component,
+  recipe,
   onChange,
   onRemove,
 }: {
   component: ProductComponentDraft
+  /** The recipe a recipe row names, when the picker still lists it. */
+  recipe?: MenuRecipeOption
   onChange: (patch: Partial<ProductComponentDraft>) => void
   onRemove: () => void
 }) {
   const name = componentName(component)
   const href = componentHref(component)
+  const hint = recipe ? batchHint(recipe) : null
   return (
     <TableRow>
       <TableCell className="max-w-0">
@@ -230,10 +252,16 @@ function ComponentRow({
             </Badge>
           ) : null}
         </span>
+        {hint ? (
+          <span className="block truncate text-xs text-muted-foreground">
+            {hint}
+          </span>
+        ) : null}
       </TableCell>
       <TableCell>
-        {/* Amount and unit share one box, the way every measured field does;
-            recipes and products count in wholes, so they carry no unit. */}
+        {/* Amount and unit share one box, the way every measured field does.
+            Products count whole members, so they carry no unit; a recipe row's
+            unit is a share of the batch, and blank reads "batches". */}
         <div className="grid h-8 grid-cols-[minmax(0,1fr)_auto] overflow-hidden rounded-md border border-input bg-card focus-within:border-foreground hover:border-line-strong">
           <input
             id={`component-quantity-${component.key}`}
@@ -248,12 +276,19 @@ function ComponentRow({
             }
             className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none"
           />
-          {component.recipeId || component.productId ? null : (
+          {component.productId ? null : (
             <UnitCombobox
               label={name}
               value={component.unit}
               onChange={(unit) => onChange({ unit: unit ?? "" })}
-              options={UNIT_OPTIONS}
+              options={
+                component.recipeId
+                  ? recipe
+                    ? batchUnitOptions(recipe)
+                    : UNIT_OPTIONS
+                  : UNIT_OPTIONS
+              }
+              emptyLabel={component.recipeId ? "batches" : undefined}
               variant="chip"
               className="mr-1"
               popupClassName="w-[205px]"
@@ -312,6 +347,10 @@ export function ProductComponentsCard({
     () => blockedComponentProducts(selfProductId, products),
     [products, selfProductId]
   )
+  const recipesById = React.useMemo(
+    () => new Map(recipes.map((recipe) => [recipe.id, recipe])),
+    [recipes]
+  )
   const patchAt = (key: string, patch: Partial<ProductComponentDraft>) =>
     onChange(
       rows.map((component) =>
@@ -353,6 +392,11 @@ export function ProductComponentsCard({
                 <ComponentRow
                   key={component.key}
                   component={component}
+                  recipe={
+                    component.recipeId
+                      ? recipesById.get(component.recipeId)
+                      : undefined
+                  }
                   onChange={(patch) => patchAt(component.key, patch)}
                   onRemove={() =>
                     onChange(rows.filter((row) => row.key !== component.key))

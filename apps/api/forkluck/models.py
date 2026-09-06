@@ -2930,6 +2930,10 @@ class SalesProductComponent(UUIDTimestampModel):
         blank=True,
     )
     quantity = models.DecimalField(max_digits=12, decimal_places=3)
+    # An ingredient component is measured in its unit. A product component
+    # counts whole members and has none. A recipe component has either: blank
+    # means whole batches per sold product, a unit means that much of the
+    # recipe batch (500 g of a 20 kg batch), resolved against its yield.
     unit = models.CharField(max_length=64, blank=True, default="")
 
     class Meta:
@@ -2960,7 +2964,6 @@ class SalesProductComponent(UUIDTimestampModel):
                         recipe__isnull=False,
                         ingredient__isnull=True,
                         component_product__isnull=True,
-                        unit="",
                     )
                     | Q(
                         recipe__isnull=True,
@@ -2990,8 +2993,6 @@ class SalesProductComponent(UUIDTimestampModel):
             raise ValidationError(
                 "A product component is a recipe, an ingredient, or a product"
             )
-        if self.recipe_id is not None and self.unit:
-            raise ValidationError("A recipe product component has no unit")
         if self.ingredient_id is not None and not self.unit:
             raise ValidationError("An ingredient product component needs a unit")
         if self.component_product_id is None:

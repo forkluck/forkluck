@@ -1637,6 +1637,11 @@ export const menuDetailPayloadSchema = z.strictObject({
       menuPriceCents: z.number().nullable(),
       ingredientCents: z.number().nullable(),
       suffix: z.string(),
+      batchMeasures: z.array(
+        z.strictObject({ amount: z.number(), unit: z.string() })
+      ),
+      servingAmount: z.number().nullable(),
+      servingUnit: z.string().nullable(),
     })
   ),
   ingredients: z.array(

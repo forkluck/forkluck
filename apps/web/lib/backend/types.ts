@@ -971,6 +971,12 @@ export type MenuRecipeOption = {
   menuPriceCents: number | null
   ingredientCents: number | null
   suffix: string
+  /** One finished batch in every unit its yield or equivalency states, the
+   * yield first; empty when the recipe has no yield. What a product may take
+   * a measured share of the recipe in. */
+  batchMeasures: { amount: number; unit: string }[]
+  servingAmount: number | null
+  servingUnit: string | null
 }
 
 export type MenuIngredientOption = {

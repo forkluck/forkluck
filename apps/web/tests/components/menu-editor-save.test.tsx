@@ -79,6 +79,9 @@ const recipe = {
   menuPriceCents: 500,
   ingredientCents: 120,
   suffix: "/pc",
+  batchMeasures: [],
+  servingAmount: null,
+  servingUnit: null,
 }
 
 const latteOption = {

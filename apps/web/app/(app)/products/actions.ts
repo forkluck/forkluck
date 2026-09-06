@@ -50,12 +50,6 @@ const productComponentInputSchema = z
         message: "A component needs exactly one recipe, product or ingredient.",
       })
     }
-    if (component.recipeId !== null && component.unit !== "") {
-      context.addIssue({
-        code: "custom",
-        message: "Recipe components do not use a unit.",
-      })
-    }
     if (component.ingredientId !== null && component.unit === "") {
       context.addIssue({
         code: "custom",

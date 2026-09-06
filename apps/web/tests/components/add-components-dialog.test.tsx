@@ -26,6 +26,9 @@ const RECIPES: MenuRecipeOption[] = [
     menuPriceCents: 450,
     ingredientCents: 120,
     suffix: "/pc",
+    batchMeasures: [{ amount: 20, unit: "kg" }],
+    servingAmount: null,
+    servingUnit: null,
   },
 ]
 
@@ -126,6 +129,24 @@ describe("the add components dialog", () => {
       ingredientId: "ing-2",
       quantity: 1,
       unit: "kg",
+    })
+  })
+
+  it("says what a batch of a recipe makes and starts a recipe row in batches", () => {
+    const onAdd = open()
+    tab("Recipes")
+    expect(screen.getByText("Recipe · 20 kg/batch")).toBeDefined()
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Croissant" }))
+    const chip = screen.getByRole("button", { name: "Croissant unit" })
+    expect(chip.textContent).toContain("batches")
+
+    fireEvent.click(screen.getByRole("button", { name: "Add" }))
+    const drafts = onAdd.mock.calls[0]![0] as ProductComponentDraft[]
+    expect(drafts[0]).toMatchObject({
+      recipeId: "rec-1",
+      quantity: 1,
+      unit: "",
     })
   })
 

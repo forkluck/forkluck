@@ -134,6 +134,14 @@ product's own SKU is the x1 row of the same table.
 *Avoid:* "alias" (a pack SKU counts differently, an alias would not), "case",
 "multipack product".
 
+**Recipe component** — a product component that names a recipe. With no unit
+its quantity is whole batches per sold product. With a unit it is that much of
+the recipe batch: a 500 g tub of a 20 kg batch is one fortieth, for cost and
+for the kitchen's batch count alike, resolved by the same rule a recipe line
+nested in another recipe uses. A family the recipe's yield does not state is
+unresolved, never a guess.
+*Avoid:* "portion of a recipe" for the blank-unit case (that one is batches).
+
 **Bundle** — a product whose components include other products. It is a product
 like any other: its own name, price, SKU, variants, sales and cost, which is
 its members' costs plus whatever it adds itself. Bundles nest; a composition

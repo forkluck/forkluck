@@ -18,6 +18,8 @@ from .domains.sales.core import (
 )
 from .models import (
     Ingredient,
+    Recipe,
+    RecipeItem,
     SalesChannelConnection,
     SalesProductVariant,
     SalesImport,
@@ -875,6 +877,13 @@ class BundleComponentTests(TestCase):
                 unit="each",
             )
 
+    def test_the_database_accepts_a_unit_on_a_recipe_component(self) -> None:
+        recipe = Recipe.objects.create(user=self.user, title="Dough")
+        row = SalesProductComponent.objects.create(
+            product=self.cookie, recipe=recipe, quantity=Decimal("500"), unit="g"
+        )
+        self.assertEqual(row.unit, "g")
+
     def test_the_database_refuses_a_component_with_no_target(self) -> None:
         with self.assertRaises(IntegrityError), transaction.atomic():
             SalesProductComponent.objects.create(product=self.box, quantity=1)
@@ -1037,6 +1046,25 @@ class BundleComponentTests(TestCase):
         self.link(self.box, self.cookie, quantity=2)
         self.link(self.box, self.brownie)
         self.assertEqual(product_cost(self.box).cents, 110)
+
+    def test_a_bundle_costs_a_measured_member_by_its_share(self) -> None:
+        # 20 kg of dough costs 10000 cents; a 500 g cookie pack is 250 of it.
+        dough = Recipe.objects.create(
+            user=self.user, title="Dough", yield_amount=20, yield_unit="kg"
+        )
+        RecipeItem.objects.create(
+            recipe=dough,
+            kind=RecipeItem.INGREDIENT,
+            position=0,
+            quantity=20000,
+            unit="g",
+            ingredient=self.butter,
+        )
+        SalesProductComponent.objects.create(
+            product=self.cookie, recipe=dough, quantity=Decimal("500"), unit="g"
+        )
+        self.link(self.box, self.cookie, quantity=2)
+        self.assertEqual(product_cost(self.box).cents, 500)
 
     def test_a_bundle_of_bundles_costs_three_levels_deep(self) -> None:
         hamper = self.product("Hamper")

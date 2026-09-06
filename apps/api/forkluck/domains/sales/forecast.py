@@ -38,6 +38,7 @@ from ..shared.workspace_timezone import workspace_zone
 from .bundles import BundleIndex
 from .consumption import daily_product_consumption_rows
 from .core import (
+    _component_batches,
     _ingredient_purchase_basis,
     _product_recipe_nodes,
     _standard_density_bridge,
@@ -490,11 +491,9 @@ def _product_material_demand(
         product_quantity = forecasts.get(str(component.product_id), Decimal())
         if not product_quantity:
             continue
-        component_quantity = product_quantity * Decimal(component.quantity)
         prefix = (str(component.product_id), str(component.id))
         if component.recipe_id:
             recipe_key = str(component.recipe_id)
-            recipes[recipe_key] += component_quantity
             root = nodes.get(recipe_key)
             if root is None:
                 unresolved.append(
@@ -505,6 +504,17 @@ def _product_material_demand(
                     }
                 )
                 continue
+            # Whole batches to make: a measured component (500 g of a 20 kg
+            # batch) is the same share of the batch the cost charges for.
+            batches, share_issues = _component_batches(component, root)
+            if batches is None:
+                unresolved.extend(
+                    {**_issue_json(issue, prefix=prefix), "recipeId": recipe_key}
+                    for issue in share_issues
+                )
+                continue
+            component_quantity = product_quantity * Decimal(str(batches))
+            recipes[recipe_key] += component_quantity
 
             sources: dict[int, Ingredient] = {}
 
@@ -586,6 +596,7 @@ def _product_material_demand(
                 )
             continue
 
+        component_quantity = product_quantity * Decimal(component.quantity)
         if component.ingredient_id:
             ingredient = ingredients.get(str(component.ingredient_id))
             if ingredient is None:
