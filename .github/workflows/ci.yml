@@ -102,16 +102,16 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
-  backend:
-    name: Backend ${{ matrix.shard }}/2
+  # The Django suite runs as two shards dealt by module size. They are two
+  # explicit jobs rather than a matrix: a skipped matrix job reports under its
+  # unexpanded name, which would leave the required checks unsatisfied on a
+  # pull request that does not touch the API.
+  backend-1:
+    name: Backend 1/2
     needs: changes
     if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
     services:
       postgres:
         image: postgres:16
@@ -130,16 +130,16 @@ jobs:
       DATABASE_URL: postgres://forkluck:forkluck@127.0.0.1:5432/forkluck_ci
       FORKLUCK_ENVIRONMENT: development
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 10.23.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 22
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
           cache: pip
@@ -157,16 +157,66 @@ jobs:
             -c "ALTER SYSTEM SET synchronous_commit = off" \
             -c "ALTER SYSTEM SET full_page_writes = off" \
             -c "SELECT pg_reload_conf()"
-      - if: matrix.shard == 1
-        run: pnpm db:migrate
-      - if: matrix.shard == 1
-        run: pnpm verify:backend:checks
-      - if: matrix.shard == 1
-        name: Validate catalog
+      - run: pnpm db:migrate
+      - run: pnpm verify:backend:checks
+      - name: Validate catalog
         run: |
           apps/api/.venv/bin/python data/catalog/scripts/validate.py data/catalog/catalog.csv
           apps/api/.venv/bin/python -m unittest discover -s data/catalog/scripts -p "test_*.py"
-      - run: apps/api/.venv/bin/python scripts/backend-test-shard.py ${{ matrix.shard }} 2
+      - run: apps/api/.venv/bin/python scripts/backend-test-shard.py 1 2
+
+  backend-2:
+    name: Backend 2/2
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: forkluck
+          POSTGRES_PASSWORD: forkluck
+          POSTGRES_DB: forkluck_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://forkluck:forkluck@127.0.0.1:5432/forkluck_ci
+      FORKLUCK_ENVIRONMENT: development
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.23.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/api/requirements*.txt
+      - name: Install backend dependencies
+        run: |
+          python3 -m venv apps/api/.venv
+          apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
+      # The CI database is thrown away after the run, so durability buys
+      # nothing; without this every test transaction waits on disk.
+      - name: Make the throwaway Postgres fast
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 \
+            -c "ALTER SYSTEM SET fsync = off" \
+            -c "ALTER SYSTEM SET synchronous_commit = off" \
+            -c "ALTER SYSTEM SET full_page_writes = off" \
+            -c "SELECT pg_reload_conf()"
+      - run: apps/api/.venv/bin/python scripts/backend-test-shard.py 2 2
 
   # The browser suite is one sequential story (each spec builds state the
   # next one reads), so it cannot be sharded across runners.
