@@ -28,8 +28,9 @@ import type { ActiveKitchen } from "@/lib/kitchen"
 import { cn } from "@/lib/utils"
 
 // Every sidebar row is the same box: 34px tall, radius 8, 10px of side
-// padding, a 9px gap to a 17px glyph. One grey carries hover *and* active —
-// the label color never changes, only its weight.
+// padding, a 9px gap to a 17px glyph. Hover on a resting row is the sidebar
+// grey; the active row has no fill and turns brand blue, and hovering it tints
+// with the same translucent blue as an active section tab.
 const ROW_CLASS =
   "flex h-11 w-full items-center gap-[9px] rounded-lg border border-transparent px-2.5 text-base leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-9"
 
@@ -225,10 +226,8 @@ export function AppSidebar({
         <div
           className={cn(
             "relative rounded-lg",
-            filled ? "bg-sidebar-hover" : "hover:bg-sidebar-hover",
-            !filled &&
-              item.action &&
-              "has-[[data-nav-action]:hover]:bg-transparent"
+            filled ? "hover:bg-brand/10" : "hover:bg-sidebar-hover",
+            item.action && "has-[[data-nav-action]:hover]:bg-transparent"
           )}
         >
           <GuardedLink
@@ -238,7 +237,7 @@ export function AppSidebar({
             className={cn(
               ROW_CLASS,
               item.action && "pr-9",
-              filled && "font-semibold"
+              filled && "font-semibold text-brand"
             )}
           >
             <item.icon
@@ -277,7 +276,7 @@ export function AppSidebar({
                   className={cn(
                     SUB_ROW_CLASS,
                     active
-                      ? "bg-sidebar-hover font-semibold"
+                      ? "font-semibold text-brand hover:bg-brand/10"
                       : "hover:bg-sidebar-hover"
                   )}
                 >
