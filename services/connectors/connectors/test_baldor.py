@@ -72,7 +72,7 @@ class BaldorAcquisitionTests(SimpleTestCase):
             ),
         ):
             self.assertEqual(
-                list(client.document_batches(date.today(), date.today())),
+                list(client.document_batches(date(2026, 1, 1), date(2026, 1, 1))),
                 [[{"items": ["first", "second"]}]],
             )
         self.assertEqual([call.args[1] for call in lines.call_args_list], [0, 1])
@@ -83,9 +83,9 @@ class BaldorAcquisitionTests(SimpleTestCase):
                 "lines",
                 return_value={"data": [], "meta": {"pagination": {"pageCount": 21}}},
             ),
+            self.assertRaises(BaldorError),
         ):
-            with self.assertRaises(BaldorError):
-                list(client.document_batches(date.today(), date.today()))
+            list(client.document_batches(date(2026, 1, 1), date(2026, 1, 1)))
 
     def test_start_page_is_bounded_before_contacting_supplier(self):
         client = BaldorClient()
@@ -97,7 +97,7 @@ class BaldorAcquisitionTests(SimpleTestCase):
                 with self.assertRaises(BaldorError):
                     list(
                         client.document_batches(
-                            date.today(), date.today(), start_page=value
+                            date(2026, 1, 1), date(2026, 1, 1), start_page=value
                         )
                     )
                 invoices.assert_not_called()
