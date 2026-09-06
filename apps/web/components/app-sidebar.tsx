@@ -242,7 +242,7 @@ export function AppSidebar({
           >
             <item.icon
               className={ICON_CLASS}
-              strokeWidth={1.8}
+              strokeWidth={2}
               aria-hidden="true"
             />
             {item.label}
@@ -382,7 +382,7 @@ export function AppSidebar({
             >
               <CircleAlert
                 className={ICON_CLASS}
-                strokeWidth={1.8}
+                strokeWidth={2}
                 aria-hidden="true"
               />
               Submit an issue
