@@ -3,8 +3,10 @@
 import * as React from "react"
 import {
   ArrowUp,
+  AtSign,
   Square,
   Plus,
+  Upload,
   X,
   RotateCcw,
   FileText,
@@ -13,6 +15,7 @@ import {
 
 import { runKitchenToolAction } from "@/app/(app)/actions"
 import { Button } from "@/components/ui/button"
+import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/ui/menu"
 import { Textarea } from "@/components/ui/textarea"
 import type { PrimoMention } from "@/lib/primo/messages"
 import { PrimoAttachmentPreview } from "./primo-attachment-preview"
@@ -147,6 +150,16 @@ export function PrimoComposer({
       textareaRef.current?.setSelectionRange(position, position)
       setCaret(position)
     })
+  }
+
+  /** Drops an `@` at the caret, which opens the recipe and product picker. */
+  function startMention() {
+    const before = input.slice(0, caret)
+    const leading = before && !/\s$/.test(before) ? " " : ""
+    const next = `${before}${leading}@${input.slice(caret)}`
+    setInput(next)
+    setClosedFor(null)
+    focusAt(before.length + leading.length + 1)
   }
 
   function pickRecipe(recipe: RecipeChoice) {
@@ -443,17 +456,38 @@ export function PrimoComposer({
         <span className="sr-only" aria-live="polite">
           {listOpen && !searching ? `${matches.length} matches found.` : ""}
         </span>
-        <Button
-          type="button"
-          size="icon-sm"
-          variant="ghost"
-          disabled={disabled}
-          aria-label="Add attachment"
-          onClick={() => fileInput.current?.click()}
-          className="mb-0.5 shrink-0"
-        >
-          <Plus aria-hidden="true" />
-        </Button>
+        <Menu>
+          <MenuTrigger
+            render={
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                disabled={disabled}
+                aria-label="Add to message"
+                className="mb-0.5 shrink-0"
+              />
+            }
+          >
+            <Plus aria-hidden="true" />
+          </MenuTrigger>
+          {/* The composer sits at the foot of the screen, so the menu opens
+              upward. Focus goes back to the field, not the plus, because
+              both rows continue the draft. */}
+          <MenuContent side="top" className="w-52" finalFocus={textareaRef}>
+            <MenuItem onClick={() => fileInput.current?.click()}>
+              <Upload strokeWidth={1.8} aria-hidden="true" />
+              Upload from device
+            </MenuItem>
+            <MenuItem onClick={startMention}>
+              <AtSign strokeWidth={1.8} aria-hidden="true" />
+              Mention
+              <kbd className="ml-auto rounded-sm bg-muted px-1.5 py-0.5 font-sans text-xs text-muted-foreground">
+                @
+              </kbd>
+            </MenuItem>
+          </MenuContent>
+        </Menu>
         {busy ? (
           <Button
             type="button"
