@@ -1,10 +1,16 @@
 import logging
+import os
 import time
 
+from django.conf import settings
 from django.db import connection
 
 
 SLOW_REQUEST_MS = 300
+
+# Development only: hold every response this long so spinners and pending
+# states can be seen. `FORKLUCK_FAKE_LATENCY_MS=1500 pnpm backend:dev`.
+FAKE_LATENCY_MS = int(os.environ.get("FORKLUCK_FAKE_LATENCY_MS", "0"))
 
 logger = logging.getLogger("forkluck.slow_request")
 
@@ -35,6 +41,8 @@ class SlowRequestMiddleware:
                     slowest_sql = sql[:200]
 
         started = time.monotonic()
+        if FAKE_LATENCY_MS and settings.DEBUG:
+            time.sleep(FAKE_LATENCY_MS / 1000)
         with connection.execute_wrapper(measure):
             response = self.get_response(request)
         elapsed_ms = (time.monotonic() - started) * 1000
