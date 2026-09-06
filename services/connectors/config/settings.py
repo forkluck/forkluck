@@ -4,6 +4,22 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Local development reads services/connectors/.env (gitignored); production
+# supplies env through systemd's EnvironmentFile, which wins via setdefault. A
+# process already declaring itself production skips the file outright. Values
+# are read literally: no shell quoting.
+_env_file = BASE_DIR / ".env"
+if (
+    os.getenv("CONNECTORS_ENVIRONMENT", "").lower() != "production"
+    and _env_file.exists()
+):
+    for _line in _env_file.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _key, _value = _line.split("=", 1)
+            os.environ.setdefault(_key.strip(), _value.strip())
+
 CONNECTORS_ENVIRONMENT = os.getenv("CONNECTORS_ENVIRONMENT", "development").lower()
 SECRET_KEY = os.getenv("CONNECTORS_DJANGO_SECRET_KEY", "unsafe-local-only")
 DEBUG = os.getenv("CONNECTORS_DEBUG", "").lower() in {"1", "true"}

@@ -114,6 +114,14 @@ sessions, provider allowlists, and provider code belong to the other service.
 Leaving all three settings empty disables supplier connectors and is the
 normal self-hosted default.
 
+To offer Baldor on your own deployment, run the connector service yourself
+following `services/connectors/docs/OPERATIONS.md`, register your app with
+`manage.py provision_service_client <id> https://<your app origin>/api/integrations/connectors/callback`,
+put the printed id and secret plus the service's public URL into the three
+settings above, and list your users' ids (or `["*"]`) in the service's
+`CONNECTORS_PROVIDER_ALLOWLIST`. For a development machine,
+`pnpm connectors:setup` does all of that; see the contributing guide.
+
 The application release artifact contains no connector-service source. The
 connector service lives in this repository under `services/connectors/` but
 has its own database, worker, encryption key, release artifact, server user,

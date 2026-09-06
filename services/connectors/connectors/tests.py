@@ -1,13 +1,17 @@
 import base64
 import importlib
+import io
 import json
 import os
+import tempfile
 import threading
 import unittest
+from pathlib import Path
 from datetime import timedelta
 from unittest import mock
 
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.db import connection, connections
 from django.test import Client, TestCase, TransactionTestCase, override_settings
 from django.utils import timezone
@@ -636,6 +640,62 @@ class ProtocolTests(TestCase):
     def test_explicit_allowlist_still_refuses_an_unlisted_subject(self):
         self.assertTrue(provider_allowed("baldor", "user-a"))
         self.assertFalse(provider_allowed("baldor", "never-seen-user"))
+
+    def test_bootstrap_local_prepares_a_checkout_and_is_repeatable(self):
+        from connectors.management.commands import bootstrap_local
+
+        with tempfile.TemporaryDirectory() as directory:
+            env_path = Path(directory) / ".env"
+            with (
+                mock.patch.object(bootstrap_local, "ENV_PATH", env_path),
+                override_settings(CONNECTORS_PUBLIC_BASE_URL="http://localhost:8010"),
+            ):
+                first = io.StringIO()
+                call_command("bootstrap_local", stdout=first)
+                key = dict(
+                    line.split("=", 1)
+                    for line in env_path.read_text().splitlines()
+                    if "=" in line and not line.startswith("#")
+                )["CONNECTORS_ENCRYPTION_KEY"]
+                self.assertEqual(len(bytes.fromhex(key)), 32)
+                client = ServiceClient.objects.get(client_id="forkluck-local")
+                self.assertEqual(
+                    client.redirect_uri,
+                    "http://localhost:3000/api/integrations/connectors/callback",
+                )
+                self.assertIn(
+                    "FORKLUCK_CONNECTOR_SERVICE_URL=http://localhost:8010",
+                    first.getvalue(),
+                )
+                self.assertIn(
+                    "FORKLUCK_CONNECTOR_CLIENT_ID=forkluck-local", first.getvalue()
+                )
+                first_secret = (
+                    first.getvalue()
+                    .split("FORKLUCK_CONNECTOR_CLIENT_SECRET=")[1]
+                    .strip()
+                )
+                self.assertTrue(client.verify_secret(first_secret))
+
+                second = io.StringIO()
+                call_command("bootstrap_local", stdout=second)
+                self.assertIn(f"CONNECTORS_ENCRYPTION_KEY={key}", env_path.read_text())
+                self.assertEqual(
+                    ServiceClient.objects.filter(client_id="forkluck-local").count(), 1
+                )
+                second_secret = (
+                    second.getvalue()
+                    .split("FORKLUCK_CONNECTOR_CLIENT_SECRET=")[1]
+                    .strip()
+                )
+                self.assertNotEqual(first_secret, second_secret)
+                client.refresh_from_db()
+                self.assertTrue(client.verify_secret(second_secret))
+
+    def test_bootstrap_local_refuses_production(self):
+        with override_settings(CONNECTORS_ENVIRONMENT="production"):
+            with self.assertRaises(CommandError):
+                call_command("bootstrap_local", stdout=io.StringIO())
 
     def test_settings_validation_accepts_the_wildcard_allowlist(self):
         import config.settings

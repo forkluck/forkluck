@@ -57,20 +57,60 @@ its operating-system dependencies too. Acceptance tests start isolated
 synthetic services and a temporary database; they do not use your development
 data or real AI/provider credentials.
 
-The connector service is optional for app work. To run its tests, set it up
-separately (Python 3.13):
+### Supplier connectors locally
+
+Suppliers such as Baldor have no API, so Forkluck logs in for the kitchen
+and collects invoices. That happens in the supplier connector service under
+`services/connectors`: a separate process with its own database and
+encryption key, so supplier passwords never enter the app. Two ways to run
+it on your machine.
+
+**Without a supplier account.** A synthetic service ships with the API for
+the browser tests. It offers "Acme Produce", connects without a password,
+and syncs made-up invoices:
+
+```bash
+pnpm connectors:fake
+```
+
+Put these in `apps/api/.env`, restart `pnpm backend:dev`, and start
+`pnpm backend:connector-worker` in another terminal:
+
+```env
+FORKLUCK_CONNECTOR_SERVICE_URL=http://127.0.0.1:9123
+FORKLUCK_CONNECTOR_CLIENT_ID=public-app
+FORKLUCK_CONNECTOR_CLIENT_SECRET=public-secret
+```
+
+**Baldor.** The real service needs Python 3.13. Set it up once, then let the
+setup script register it with your app:
 
 ```bash
 cd services/connectors
 python3.13 -m venv .venv
 .venv/bin/pip install -r requirements-dev.txt
 cd ../..
-pnpm verify:connectors
+pnpm connectors:setup
 ```
 
-Its README covers connecting it to a local app. `pnpm verify:skills` validates
-the agent skills under `skills/` (`pip install -r skills/requirements-dev.txt`
-first).
+The script creates the service's `.env`, generates its encryption key, runs
+its migrations, registers the app, and writes the three connector settings
+into `apps/api/.env`. Restart `pnpm backend:dev`, then run these in separate
+terminals:
+
+```bash
+pnpm connectors:dev
+pnpm connectors:worker
+pnpm backend:connector-worker
+```
+
+Baldor appears under Integrations > Suppliers > Connections. Your Baldor
+login is entered on the connector service's own page and stored encrypted
+in its database, never in the app. `pnpm verify:connectors` runs the
+service's checks.
+
+`pnpm verify:skills` validates the agent skills under `skills/`
+(`pip install -r skills/requirements-dev.txt` first).
 
 ## Making a change
 
