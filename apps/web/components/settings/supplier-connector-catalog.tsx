@@ -186,12 +186,7 @@ function ConnectorCard({
 
   const primary =
     row.primary === "connect" || row.primary === "reconnect" ? (
-      <Button
-        type="button"
-        variant={row.primary === "connect" ? "outline" : "default"}
-        pending={connecting}
-        onClick={beginConnection}
-      >
+      <Button type="button" pending={connecting} onClick={beginConnection}>
         {row.primary === "reconnect" ? "Reconnect" : "Connect"}
       </Button>
     ) : row.primary === "sync" || row.primary === "retry" ? (

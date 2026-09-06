@@ -232,6 +232,37 @@ export async function POST(request: Request) {
     attachments,
   })
 
+  // The manifest lists every file in the chat; the turn a file arrived with
+  // is what makes it the subject of that turn. Names come from the server
+  // manifest, never from the browser's copy.
+  const attachmentName = new Map(
+    attachments.map((file) => [file.id, file.name])
+  )
+  const attachedTo = new Map(
+    validatedMessages.map((message) => [
+      message.id,
+      message.role === "user"
+        ? (message.metadata?.attachmentIds ?? [])
+            .map((id) => attachmentName.get(id))
+            .filter((name): name is string => Boolean(name))
+        : [],
+    ])
+  )
+  const modelMessages = messages.map((message) => {
+    const names = attachedTo.get(message.id) ?? []
+    if (!names.length) return message
+    return {
+      ...message,
+      parts: [
+        ...message.parts,
+        {
+          type: "text" as const,
+          text: `\n\nFiles attached to this message: ${names.map((name) => JSON.stringify(name)).join(", ")}`,
+        },
+      ],
+    }
+  })
+
   let generatedTitle = ""
   let generationErrored = false
   const limits = primoGenerationLimits(attachments.length > 0)
@@ -247,7 +278,7 @@ export async function POST(request: Request) {
         mentions,
         attachments,
       }),
-      messages: await convertToModelMessages(messages, {
+      messages: await convertToModelMessages(modelMessages, {
         tools,
         ignoreIncompleteToolCalls: true,
       }),

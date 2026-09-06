@@ -133,6 +133,32 @@ const tools = {
 }
 const limits = primoGenerationLimits(true)
 const started = Date.now()
+
+// A terse ask with a file attached: the model must read the file rather than
+// ask whether to. Mirrors the per-message note the chat route appends.
+const terse = await generateText({
+  model: primoModel(),
+  instructions: primoInstructions("2026-09-05", context),
+  prompt: `create a recipe.\n\nFiles attached to this message: ${JSON.stringify(attachment.name)}`,
+  tools,
+  experimental_repairToolCall: repairPrimoRecipeToolCall,
+  stopWhen: isStepCount(limits.maxSteps),
+  maxOutputTokens: limits.maxOutputTokens,
+  abortSignal: AbortSignal.timeout(limits.timeoutMs),
+  providerOptions: { qwen: { enable_thinking: false } },
+})
+assert.ok(wasRead, "A terse ask with a file attached must read the file")
+assert.ok(drafts.length >= 1, "A terse ask with a file attached must draft")
+console.log(
+  JSON.stringify({
+    terseAsk: "passed",
+    drafts: drafts.length,
+    steps: terse.steps.length,
+  })
+)
+wasRead = false
+drafts.length = 0
+
 const result = await generateText({
   model: primoModel(),
   instructions: primoInstructions("2026-09-05", context),
