@@ -291,12 +291,12 @@ export function PrimoComposer({
       {/* rounded-2xl outside, rounded-lg buttons inside, 8px between: the
           outer corner is the inner radius plus the gap, so the two curves
           share a center. The inset is what keeps this from reading as a
-          plain text field. The halo sits behind it, faint at rest and a
-          touch stronger while the field has focus. */}
+          plain text field. The halo behind it shows only while the field
+          has focus, and only just. */}
       <div className="group/composer relative">
         <div
           aria-hidden="true"
-          className="primo-glow pointer-events-none absolute -inset-2 rounded-2xl opacity-70 blur-lg transition-opacity group-focus-within/composer:opacity-100"
+          className="primo-glow pointer-events-none absolute -inset-0.5 rounded-2xl opacity-0 blur-sm transition-opacity group-focus-within/composer:opacity-40"
         />
         <div className="relative flex items-end gap-1 rounded-2xl border border-input bg-background py-2 pr-2 pl-4 focus-within:border-foreground">
           {listOpen ? (
