@@ -34,6 +34,10 @@ updates:
       connectors:
         patterns: ["*"]
     ignore:
+      # The service pins a range, and range updates are not classed by
+      # semver, so name the versions outright.
+      - dependency-name: django
+        versions: [">=6"]
       - dependency-name: django
         update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
