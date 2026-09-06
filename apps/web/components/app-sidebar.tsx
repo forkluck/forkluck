@@ -47,6 +47,8 @@ type NavChild = {
 
 type NavItem = {
   href: string
+  /** The path prefix the row lights up for, when wider than `href`. */
+  match?: string
   label: string
   icon: typeof Book
   children?: NavChild[]
@@ -86,13 +88,17 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: "Integrations",
     items: [
+      // Straight to each family's first page: a row that lands on a redirect
+      // shows the screen's chrome over an empty body for the whole load.
       {
-        href: "/integrations/sales",
+        href: "/integrations/sales/connections",
+        match: "/integrations/sales",
         label: "Sales",
         icon: Store,
       },
       {
-        href: "/integrations/suppliers",
+        href: "/integrations/suppliers/connections",
+        match: "/integrations/suppliers",
         label: "Suppliers",
         icon: Truck,
       },
@@ -228,7 +234,7 @@ export function AppSidebar({
   const navRow = (item: NavItem) => {
     const childActive = item.children?.some((child) => isActive(child.href))
     // A child living off the parent's path (Supplies) still opens the family.
-    const active = isActive(item.href) || Boolean(childActive)
+    const active = isActive(item.match ?? item.href) || Boolean(childActive)
     const filled = active && !childActive
 
     return (

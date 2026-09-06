@@ -81,6 +81,7 @@ function AppShellContents({
             onCollapse={() => setCollapsed(true)}
           />
           <div
+            data-content=""
             className={cn(
               "flex min-w-0 flex-1 flex-col bg-background md:h-full md:overflow-y-auto print:block print:h-auto print:overflow-visible",
               inlineCount > 0 && "min-h-0 overflow-hidden"

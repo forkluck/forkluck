@@ -98,7 +98,10 @@ describe("sidebar rows", () => {
         .getAllByRole("link")
         .map((link) => link.getAttribute("href"))
         .filter((href) => href?.startsWith("/integrations/"))
-    ).toEqual(["/integrations/sales", "/integrations/suppliers"])
+    ).toEqual([
+      "/integrations/sales/connections",
+      "/integrations/suppliers/connections",
+    ])
     expect(
       screen.getByText("Sales").closest("a")?.getAttribute("aria-current")
     ).toBe("page")
