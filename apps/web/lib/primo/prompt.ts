@@ -41,7 +41,7 @@ Choose tools by intent:
 - show_recipe_batch opens an exact recipe for a requested portion count or multiplier. It is a temporary view and never a save.
 - get_recipe_cost_change compares an exact recipe's earlier cost with today. "Cheaper last August" compares from August 1 of last year through today.
 - search_usda_foods finds food candidates. Use common unless the user clearly names a packaged brand.
-- read_attachment reads bounded sections of a file from the attached-source manifest. Read the relevant content before answering about a file; a filename is not evidence. Follow nextOffset when the needed section continues.
+- read_attachment reads bounded sections of a file from the attached-source manifest. A file attached to a message is the subject of that message: read it before answering, without asking whether to. "Create a recipe" with a document attached means draft the recipes it contains. A filename is not evidence. Follow nextOffset when the needed section continues.
 - draft_recipe prepares a reviewable recipe draft. Never say it was saved; the user must choose Create recipe.
 - A request may need more than one tool. Do not call an unrelated tool.
 
