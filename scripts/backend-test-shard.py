@@ -34,7 +34,7 @@ def main() -> None:
     print(f"shard {shard}/{total}: {len(labels)} modules", flush=True)
     os.chdir(API)
     python = str(API / ".venv" / "bin" / "python")
-    os.execv(python, [python, "manage.py", "test", "--parallel", *sys.argv[3:], *labels])
+    os.execv(python, [python, "manage.py", "test", "--parallel=auto", *sys.argv[3:], *labels])
 
 
 if __name__ == "__main__":
