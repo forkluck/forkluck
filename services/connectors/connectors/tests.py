@@ -6,8 +6,8 @@ import os
 import tempfile
 import threading
 import unittest
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 from unittest import mock
 
 from django.core.management import call_command
@@ -693,9 +693,11 @@ class ProtocolTests(TestCase):
                 self.assertTrue(client.verify_secret(second_secret))
 
     def test_bootstrap_local_refuses_production(self):
-        with override_settings(CONNECTORS_ENVIRONMENT="production"):
-            with self.assertRaises(CommandError):
-                call_command("bootstrap_local", stdout=io.StringIO())
+        with (
+            override_settings(CONNECTORS_ENVIRONMENT="production"),
+            self.assertRaises(CommandError),
+        ):
+            call_command("bootstrap_local", stdout=io.StringIO())
 
     def test_settings_validation_accepts_the_wildcard_allowlist(self):
         import config.settings
