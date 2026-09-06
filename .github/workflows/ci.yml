@@ -18,7 +18,7 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -31,6 +31,13 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Next's compiler cache; keyed on sources so a doc-only change reuses it.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apps/web/.next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/**/*.ts', 'apps/web/**/*.tsx', 'apps/web/**/*.css') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm verify
         env:
           NEXT_TELEMETRY_DISABLED: "1"
@@ -38,7 +45,7 @@ jobs:
   backend:
     name: Backend and catalog
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16
@@ -85,7 +92,7 @@ jobs:
   acceptance:
     name: Browser acceptance
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -107,6 +114,18 @@ jobs:
         run: |
           python3 -m venv apps/api/.venv
           apps/api/.venv/bin/pip install -r apps/api/requirements-dev.txt
+      # The Chromium download is the slow part of the browser install; the
+      # cache is keyed on the lockfile, which pins the Playwright version.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apps/web/.next-acceptance/cache
+          key: next-acceptance-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/**/*.ts', 'apps/web/**/*.tsx', 'apps/web/**/*.css') }}
+          restore-keys: |
+            next-acceptance-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm --filter @forkluck/web exec playwright install --with-deps chromium
       - run: pnpm test:acceptance
 

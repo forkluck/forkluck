@@ -55,7 +55,7 @@ export default defineConfig({
     "docs/**/*",
     "AGENTS.md",
     "ARCHITECTURE.md",
-    "SALES_INTERPRETATION_SPEC.md",
+    "docs/SALES_INTERPRETATION_SPEC.md",
     "*.ts",
     "*.mjs",
     "*.json",

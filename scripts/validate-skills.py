@@ -36,7 +36,12 @@ for directory in sorted((root / "skills").iterdir()):
         if f"${name}" not in interface["default_prompt"]:
             raise ValueError("default_prompt must invoke this skill")
         missing = sorted(
-            {token for token in PATH_TOKEN.findall(sections[2]) if not (root / token.rstrip("/")).exists()}
+            {
+                token
+                for token in PATH_TOKEN.findall(sections[2])
+                # Installed dependencies are not part of the checkout.
+                if "node_modules/" not in token and not (root / token.rstrip("/")).exists()
+            }
         )
         if missing:
             raise ValueError(f"paths not found in this repository: {', '.join(missing)}")
