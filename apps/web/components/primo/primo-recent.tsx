@@ -299,6 +299,7 @@ export function PrimoRecent() {
       <Button
         variant="ghost"
         aria-label="Recent chats"
+        className="text-ink-soft"
         onClick={() => setOpen(true)}
       >
         <Clock aria-hidden="true" />

@@ -26,7 +26,7 @@ export function PrimoHomeChat({
           <Button
             variant="ghost"
             aria-label="New chat"
-            className="w-8 px-0 sm:w-auto sm:px-3"
+            className="w-8 px-0 text-ink-soft sm:w-auto sm:px-3"
             onClick={newChat}
           >
             <Plus aria-hidden="true" />
