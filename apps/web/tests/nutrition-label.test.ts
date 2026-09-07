@@ -135,7 +135,7 @@ describe("formatUsRows", () => {
 
   it("keeps the FDA order with the added sugars line indented twice", () => {
     const facts = formatUsRows(perServing)
-    expect(facts.calories).toEqual({ amount: "250" })
+    expect(facts.calories).toBe("250")
     expect(facts.rows.map((row) => [row.key, row.indent])).toEqual([
       ["fat", 0],
       ["saturatedFat", 1],
@@ -191,7 +191,7 @@ describe("formatUsRows", () => {
     const facts = formatUsRows(
       nutrients({ calories: 100, fat: 3 }, ["fat", "calories"])
     )
-    expect(facts.calories).toEqual({ amount: "100" })
+    expect(facts.calories).toBe("100")
     expect(facts.rows.find((row) => row.key === "fat")!.amount).toBe("3")
   })
 })

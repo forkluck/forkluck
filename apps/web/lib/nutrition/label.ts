@@ -21,7 +21,7 @@ import { generalEnergyKcal } from "@/lib/recipe/nutrition"
  * only rollup, and this module only decides how a figure reads on a label.
  */
 
-export type NutrientValue = { amount: number; complete: boolean }
+type NutrientValue = { amount: number; complete: boolean }
 export type LabelFormat = "us" | "eu"
 
 type Composition = z.infer<typeof nutritionCompositionSchema>
@@ -232,8 +232,6 @@ export function percentDailyValue(
   return snap(percent, 10)
 }
 
-export type LabelValue = { amount: string }
-
 export type LabelRow = {
   key: NutrientKey
   label: string
@@ -392,12 +390,12 @@ function usRow(spec: UsRowSpec, values: Nutrients, kind: "macro" | "micro") {
  * prints any figure; the note under the label, not the panel, says which.
  */
 export function formatUsRows(perServing: Nutrients): {
-  calories: LabelValue
+  calories: string
   rows: LabelRow[]
   vitamins: LabelRow[]
 } {
   return {
-    calories: { amount: String(roundCalories(perServing.calories.amount)) },
+    calories: String(roundCalories(perServing.calories.amount)),
     rows: US_ROWS.map((spec) => usRow(spec, perServing, "macro")),
     vitamins: US_VITAMINS.map((spec) => usRow(spec, perServing, "micro")),
   }
@@ -571,7 +569,7 @@ export function statementRuns(
 
 /** Pantry names arrive in whatever casing the kitchen typed; the list prints
  * them all in lower case. */
-export function statementName(name: string): string {
+function statementName(name: string): string {
   return name.toLowerCase()
 }
 

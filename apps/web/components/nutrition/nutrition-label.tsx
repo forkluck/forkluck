@@ -124,7 +124,7 @@ function UsPanel({
               </span>
             </span>
             <span className="text-[30px] leading-none font-black tabular-nums">
-              {facts.calories.amount}
+              {facts.calories}
             </span>
           </div>
           <div className="border-b border-foreground/60 py-0.5 text-right text-[10.5px] font-bold">
