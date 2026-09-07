@@ -108,10 +108,11 @@ describe("NutritionLabel", () => {
       "Total Fat 8g"
     )
     expect(screen.getByText("Ingredients:").parentElement?.textContent).toBe(
-      "Ingredients: Butter, Flour, Almonds"
+      "Ingredients: butter, flour, almonds"
     )
-    expect(screen.getByText("Milk, Tree nuts (Almonds)")).not.toBeNull()
-    expect(emphasised()).toEqual(["Butter", "Almonds"])
+    expect(screen.getByText("Milk, Tree nuts (almonds)")).not.toBeNull()
+    // The CONTAINS line is the US declaration; the list carries no emphasis.
+    expect(emphasised()).toEqual([])
     expect(
       screen.getByText("Kitchen tags not on a US label: Allium, Sulphites")
     ).not.toBeNull()
@@ -142,7 +143,7 @@ describe("NutritionLabel", () => {
     render(<NutritionLabel format="eu" {...base} />)
 
     expect(screen.queryByText(/^Contains:/)).toBeNull()
-    expect(emphasised()).toEqual(["Butter", "Almonds"])
+    expect(emphasised()).toEqual(["butter", "almonds"])
     expect(screen.getByText("Sulphites")).not.toBeNull()
     expect(
       screen.getByText("Kitchen tags not on an EU label: Allium")
@@ -158,7 +159,7 @@ describe("NutritionLabel", () => {
         allergens={{ contains: ["fish"], mayContain: [] }}
       />
     )
-    expect(screen.getByText("Fish (Stock)")).not.toBeNull()
+    expect(screen.getByText("Fish (stock)")).not.toBeNull()
     expect(
       screen.queryByText(
         "A real label names the nut, fish or shellfish species."
@@ -180,7 +181,7 @@ describe("NutritionLabel", () => {
     ).not.toBeNull()
   })
 
-  it("reads at least on an incomplete value", () => {
+  it("prints an incomplete value plainly, as a label would", () => {
     render(
       <NutritionLabel
         format="us"
@@ -191,8 +192,14 @@ describe("NutritionLabel", () => {
       />
     )
     expect(screen.getByText("Vitamin D").parentElement?.textContent).toBe(
-      "Vitamin D at least 2mcg"
+      "Vitamin D 2mcg"
     )
+    expect(screen.queryByText(/at least/)).toBeNull()
+  })
+
+  it("writes one serving per container in the singular", () => {
+    render(<NutritionLabel format="us" {...base} servings={1} />)
+    expect(screen.getByText("1 serving per container")).not.toBeNull()
   })
 })
 
@@ -288,11 +295,11 @@ describe("NutritionLabelCard", () => {
     )
     expect(
       screen.getByText(
-        "Not every nutrient is known: Vitamin D, Potassium. Link a fuller record or request a custom value."
+        "The label counts only what the linked records report, so these are understated: Vitamin D, Potassium. Link a fuller record or request a custom value."
       )
     ).not.toBeNull()
     fireEvent.click(screen.getByRole("button", { name: "EU" }))
-    expect(screen.queryByText(/Not every nutrient is known/)).toBeNull()
+    expect(screen.queryByText(/so these are understated/)).toBeNull()
   })
 
   it("prints from the Print preview button", () => {

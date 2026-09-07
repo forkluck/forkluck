@@ -175,6 +175,37 @@ class FoodDataAdapterTests(TestCase):
         self.assertEqual(composition["vitaminDMcg"], 1)
         self.assertIsNone(composition["calciumMg"])
         self.assertIsNone(composition["saturatedFat"])
+        # A blank added sugars line on a package is unknown, not zero.
+        self.assertIsNone(composition["addedSugars"])
+
+    def test_an_analyzed_staple_that_states_no_added_sugars_has_none(self):
+        # USDA never states added sugars on a Foundation or SR Legacy food,
+        # and flour has none, so the value is zero rather than unknown. A
+        # label a recipe of staples builds then declares added sugars fully.
+        staple = {
+            "foodNutrients": [
+                {"nutrient": {"id": 1051}, "amount": 12},
+                {"nutrient": {"id": 1003}, "amount": 10},
+                {"nutrient": {"id": 1004}, "amount": 1},
+                {"nutrient": {"id": 1005}, "amount": 76},
+                {"nutrient": {"id": 2000}, "amount": 0.3},
+            ]
+        }
+        for data_type in ("Foundation", "SR Legacy"):
+            composition = nutrition_per_100g({**staple, "dataType": data_type})
+            self.assertEqual(composition["addedSugars"], 0, data_type)
+        # A stated value still wins, and a survey dish stays unknown.
+        stated = nutrition_per_100g(
+            {
+                **staple,
+                "dataType": "SR Legacy",
+                "foodNutrients": staple["foodNutrients"]
+                + [{"nutrient": {"id": 1235}, "amount": 4}],
+            }
+        )
+        self.assertEqual(stated["addedSugars"], 4)
+        dish = nutrition_per_100g({**staple, "dataType": "Survey (FNDDS)"})
+        self.assertIsNone(dish["addedSugars"])
 
     def test_a_typed_label_becomes_a_per_100g_snapshot_with_blanks_kept(self):
         composition = label_nutrition_per_100g(
@@ -700,3 +731,76 @@ class IngredientNutritionActionTests(TestCase):
                 {"ingredientId": str(self.ingredient.id), "fdcId": 123},
             )
         get_food.assert_not_called()
+
+
+
+class BackfillAddedSugarsTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="backfill-sugars@example.com", name="Owner", password="pass"
+        )
+
+    def linked(self, name, fdc_id, **snapshot):
+        values = {
+            "water": 12, "fat": 1, "protein": 10, "sugars": 0.3, "starch": 70,
+            "fiber": 3, "salt": 0, "other": 3.7, "totalCarbohydrate": 76,
+            "sodiumMg": 2, "calories": 364, "saturatedFat": 0.2, "transFat": None,
+            "cholesterolMg": 0, "addedSugars": None, "vitaminDMcg": 0,
+            "calciumMg": 15, "ironMg": 4.6, "potassiumMg": 107,
+        }
+        values.update(snapshot)
+        return Ingredient.objects.create(
+            user=self.user,
+            name=name,
+            purchase_cost_cents=100,
+            purchase_size=1,
+            purchase_unit="kg",
+            nutrition_source="usda_fdc",
+            nutrition_source_id=str(fdc_id),
+            nutrition_description=name,
+            nutrition_per_100g=values,
+        )
+
+    @mock.patch("forkluck.management.commands.backfill_added_sugars.get_food_data_type")
+    def test_fills_zero_on_staples_and_leaves_packages_and_stated_values(self, data_type):
+        from django.core.management import call_command
+        from io import StringIO
+
+        data_type.side_effect = {
+            168936: "SR Legacy",
+            2566626: "Branded",
+        }.__getitem__
+        flour = self.linked("Flour", 168936)
+        flour_again = self.linked("Cake flour", 168936)
+        packaged = self.linked("Confectioners sugar", 2566626)
+        stated = self.linked("Jam", 168936, addedSugars=40)
+
+        out = StringIO()
+        call_command("backfill_added_sugars", stdout=out)
+
+        for row in (flour, flour_again):
+            row.refresh_from_db()
+            self.assertEqual(row.nutrition_per_100g["addedSugars"], 0.0)
+        packaged.refresh_from_db()
+        self.assertIsNone(packaged.nutrition_per_100g["addedSugars"])
+        stated.refresh_from_db()
+        self.assertEqual(stated.nutrition_per_100g["addedSugars"], 40)
+        # One record serves every pantry that linked it.
+        self.assertEqual(data_type.call_count, 2)
+        self.assertIn("filled 2 ingredients, 0 unavailable", out.getvalue())
+
+    @mock.patch("forkluck.management.commands.backfill_added_sugars.get_food_data_type")
+    def test_dry_run_names_the_rows_without_saving(self, data_type):
+        from django.core.management import call_command
+        from io import StringIO
+
+        data_type.return_value = "Foundation"
+        flour = self.linked("Flour", 168936)
+
+        out = StringIO()
+        call_command("backfill_added_sugars", "--dry-run", stdout=out)
+
+        flour.refresh_from_db()
+        self.assertIsNone(flour.nutrition_per_100g["addedSugars"])
+        self.assertIn(flour.public_id, out.getvalue())
+        self.assertIn("would fill 1 ingredients", out.getvalue())

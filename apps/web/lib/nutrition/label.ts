@@ -232,7 +232,7 @@ export function percentDailyValue(
   return snap(percent, 10)
 }
 
-export type LabelValue = { amount: string; atLeast: boolean }
+export type LabelValue = { amount: string }
 
 export type LabelRow = {
   key: NutrientKey
@@ -242,8 +242,6 @@ export type LabelRow = {
   percent: number | null
   /** 0 is a main row, 1 sits under it, 2 is the added sugars line. */
   indent: 0 | 1 | 2
-  /** The value is the sum of what is known, so it reads "at least". */
-  atLeast: boolean
 }
 
 type UsRowSpec = {
@@ -385,21 +383,21 @@ function usRow(spec: UsRowSpec, values: Nutrients, kind: "macro" | "micro") {
         ? null
         : percentDailyValue(value.amount, spec.dailyValue, kind),
     indent: spec.indent,
-    atLeast: !value.complete,
   } satisfies LabelRow
 }
 
-/** The FDA panel's rows, in its order, from one serving's values. */
+/**
+ * The FDA panel's rows, in its order, from one serving's values. A nutrient
+ * not every record reports prints the sum of what is known, the way a label
+ * prints any figure; the note under the label, not the panel, says which.
+ */
 export function formatUsRows(perServing: Nutrients): {
   calories: LabelValue
   rows: LabelRow[]
   vitamins: LabelRow[]
 } {
   return {
-    calories: {
-      amount: String(roundCalories(perServing.calories.amount)),
-      atLeast: !perServing.calories.complete,
-    },
+    calories: { amount: String(roundCalories(perServing.calories.amount)) },
     rows: US_ROWS.map((spec) => usRow(spec, perServing, "macro")),
     vitamins: US_VITAMINS.map((spec) => usRow(spec, perServing, "micro")),
   }
@@ -427,7 +425,6 @@ export type EuRow = {
   per100g: string
   perServing: string | null
   indent: boolean
-  atLeast: boolean
 }
 
 /** "1046 kJ / 250 kcal", from the payload's own kilojoules. */
@@ -440,57 +437,48 @@ const EU_ROWS: {
   label: string
   indent: boolean
   cell: (values: Nutrients) => string
-  incomplete: (values: Nutrients) => boolean
 }[] = [
   {
     key: "energyKj",
     label: "Energy",
     indent: false,
     cell: euEnergy,
-    incomplete: (values) =>
-      !values.energyKj.complete || !values.calories.complete,
   },
   {
     key: "fat",
     label: "Fat",
     indent: false,
     cell: (v) => `${roundEuGrams(v.fat.amount)} g`,
-    incomplete: (v) => !v.fat.complete,
   },
   {
     key: "saturatedFat",
     label: "of which saturates",
     indent: true,
     cell: (v) => `${roundEuGrams(v.saturatedFat.amount)} g`,
-    incomplete: (v) => !v.saturatedFat.complete,
   },
   {
     key: "totalCarbohydrate",
     label: "Carbohydrate",
     indent: false,
     cell: (v) => `${roundEuGrams(v.totalCarbohydrate.amount)} g`,
-    incomplete: (v) => !v.totalCarbohydrate.complete,
   },
   {
     key: "sugars",
     label: "of which sugars",
     indent: true,
     cell: (v) => `${roundEuGrams(v.sugars.amount)} g`,
-    incomplete: (v) => !v.sugars.complete,
   },
   {
     key: "protein",
     label: "Protein",
     indent: false,
     cell: (v) => `${roundEuGrams(v.protein.amount)} g`,
-    incomplete: (v) => !v.protein.complete,
   },
   {
     key: "salt",
     label: "Salt",
     indent: false,
     cell: (v) => `${roundEuSalt(v.salt.amount)} g`,
-    incomplete: (v) => !v.salt.complete,
   },
 ]
 
@@ -505,9 +493,6 @@ export function formatEuRows(
     per100g: row.cell(per100g),
     perServing: perServing ? row.cell(perServing) : null,
     indent: row.indent,
-    atLeast:
-      row.incomplete(per100g) ||
-      (perServing ? row.incomplete(perServing) : false),
   }))
 }
 
@@ -566,8 +551,10 @@ export type StatementEntry = {
 export type StatementRun = { name: string; emphasised: boolean }
 
 /**
- * The ingredient list, with every entry carrying a tag the region declares
- * marked for emphasis. EU/UK requires the emphasis; a US list may carry it.
+ * The ingredient list in one case, the way a package prints it. An entry
+ * carrying a tag the region declares is emphasised on an EU/UK label, where
+ * the emphasis is the declaration; a US label declares on its CONTAINS line
+ * instead, so its list carries none.
  */
 export function statementRuns(
   entries: readonly StatementEntry[],
@@ -575,9 +562,17 @@ export function statementRuns(
 ): StatementRun[] {
   const declared = declaredAllergenKeys(region)
   return entries.map((entry) => ({
-    name: entry.name,
-    emphasised: entry.allergens.some((key) => declared.has(key as AllergenKey)),
+    name: statementName(entry.name),
+    emphasised:
+      region === "eu" &&
+      entry.allergens.some((key) => declared.has(key as AllergenKey)),
   }))
+}
+
+/** Pantry names arrive in whatever casing the kitchen typed; the list prints
+ * them all in lower case. */
+export function statementName(name: string): string {
+  return name.toLowerCase()
 }
 
 export type ContainsLine = {
@@ -608,7 +603,7 @@ export function containsLine(
     const kinds = SPECIES_KEYS.has(entry.key)
       ? entries
           .filter((item) => item.allergens.includes(entry.key))
-          .map((item) => item.name)
+          .map((item) => statementName(item.name))
       : []
     if (SPECIES_KEYS.has(entry.key) && kinds.length === 0) unnamedSpecies = true
     groups.push(
@@ -623,10 +618,21 @@ export function containsLine(
  * or the nearest half between 2 and 5, with "about" whenever rounding moved it.
  */
 export function formatServings(count: number): string {
-  const rounded =
-    count >= 2 && count <= 5 ? Math.round(count * 2) / 2 : Math.round(count)
+  const rounded = roundServings(count)
   const text = formatAmount(rounded)
   return Math.abs(rounded - count) < 0.001 ? text : `about ${text}`
+}
+
+function roundServings(count: number): number {
+  return count >= 2 && count <= 5
+    ? Math.round(count * 2) / 2
+    : Math.round(count)
+}
+
+/** The panel's first line, singular when the container holds one serving. */
+export function servingsPerContainer(count: number): string {
+  const noun = roundServings(count) === 1 ? "serving" : "servings"
+  return `${formatServings(count)} ${noun} per container`
 }
 
 export function formatAmount(value: number): string {

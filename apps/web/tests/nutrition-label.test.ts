@@ -22,6 +22,7 @@ import {
   roundSodium,
   roundVitaminD,
   scaleNutrients,
+  servingsPerContainer,
   statementRuns,
 } from "@/lib/nutrition/label"
 
@@ -134,7 +135,7 @@ describe("formatUsRows", () => {
 
   it("keeps the FDA order with the added sugars line indented twice", () => {
     const facts = formatUsRows(perServing)
-    expect(facts.calories).toEqual({ amount: "250", atLeast: false })
+    expect(facts.calories).toEqual({ amount: "250" })
     expect(facts.rows.map((row) => [row.key, row.indent])).toEqual([
       ["fat", 0],
       ["saturatedFat", 1],
@@ -186,13 +187,12 @@ describe("formatUsRows", () => {
     }
   })
 
-  it("marks an incomplete value at least, and the calories too", () => {
+  it("prints the known sum plainly for a value not every record reports", () => {
     const facts = formatUsRows(
       nutrients({ calories: 100, fat: 3 }, ["fat", "calories"])
     )
-    expect(facts.calories).toEqual({ amount: "100", atLeast: true })
-    expect(facts.rows.find((row) => row.key === "fat")!.atLeast).toBe(true)
-    expect(facts.rows.find((row) => row.key === "protein")!.atLeast).toBe(false)
+    expect(facts.calories).toEqual({ amount: "100" })
+    expect(facts.rows.find((row) => row.key === "fat")!.amount).toBe("3")
   })
 })
 
@@ -249,14 +249,15 @@ describe("EU rounding", () => {
     ])
   })
 
-  it("leaves the serving column out and flags incomplete rows", () => {
+  it("leaves the serving column out without a serving", () => {
     const rows = formatEuRows(
       nutrients({ calories: 100, energyKj: 418 }, ["saturatedFat"]),
       null
     )
     expect(rows.every((row) => row.perServing === null)).toBe(true)
-    expect(rows.find((row) => row.key === "saturatedFat")!.atLeast).toBe(true)
-    expect(rows.find((row) => row.key === "fat")!.atLeast).toBe(false)
+    expect(rows.find((row) => row.key === "saturatedFat")!.per100g).toBe(
+      "<0.5 g"
+    )
   })
 })
 
@@ -267,6 +268,14 @@ describe("formatServings", () => {
     expect(formatServings(2.5)).toBe("2.5")
     expect(formatServings(7.6)).toBe("about 8")
     expect(formatServings(1.4)).toBe("about 1")
+  })
+
+  it("writes one serving in the singular", () => {
+    expect(servingsPerContainer(1)).toBe("1 serving per container")
+    expect(servingsPerContainer(1.4)).toBe("about 1 serving per container")
+    expect(servingsPerContainer(0.6)).toBe("about 1 serving per container")
+    expect(servingsPerContainer(2)).toBe("2 servings per container")
+    expect(servingsPerContainer(12)).toBe("12 servings per container")
   })
 })
 
@@ -308,21 +317,21 @@ describe("statementRuns", () => {
     { name: "Celery", grams: 20, allergens: ["celery"] },
   ]
 
-  it("emphasises the entries carrying a US declared tag", () => {
+  it("prints the list in lower case and leaves a US list unemphasised", () => {
     expect(statementRuns(entries, "us")).toEqual([
-      { name: "Flour", emphasised: true },
-      { name: "Sugar", emphasised: false },
-      { name: "Onion", emphasised: false },
-      { name: "Celery", emphasised: false },
+      { name: "flour", emphasised: false },
+      { name: "sugar", emphasised: false },
+      { name: "onion", emphasised: false },
+      { name: "celery", emphasised: false },
     ])
   })
 
-  it("emphasises celery too on an EU label", () => {
-    expect(statementRuns(entries, "eu").map((run) => run.emphasised)).toEqual([
-      true,
-      false,
-      false,
-      true,
+  it("emphasises the EU declared entries, celery among them", () => {
+    expect(statementRuns(entries, "eu")).toEqual([
+      { name: "flour", emphasised: true },
+      { name: "sugar", emphasised: false },
+      { name: "onion", emphasised: false },
+      { name: "celery", emphasised: true },
     ])
   })
 })
@@ -336,7 +345,7 @@ describe("containsLine", () => {
 
   it("names the species the statement carries", () => {
     expect(containsLine(entries, ["milk", "tree_nuts"], "us")).toEqual({
-      groups: ["Milk", "Tree nuts (Almonds, Walnuts)"],
+      groups: ["Milk", "Tree nuts (almonds, walnuts)"],
       unnamedSpecies: false,
     })
   })
