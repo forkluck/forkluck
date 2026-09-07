@@ -870,7 +870,7 @@ export const NUTRIENT_KEYS = [
 export type NutrientKey = (typeof NUTRIENT_KEYS)[number]
 
 /** A summed nutrient. `complete` is false when a linked record did not report
- * it, so the amount is what is known and reads "at least", never zero. */
+ * it, so the amount is the sum of what is known, never a claimed zero. */
 const nutrientValueSchema = z.strictObject({
   amount: z.number().nonnegative(),
   complete: z.boolean(),

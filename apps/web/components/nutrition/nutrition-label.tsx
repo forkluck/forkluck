@@ -13,9 +13,9 @@ import {
   declaredAllergens,
   formatAmount,
   formatEuRows,
-  formatServings,
   formatUsRows,
   NUTRIENT_LABELS,
+  servingsPerContainer,
   SPECIES_KEYS,
   statementRuns,
   type LabelFormat,
@@ -72,14 +72,12 @@ function UsRow({ row }: { row: LabelRow }) {
       <span>
         {row.key === "addedSugars" ? (
           <>
-            Includes {row.atLeast ? "at least " : ""}
-            {row.amount}
+            Includes {row.amount}
             {row.unit} Added Sugars
           </>
         ) : (
           <>
             <span className={cn(bold && "font-bold")}>{row.label}</span>{" "}
-            {row.atLeast ? "at least " : ""}
             {row.amount}
             {row.unit}
           </>
@@ -110,7 +108,7 @@ function UsPanel({
       <div className="mt-1 border-b border-foreground/60 py-0.5 text-[12px]">
         {servings === null
           ? "Servings per container not set"
-          : `${formatServings(servings)} servings per container`}
+          : servingsPerContainer(servings)}
       </div>
       <div className="flex items-baseline justify-between gap-2 border-b-[8px] border-foreground py-0.5 text-[13px] font-bold">
         <span>Serving size</span>
@@ -126,10 +124,7 @@ function UsPanel({
               </span>
             </span>
             <span className="text-[30px] leading-none font-black tabular-nums">
-              {facts.calories.atLeast ? (
-                <span className="mr-1 text-[11px] font-bold">at least</span>
-              ) : null}
-              {facts.calories.amount}
+              {facts.calories}
             </span>
           </div>
           <div className="border-b border-foreground/60 py-0.5 text-right text-[10.5px] font-bold">
@@ -159,15 +154,12 @@ function UsPanel({
 
 /** One EU cell. Energy stacks its kJ over its kcal so three columns fit the
  * card; everything else stays on one line. */
-function EuCell({ value, atLeast }: { value: string; atLeast: boolean }) {
+function EuCell({ value }: { value: string }) {
   const parts = value.split(" / ")
   return (
     <span className="inline-flex flex-col items-end whitespace-nowrap">
       {parts.map((part, index) => (
-        <span key={index}>
-          {index === 0 && atLeast ? "at least " : ""}
-          {part}
-        </span>
+        <span key={index}>{part}</span>
       ))}
     </span>
   )
@@ -215,11 +207,11 @@ function EuTable({
                 {row.label}
               </td>
               <td className="px-2 py-1 text-right tabular-nums">
-                <EuCell value={row.per100g} atLeast={row.atLeast} />
+                <EuCell value={row.per100g} />
               </td>
               {perServing ? (
                 <td className="px-2 py-1 text-right tabular-nums">
-                  <EuCell value={row.perServing ?? ""} atLeast={row.atLeast} />
+                  <EuCell value={row.perServing ?? ""} />
                 </td>
               ) : null}
             </tr>
@@ -242,7 +234,8 @@ function EuTable({
 /**
  * The label as it would print: the FDA-shaped panel or the EU per-100 g
  * table, then the ingredient statement and the CONTAINS line for the
- * format's declared tags. Incomplete values read "at least".
+ * format's declared tags. A nutrient not every record reports prints the sum
+ * of what is known; the card's note beneath the label says which ones.
  */
 export function NutritionLabel(props: NutritionLabelProps) {
   const { format, statement, allergens } = props
@@ -397,7 +390,8 @@ export function NutritionLabelCard({
             />
             {missing.length === 0 ? null : (
               <p className="text-[12.5px] leading-[1.55] text-muted-foreground print:hidden">
-                Not every nutrient is known:{" "}
+                The label counts only what the linked records report, so these
+                are understated:{" "}
                 {missing.map((key) => NUTRIENT_LABELS[key]).join(", ")}. Link a
                 fuller record or request a custom value.
               </p>

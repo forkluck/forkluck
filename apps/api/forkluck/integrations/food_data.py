@@ -238,6 +238,22 @@ def _first(values: dict[int, float], *ids: int) -> float | None:
     return None
 
 
+# USDA analyzes these as foods, not packaged products, and states added sugars
+# for none of them. The staples among them (flour, butter, eggs, milk) have
+# none, and a sweetener is declared by the pantry's own flag, so an unstated
+# value reads as zero rather than unknown. A sweetened dish among them (a jam,
+# a cookie) reads zero too until it is flagged or linked to a branded record.
+# A branded record is a package label, where a blank line stays unknown.
+ASSUMES_NO_ADDED_SUGARS = frozenset({"Foundation", "SR Legacy"})
+
+
+def _added_sugars(values: dict[int, float], data_type: Any) -> float | None:
+    stated = _first(values, 1442, 1235)
+    if stated is None and data_type in ASSUMES_NO_ADDED_SUGARS:
+        return 0.0
+    return stated
+
+
 def nutrition_per_100g(food: dict[str, Any]) -> dict[str, Any]:
     """Convert FDC's nutrient list to Forkluck's mass composition.
 
@@ -274,7 +290,7 @@ def nutrition_per_100g(food: dict[str, Any]) -> dict[str, Any]:
             "calories": _first(values, 1008),
             "transFat": _first(values, 1257),
             "cholesterolMg": _first(values, 1253),
-            "addedSugars": _first(values, 1442, 1235),
+            "addedSugars": _added_sugars(values, food.get("dataType")),
             "vitaminDMcg": vitamin_d,
             "calciumMg": _first(values, 1087),
             "ironMg": _first(values, 1089),
@@ -356,6 +372,14 @@ def _package_ingredients(food: dict[str, Any]) -> str:
     """The package's own ingredient list. Only a branded record has one."""
     value = food.get("ingredients")
     return value.strip()[:PACKAGE_INGREDIENTS_LIMIT] if isinstance(value, str) else ""
+
+
+def get_food_data_type(fdc_id: int) -> str:
+    """Which kind of record FDC holds under an id: Foundation, SR Legacy,
+    Survey (FNDDS) or Branded. Empty when the record does not say."""
+    payload = _request(f"/food/{fdc_id}")
+    value = payload.get("dataType") if isinstance(payload, dict) else None
+    return value if isinstance(value, str) else ""
 
 
 def get_food(fdc_id: int) -> tuple[str, dict[str, float], str]:

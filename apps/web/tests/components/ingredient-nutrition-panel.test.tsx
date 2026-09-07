@@ -602,11 +602,11 @@ describe("ingredient nutrition panel", () => {
     // 598 kcal per 100 g at the default 100 g serving rounds to 600.
     expect(screen.getByText("600")).not.toBeNull()
     expect(screen.getByText("Vitamin D").parentElement?.textContent).toBe(
-      "Vitamin D at least 0mcg"
+      "Vitamin D 0mcg"
     )
     expect(
       screen.getByText(
-        "Not every nutrient is known: Added sugars, Vitamin D. Link a fuller record or request a custom value."
+        "The label counts only what the linked records report, so these are understated: Added sugars, Vitamin D. Link a fuller record or request a custom value."
       )
     ).not.toBeNull()
 
@@ -614,7 +614,7 @@ describe("ingredient nutrition panel", () => {
       target: { value: "50" },
     })
     expect(screen.getByText("300")).not.toBeNull()
-    expect(screen.getByText("Peanut butter")).not.toBeNull()
+    expect(screen.getByText("peanut butter")).not.toBeNull()
     expect(screen.getByText("Egg, Peanut")).not.toBeNull()
   })
 

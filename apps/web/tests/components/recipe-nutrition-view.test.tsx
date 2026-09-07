@@ -288,7 +288,7 @@ describe("recipe nutrition view", () => {
     expect(screen.getByText("Nutrition Facts")).not.toBeNull()
   })
 
-  it("reads at least and names the missing nutrients when a record is thin", () => {
+  it("prints the known sum and names the missing nutrients when a record is thin", () => {
     renderView({
       ...ready,
       totals: {
@@ -304,11 +304,11 @@ describe("recipe nutrition view", () => {
     })
 
     expect(screen.getByText("Vitamin D").parentElement?.textContent).toBe(
-      "Vitamin D at least 1mcg"
+      "Vitamin D 1mcg"
     )
     expect(
       screen.getByText(
-        "Not every nutrient is known: Vitamin D. Link a fuller record or request a custom value."
+        "The label counts only what the linked records report, so these are understated: Vitamin D. Link a fuller record or request a custom value."
       )
     ).not.toBeNull()
   })
