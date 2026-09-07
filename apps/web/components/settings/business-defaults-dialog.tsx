@@ -38,7 +38,6 @@ import { PayrollBurdenEstimator } from "@/components/settings/payroll-burden-est
 import { Switch } from "@/components/ui/switch"
 import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
 import { centsToDollarInput, dollarsToCents, formatCents } from "@/lib/money"
 import { toSaveFailure } from "@/lib/save-failure"
@@ -112,7 +111,6 @@ export function BusinessDefaultsDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const { pending: refreshing, refresh } = useRefresh()
   const [measurementSystem, setMeasurementSystem] =
     React.useState<MeasurementSystem>(initialSettings.measurementSystem)
   const [currencyCode, setCurrencyCode] = React.useState<CurrencyCode>(
@@ -297,9 +295,8 @@ export function BusinessDefaultsDialog({
         return
       }
     }
-    void form.submit().then(async (done) => {
+    void form.submit().then((done) => {
       if (!done) return
-      await refresh()
       setConfirmOpen(false)
       onOpenChange(false)
     })
@@ -622,10 +619,7 @@ export function BusinessDefaultsDialog({
               <Button type="button" variant="outline" onClick={dismiss}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                pending={form.pending || quoting || refreshing}
-              >
+              <Button type="submit" pending={form.pending || quoting}>
                 {quoting ? "Loading rate…" : "Save"}
               </Button>
             </DialogFooter>
@@ -642,11 +636,9 @@ export function BusinessDefaultsDialog({
           if (!next) setQuote(null)
         }}
         variant="default"
-        pending={form.pending || refreshing}
+        pending={form.pending}
         title={`Convert ${initialSettings.currencyCode} to ${currencyCode}?`}
-        confirmLabel={
-          form.pending || refreshing ? "Converting…" : "Convert and save"
-        }
+        confirmLabel={form.pending ? "Converting…" : "Convert and save"}
         description={
           <>
             This converts ingredient and supplier prices, price history, menu

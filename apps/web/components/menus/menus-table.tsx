@@ -2,12 +2,11 @@
 
 import * as React from "react"
 import { useToast } from "@/components/ui/toast"
-import { useRouter } from "next/navigation"
 import { Trash2 } from "lucide-react"
 
 import {
   GuardedLink,
-  useNavigationBlocker,
+  useGuardedNavigate,
 } from "@/components/navigation-blocker"
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { buttonVariants } from "@/components/ui/button"
@@ -41,11 +40,13 @@ const periodLabel = (menu: MenuRow) =>
 
 export function MenusTable({ rows }: { rows: MenuRow[] }) {
   const { timezone } = useBusinessSettings()
-  const router = useRouter()
   const toast = useToast()
-  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const { go } = useGuardedNavigate()
   const [deleteTarget, setDeleteTarget] = React.useState<MenuRow | null>(null)
-  const [deletePending, setDeletePending] = React.useState(false)
+  // A transition: "Deleting…" holds until the rows the action answered with
+  // have committed, and the confirmation leaves with them. After an await
+  // React has lost the transition's scope, so those updates start it again.
+  const [deletePending, startDelete] = React.useTransition()
   const [hiddenRowIds, setHiddenRowIds] = React.useState<Set<string>>(
     () => new Set()
   )
@@ -54,39 +55,31 @@ export function MenusTable({ rows }: { rows: MenuRow[] }) {
     [hiddenRowIds, rows]
   )
 
-  const go = React.useCallback(
-    async (href: string) => {
-      if (!(await confirmNavigation())) return
-      allowNavigation()
-      router.push(href)
-    },
-    [allowNavigation, confirmNavigation, router]
-  )
-
-  const confirmDelete = async () => {
+  // Nothing on screen changes until the server has answered: the row goes,
+  // then the confirmation, then the toast.
+  const confirmDelete = () => {
     if (!deleteTarget) return
     const target = deleteTarget
-    setDeletePending(true)
-    setDeleteTarget(null)
-    setHiddenRowIds((current) => new Set(current).add(target.id))
-    try {
-      const result = await deleteMenu(target.id)
-      if ("error" in result) throw new Error(result.error)
-      toast.add({ title: `Deleted ${target.name}` })
-    } catch (cause) {
-      setHiddenRowIds((current) => {
-        const next = new Set(current)
-        next.delete(target.id)
-        return next
+    startDelete(async () => {
+      try {
+        const result = await deleteMenu(target.id)
+        if ("error" in result) throw new Error(result.error)
+      } catch (cause) {
+        toast.add({
+          title:
+            cause instanceof Error
+              ? cause.message
+              : "Couldn’t delete the menu.",
+          type: "error",
+        })
+        return
+      }
+      startDelete(() => {
+        setHiddenRowIds((current) => new Set(current).add(target.id))
+        setDeleteTarget(null)
+        toast.add({ title: `Deleted ${target.name}` })
       })
-      toast.add({
-        title:
-          cause instanceof Error ? cause.message : "Couldn’t delete the menu.",
-        type: "error",
-      })
-    } finally {
-      setDeletePending(false)
-    }
+    })
   }
 
   const rowActions = React.useCallback(
@@ -171,11 +164,11 @@ export function MenusTable({ rows }: { rows: MenuRow[] }) {
       <ConfirmDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null)
+          if (!open && !deletePending) setDeleteTarget(null)
         }}
         title="Delete this menu?"
         description={`${deleteTarget?.name ?? "This menu"} is removed, along with its worksheet rows. Recipes and products are untouched.`}
-        confirmLabel="Delete menu"
+        confirmLabel={deletePending ? "Deleting…" : "Delete menu"}
         pending={deletePending}
         onConfirm={confirmDelete}
       />

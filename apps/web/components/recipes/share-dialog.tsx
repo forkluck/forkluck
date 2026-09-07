@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/toast"
 import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
 import type { RecipeDetail } from "@/lib/backend/types"
 import { toSaveFailure } from "@/lib/save-failure"
@@ -51,14 +50,16 @@ export function ShareDialog({
   /** Only the owner may invite, change a role, or take access away. */
   canEdit: boolean
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const [email, setEmail] = React.useState("")
   const [role, setRole] = React.useState<ShareRole>("viewer")
 
-  // The row whose write is in flight: its control stays busy until the
-  // refreshed list shows what the write did.
-  const [busyId, setBusyId] = React.useState<string | null>(null)
+  // The row whose write is in flight: its control stays busy until the list
+  // the write answered with has committed, which is what the transition's
+  // pending covers.
+  const [running, startRun] = React.useTransition()
+  const [runningId, setRunningId] = React.useState<string | null>(null)
+  const busyId = running ? runningId : null
 
   const report = (result: object) => {
     if ("error" in result) {
@@ -67,13 +68,13 @@ export function ShareDialog({
     }
     return true
   }
-  const run = async (id: string, write: () => Promise<object>) => {
-    setBusyId(id)
-    try {
-      if (report(await write())) await refresh()
-    } finally {
-      setBusyId(null)
-    }
+  const run = (id: string, write: () => Promise<object>) => {
+    // Before the transition: React holds updates made inside an async
+    // transition until the action has finished.
+    setRunningId(id)
+    startRun(async () => {
+      report(await write())
+    })
   }
 
   const invite = useFormSave({
@@ -89,7 +90,6 @@ export function ShareDialog({
       // An address with no account gets an invitation link for that role.
       if ("guest" in result) toast.add({ title: `Invite sent to ${address}` })
       setEmail("")
-      await refresh()
       return null
     },
   })

@@ -24,7 +24,9 @@ export default async function MenuPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  await requireUser()
+  // The session check runs beside the reads, not ahead of them; see
+  // ingredients.
+  const user = requireUser()
   const params = await searchParams
   const query = (singleSearchParam(params.q) ?? "").trim().slice(0, 200)
   const page = positivePage(singleSearchParam(params.page))
@@ -40,13 +42,16 @@ export default async function MenuPage({
   const connectionsRead = getPosConnections().catch(() => null)
   let result
   try {
-    result = await browseMenuItems({
+    const read = browseMenuItems({
       page,
       limit: 50,
       q: query,
       order,
       filters: { status },
     })
+    read.catch(() => undefined)
+    await user
+    result = await read
   } catch (cause) {
     if (
       page > 1 &&

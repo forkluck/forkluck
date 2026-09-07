@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { ClipboardPaste, Trash2, Users } from "lucide-react"
 
 import { deleteRecipe } from "@/app/(app)/recipes/actions"
@@ -23,6 +23,7 @@ import { useToast } from "@/components/ui/toast"
 import { useEditChrome } from "@/hooks/use-edit-chrome"
 import type { RecipeDetail } from "@/lib/backend/types"
 import { clampScaleFactor, formatAppliedScaleFactor } from "@/lib/recipe/scale"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 const TABS = [
   { slug: "recipe", label: "Recipe" },
@@ -124,7 +125,7 @@ export function RecipeChrome({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const {
     dirty,
@@ -297,8 +298,11 @@ export function RecipeChrome({
                 return
               }
               setDirty(false)
+              // The confirmation leaves before the screen does: an open
+              // dialog with a live button is not a delete that has happened.
+              setConfirmDelete(false)
+              void go("/recipes", { force: true })
               toast.add({ title: "Deleted recipe" })
-              router.push("/recipes")
             } finally {
               setDeletePending(false)
             }

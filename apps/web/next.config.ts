@@ -44,6 +44,12 @@ const nextConfig: NextConfig = {
     position: "bottom-right",
   },
   experimental: {
+    // A page visited in the last half minute comes back from the client
+    // cache with no request: the list you just left is there when you come
+    // back to it. Every write purges it, because every action revalidates.
+    staleTimes: {
+      dynamic: 30,
+    },
     serverActions: {
       // CSV and spreadsheet files are base64-encoded before parsing. The
       // server action validates the encoded payload again at 8 MB.

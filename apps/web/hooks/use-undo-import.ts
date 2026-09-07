@@ -1,14 +1,12 @@
 import * as React from "react"
-import { useRefresh } from "@/hooks/use-refresh"
 
 // Two-step "arm then confirm" undo used by the import history dialogs. The
 // armed state disarms itself after four seconds. Works with actions that throw
-// on failure as well as actions that resolve with an { error } envelope.
+// on failure as well as actions that resolve with an { error } envelope. The
+// screen behind the dialog follows from the action's own revalidation.
 export function useUndoImport(
-  action: (id: string) => Promise<void | { error: string } | object>,
-  { refresh: refreshAfter = true }: { refresh?: boolean } = {}
+  action: (id: string) => Promise<void | { error: string } | object>
 ) {
-  const { refresh } = useRefresh()
   const [armedId, setArmedId] = React.useState<string | null>(null)
   const [pendingId, setPendingId] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -33,7 +31,6 @@ export function useUndoImport(
         return
       }
       setArmedId(null)
-      if (refreshAfter) await refresh()
     } catch (cause) {
       setError(
         cause instanceof Error ? cause.message : "Couldn’t undo the import."

@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 import { useBrowseUrl } from "@/hooks/use-browse-url"
 import { useIngredientOptions } from "@/hooks/use-ingredient-options"
 import type { GoogleDriveConfig } from "@/lib/google-drive"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const ImportInvoicesDialog = dynamic(() =>
   import("@/components/invoices/import-invoices-dialog").then(
@@ -54,6 +55,7 @@ export function InvoicesScreen({
   driveConnectHref: string | null
 }) {
   const [importOpen, setImportOpen] = React.useState(false)
+  const importShown = useDialogTarget(importOpen ? true : null)
   const [importFiles, setImportFiles] = React.useState<File[] | null>(null)
   // Opened on the inbox — the receipts the Drive watcher has already read —
   // rather than on an empty drop zone.
@@ -299,9 +301,9 @@ export function InvoicesScreen({
         </>
       )}
 
-      {importOpen ? (
+      {importShown ? (
         <ImportInvoicesDialog
-          open
+          open={importOpen}
           onOpenChange={(open) => {
             setImportOpen(open)
             if (!open) setImportFiles(null)

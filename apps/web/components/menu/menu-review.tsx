@@ -48,6 +48,7 @@ import {
   reviewGroupSummary,
 } from "@/lib/sales-review-groups"
 import { cn } from "@/lib/utils"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 /**
  * Catalog — every unlinked Square and Shopify identity, whether it has sold
@@ -134,6 +135,7 @@ export function MenuReview({
   const [trackTarget, setTrackTarget] = React.useState<SalesReviewItem | null>(
     null
   )
+  const heldTrack = useDialogTarget(trackTarget)
   const [trackProduct, setTrackProduct] =
     React.useState<SalesProductRow | null>(null)
   const [ignoreTarget, setIgnoreTarget] = React.useState<IgnoreTarget | null>(
@@ -706,32 +708,32 @@ export function MenuReview({
 
       {/* One controlled dialog serves every Track button; keying it on the
           target remounts the form with that identity's prefill. */}
-      {trackTarget ? (
+      {heldTrack ? (
         <MenuItemDialog
           // Keyed on the identity alone: including the chosen product would
           // remount the dialog mid-edit and discard the kind, name, members
           // and price already typed into it.
-          key={salesIdentityKey(trackTarget)}
+          key={salesIdentityKey(heldTrack)}
           product={trackProduct ?? undefined}
           products={menuItems}
           recipes={recipes}
-          open
+          open={trackTarget !== null}
           onOpenChange={(next) => {
             if (!next) {
               setTrackTarget(null)
               setTrackProduct(null)
             }
           }}
-          initialName={trackProduct ? undefined : trackTarget.itemName}
+          initialName={trackProduct ? undefined : heldTrack.itemName}
           initialVariant={{
-            channel: trackTarget.channel,
-            providerAccountId: trackTarget.providerAccountId,
-            matchKey: trackTarget.matchKey,
-            sku: trackTarget.sku,
-            externalName: trackTarget.itemName,
-            externalVariantTitle: trackTarget.externalVariantTitle,
-            externalObjectId: trackTarget.externalObjectId,
-            productExternalObjectId: trackTarget.productExternalObjectId,
+            channel: heldTrack.channel,
+            providerAccountId: heldTrack.providerAccountId,
+            matchKey: heldTrack.matchKey,
+            sku: heldTrack.sku,
+            externalName: heldTrack.itemName,
+            externalVariantTitle: heldTrack.externalVariantTitle,
+            externalObjectId: heldTrack.externalObjectId,
+            productExternalObjectId: heldTrack.productExternalObjectId,
           }}
           onProductChoice={(productId) =>
             setTrackProduct(
@@ -742,7 +744,7 @@ export function MenuReview({
             // The variant now claims this identity; drop it from the queue
             // immediately rather than waiting for the revalidated payload.
             setDismissed(
-              (current) => new Set([...current, salesIdentityKey(trackTarget)])
+              (current) => new Set([...current, salesIdentityKey(heldTrack)])
             )
             setTrackTarget(null)
             setTrackProduct(null)

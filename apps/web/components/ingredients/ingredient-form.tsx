@@ -43,7 +43,8 @@ type IngredientFormProps = {
   initial: IngredientFormValues | null
   initialName?: string
   onSaved?: (id: string, values: SavedIngredientPack) => void | Promise<void>
-  onDone: () => void
+  /** After a save has landed, for a dialog to close on. */
+  onDone?: () => void
   /** Cancel's own exit, so a dirty-close guard can intercept it. */
   onCancel?: () => void
   /** Lets a screen that owns the Save button submit this form from outside it. */
@@ -163,7 +164,7 @@ export function IngredientForm({
           purchaseSize: purchase?.purchaseSize ?? 0,
           purchaseUnit: purchase?.purchaseUnit ?? "",
         })
-      onDone()
+      onDone?.()
       return null
     },
   })

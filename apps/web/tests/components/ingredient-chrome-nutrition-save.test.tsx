@@ -22,6 +22,7 @@ vi.mock("@/app/(app)/ingredients/actions", () => ({
 }))
 
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

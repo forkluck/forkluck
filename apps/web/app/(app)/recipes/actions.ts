@@ -471,6 +471,34 @@ export async function deleteRecipe(
   }
 }
 
+/**
+ * The selection in one request: every recipe in turn, one revalidation at
+ * the end, so the rows leave together instead of one per round trip. Stops
+ * at the first failure and says how many went, so the selection can stay
+ * open for a retry.
+ */
+export async function deleteRecipes(
+  ids: string[]
+): Promise<{ ok: true } | { error: string; deleted: number }> {
+  const parsed = z.array(z.string().min(1)).min(1).max(200).safeParse(ids)
+  if (!parsed.success) return { error: "Recipe ids are required.", deleted: 0 }
+  let deleted = 0
+  try {
+    for (const id of parsed.data) {
+      await djangoAction<{ ok: true }>("delete-recipe", { id })
+      deleted += 1
+    }
+    return { ok: true }
+  } catch (cause) {
+    return {
+      error: actionErrorMessage(cause, "Couldn’t delete the recipes."),
+      deleted,
+    }
+  } finally {
+    if (deleted) revalidateRecipeReads()
+  }
+}
+
 export async function duplicateRecipe(
   id: string
 ): Promise<SavedRecipe | { error: string; code?: string }> {

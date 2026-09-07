@@ -17,7 +17,6 @@ import { LabeledInput } from "@/components/ui/labeled-field"
 import { useToast } from "@/components/ui/toast"
 import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
 import { toSaveFailure } from "@/lib/save-failure"
 
@@ -47,7 +46,6 @@ export function ShareRecipesDialog({
   /** The selection has been sent; the table lets it go. */
   onShared: () => void
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const [email, setEmail] = React.useState("")
   const [role, setRole] = React.useState<ShareRole>("viewer")
@@ -79,7 +77,6 @@ export function ShareRecipesDialog({
                 : recipes[0].title
             }`,
       })
-      await refresh()
       onShared()
       onOpenChange(false)
       return null

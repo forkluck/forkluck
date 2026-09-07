@@ -1,13 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { useToast } from "@/components/ui/toast"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/navigation"
 import { Download, Package, SquarePen, Trash2, Upload } from "lucide-react"
 
 import {
-  deleteIngredient,
+  deleteIngredients,
   loadIngredientDetail,
 } from "@/app/(app)/ingredients/actions"
 import { useBusinessSettings } from "@/components/business-settings-provider"
@@ -17,7 +15,7 @@ import { IngredientDeleteDialog } from "@/components/ingredients/ingredient-dele
 import { IngredientOptionsLoadingDialog } from "@/components/ingredients/ingredient-options-loading-dialog"
 import {
   GuardedLink,
-  useNavigationBlocker,
+  useGuardedNavigate,
 } from "@/components/navigation-blocker"
 import type {
   IngredientKind,
@@ -39,6 +37,7 @@ import { csvCell } from "@/lib/csv"
 import { centsPerWeightUnit, formatUnitPrice } from "@/lib/pricing"
 import { formatPackSize } from "@/lib/unit-registry"
 import { useIngredientOptions } from "@/hooks/use-ingredient-options"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 // Each carries its own boundary: without one, a chunk still on its way
 // suspends up to the route's full-page spinner and the list flashes away.
@@ -158,17 +157,18 @@ export function IngredientsTable({
   const copy = KIND_COPY[kind]
   const counted = (count: number) =>
     `${count} ${count === 1 ? copy.noun : copy.plural}`
-  const router = useRouter()
-  const toast = useToast()
-  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const { go } = useGuardedNavigate()
   const { currencyCode, measurementSystem, timezone } = useBusinessSettings()
   const unitPriceUnit = preferredWeightUnit(measurementSystem)
   // One dialog instance each, shared by every row and opened from its menu.
   const [packs, setPacks] = React.useState<IngredientDetail | null>(null)
+  const heldPacks = useDialogTarget(packs)
   const [detailPending, setDetailPending] = React.useState<string | null>(null)
   const [openDialog, setOpenDialog] = React.useState<"import" | null>(null)
+  const importShown = useDialogTarget(openDialog === "import" ? true : null)
   const [deleteTarget, setDeleteTarget] =
     React.useState<IngredientSummary | null>(null)
+  const heldDelete = useDialogTarget(deleteTarget)
   const [hiddenRowIds, setHiddenRowIds] = React.useState<Set<string>>(
     () => new Set()
   )
@@ -181,14 +181,6 @@ export function IngredientsTable({
     status: ingredientOptionsStatus,
     load: loadOptions,
   } = useIngredientOptions()
-  const go = React.useCallback(
-    async (href: string) => {
-      if (!(await confirmNavigation())) return
-      allowNavigation()
-      router.push(href)
-    },
-    [allowNavigation, confirmNavigation, router]
-  )
   const openSupplierPacks = React.useCallback(
     async (ingredient: IngredientSummary) => {
       setDetailPending(ingredient.id)
@@ -241,7 +233,13 @@ export function IngredientsTable({
         meta: { className: "max-w-0", minWidth: 260 },
         cell: ({ row }) => (
           <span className="flex min-w-0 items-center gap-2">
-            <span className="min-w-0 truncate">{row.original.name}</span>
+            {/* A link, so the route is warm before the row is clicked. */}
+            <GuardedLink
+              href={`/ingredients/${row.original.publicId}/ingredient`}
+              className="min-w-0 truncate text-foreground"
+            >
+              {row.original.name}
+            </GuardedLink>
             {row.original.status === "archived" ? (
               <span className="shrink-0 text-2xs text-muted-foreground">
                 Archived
@@ -402,54 +400,40 @@ export function IngredientsTable({
             count={selected.length}
             noun={copy.noun}
             description={copy.deleteDescription}
+            plural={copy.plural}
             refreshAfterDelete={false}
             onDelete={async () => {
-              const deleted: string[] = []
-              try {
-                for (const ingredient of selected) {
-                  const result = await deleteIngredient(ingredient.id)
-                  if ("error" in result) throw new Error(result.error)
-                  deleted.push(ingredient.id)
-                }
-              } finally {
-                if (deleted.length) {
-                  setHiddenRowIds((current) => {
-                    const next = new Set(current)
-                    for (const id of deleted) next.add(id)
-                    return next
-                  })
-                  toast.add({
-                    title: `Deleted ${counted(deleted.length)}`,
-                  })
-                }
-              }
-              clear()
+              const result = await deleteIngredients(
+                selected.map((ingredient) => ingredient.id)
+              )
+              if ("error" in result) throw new Error(result.error)
             }}
+            onDeleted={clear}
           />
         )}
       />
 
-      {packs ? (
+      {heldPacks ? (
         <SupplierProductsDialog
-          ingredient={packs}
-          open
+          ingredient={heldPacks}
+          open={packs !== null}
           onOpenChange={(open) => {
             if (!open) setPacks(null)
           }}
         />
       ) : null}
 
-      {openDialog === "import" && ingredientOptionsStatus === "ready" ? (
+      {importShown && ingredientOptionsStatus === "ready" ? (
         <ImportIngredientsDialog
           ingredients={ingredientOptions}
-          open
+          open={openDialog === "import"}
           onOpenChange={(open) => {
             if (!open) setOpenDialog(null)
           }}
         />
-      ) : openDialog === "import" ? (
+      ) : importShown ? (
         <IngredientOptionsLoadingDialog
-          open
+          open={openDialog === "import"}
           error={ingredientOptionsStatus === "error"}
           onOpenChange={(open) => {
             if (!open) setOpenDialog(null)
@@ -458,16 +442,16 @@ export function IngredientsTable({
         />
       ) : null}
 
-      {deleteTarget ? (
+      {heldDelete ? (
         <IngredientDeleteDialog
-          key={deleteTarget.id}
-          ingredient={deleteTarget}
-          open
+          key={heldDelete.id}
+          ingredient={heldDelete}
+          open={deleteTarget !== null}
           onOpenChange={(open) => {
             if (!open) setDeleteTarget(null)
           }}
           onDeleted={() => {
-            setHiddenRowIds((current) => new Set(current).add(deleteTarget.id))
+            setHiddenRowIds((current) => new Set(current).add(heldDelete.id))
             setDeleteTarget(null)
           }}
         />

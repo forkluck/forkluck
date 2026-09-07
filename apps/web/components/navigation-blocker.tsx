@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
+import Link, { useLinkStatus } from "next/link"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,12 @@ type NavigationBlockerValue = {
   beforeLeaveRef: React.RefObject<(() => Promise<boolean>) | null>
   confirmNavigation: () => Promise<boolean>
   allowNavigation: () => void
+  /**
+   * A navigation is in flight somewhere on the screen: a link that was
+   * clicked, a row, a redirect after a save. The shell dims the page on it.
+   */
+  navigationPending: boolean
+  reportNavigationPending: (delta: 1 | -1) => void
 }
 
 const NavigationBlockerContext = React.createContext<NavigationBlockerValue>({
@@ -33,6 +39,8 @@ const NavigationBlockerContext = React.createContext<NavigationBlockerValue>({
   beforeLeaveRef: { current: null },
   confirmNavigation: () => Promise.resolve(true),
   allowNavigation: () => undefined,
+  navigationPending: false,
+  reportNavigationPending: () => undefined,
 })
 
 type BrowserNavigationType = "push" | "replace" | "reload" | "traverse"
@@ -59,6 +67,13 @@ export function NavigationBlockerProvider({
 }) {
   const [isBlocked, setIsBlocked] = React.useState(false)
   const [dialogOpen, setDialogOpen] = React.useState(false)
+  // How many navigations are pending at once; clicks in quick succession
+  // must not let the first one's end clear the second one's wait.
+  const [pendingCount, setPendingCount] = React.useState(0)
+  const reportNavigationPending = React.useCallback(
+    (delta: 1 | -1) => setPendingCount((count) => count + delta),
+    []
+  )
   const allowNextNavigation = React.useRef(false)
   const beforeLeaveRef = React.useRef<(() => Promise<boolean>) | null>(null)
   const pendingConfirmation = React.useRef<
@@ -177,8 +192,16 @@ export function NavigationBlockerProvider({
       beforeLeaveRef,
       confirmNavigation,
       allowNavigation,
+      navigationPending: pendingCount > 0,
+      reportNavigationPending,
     }),
-    [allowNavigation, confirmNavigation, isBlocked]
+    [
+      allowNavigation,
+      confirmNavigation,
+      isBlocked,
+      pendingCount,
+      reportNavigationPending,
+    ]
   )
 
   return (
@@ -224,6 +247,62 @@ export function useNavigationBlocker() {
   return React.useContext(NavigationBlockerContext)
 }
 
+/** Counts a wait into the shell's navigation signal for as long as it lasts. */
+function useReportNavigationPending(pending: boolean) {
+  const { reportNavigationPending } = useNavigationBlocker()
+  React.useEffect(() => {
+    if (!pending) return
+    reportNavigationPending(1)
+    return () => reportNavigationPending(-1)
+  }, [pending, reportNavigationPending])
+}
+
+/** Inside a Link: the click it is carrying, reported to the shell. */
+function LinkPending() {
+  const { pending } = useLinkStatus()
+  useReportNavigationPending(pending)
+  return null
+}
+
+/**
+ * Every navigation that is not a `<GuardedLink>`: row clicks, menu items,
+ * the redirect after a save or a delete. `go` asks first when the screen is
+ * dirty, runs the push in a transition, and reports the wait to the shell,
+ * which keeps the old page on screen and dims it. It resolves true once the
+ * navigation has started.
+ *
+ * `force` skips the question: the screen has just saved or deleted and has
+ * already said it is clean, which the blocker's state has not caught up
+ * with yet.
+ */
+export function useGuardedNavigate() {
+  const router = useRouter()
+  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const [pending, startTransition] = React.useTransition()
+  useReportNavigationPending(pending)
+
+  const go = React.useCallback(
+    async (
+      href: string,
+      {
+        replace = false,
+        force = false,
+      }: { replace?: boolean; force?: boolean } = {}
+    ) => {
+      if (!force && !(await confirmNavigation())) return false
+      allowNavigation()
+      startTransition(() => {
+        if (replace) router.replace(href)
+        else router.push(href)
+      })
+      return true
+    },
+    [allowNavigation, confirmNavigation, router]
+  )
+
+  return { go, pending }
+}
+
 type GuardedLinkProps = Omit<React.ComponentProps<typeof Link>, "href"> & {
   href: string
 }
@@ -232,12 +311,16 @@ export const GuardedLink = React.forwardRef<
   HTMLAnchorElement,
   GuardedLinkProps
 >(function GuardedLink(
-  { href, onNavigate, replace, scroll, transitionTypes, ...props },
+  { href, onNavigate, replace, scroll, transitionTypes, children, ...props },
   ref
 ) {
   const router = useRouter()
   const { allowNavigation, confirmNavigation, isBlocked } =
     useNavigationBlocker()
+  // The confirmed path leaves the link's own status behind, so its wait is
+  // reported from the transition instead.
+  const [confirmedPending, startConfirmed] = React.useTransition()
+  useReportNavigationPending(confirmedPending)
 
   return (
     <Link
@@ -257,13 +340,18 @@ export const GuardedLink = React.forwardRef<
 
           allowNavigation()
           const options = { scroll, transitionTypes }
-          if (replace) {
-            router.replace(href, options)
-          } else {
-            router.push(href, options)
-          }
+          startConfirmed(() => {
+            if (replace) {
+              router.replace(href, options)
+            } else {
+              router.push(href, options)
+            }
+          })
         })
       }}
-    />
+    >
+      {children}
+      <LinkPending />
+    </Link>
   )
 })

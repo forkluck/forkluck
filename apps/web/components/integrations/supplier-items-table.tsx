@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
+  useDialogTarget,
 } from "@/components/ui/dialog"
 import { FilterPill } from "@/components/ui/filter-pill"
 import { SearchInput } from "@/components/ui/input"
@@ -133,6 +134,7 @@ export function SupplierItemsTable({
   const [pending, setPending] = React.useState(false)
   const [relinkTarget, setRelinkTarget] =
     React.useState<SupplierItemMappingRow | null>(null)
+  const heldRelink = useDialogTarget(relinkTarget)
   const [ignoreTarget, setIgnoreTarget] =
     React.useState<SupplierItemMappingRow | null>(null)
   const [deleteTarget, setDeleteTarget] =
@@ -319,15 +321,17 @@ export function SupplierItemsTable({
       />
 
       {/* Mounted per row, so the picker starts on the match it opened on. */}
-      {relinkTarget ? (
+      {heldRelink ? (
         <RelinkDialog
-          item={relinkTarget}
+          key={heldRelink.id}
+          open={relinkTarget !== null}
+          item={heldRelink}
           ingredients={ingredients}
           pending={pending}
           onClose={() => setRelinkTarget(null)}
           onConfirm={async (ingredientId) => {
             const done = await run(() =>
-              relinkSupplierItem(relinkTarget.id, ingredientId)
+              relinkSupplierItem(heldRelink.id, ingredientId)
             )
             if (done) setRelinkTarget(null)
           }}
@@ -377,7 +381,9 @@ function RelinkDialog({
   pending,
   onClose,
   onConfirm,
+  open,
 }: {
+  open: boolean
   item: SupplierItemMappingRow
   ingredients: IngredientOption[]
   pending: boolean
@@ -388,7 +394,7 @@ function RelinkDialog({
 
   return (
     <Dialog
-      open
+      open={open}
       onOpenChange={(next) => {
         if (!next) onClose()
       }}

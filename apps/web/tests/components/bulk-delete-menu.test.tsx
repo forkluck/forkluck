@@ -22,7 +22,10 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
-function mount(onDelete: () => Promise<void | boolean>) {
+function mount(
+  onDelete: () => Promise<void | boolean>,
+  extra: { refreshAfterDelete?: boolean; onDeleted?: () => void } = {}
+) {
   render(
     <ToastProvider>
       <BulkDeleteMenu
@@ -30,6 +33,7 @@ function mount(onDelete: () => Promise<void | boolean>) {
         noun="recipe"
         description="They are removed."
         onDelete={onDelete}
+        {...extra}
       />
     </ToastProvider>
   )
@@ -71,6 +75,32 @@ describe("BulkDeleteMenu", () => {
       expect(screen.queryByRole("button", { name: /Deleting/ })).toBeNull()
     )
     expect(screen.queryByText("Delete 2 recipes?")).toBeNull()
+  })
+
+  it("closes, clears the selection and reports once the action's rows have landed", async () => {
+    let finish: () => void = () => undefined
+    const onDelete = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve
+        })
+    )
+    const onDeleted = vi.fn()
+    // The action revalidates: its answer is the rows, so no refresh follows.
+    mount(onDelete, { refreshAfterDelete: false, onDeleted })
+    const confirm = await openConfirm()
+    fireEvent.click(confirm)
+
+    await screen.findByRole("button", { name: /Deleting/ })
+    expect(onDeleted).not.toHaveBeenCalled()
+    expect(screen.queryByText("Deleted 2 recipes")).toBeNull()
+
+    await act(async () => finish())
+    // Rows, then the confirmation, then the word: all in one commit.
+    expect(await screen.findByText("Deleted 2 recipes")).toBeTruthy()
+    expect(onDeleted).toHaveBeenCalledOnce()
+    expect(screen.queryByText("Delete 2 recipes?")).toBeNull()
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("reports a batch that threw instead of swallowing it", async () => {

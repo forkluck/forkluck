@@ -373,12 +373,13 @@ describe("reviewing one line of an imported invoice", () => {
     fireEvent.click(screen.getByRole("button", { name: "Review" }))
     fireEvent.click(screen.getByRole("button", { name: "Save line" }))
 
-    await vi.waitFor(() => expect(refresh).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(reviewInvoiceLine).toHaveBeenCalledTimes(1))
     // The review is its own conflict domain: it never sends the document and
-    // never bumps its version. The refresh it asks for is what puts the
-    // server's lines back under the editor, which the page remounts on.
+    // never bumps its version. The action's revalidation is what puts the
+    // server's lines back under the editor, which the page remounts on; no
+    // second render is asked for.
     expect(saveInvoice).not.toHaveBeenCalled()
-    expect(reviewInvoiceLine).toHaveBeenCalledTimes(1)
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("stops offering Review once the document is dirty", () => {

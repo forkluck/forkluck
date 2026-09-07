@@ -11,6 +11,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   useNavigationBlocker: () => ({
     allowNavigation: vi.fn(),
     confirmNavigation: vi.fn().mockResolvedValue(true),

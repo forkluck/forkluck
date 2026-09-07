@@ -29,11 +29,13 @@ export default async function InvoicesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  await requireUser()
+  // The session check runs beside the reads, not ahead of them; see
+  // ingredients.
+  const user = requireUser()
   const { month, q, tab } = await searchParams
   const query = typeof q === "string" ? q : undefined
   const attention = tab === "attention" ? "attention" : undefined
-  const [overview, drive] = await Promise.all([
+  const reads = Promise.all([
     getInvoicesOverview({
       month: monthSearchParam(month),
       q: query,
@@ -41,6 +43,9 @@ export default async function InvoicesPage({
     }),
     getDriveFolder(),
   ])
+  reads.catch(() => undefined)
+  await user
+  const [overview, drive] = await reads
 
   return (
     <InvoicesScreen

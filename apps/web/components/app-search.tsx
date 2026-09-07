@@ -1,11 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 
 import { searchApp } from "@/app/(app)/actions"
-import { useNavigationBlocker } from "@/components/navigation-blocker"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { rankedServerResults } from "@/lib/search"
 import type { SearchItem } from "@/components/search/search-items"
@@ -17,8 +16,7 @@ const MAX_RESULTS = 9
  * With no query it lists what there is, so the modal is never a blank box.
  */
 export function AppSearch() {
-  const router = useRouter()
-  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const { go: navigate } = useGuardedNavigate()
   const listId = React.useId()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -124,10 +122,7 @@ export function AppSearch() {
   }
 
   const go = async (href: string) => {
-    if (!(await confirmNavigation())) return
-    onOpenChange(false)
-    allowNavigation()
-    router.push(href)
+    if (await navigate(href)) onOpenChange(false)
   }
 
   let rowIndex = -1

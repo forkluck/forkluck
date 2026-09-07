@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 
 import {
@@ -25,6 +24,7 @@ import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
 import { toSaveFailure } from "@/lib/save-failure"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 const SQUARE_TOKEN_FIELD = "square-sandbox-token"
 const SHOP_FIELD = "shopify-shop"
@@ -72,7 +72,7 @@ function SquareSandboxForm({
   onDirtyChange,
   submitRef,
 }: FormProps) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const [token, setToken] = React.useState("")
 
   const form = useFormSave({
@@ -94,7 +94,10 @@ function SquareSandboxForm({
     void form.submit().then((done) => {
       if (!done) return
       onDone()
-      router.replace("/integrations/sales/connections?connected=square")
+      void go("/integrations/sales/connections?connected=square", {
+        replace: true,
+        force: true,
+      })
     })
   React.useEffect(() => {
     submitRef.current = submit
@@ -153,7 +156,7 @@ function ShopifyForm({
   onDirtyChange,
   submitRef,
 }: FormProps) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   // Since Jan 2026 new custom apps only exist in the Dev Dashboard, which
   // exposes client credentials instead of a copyable token — so that's the
   // default mode. Legacy pre-2026 admin apps still paste their shpat_ token.
@@ -204,7 +207,10 @@ function ShopifyForm({
     void form.submit().then((done) => {
       if (!done) return
       onDone()
-      router.replace("/integrations/sales/connections?connected=shopify")
+      void go("/integrations/sales/connections?connected=shopify", {
+        replace: true,
+        force: true,
+      })
     })
   React.useEffect(() => {
     submitRef.current = submit

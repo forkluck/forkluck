@@ -244,7 +244,8 @@ describe("Product sales", () => {
       quantity: 3,
       totalNetCents: 2450,
     })
-    expect(refresh).toHaveBeenCalled()
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull())
   })
 

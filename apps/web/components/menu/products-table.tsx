@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import {
   Archive,
   ArchiveRestore,
@@ -11,8 +10,15 @@ import {
   Upload,
 } from "lucide-react"
 
-import { deleteMenuItem, saveSalesProduct } from "@/app/(app)/products/actions"
-import { GuardedLink } from "@/components/navigation-blocker"
+import {
+  deleteMenuItem,
+  deleteMenuItems,
+  saveSalesProduct,
+} from "@/app/(app)/products/actions"
+import {
+  GuardedLink,
+  useGuardedNavigate,
+} from "@/components/navigation-blocker"
 import {
   ChannelIcon,
   CountCell,
@@ -45,7 +51,6 @@ import { productHref } from "@/lib/product-href"
 import { channelLabel } from "@/lib/sales-identity"
 import { unitShort } from "@/lib/unit-registry"
 import { cn } from "@/lib/utils"
-import { useRefresh } from "@/hooks/use-refresh"
 
 /**
  * Every catalog identity this product is sold under. A box is its own product
@@ -221,24 +226,32 @@ export function ProductsTable({
   footer?: React.ReactNode
 }) {
   const { currencyCode, timezone } = useBusinessSettings()
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const [deleteTarget, setDeleteTarget] =
     React.useState<SalesProductRow | null>(null)
-  const [pending, setPending] = React.useState(false)
+  // Transitions: the wait on a control holds until the rows the action
+  // answered with have committed, not just until it answered. After an await
+  // React has lost the transition's scope, so the updates that should land
+  // with those rows start it again.
+  const [pending, startDelete] = React.useTransition()
+  const [archivePending, startArchive] = React.useTransition()
   const [error, setError] = React.useState<string | null>(null)
 
-  const runDelete = async (target: SalesProductRow) => {
-    setPending(true)
+  // The row goes, then the confirmation, then the toast.
+  const runDelete = (target: SalesProductRow) => {
     setError(null)
-    const result = await deleteMenuItem(target.id)
-    setPending(false)
-    if ("error" in result) {
-      setError(result.error)
-      return
-    }
-    setDeleteTarget(null)
+    startDelete(async () => {
+      const result = await deleteMenuItem(target.id)
+      if ("error" in result) {
+        setError(result.error)
+        return
+      }
+      startDelete(() => {
+        setDeleteTarget(null)
+        toast.add({ title: `Deleted ${target.name}` })
+      })
+    })
   }
 
   // Archiving is the product page's Active switch, off: the product leaves
@@ -261,28 +274,35 @@ export function ProductsTable({
     []
   )
   // The menu that asked has closed, so the row shows the wait and a toast
-  // says what happened once the refreshed list agrees.
+  // says what happened once the list the action answered with agrees. The
+  // busy mark is set before the transition: React holds updates made inside
+  // an async transition until the action has finished.
   const [busyId, setBusyId] = React.useState<string | null>(null)
   const archive = React.useCallback(
-    async (products: SalesProductRow[], isActive: boolean) => {
+    (products: SalesProductRow[], isActive: boolean) => {
       if (products.length === 1) setBusyId(products[0].id)
-      try {
-        const ok = await setActive(products, isActive)
-        if (!ok) return false
-        await refresh()
-        toast.add({
-          title: `${isActive ? "Restored" : "Archived"} ${
-            products.length === 1
-              ? products[0].name
-              : `${products.length} products`
-          }`,
+      return new Promise<boolean>((resolve) =>
+        startArchive(async () => {
+          try {
+            const ok = await setActive(products, isActive)
+            if (ok)
+              startArchive(() => {
+                toast.add({
+                  title: `${isActive ? "Restored" : "Archived"} ${
+                    products.length === 1
+                      ? products[0].name
+                      : `${products.length} products`
+                  }`,
+                })
+              })
+            resolve(ok)
+          } finally {
+            startArchive(() => setBusyId(null))
+          }
         })
-        return true
-      } finally {
-        setBusyId(null)
-      }
+      )
     },
-    [refresh, setActive, toast]
+    [setActive, toast]
   )
 
   const rowActions = React.useCallback(
@@ -294,7 +314,7 @@ export function ProductsTable({
           label={`Actions for ${product.name}`}
           className="w-[172px]"
         >
-          <MenuItem onClick={() => router.push(productHref(product))}>
+          <MenuItem onClick={() => void go(productHref(product))}>
             <SquarePen strokeWidth={1.8} aria-hidden="true" />
             Edit product
           </MenuItem>
@@ -318,7 +338,7 @@ export function ProductsTable({
           </MenuItem>
         </RowActionsMenu>
       ),
-    [archive, busyId, router]
+    [archive, busyId, go]
   )
 
   const columns = React.useMemo(
@@ -504,21 +524,23 @@ export function ProductsTable({
           )
         }
         segmentFilters={segmentFilters}
-        onRowClick={(row) => router.push(productHref(row))}
+        onRowClick={(row) => void go(productHref(row))}
         bulkActions={({ rows: selected, clear }) => (
           <BulkDeleteMenu
             count={selected.length}
             noun="product"
             description="Their mappings are removed. Recorded sales move to Catalog and stay out of reports until you track them again."
+            refreshAfterDelete={false}
             onDelete={async () => {
-              for (const product of selected) {
-                const result = await deleteMenuItem(product.id)
-                if ("error" in result) throw new Error(result.error)
-              }
-              clear()
+              const result = await deleteMenuItems(
+                selected.map((product) => product.id)
+              )
+              if ("error" in result) throw new Error(result.error)
             }}
+            onDeleted={clear}
           >
             <MenuItem
+              disabled={archivePending}
               onClick={async () => {
                 if (await archive(selected, false)) clear()
               }}

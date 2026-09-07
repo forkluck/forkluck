@@ -267,15 +267,12 @@ export function HistoryDialog({
     pendingId,
     undo,
     error: undoError,
-  } = useUndoImport(
-    async (id: string) => {
-      const result = await undoIngredientImport(id)
-      setImports(null)
-      setReloadKey((previous) => previous + 1)
-      return result
-    },
-    { refresh: false }
-  )
+  } = useUndoImport(async (id: string) => {
+    const result = await undoIngredientImport(id)
+    setImports(null)
+    setReloadKey((previous) => previous + 1)
+    return result
+  })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

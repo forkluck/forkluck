@@ -31,9 +31,7 @@ export function LaborImportHistoryDialog({
   onOpenChange: (open: boolean) => void
 }) {
   const { currencyCode, timezone } = useBusinessSettings()
-  const { armedId, pendingId, error, undo } = useUndoImport(undoLaborImport, {
-    refresh: false,
-  })
+  const { armedId, pendingId, error, undo } = useUndoImport(undoLaborImport)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

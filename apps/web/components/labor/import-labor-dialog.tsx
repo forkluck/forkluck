@@ -42,7 +42,6 @@ import { readAsBase64 } from "@/lib/client-file"
 import { normalizeEmployeeName, type LaborColumnMap } from "@/lib/labor-import"
 import { currencySymbol } from "@/lib/business-settings"
 import { cn } from "@/lib/utils"
-import { useRefresh } from "@/hooks/use-refresh"
 
 const localDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -169,7 +168,6 @@ function ImportReceiptView({
 }
 
 function ImportBody({ onDone }: { onDone: () => void }) {
-  const { refresh } = useRefresh()
   const { currencyCode } = useBusinessSettings()
   const [busy, setBusy] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -297,7 +295,6 @@ function ImportBody({ onDone }: { onDone: () => void }) {
         setError(result.error)
       } else {
         setReceipt(result)
-        await refresh()
       }
     } catch (cause) {
       setError(

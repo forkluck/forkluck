@@ -117,7 +117,7 @@ export function RecipeLinesTable({
   onEditLine: (line: ParsedRecipeLine, ingredientId: string | null) => void
   onSetWeight: (line: ParsedRecipeLine, ingredientId: string | null) => void
   /** A pantry pick from the alert's picker, which also renames the line. */
-  onLinked: (match: PriceLineMatch) => void
+  onLinked?: (match: PriceLineMatch) => void
   /** Batch multiplier applied to what is shown, never to what is stored. */
   factor?: number
   /** Rows are read-only: the recipe is locked, or the quantities on screen are

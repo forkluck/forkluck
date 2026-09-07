@@ -56,7 +56,12 @@ app/(app)/<page>.tsx        Server Component; calls requireUser() first
 ```
 
 Pages are Server Components and are dynamic: the client sends `cache:
-"no-store"`, because every response is scoped to one authenticated user.
+"no-store"`, because every response is scoped to one authenticated user. The
+browser keeps a page it has visited for thirty seconds (`staleTimes.dynamic`
+in `next.config.ts`), so a list comes back at once after a detour into one of
+its rows; every Server Action revalidates, which purges that copy, and
+`useRefresh` refetches the rest. There is no `loading.tsx`: a navigation keeps
+the old page on screen and the shell dims it once the wait passes 200 ms.
 
 Five payloads — session, ingredients, recipes, recipe cost diff, and sales
 overview — go through

@@ -26,6 +26,13 @@ vi.mock("@/app/(app)/products/actions", () => ({
 vi.mock("@/app/(app)/menu/actions", () => ({ priceMenuComponent: vi.fn() }))
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh, replace }) }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({
+    go: async (href: string, options?: { replace?: boolean }) => {
+      if (options?.replace) replace(href)
+      return true
+    },
+    pending: false,
+  }),
   GuardedLink: ({
     href,
     children,
@@ -305,7 +312,8 @@ describe("Product editor", () => {
     await waitFor(() =>
       expect(untrackSalesVariant).toHaveBeenCalledWith("variant-1")
     )
-    expect(refresh).toHaveBeenCalled()
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("sends the scalars and the components in one patch", async () => {
@@ -340,7 +348,7 @@ describe("Product editor", () => {
         COMPONENTS_PATCH[2],
       ],
     })
-    expect(refresh).toHaveBeenCalledTimes(1)
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("adds a second SKU with its units per sale", async () => {
@@ -592,7 +600,7 @@ describe("Product editor", () => {
       soldOn: "2026-08-27",
       quantity: 3,
     })
-    expect(refresh).toHaveBeenCalled()
+    expect(refresh).not.toHaveBeenCalled()
   })
 })
 

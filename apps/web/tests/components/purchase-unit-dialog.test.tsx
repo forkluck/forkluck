@@ -38,6 +38,13 @@ vi.mock("@/components/ui/toast", () => ({
 }))
 
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({
+    go: async (href: string) => {
+      routerPush(href)
+      return true
+    },
+    pending: false,
+  }),
   useNavigationBlocker: () => ({
     setIsBlocked: vi.fn(),
     allowNavigation: vi.fn(),

@@ -118,22 +118,39 @@ pressed, from the press until the screen reflects the result. The button takes
 `LoadingRegion`; a filter pill that navigates takes `pending` from the
 transition that carries its `router.replace`.
 
-`router.refresh()` is part of that wait, not the end of it. It is only ever
-called through `useRefresh`, which runs it inside a transition: `pending`
-stays up until the new payload has committed, and `await refresh()` is the
-moment a dialog may close or a toast may say the thing is done. Before this
-was enforced, sixty sites called it bare, the spinner stopped when the action
-answered, and the old rows sat on screen for the round trip that followed,
-which is the moment that reads as "did that work?".
+Nothing on screen changes before the server has answered. A delete keeps its
+row and its confirmation, spinning, until the response; then, in one order
+everywhere: the rows change, the dialog closes, a toast says what happened.
+Ghost's admin keeps that order and it is why its deletes read as done rather
+than as instant. The app once hid the row and closed the dialog before the
+request went out, which felt free, then reversed itself on failure.
 
-Inside an async React transition, call `void refresh()` rather than awaiting
-it: React joins their pending work, so awaiting the refresh there makes the
-transition wait on itself. Follow-up UI work can use an unreturned `.then()`.
+A Server Action that calls `revalidatePath` (or `next/cache`'s `refresh`)
+answers with the re-rendered route: its response is the refresh. Do not call
+`refresh()` after such an action; that was a second full Next-to-Django
+render with the spinner still up on a screen that was already right. The
+action's rows land in a transition, so the wait belongs in one too: run the
+handler in `startTransition(async () => …)`, and start the transition again
+for the updates that follow the `await` (React loses the transition's scope
+across an await), so the dialog close and the toast commit with the rows.
+React holds every update made inside an async transition until the action
+has finished, so the state that shows the wait (a row's busy mark, the
+Saving pill) is set before entering it; the transition's own `isPending`
+needs no such care.
+
+`useRefresh` is for the actions that do not revalidate (auth, Stripe, a few
+loaders). It runs `router.refresh()` inside a transition: `pending` stays up
+until the new payload has committed, and `await refresh()` is the moment a
+dialog may close or a toast may say the thing is done. `router.refresh()` is
+never called bare. Inside an async transition, call `void refresh()` rather
+than awaiting it: React joins their pending work, so awaiting the refresh
+there makes the transition wait on itself; follow-up work can use an
+unreturned `.then()`.
 
 A `useTransition()` whose `isPending` is discarded is a bug, not a shortcut.
 An action chosen from a menu reports back, with a toast or a row that visibly
 changed, because the menu that closed is the only feedback the click had.
-`apps/web/tests/feedback-pins.test.ts` holds both lines.
+`apps/web/tests/feedback-pins.test.ts` holds these lines.
 
 ## Control heights
 

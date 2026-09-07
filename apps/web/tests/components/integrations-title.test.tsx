@@ -13,6 +13,7 @@ vi.mock("next/navigation", () => ({
 }))
 vi.mock("next/link", () => ({ useLinkStatus: () => ({ pending: false }) }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

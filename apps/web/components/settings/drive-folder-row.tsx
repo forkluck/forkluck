@@ -41,7 +41,6 @@ import { StatusDot } from "@/components/ui/status-dot"
 import { useToast } from "@/components/ui/toast"
 import type { DriveFileRow, DriveFolderPayload } from "@/lib/backend/types"
 import { relativeAgo } from "@/lib/connector-status"
-import { useRefresh } from "@/hooks/use-refresh"
 
 const LOGO = { src: "/integrations/google-drive.svg", alt: "" }
 
@@ -65,7 +64,6 @@ export function DriveFolderRow({
   newCount: number
   serviceAccountEmail: string | null
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const [now] = React.useState(() => Date.now())
   const [link, setLink] = React.useState("")
@@ -104,7 +102,9 @@ export function DriveFolderRow({
         toast.add({ title: result.error, type: "error" })
         return
       }
-      void refresh().then(() => {
+      // After an await React has lost the transition's scope; started again,
+      // these land with the row the action answered with.
+      startTransition(() => {
         setLink("")
         setConnectOpen(false)
         toast.add({ title: `Connected ${result.folder.folderName}` })
@@ -118,7 +118,7 @@ export function DriveFolderRow({
         toast.add({ title: result.error, type: "error" })
         return
       }
-      void refresh().then(() => {
+      startTransition(() => {
         setDisconnectOpen(false)
         toast.add({ title: "Drive folder disconnected" })
       })
@@ -134,7 +134,6 @@ export function DriveFolderRow({
         toast.add({ title: result.error, type: "error" })
         return
       }
-      void refresh()
     })
 
   if (!folder) {
@@ -292,27 +291,25 @@ export function DriveFileLists({
   failed: DriveFileRow[]
   skipped: DriveFolderPayload["skipped"]
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   // The button whose write is in flight, as `<fileId>:<verb>`: it spins until
-  // the refreshed lists show where the file went, and its neighbour waits.
-  const [busy, setBusy] = React.useState<string | null>(null)
+  // the lists the action answered with show where the file went, which is
+  // what the transition's pending covers, and its neighbour waits.
+  const [running, startRun] = React.useTransition()
+  const [runningKey, setRunningKey] = React.useState<string | null>(null)
+  const busy = running ? runningKey : null
 
-  const run = async (
+  const run = (
     key: string,
     write: () => Promise<{ ok: true } | { error: string }>
   ) => {
-    setBusy(key)
-    try {
+    // Before the transition: React holds updates made inside an async
+    // transition until the action has finished.
+    setRunningKey(key)
+    startRun(async () => {
       const result = await write()
-      if ("error" in result) {
-        toast.add({ title: result.error, type: "error" })
-        return
-      }
-      await refresh()
-    } finally {
-      setBusy(null)
-    }
+      if ("error" in result) toast.add({ title: result.error, type: "error" })
+    })
   }
   /** Back in line; the next poll reads it again. */
   const retry = (driveFileId: string) =>

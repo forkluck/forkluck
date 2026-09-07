@@ -27,7 +27,6 @@ import { IntegrationRow } from "@/components/settings/integration-row"
 import { useConnectorRun } from "@/components/settings/use-connector-run"
 import { StatusDot } from "@/components/ui/status-dot"
 import { connectorRow } from "@/lib/connector-status"
-import { useRefresh } from "@/hooks/use-refresh"
 import type {
   ConnectorConnection,
   ConnectorProvider,
@@ -69,7 +68,6 @@ function ConnectorAuthorizationCallback({
   code: string | null
   error: string | null
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const handled = React.useRef(false)
 
@@ -106,12 +104,10 @@ function ConnectorAuthorizationCallback({
           toast.add({ title: result.error, type: "error" })
           return
         }
-        // URL cleanup must not navigate to a prefetched, disconnected snapshot.
-        await refresh()
         toast.add({ title: "Supplier connected" })
       }
     )
-  }, [code, error, refresh, state, toast])
+  }, [code, error, state, toast])
 
   return null
 }
@@ -123,13 +119,15 @@ function ConnectorCard({
   provider: ConnectorProvider
   connection: ConnectorConnection | null
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const [now, setNow] = React.useState(() => Date.now())
   const [connecting, startConnect] = React.useTransition()
   const [syncing, startSync] = React.useTransition()
   const [disconnectOpen, setDisconnectOpen] = React.useState(false)
-  const [disconnecting, setDisconnecting] = React.useState(false)
+  // A transition: "Disconnecting…" holds until the card the action answered
+  // with reads as disconnected. After an await React has lost the
+  // transition's scope, so the close and the toast start it again.
+  const [disconnecting, startDisconnect] = React.useTransition()
   const liveRun = useConnectorRun(connection?.latestRun ?? null)
 
   React.useEffect(() => {
@@ -164,24 +162,22 @@ function ConnectorCard({
         return
       }
       toast.add({ title: `${provider.displayName} sync started` })
-      void refresh()
     })
   }
 
-  const disconnect = async () => {
+  const disconnect = () => {
     if (!connection || disconnecting) return
-    setDisconnecting(true)
-    const result = await disconnectConnector(connection.id)
-    if ("error" in result) {
-      setDisconnecting(false)
-      toast.add({ title: result.error, type: "error" })
-      return
-    }
-    // Still "Disconnecting…" until the card reads as disconnected.
-    await refresh()
-    setDisconnecting(false)
-    setDisconnectOpen(false)
-    toast.add({ title: `${provider.displayName} disconnected` })
+    startDisconnect(async () => {
+      const result = await disconnectConnector(connection.id)
+      if ("error" in result) {
+        toast.add({ title: result.error, type: "error" })
+        return
+      }
+      startDisconnect(() => {
+        setDisconnectOpen(false)
+        toast.add({ title: `${provider.displayName} disconnected` })
+      })
+    })
   }
 
   const primary =

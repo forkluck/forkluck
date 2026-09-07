@@ -1,11 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { ExternalLink, Trash2 } from "lucide-react"
 
 import { deleteInvoice } from "@/app/(app)/invoices/actions"
-import { useNavigationBlocker } from "@/components/navigation-blocker"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { MenuItem, MenuLinkItem } from "@/components/ui/menu"
@@ -57,9 +56,8 @@ export function InvoiceChrome({
   listHref?: string
   children: React.ReactNode
 }) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
-  const { allowNavigation } = useNavigationBlocker()
   const {
     dirty,
     setDirty,
@@ -89,8 +87,7 @@ export function InvoiceChrome({
     }
     setConfirmDelete(false)
     setDirty(false)
-    allowNavigation()
-    router.push(listHref)
+    void go(listHref, { force: true })
   }
 
   return (

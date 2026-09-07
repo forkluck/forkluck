@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { ChefHat, ChevronDown, ChevronUp, LogOut } from "lucide-react"
 
 import { leaveKitchen } from "@/app/(app)/settings/actions"
@@ -16,6 +15,7 @@ import {
 import { useToast } from "@/components/ui/toast"
 import { writeKitchenCookie, type ActiveKitchen } from "@/lib/kitchen"
 import { useRefresh } from "@/hooks/use-refresh"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 const ROLE_LABEL = { viewer: "Viewer", editor: "Editor" } as const
 
@@ -39,7 +39,7 @@ export function KitchenSwitcher({
   active: ActiveKitchen | null
   onNavigate?: () => void
 }) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const { refresh } = useRefresh()
   const toast = useToast()
   const [confirmLeave, setConfirmLeave] = React.useState(false)
@@ -50,7 +50,7 @@ export function KitchenSwitcher({
   const pick = (kitchen: ActiveKitchen | null) => {
     writeKitchenCookie(kitchen?.ownerId ?? null)
     onNavigate?.()
-    router.push("/recipes")
+    void go("/recipes", { force: true })
     void refresh()
   }
 
@@ -143,8 +143,7 @@ export function KitchenSwitcher({
               // drop the reader out of a kitchen they still belong to.
               writeKitchenCookie(null)
               setConfirmLeave(false)
-              router.push("/recipes")
-              void refresh()
+              void go("/recipes", { force: true })
             } finally {
               setPending(false)
             }

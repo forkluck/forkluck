@@ -18,18 +18,8 @@ const PendingTab = React.createContext<{
   setPendingHref: React.Dispatch<React.SetStateAction<string | null>>
 }>({ pendingHref: null, setPendingHref: () => {} })
 
-function SectionTabs({
-  className,
-  onPendingChange,
-  ...props
-}: React.ComponentProps<"div"> & {
-  /** Lets the screen dim the section the tabs switch until the new one lands. */
-  onPendingChange?: (pending: boolean) => void
-}) {
+function SectionTabs({ className, ...props }: React.ComponentProps<"div">) {
   const [pendingHref, setPendingHref] = React.useState<string | null>(null)
-  React.useEffect(() => {
-    onPendingChange?.(pendingHref !== null)
-  }, [pendingHref, onPendingChange])
   return (
     <PendingTab.Provider value={{ pendingHref, setPendingHref }}>
       <div

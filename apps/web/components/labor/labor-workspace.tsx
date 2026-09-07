@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import * as React from "react"
 import {
   Archive,
@@ -56,6 +55,7 @@ import { formatCents } from "@/lib/money"
 import { csvCell } from "@/lib/csv"
 import { overtimeWeekLine } from "@/lib/labor/overtime"
 import { cn } from "@/lib/utils"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 const employeeHelper = dataTableColumns<EmployeeRow>()
 
@@ -148,7 +148,7 @@ export function LaborWorkspace({
   /** Today in the business timezone, as `YYYY-MM-DD`. */
   today: string
 }) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const [importOpen, setImportOpen] = React.useState(false)
   const [historyOpen, setHistoryOpen] = React.useState(false)
@@ -426,7 +426,7 @@ export function LaborWorkspace({
           emptyMessage="No employees match your search."
           rowClassName={(row) => cn("h-[52px]", !row.isActive && "opacity-60")}
           segmentFilters={statusFilters}
-          onRowClick={(employee) => router.push(employeeHref(employee.id))}
+          onRowClick={(employee) => void go(employeeHref(employee.id))}
           toolbarLeading={
             <LaborPeriodControls
               startDate={startDate}

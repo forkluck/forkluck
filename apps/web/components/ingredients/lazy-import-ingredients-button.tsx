@@ -7,6 +7,7 @@ import { Download } from "lucide-react"
 import { IngredientOptionsLoadingDialog } from "@/components/ingredients/ingredient-options-loading-dialog"
 import { Button } from "@/components/ui/button"
 import { useIngredientOptions } from "@/hooks/use-ingredient-options"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 // Its own boundary, so a chunk still on its way never suspends up to the
 // route's full-page spinner; reaching for the button fetches it early.
@@ -22,6 +23,7 @@ const prefetchImport = () =>
 
 export function LazyImportIngredientsButton() {
   const [open, setOpen] = React.useState(false)
+  const shown = useDialogTarget(open ? true : null)
   const { options, status, load } = useIngredientOptions()
 
   const show = () => {
@@ -40,15 +42,15 @@ export function LazyImportIngredientsButton() {
         <Download strokeWidth={1.8} aria-hidden="true" />
         Import ingredients
       </Button>
-      {open && status === "ready" ? (
+      {shown && status === "ready" ? (
         <ImportIngredientsDialog
           ingredients={options}
-          open
+          open={open}
           onOpenChange={setOpen}
         />
-      ) : open ? (
+      ) : shown ? (
         <IngredientOptionsLoadingDialog
-          open
+          open={open}
           error={status === "error"}
           onOpenChange={setOpen}
           onRetry={() => void load()}

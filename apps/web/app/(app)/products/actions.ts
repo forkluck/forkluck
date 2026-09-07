@@ -667,6 +667,31 @@ export async function untrackSalesVariant(
   }
 }
 
+/** Every selected product in turn, one revalidation at the end; see
+ *  deleteRecipes. */
+export async function deleteMenuItems(
+  ids: string[]
+): Promise<{ ok: true } | { error: string; deleted: number }> {
+  const parsed = z.array(z.string().uuid()).min(1).max(200).safeParse(ids)
+  if (!parsed.success)
+    return { error: "Product ids look malformed.", deleted: 0 }
+  let deleted = 0
+  try {
+    for (const id of parsed.data) {
+      await djangoAction("delete-sales-product", { id })
+      deleted += 1
+    }
+    return { ok: true }
+  } catch (cause) {
+    return {
+      error: actionErrorMessage(cause, "Couldn’t delete those products."),
+      deleted,
+    }
+  } finally {
+    if (deleted) revalidateSales()
+  }
+}
+
 export async function deleteMenuItem(
   id: string
 ): Promise<{ ok: true } | { error: string }> {

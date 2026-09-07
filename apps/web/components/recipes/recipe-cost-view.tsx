@@ -29,7 +29,6 @@ import {
 import { parseRecipeText } from "@/lib/recipe"
 import { useRecipeEdit } from "@/components/recipes/recipe-chrome"
 import { useCommit } from "@/hooks/use-commit"
-import { useRefresh } from "@/hooks/use-refresh"
 import type { YieldUnit } from "@/lib/units"
 import { servingUnitOptions, unitShort, unitWord } from "@/lib/unit-registry"
 import { cn } from "@/lib/utils"
@@ -99,7 +98,6 @@ export function RecipeCostView({
   autoPrepTimeEnabled: boolean
   priceList: PriceListEntry[]
 }) {
-  const { refresh } = useRefresh()
   const { foodCostTarget, wagePerHourCents } = useBusinessSettings()
   const { batch, setBatch, registerSave, setDirty, setSaveState } =
     useRecipeEdit()
@@ -301,7 +299,6 @@ export function RecipeCostView({
   const toast = useToast()
   const commit = useCommit({
     onSaveState: setSaveState,
-    onSaved: () => refresh(),
   })
   const persistCosting = (next: {
     servingAmount: number | null
@@ -506,7 +503,6 @@ export function RecipeCostView({
         }
         labor={labor}
         priceList={priceList}
-        onLinked={() => refresh()}
         fixUnitHref={
           canEditCosting
             ? `/recipes/${recipePublicId}/recipe#uom-equivalency`
