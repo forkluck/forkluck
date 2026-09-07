@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  batchUnitOptions,
   countedAsEach,
   normalizePackUnit,
   PACK_UNIT_SLUGS,
@@ -130,6 +131,55 @@ describe("countedAsEach", () => {
     expect(countedAsEach("g")).toBe("g")
     expect(countedAsEach("portion")).toBe("portion")
     expect(countedAsEach(null)).toBeNull()
+  })
+})
+
+describe("batchUnitOptions", () => {
+  const slugs = (recipe: Parameters<typeof batchUnitOptions>[0]) =>
+    batchUnitOptions(recipe).map((option) => option.slug)
+
+  it("offers the families the batch is stated in, convertible units only", () => {
+    const offered = slugs({
+      batchMeasures: [
+        { amount: 20, unit: "kg" },
+        { amount: 40, unit: "pcs" },
+      ],
+      servingAmount: null,
+      servingUnit: null,
+    })
+    expect(offered).toContain("g")
+    expect(offered).toContain("lb")
+    expect(offered).toContain("each")
+    expect(offered).toContain("dozen")
+    expect(offered).not.toContain("ml")
+    expect(offered).not.toContain("clove")
+    expect(offered).not.toContain("portion")
+  })
+
+  it("adds portion and serving when the recipe has a portion to divide by", () => {
+    expect(
+      slugs({
+        batchMeasures: [{ amount: 5, unit: "kg" }],
+        servingAmount: 250,
+        servingUnit: "g",
+      })
+    ).toEqual(expect.arrayContaining(["portion", "serving"]))
+    expect(
+      slugs({
+        batchMeasures: [
+          { amount: 5, unit: "kg" },
+          { amount: 10, unit: "portion" },
+        ],
+        servingAmount: null,
+        servingUnit: null,
+      })
+    ).toContain("portion")
+  })
+
+  it("offers nothing for a recipe without a yield", () => {
+    expect(
+      slugs({ batchMeasures: [], servingAmount: null, servingUnit: null })
+    ).toEqual([])
   })
 })
 

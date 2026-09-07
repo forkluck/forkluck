@@ -92,9 +92,11 @@ never change with it.
 
 Database constraints cover the row-local shape: a positive multiplier and an
 attribution percent within 0–100. A product component names exactly one recipe,
-ingredient or product; a product component carries no unit, is unique per
-`(product, component_product)`, is never the product itself, and the save
-action refuses a cycle at any depth. `SalesCatalogItem` keeps provider catalog metadata (`sku`, names, category,
+ingredient or product. An ingredient component requires a unit; a product
+component carries none, is unique per `(product, component_product)`, is never
+the product itself, and the save action refuses a cycle at any depth; a recipe
+component's unit is optional, blank meaning whole batches per sold product and
+a unit meaning that much of the recipe batch. `SalesCatalogItem` keeps provider catalog metadata (`sku`, names, category,
 active state, last-seen timestamp) at the same user/channel/account/match-key
 scope.
 

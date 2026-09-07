@@ -33,7 +33,11 @@ import {
   TableHeaderRow,
   TableRow,
 } from "@/components/ui/table"
-import { recipeUnitOptions } from "@/lib/unit-registry"
+import {
+  batchUnitOptions,
+  recipeUnitOptions,
+  unitShort,
+} from "@/lib/unit-registry"
 import type {
   MenuIngredientOption,
   MenuProductOption,
@@ -52,9 +56,15 @@ function targetTab(target: ComponentTarget): Tab {
   return target.nonEdible ? "Supplies" : "Ingredients"
 }
 
-/** The quiet second column: what the row is, or what an ingredient is bought in. */
+/** The quiet second column: what the row is, what a batch of it makes, or
+    what an ingredient is bought in. */
 function targetDetail(target: ComponentTarget) {
-  if (target.kind === "recipe") return "Recipe"
+  if (target.kind === "recipe") {
+    const batch = target.recipe.batchMeasures[0]
+    return batch
+      ? `Recipe · ${batch.amount.toLocaleString(undefined, { maximumFractionDigits: 3 })} ${unitShort(batch.unit)}/batch`
+      : "Recipe"
+  }
   if (target.kind === "product") return "Product"
   return target.purchaseUnit ?? ""
 }
@@ -250,19 +260,28 @@ export function AddComponentsDialog({
                               }
                               className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none"
                             />
-                            {target.kind === "ingredient" ? (
+                            {target.kind === "product" ? null : (
                               <UnitCombobox
                                 label={target.name}
                                 value={draft.unit}
                                 onChange={(unit) =>
                                   patch(key, { unit: unit ?? "" })
                                 }
-                                options={UNIT_OPTIONS}
+                                options={
+                                  target.kind === "recipe"
+                                    ? batchUnitOptions(target.recipe)
+                                    : UNIT_OPTIONS
+                                }
+                                emptyLabel={
+                                  target.kind === "recipe"
+                                    ? "batches"
+                                    : undefined
+                                }
                                 variant="chip"
                                 className="mr-1"
                                 popupClassName="w-[205px]"
                               />
-                            ) : null}
+                            )}
                           </div>
                         ) : null}
                       </TableCell>

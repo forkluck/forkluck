@@ -28,7 +28,10 @@ product catalog or historical sales.
 
 **Product composition** — the product's current linked recipe/material graph,
 expanded at read time with canonical UOM, yield, and efficiency semantics. It
-is not a historical snapshot and does not mutate sales facts.
+is not a historical snapshot and does not mutate sales facts. A recipe
+component's `unit` is blank for whole batches per sold product, or a unit for a
+measured share of the recipe batch (500 g of a 20 kg batch), resolved against
+the recipe's yield the way a nested recipe line is.
 
 **Daily consumption** — physical quantity attributed to a product or material
 for a workspace-local calendar day after canonical line interpretation, variant
@@ -1004,7 +1007,11 @@ variance switch compares against; only a rebaselining `save-menu` moves it.
 
 `menu-sources/` returns `{recipes, ingredients, products, currencyCode}`:
 every recipe the workspace owns with `ingredientCents` (cost per unit of sale,
-null when the recipe cannot be costed) and `suffix`, the label for that unit,
+null when the recipe cannot be costed), `suffix`, the label for that unit,
+`batchMeasures`, one batch in every unit its yield or equivalency states (the
+yield first, empty without one), and `servingAmount`/`servingUnit`, the saved
+portion, so a product's composition editor can offer the units a recipe
+component may be measured in and say what a batch makes,
 plus every ingredient as `{id, name, purchaseUnit}`, by name, plus every active
 product as `{id, publicId, name, componentProductIds}`, by name.
 `componentProductIds` are the products that product already contains, so a

@@ -572,4 +572,7 @@ def menu_recipe_json(row: JsonObject) -> JsonObject:
         "menuPriceCents": row["menuPriceCents"],
         "ingredientCents": row["ingredientCents"],
         "suffix": row["suffix"],
+        "batchMeasures": row["batchMeasures"],
+        "servingAmount": row["servingAmount"],
+        "servingUnit": row["servingUnit"],
     }

@@ -189,6 +189,9 @@ const RECIPES: MenuRecipeOption[] = [
     menuPriceCents: null,
     ingredientCents: 300,
     suffix: "per batch",
+    batchMeasures: [],
+    servingAmount: null,
+    servingUnit: null,
   },
 ]
 

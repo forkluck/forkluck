@@ -21,6 +21,7 @@ from .models import (
     IngredientConversion,
     Preparation,
     Recipe,
+    RecipeEquivalency,
     RecipeItem,
     SalesCatalogItem,
     SalesChannelConnection,
@@ -431,6 +432,64 @@ class ProductIdentitySaveTests(TestCase):
                 },
             )
 
+    def test_components_reject_unknown_recipe_unit(self) -> None:
+        recipe = Recipe.objects.create(user=self.user, title="Hummus", code="HUM-1")
+        with self.assertRaisesMessage(ValueError, "Invalid unit"):
+            action_save_sales_product(
+                self.user,
+                {
+                    "name": "Tub",
+                    "components": [
+                        {
+                            "recipeId": str(recipe.id),
+                            "ingredientId": None,
+                            "quantity": 500,
+                            "unit": "furlong",
+                            "position": 0,
+                        }
+                    ],
+                },
+            )
+
+    def test_a_recipe_component_saves_its_unit(self) -> None:
+        recipe = Recipe.objects.create(user=self.user, title="Hummus", code="HUM-1")
+        action_save_sales_product(
+            self.user,
+            {
+                "name": "Tub 500 g",
+                "components": [
+                    {
+                        "recipeId": str(recipe.id),
+                        "ingredientId": None,
+                        "quantity": 500,
+                        "unit": "g",
+                        "position": 0,
+                    }
+                ],
+            },
+        )
+        row = SalesProductComponent.objects.get(recipe=recipe)
+        self.assertEqual((row.quantity, row.unit), (Decimal("500"), "g"))
+
+    def test_legacy_recipe_links_keep_a_measured_unit(self) -> None:
+        # The menu dialog still sends `recipeLinks`, which has no unit; a link
+        # it re-sends must not silently turn a 500 g tub into 500 batches.
+        product = self.product()
+        recipe = Recipe.objects.create(user=self.user, title="Hummus", code="HUM-1")
+        SalesProductComponent.objects.create(
+            product=product, recipe=recipe, quantity=Decimal("500"), unit="g"
+        )
+        action_save_sales_product(
+            self.user,
+            {
+                "id": str(product.id),
+                "expectedEditVersion": 0,
+                "recipeLinks": [{"recipeId": str(recipe.id), "quantity": 2}],
+            },
+        )
+        row = SalesProductComponent.objects.get(product=product, recipe=recipe)
+        self.assertEqual((row.quantity, row.unit), (Decimal("2"), "g"))
+
 
 class SalesProductComponentConstraintTests(TestCase):
     def setUp(self) -> None:
@@ -460,15 +519,25 @@ class SalesProductComponentConstraintTests(TestCase):
             ),
             SalesProductComponent(product=self.product, quantity=1),
             SalesProductComponent(
-                product=self.product, recipe=self.recipe, quantity=1, unit="g"
-            ),
-            SalesProductComponent(
                 product=self.product, ingredient=self.ingredient, quantity=1
             ),
         ):
             with self.subTest(row=row):
                 with self.assertRaises(ValidationError):
                     row.full_clean()
+
+    def test_a_recipe_component_may_carry_a_unit(self) -> None:
+        # Blank is whole batches; a unit is that much of the batch. Both are
+        # valid rows, in validation and at the database.
+        for unit in ("", "g"):
+            with self.subTest(unit=unit):
+                row = SalesProductComponent(
+                    product=self.product, recipe=self.recipe, quantity=500, unit=unit
+                )
+                row.full_clean()
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=self.recipe, quantity=500, unit="g"
+        )
 
     def test_quantity_and_target_uniqueness_are_database_protected(self) -> None:
         SalesProductComponent.objects.create(
@@ -631,6 +700,96 @@ class SalesProductCostTests(TestCase):
         )
         payload = self.detail()
         self.assertEqual(payload["costCents"], 100)
+
+    def batch(self, title: str, grams_of_butter: int, **fields) -> Recipe:
+        """A recipe whose whole batch costs half a cent per gram of butter."""
+        recipe = Recipe.objects.create(user=self.user, title=title, **fields)
+        RecipeItem.objects.create(
+            recipe=recipe,
+            kind=RecipeItem.INGREDIENT,
+            position=0,
+            quantity=grams_of_butter,
+            unit="g",
+            ingredient=self.ingredient,
+        )
+        return recipe
+
+    def test_a_measured_recipe_component_costs_its_share_of_the_batch(self) -> None:
+        # 20 kg of batch costs 10000 cents; a 500 g tub is one fortieth of it.
+        recipe = self.batch("Hummus", 20000, yield_amount=20, yield_unit="kg")
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=500, unit="g"
+        )
+        payload = self.detail()
+        self.assertEqual(payload["costCents"], 250)
+        self.assertEqual(payload["costIssues"], [])
+
+    def test_a_counted_recipe_component_divides_a_count_yield(self) -> None:
+        recipe = self.batch("Rolls", 4800, yield_amount=48, yield_unit="pcs")
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=12, unit="each"
+        )
+        self.assertEqual(self.detail()["costCents"], 600)
+
+    def test_a_portion_component_divides_by_the_saved_portion(self) -> None:
+        recipe = self.batch(
+            "Soup",
+            5000,
+            yield_amount=5,
+            yield_unit="kg",
+            serving_amount=Decimal("250"),
+            serving_unit="g",
+        )
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=1, unit="portion"
+        )
+        self.assertEqual(self.detail()["costCents"], 125)
+
+    def test_an_equivalency_counting_portions_wins_over_the_saved_portion(
+        self,
+    ) -> None:
+        recipe = self.batch(
+            "Soup",
+            5000,
+            yield_amount=5,
+            yield_unit="kg",
+            serving_amount=Decimal("250"),
+            serving_unit="g",
+        )
+        RecipeEquivalency.objects.create(
+            recipe=recipe,
+            count_amount=Decimal("10"),
+            count_unit="portion",
+            standard=False,
+        )
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=1, unit="portion"
+        )
+        self.assertEqual(self.detail()["costCents"], 250)
+
+    def test_a_family_the_yield_does_not_state_is_unresolved_not_zero(self) -> None:
+        recipe = self.batch("Rolls", 4800, yield_amount=12, yield_unit="pcs")
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=500, unit="g"
+        )
+        payload = self.detail()
+        self.assertIsNone(payload["costCents"])
+        self.assertEqual(
+            payload["costIssues"],
+            [{"code": "unresolved-yield", "path": ["Rolls"], "detail": "mass"}],
+        )
+
+    def test_a_measured_component_of_a_yield_less_recipe_is_unresolved(self) -> None:
+        recipe = self.batch("No-yield batch", 100)
+        SalesProductComponent.objects.create(
+            product=self.product, recipe=recipe, quantity=50, unit="g"
+        )
+        payload = self.detail()
+        self.assertIsNone(payload["costCents"])
+        self.assertEqual(
+            payload["costIssues"],
+            [{"code": "missing-yield", "path": ["No-yield batch"], "detail": None}],
+        )
 
     def test_a_costed_product_reports_no_issues(self) -> None:
         SalesProductComponent.objects.create(

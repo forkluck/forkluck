@@ -453,6 +453,16 @@ def _recipe_batch_grams(
     return None
 
 
+def _batch_measures_json(recipe: Recipe) -> list[JsonObject]:
+    """One finished batch in every UOM it is stated in, for the product
+    composition editor's unit picker and its "1 batch = 20 kg" hint. The same
+    pairs the batch basis costs with, so the picker and the cost agree."""
+    return [
+        {"amount": amount, "unit": unit}
+        for amount, unit in _recipe_measure_pairs(recipe)
+    ]
+
+
 def _recipe_portion_divisor(recipe: Recipe) -> tuple[float, str] | None:
     """How many saved commercial portions one finished batch contains."""
     amount = recipe.serving_amount
@@ -2793,8 +2803,22 @@ def menu_items_queryset(menu: Menu):
 
 
 def menu_recipe_rows(model: RecipeHealthReadModel) -> list[JsonObject]:
-    """Every owned recipe costed in one pass; needs a dashboard read model."""
-    return model.rows(model.all_recipes)
+    """Every owned recipe costed in one pass; needs a dashboard read model.
+
+    Also carries what a batch makes and the saved portion, which the product
+    composition editor measures a recipe component against and the dashboard
+    row has no use for.
+    """
+    recipes = {str(recipe.id): recipe for recipe in model.all_recipes}
+    rows = model.rows(model.all_recipes)
+    for row in rows:
+        recipe = recipes[row["id"]]
+        row["batchMeasures"] = _batch_measures_json(recipe)
+        row["servingAmount"] = (
+            float(recipe.serving_amount) if recipe.serving_amount else None
+        )
+        row["servingUnit"] = recipe.serving_unit or None
+    return rows
 
 
 def menu_ingredient_rows(user: User) -> list[JsonObject]:

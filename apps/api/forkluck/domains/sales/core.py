@@ -54,6 +54,8 @@ from ..shared.physical_expansion import (
     expand_recipe,
     issue_json as _cost_issue_json,
     purchase_quantity,
+    recipe_batch_basis,
+    share_of_batch,
 )
 from ..shared.periods import trend_comparison_window
 from ..shared.values import (
@@ -814,10 +816,51 @@ def _recipe_unit_cost(
     if issues:
         return None, tuple(issues)
 
-    # A product component quantity is batches per sold product.  Unlike a
-    # recipe line nested inside another recipe, it never means a share of the
-    # component recipe's yield, so the full batch cost is the unit cost here.
+    # One whole batch. How much of it one sold product takes is the
+    # component's business (`_component_batches`), which is also why a
+    # yield-less recipe still costs here: a blank-unit row counts whole
+    # batches and never needs the yield.
     return total, ()
+
+
+PORTION_UNITS = frozenset({"portion", "serving"})
+
+
+def _component_batches(
+    component: SalesProductComponent, node: RecipeNode | None
+) -> tuple[float | None, tuple[ExpansionIssue, ...]]:
+    """How many batches of the component recipe one sold product takes.
+
+    A blank unit keeps the stored quantity as whole batches. A unit makes the
+    quantity a measured share of the recipe batch, resolved by the same rule
+    a recipe line nested inside another recipe uses; "portion" and "serving"
+    fall back to the recipe's saved portion when no equivalency counts them.
+    Cost and forecast both call this, so a 500 g tub of a 20 kg batch costs
+    and plans as the same fortieth.
+    """
+    if not component.unit:
+        return float(component.quantity), ()
+    if node is None:
+        return None, (ExpansionIssue("missing-recipe"),)
+    batch = recipe_batch_basis(node.yield_amount, node.yield_unit, node.equivalency)
+    if batch.issues:
+        return None, batch.issues
+    amount = float(component.quantity)
+    share = share_of_batch(amount, component.unit, batch)
+    if share.factor is None and component.unit in PORTION_UNITS:
+        recipe = component.recipe
+        if recipe.serving_amount and recipe.serving_unit:
+            share = share_of_batch(
+                amount * float(recipe.serving_amount), recipe.serving_unit, batch
+            )
+    if share.factor is None:
+        # Not the share's own `unresolved-conversion`: on the product page
+        # that code reads as an ingredient's problem, and this is the recipe's
+        # yield not stating the family the product is sold in.
+        return None, (
+            ExpansionIssue("unresolved-yield", detail=unit_family(component.unit)),
+        )
+    return share.factor, ()
 
 
 def cost_walker(
@@ -896,15 +939,19 @@ def cost_walker(
                     ingredient.purchase_cost_cents
                 )
             elif component.recipe_id:
+                batches, share_issues = _component_batches(
+                    component, nodes.get(str(component.recipe_id))
+                )
                 unit_cost, recipe_issues = _recipe_unit_cost(
                     component.recipe, nodes, ingredients
                 )
-                if unit_cost is None:
+                if batches is None or unit_cost is None:
                     issues.extend(
-                        issue.at(component.recipe.title) for issue in recipe_issues
+                        issue.at(component.recipe.title)
+                        for issue in (*share_issues, *recipe_issues)
                     )
                     continue
-                total += float(component.quantity) * unit_cost
+                total += batches * unit_cost
             elif component.component_product_id:
                 member_id = component.component_product_id
                 walked = (*path, product_id)
@@ -1983,14 +2030,6 @@ class InterpretedComponent:
 
 
 @dataclass(frozen=True)
-class RecipeComponent:
-    recipe: Recipe
-    product: SalesProduct
-    quantity: Decimal
-    source: str
-
-
-@dataclass(frozen=True)
 class ProductContribution:
     """One product view of a source sales line.
 
@@ -2129,39 +2168,6 @@ def interpreted_components(line: SalesLine) -> list[InterpretedComponent]:
         )
         for item in interpret_line(line)
     ]
-
-
-def interpreted_recipe_components(line: SalesLine) -> list[RecipeComponent]:
-    """Expand product contributions through recipe components only."""
-    result: list[RecipeComponent] = []
-    for component in interpreted_components(line):
-        links = component.product.components
-        # Chaining select_related() onto the manager clones the queryset and
-        # drops whatever the caller prefetched, re-querying once per component.
-        # Read the cache where it exists; join the recipe where it does not, so
-        # an un-prefetched caller still pays one query rather than one per link.
-        cached = "components" in getattr(
-            component.product, "_prefetched_objects_cache", {}
-        )
-        for link in links.all() if cached else links.select_related("recipe"):
-            if link.recipe_id is None:
-                continue
-            result.append(
-                RecipeComponent(
-                    recipe=link.recipe,
-                    product=component.product,
-                    quantity=component.quantity * link.quantity,
-                    source=component.source,
-                )
-            )
-    return result
-
-
-def interpreted_recipe_totals(line: SalesLine) -> dict[uuid.UUID, Decimal]:
-    totals: dict[uuid.UUID, Decimal] = defaultdict(lambda: Decimal("0"))
-    for component in interpreted_recipe_components(line):
-        totals[component.recipe.id] += component.quantity
-    return dict(totals)
 
 
 DAILY_SALES_LIMIT = 50
@@ -5000,13 +5006,11 @@ def parse_product_components(
                 minimum=0,
                 maximum=2147483647,
             )
-            if recipe_id is not None and unit:
-                raise ValueError("Recipe components do not use a unit")
             if component_product_id is not None and unit:
                 raise ValueError("Product components do not use a unit")
             if ingredient_id is not None and not unit:
                 raise ValueError("Ingredient components need a unit")
-            if ingredient_id is not None and unit not in unit_slugs():
+            if unit and unit not in unit_slugs():
                 raise ValueError("Invalid unit")
         else:
             recipe_id = uuid_value(recipe_raw, "recipe id")
@@ -5048,18 +5052,23 @@ def parse_product_components(
     # A recipe archived after it was linked stays saveable on the products
     # that already use it, matching the legacy recipe-link behavior.
     already_linked = (
-        set(
+        dict(
             product.components.filter(recipe__isnull=False).values_list(
-                "recipe_id", flat=True
+                "recipe_id", "unit"
             )
         )
         if product is not None
-        else set()
+        else {}
     )
+    if not canonical:
+        # The legacy `recipeLinks` shape has no unit, so a measured link it
+        # re-sends keeps its unit rather than silently becoming whole batches.
+        for component in parsed:
+            component["unit"] = already_linked.get(component["recipe_id"], "")
     recipes = {
         row.id: row
         for row in Recipe.objects.filter(user=user, id__in=recipe_ids).exclude(
-            Q(status=Recipe.STATUS_ARCHIVED) & ~Q(id__in=already_linked)
+            Q(status=Recipe.STATUS_ARCHIVED) & ~Q(id__in=list(already_linked))
         )
     }
     ingredients = {

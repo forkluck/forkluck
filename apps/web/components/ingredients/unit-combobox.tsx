@@ -40,6 +40,7 @@ export function UnitCombobox({
   options,
   disabled = false,
   variant = "field",
+  emptyLabel,
   className,
   popupClassName,
 }: {
@@ -56,6 +57,9 @@ export function UnitCombobox({
    * 28px version that sits inside another field, next to the amount.
    */
   variant?: "field" | "chip"
+  /** What the trigger reads with nothing chosen. A picker where blank means
+   * something ("batches") names it, and offers it as the first row. */
+  emptyLabel?: string
   className?: string
   popupClassName?: string
 }) {
@@ -107,7 +111,7 @@ export function UnitCombobox({
             : "decoration-1 underline-offset-4"
         )}
       >
-        {displayUnitShort(value) || "Unit"}
+        {displayUnitShort(value) || emptyLabel || "Unit"}
       </span>
       <ChevronDown
         className={cn(
@@ -171,6 +175,18 @@ export function UnitCombobox({
               />
             </div>
             <div className="flex max-h-64 flex-col overflow-y-auto p-1.5">
+              {emptyLabel && !needle ? (
+                <button
+                  type="button"
+                  onClick={() => choose(null)}
+                  className={cn(
+                    "flex min-h-9 w-full shrink-0 items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                    !value && "bg-accent"
+                  )}
+                >
+                  {emptyLabel}
+                </button>
+              ) : null}
               {matches.length === 0 ? (
                 <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
                   No results

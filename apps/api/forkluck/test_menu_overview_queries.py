@@ -12,13 +12,11 @@ from .domains.sales.core import (
     action_save_sales_product,
     attributed_cents,
     interpret_line,
-    interpreted_recipe_components,
     menu_overview_payload,
     period_product_sales_rows,
     product_sales_stats,
 )
 from .models import (
-    Recipe,
     SalesCatalogItem,
     SalesChannelConnection,
     SalesProductVariant,
@@ -558,84 +556,6 @@ class MenuOverviewStatsParityTests(TestCase):
 
         for query in captured.captured_queries:
             self.assertNotIn("source_payload", query["sql"].lower())
-
-
-class RecipeComponentQueryCountTests(TestCase):
-    """Recipe expansion must honour a caller's prefetch, and still cost only
-    one query without it — chaining select_related() onto the manager did
-    neither, re-querying once per component and discarding any cache."""
-
-    def setUp(self) -> None:
-        self.user = User.objects.create_user(
-            email="recipe-queries@example.com", password="test-password"
-        )
-        self.product = SalesProduct.objects.create(
-            user=self.user, name="Cookie", normalized_name="cookie"
-        )
-        self.variant = SalesProductVariant.objects.create(
-            user=self.user,
-            product=self.product,
-            channel="square",
-            provider_account_id="M1",
-            match_key="square:sku:cookie",
-            identity_kind=SalesProductVariant.IdentityKind.ITEM,
-            quantity_multiplier=Decimal("1"),
-        )
-        self.sales_import = SalesImport.objects.create(
-            user=self.user,
-            channel="square",
-            provider_account_id="M1",
-            file_name="recipes.csv",
-            timezone="UTC",
-        )
-        for index in range(3):
-            recipe = Recipe.objects.create(user=self.user, title=f"Dough {index}")
-            SalesProductComponent.objects.create(
-                product=self.product, recipe=recipe, quantity=Decimal("1")
-            )
-        self.line = SalesLine.objects.create(
-            user=self.user,
-            sales_import=self.sales_import,
-            variant=self.variant,
-            channel="square",
-            provider_account_id="M1",
-            source_position=0,
-            source_fingerprint="recipe-line",
-            external_order_id="1",
-            sold_at=timezone.now(),
-            item_name="Cookie",
-            group_key=self.variant.match_key,
-            quantity=Decimal("2"),
-            gross_cents=500,
-            net_sales_cents=500,
-        )
-
-    def load(self, *, prefetch: bool) -> SalesLine:
-        # The modifier hint is always supplied so the counts isolate recipe
-        # expansion from interpret_line's own fetches.
-        queryset = (
-            SalesLine.objects.filter(pk=self.line.pk)
-            .select_related("variant__product")
-            .prefetch_related("modifiers__variant__product")
-        )
-        if prefetch:
-            queryset = queryset.prefetch_related(
-                "variant__product__components__recipe"
-            )
-        return queryset.first()
-
-    def count(self, line) -> int:
-        with CaptureQueriesContext(connection) as captured:
-            components = interpreted_recipe_components(line)
-        self.assertEqual(len(components), 3)
-        return len(captured.captured_queries)
-
-    def test_a_prefetched_caller_issues_no_further_queries(self) -> None:
-        self.assertEqual(self.count(self.load(prefetch=True)), 0)
-
-    def test_an_unprefetched_caller_still_joins_the_recipe(self) -> None:
-        # One query carrying the links with their recipes, not one per link.
-        self.assertEqual(self.count(self.load(prefetch=False)), 1)
 
 
 class ReviewCountTests(TestCase):

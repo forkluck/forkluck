@@ -51,6 +51,9 @@ const croissant: MenuRecipeOption = {
   menuPriceCents: 450,
   ingredientCents: 120,
   suffix: "/pc",
+  batchMeasures: [],
+  servingAmount: null,
+  servingUnit: null,
 }
 
 const latte: MenuProductOption = {

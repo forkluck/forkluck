@@ -325,6 +325,70 @@ class MenuForecastTests(TestCase):
             any(issue["code"] == "missing-purchase-size" for issue in payload["unresolved"])
         )
 
+    def test_a_measured_component_plans_its_share_of_the_batch(self):
+        product = self.product("Tub 250 g")
+        menu = self.menu(product)
+        variant = self.variant(product)
+        for sold_on in (date(2026, 3, 30), date(2026, 4, 6), date(2026, 4, 13), date(2026, 4, 20)):
+            self.line(variant, sold_on, quantity="4")
+        flour = Ingredient.objects.create(
+            user=self.user,
+            name="Flour",
+            normalized_name="flour",
+            purchase_cost_cents=0,
+            purchase_size=1000,
+            purchase_unit="g",
+        )
+        recipe = Recipe.objects.create(
+            user=self.user,
+            title="Bread",
+            code="forecast-tub",
+            yield_amount=1000,
+            yield_unit="g",
+        )
+        RecipeItem.objects.create(
+            recipe=recipe,
+            kind=RecipeItem.INGREDIENT,
+            position=0,
+            ingredient=flour,
+            quantity=Decimal("200"),
+            unit="g",
+        )
+        SalesProductComponent.objects.create(
+            product=product, recipe=recipe, quantity=Decimal("250"), unit="g"
+        )
+
+        payload = menu_forecast_payload(self.user, menu, today=self.today)
+        # Four tubs of a quarter batch each: one batch to make, its flour once.
+        self.assertEqual(payload["products"][0]["totalQuantity"], 4.0)
+        self.assertEqual(payload["recipeRequirements"][0]["batches"], 1.0)
+        materials = {row["ingredientId"]: row for row in payload["materialRequirements"]}
+        self.assertEqual(materials[str(flour.id)]["usage"], [{"quantity": 200.0, "unit": "g"}])
+
+    def test_a_family_the_yield_does_not_state_is_unresolved_not_planned(self):
+        product = self.product("Tub 500 g")
+        menu = self.menu(product)
+        variant = self.variant(product)
+        self.line(variant, date(2026, 4, 20), quantity="4")
+        recipe = Recipe.objects.create(
+            user=self.user, title="Rolls", yield_amount=12, yield_unit="pcs"
+        )
+        component = SalesProductComponent.objects.create(
+            product=product, recipe=recipe, quantity=Decimal("500"), unit="g"
+        )
+
+        payload = menu_forecast_payload(self.user, menu, today=self.today)
+        self.assertEqual(payload["recipeRequirements"], [])
+        self.assertIn(
+            {
+                "code": "unresolved-yield",
+                "path": [str(product.id), str(component.id)],
+                "detail": "mass",
+                "recipeId": str(recipe.id),
+            },
+            payload["unresolved"],
+        )
+
     def test_a_bundle_expands_into_its_members_and_keeps_its_own_supplies(self):
         box = self.product("Gift box")
         cookie = self.product("Cookie")

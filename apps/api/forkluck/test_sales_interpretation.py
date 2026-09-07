@@ -7,7 +7,6 @@ from django.test import Client, TestCase
 from django.utils import timezone
 
 from .models import (
-    Recipe,
     SalesProductVariant,
     SalesImport,
     SalesLine,
@@ -26,7 +25,6 @@ from .domains.sales.core import (
     canonical_name,
     detach_lines_from_variant,
     detach_modifiers_from_variant,
-    interpreted_recipe_totals,
     item_object_match_key,
     variant_index,
     menu_overview_payload,
@@ -1988,128 +1986,6 @@ class CrossPathIdentityKeyTests(TestCase):
         line.refresh_from_db()
         self.assertEqual(line.variant_id, variant.id)
         self.assertEqual(line.product_id, self.product.id)
-
-
-class ShopifyKitchenScopeTests(TestCase):
-    """Spec tests 80, 81, 89, 90: Shopify sales run through the same
-    composition engine, with kitchen scope decided by recipe links alone."""
-
-    def setUp(self) -> None:
-        self.user = User.objects.create_user(
-            email="kitchen@example.com",
-            name="Kitchen Tester",
-            password="a-long-test-passphrase-2468",
-        )
-        self.sales_import = SalesImport.objects.create(
-            user=self.user,
-            file_name="shopify sync",
-            channel=SalesImport.Channel.SHOPIFY,
-        )
-        self.position = 0
-        self.cookie = SalesProduct.objects.create(
-            user=self.user, name="Cookie", normalized_name="cookie"
-        )
-        self.gift_box = SalesProduct.objects.create(
-            user=self.user, name="Gift Box", normalized_name="gift box"
-        )
-        # A revenue-only product: no kitchen recipe links at all.
-        self.latte = SalesProduct.objects.create(
-            user=self.user, name="Latte", normalized_name="latte"
-        )
-        self.dough = Recipe.objects.create(
-            user=self.user, title="Cookie Dough", body=""
-        )
-        SalesProductComponent.objects.create(
-            product=self.cookie, recipe=self.dough, quantity=Decimal("1")
-        )
-        SalesProductComponent.objects.create(
-            product=self.gift_box, recipe=self.dough, quantity=Decimal("2")
-        )
-
-    # helpers -----------------------------------------------------------
-
-    def make_variant(self, product: SalesProduct, object_id: str, **overrides):
-        fields = {
-            "user": self.user,
-            "product": product,
-            "channel": SalesImport.Channel.SHOPIFY,
-            "match_key": f"shopify:item:{object_id}",
-            "external_name": product.name,
-            "external_object_id": object_id,
-        }
-        fields.update(overrides)
-        return SalesProductVariant.objects.create(**fields)
-
-    def make_line(self, variant, **overrides) -> SalesLine:
-        self.position += 1
-        fields = {
-            "user": self.user,
-            "sales_import": self.sales_import,
-            "product": variant.product,
-            "variant": variant,
-            "channel": SalesImport.Channel.SHOPIFY,
-            "source_position": self.position,
-            "source_fingerprint": f"fp-shop-{self.position}",
-            "external_order_id": f"#100{self.position}",
-            "sold_at": timezone.now(),
-            "item_name": variant.external_name,
-            "group_key": variant.match_key,
-            "external_object_id": variant.external_object_id,
-            "quantity": Decimal("1"),
-            "gross_cents": 1000,
-            "net_sales_cents": 1000,
-        }
-        fields.update(overrides)
-        return SalesLine.objects.create(**fields)
-
-    # 80 -----------------------------------------------------------------
-
-    def test_shopify_variant_multiplier_expands_snack_box_quantity(self) -> None:
-        box = self.make_variant(
-            self.cookie,
-            "gid://shopify/ProductVariant/12",
-            quantity_multiplier=Decimal("6"),
-        )
-        line = self.make_line(box, quantity=Decimal("2"))
-        self.assertEqual(
-            interpreted_recipe_totals(line), {self.dough.id: Decimal("12.000")}
-        )
-        # Revenue is untouched by the multiplier.
-        self.assertEqual(line.net_sales_cents, 1000)
-
-    # 81 -----------------------------------------------------------------
-
-    def test_shopify_composite_product_expands_only_kitchen_recipes(self) -> None:
-        gift = self.make_variant(self.gift_box, "gid://shopify/ProductVariant/21")
-        tea = self.make_variant(self.latte, "gid://shopify/ProductVariant/22")
-        gift_line = self.make_line(gift, quantity=Decimal("3"))
-        tea_line = self.make_line(tea, quantity=Decimal("3"))
-        # The gift set's tea half is tracked for revenue but links to no
-        # recipe, so it creates no kitchen consumption at all.
-        self.assertEqual(
-            interpreted_recipe_totals(gift_line), {self.dough.id: Decimal("6.000")}
-        )
-        self.assertEqual(interpreted_recipe_totals(tea_line), {})
-
-    # 89 -----------------------------------------------------------------
-
-    def test_shopify_return_reverses_composite_kitchen_consumption(self) -> None:
-        gift = self.make_variant(self.gift_box, "gid://shopify/ProductVariant/21")
-        sale = self.make_line(gift, quantity=Decimal("2"))
-        refund = self.make_line(
-            gift,
-            quantity=Decimal("-2"),
-            gross_cents=-1000,
-            net_sales_cents=-1000,
-        )
-        self.assertEqual(
-            interpreted_recipe_totals(refund), {self.dough.id: Decimal("-4.000")}
-        )
-        net = (
-            interpreted_recipe_totals(sale)[self.dough.id]
-            + interpreted_recipe_totals(refund)[self.dough.id]
-        )
-        self.assertEqual(net, Decimal("0"))
 
 
 class SuggestFlagRungTests(TestCase):

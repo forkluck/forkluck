@@ -43,6 +43,7 @@ from .domains.recipes import serializers as recipes
 from .domains.recipes import views as recipe_views
 from .domains.recipes.health import (
     RecipeHealthReadModel,
+    menu_recipe_rows,
     menu_detail_payload,
     menu_sources_payload,
 )
@@ -1843,12 +1844,16 @@ class SerializerContractTests(ShapeAssertions, TestCase):
     MENU_INGREDIENT_PATHS = ["id", "name", "nonEdible", "purchaseUnit"]
 
     MENU_RECIPE_PATHS = [
+        "batchMeasures[].amount",
+        "batchMeasures[].unit",
         "category",
         "id",
         "ingredientCents",
         "kind",
         "menuPriceCents",
         "publicId",
+        "servingAmount",
+        "servingUnit",
         "suffix",
         "title",
     ]
@@ -1904,7 +1909,7 @@ class SerializerContractTests(ShapeAssertions, TestCase):
 
     def test_menu_recipe_json(self):
         model = RecipeHealthReadModel(self.user, dashboard=True)
-        row = model.rows(model.all_recipes)[0]
+        row = menu_recipe_rows(model)[0]
         self.assertShape(recipes.menu_recipe_json(row), self.MENU_RECIPE_PATHS)
 
     def test_business_settings_payload(self):

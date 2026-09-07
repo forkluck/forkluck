@@ -119,6 +119,12 @@ const RECIPES: MenuRecipeOption[] = [
     menuPriceCents: null,
     ingredientCents: 300,
     suffix: "per batch",
+    batchMeasures: [
+      { amount: 20, unit: "kg" },
+      { amount: 40, unit: "pcs" },
+    ],
+    servingAmount: null,
+    servingUnit: null,
   },
 ]
 const INGREDIENTS: MenuIngredientOption[] = [
@@ -227,7 +233,6 @@ describe("Product composition", () => {
   it("adds a non-edible ingredient into Supplies and uses vocabulary units", () => {
     const onChange = renderCard()
 
-    expect(screen.queryByRole("button", { name: "Croissant unit" })).toBeNull()
     expect(screen.getByRole("button", { name: "Flour unit" })).toBeDefined()
 
     fireEvent.click(screen.getByRole("button", { name: "+ Add component" }))
@@ -245,6 +250,39 @@ describe("Product composition", () => {
       unit: "each",
       nonEdible: true,
     })
+  })
+
+  it("renders a recipe row with a batches chip and what a batch makes", () => {
+    renderCard()
+
+    const chip = screen.getByRole("button", { name: "Croissant unit" })
+    expect(chip.textContent).toContain("batches")
+    expect(screen.getByText("1 batch = 20 kg · 40 pcs")).toBeDefined()
+  })
+
+  it("offers a recipe row only the units its batch can be measured in", () => {
+    const onChange = renderCard()
+    fireEvent.click(screen.getByRole("button", { name: "Croissant unit" }))
+
+    const options = screen
+      .getAllByRole("button")
+      .map((button) => button.textContent ?? "")
+    expect(options).toContain("batches")
+    expect(options.some((text) => text.startsWith("Gram"))).toBe(true)
+    expect(options.some((text) => text.startsWith("Dozen"))).toBe(true)
+    expect(options.some((text) => text.startsWith("Portion"))).toBe(false)
+    expect(options.some((text) => text.startsWith("Millilit"))).toBe(false)
+
+    fireEvent.click(
+      screen
+        .getAllByRole("button")
+        .find((button) => (button.textContent ?? "").startsWith("Gram"))!
+    )
+    expect(onChange).toHaveBeenCalledWith(
+      ROWS.map((row) =>
+        row.key === ROWS[0]!.key ? { ...row, unit: "g" } : row
+      )
+    )
   })
 
   it("renders a product component as a linked row with no unit", () => {
@@ -295,13 +333,18 @@ describe("validateComponents", () => {
   })
 
   it("keys a bad unit on the row's unit control", () => {
-    expect(validateComponents([{ ...ROWS[0]!, unit: "g" }])).toEqual({
-      [`component-unit-${ROWS[0]!.key}`]:
-        "Recipe components do not use a unit.",
-    })
     expect(validateComponents([{ ...ROWS[1]!, unit: " " }])).toEqual({
       [`component-unit-${ROWS[1]!.key}`]: "Ingredient components need a unit.",
     })
+    expect(validateComponents([{ ...ROWS[3]!, unit: "each" }])).toEqual({
+      [`component-unit-${ROWS[3]!.key}`]:
+        "Product components do not use a unit.",
+    })
+  })
+
+  it("lets a recipe row be whole batches or a measured share of one", () => {
+    expect(validateComponents([{ ...ROWS[0]!, unit: "" }])).toEqual({})
+    expect(validateComponents([{ ...ROWS[0]!, unit: "g" }])).toEqual({})
   })
 
   it("keys the row-count and half-filled-row rules on the section", () => {
