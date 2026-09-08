@@ -1,3 +1,5 @@
+import type { ArchiveStatusFilter } from "@/lib/backend/pagination"
+
 export type IngredientOption = {
   id: string
   name: string
@@ -13,16 +15,7 @@ export const INGREDIENT_BROWSE_ORDERS = [
   "-updatedAt",
 ] as const
 
-export type IngredientStatusFilter = "active" | "archived" | null
-
-/** Absent means active only; "all" drops the filter, the way Recipes does. */
-export function parseIngredientStatusFilter(
-  status?: string
-): IngredientStatusFilter {
-  if (status === "archived") return "archived"
-  if (status === "all") return null
-  return "active"
-}
+export type IngredientStatusFilter = ArchiveStatusFilter
 
 /** Supplies are ingredients the kitchen does not eat; they browse on their own
  *  screen, from the same table. */

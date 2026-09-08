@@ -1,22 +1,17 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { EmptyState, PageHeader, PageTitle, Page } from "@/components/ui/page"
 import { IngredientsBrowser } from "@/components/ingredients/ingredients-browser"
-import {
-  INGREDIENT_BROWSE_ORDERS,
-  parseIngredientStatusFilter,
-} from "@/components/ingredients/types"
+import { INGREDIENT_BROWSE_ORDERS } from "@/components/ingredients/types"
 import { requireUser } from "@/lib/auth-session"
 import { browseIngredients } from "@/lib/backend/queries"
-import { BackendRequestError } from "@/lib/backend/client"
+import { redirectOnInvalidPage } from "@/lib/backend/client"
 import {
-  DOCUMENT_DEFAULT_ORDER,
-  allowedSearchParam,
-  browsePath,
-  positivePage,
+  archiveStatusParam,
+  parseArchiveStatusFilter,
+  parseBrowseParams,
   singleSearchParam,
 } from "@/lib/backend/pagination"
 
@@ -32,18 +27,12 @@ export default async function SuppliesPage({
   // The session check runs beside the read, not ahead of it; see ingredients.
   const user = requireUser()
   const params = await searchParams
-  const query = (singleSearchParam(params.q) ?? "").trim().slice(0, 200)
-  const page = positivePage(singleSearchParam(params.page))
-  const order = allowedSearchParam(
-    singleSearchParam(params.order),
-    INGREDIENT_BROWSE_ORDERS,
-    DOCUMENT_DEFAULT_ORDER
+  const { query, page, order } = parseBrowseParams(
+    params,
+    INGREDIENT_BROWSE_ORDERS
   )
-  const status = parseIngredientStatusFilter(singleSearchParam(params.status))
-  // The backend shows active rows when `status` is absent, so only the two
-  // widening choices travel.
-  const statusParam =
-    status === "archived" ? "archived" : status === null ? "all" : undefined
+  const status = parseArchiveStatusFilter(singleSearchParam(params.status))
+  const statusParam = archiveStatusParam(status)
   let result
   try {
     const read = browseIngredients({
@@ -58,21 +47,12 @@ export default async function SuppliesPage({
     await user
     result = await read
   } catch (cause) {
-    if (
-      page > 1 &&
-      cause instanceof BackendRequestError &&
-      cause.status === 400 &&
-      cause.message === "Invalid page"
-    ) {
-      redirect(
-        browsePath("/supplies", {
-          q: query,
-          order: order === DOCUMENT_DEFAULT_ORDER ? undefined : order,
-          filters: { status: statusParam },
-        })
-      )
-    }
-    throw cause
+    redirectOnInvalidPage(cause, "/supplies", {
+      page,
+      q: query,
+      order,
+      filters: { status: statusParam },
+    })
   }
   return (
     <Page>
