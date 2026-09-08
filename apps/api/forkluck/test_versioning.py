@@ -270,8 +270,8 @@ class RecipeAggregateVersionTests(InternalApiTestCase):
     def test_only_the_aggregate_save_bumps(self):
         self.save()
         self.post_internal(
-            "update-recipe-status",
-            {"recipeId": str(self.recipe.id), "status": "archived"},
+            "update-recipe-statuses",
+            {"recipeIds": [str(self.recipe.id)], "status": "archived"},
         )
         self.recipe.refresh_from_db()
         self.assertEqual(self.recipe.edit_version, 1)
@@ -610,7 +610,12 @@ class IngredientAggregateVersionTests(InternalApiTestCase):
     def test_a_create_still_demands_a_name(self):
         response = self.post_internal(
             "save-ingredient",
-            {"id": None, "purchaseCostCents": 0, "purchaseSize": None, "purchaseUnit": None},
+            {
+                "id": None,
+                "purchaseCostCents": 0,
+                "purchaseSize": None,
+                "purchaseUnit": None,
+            },
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error"], "Name must be text")

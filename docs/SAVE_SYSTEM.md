@@ -204,7 +204,7 @@ writes it today.
 | `RecipeBatchSize` rows, `RecipeEquivalency`                                         | aggregate                                                                                                   |
 | `RecipeTagMembership` (owner only; `tags: string[]`)                                | aggregate                                                                                                   |
 | `kind`, `category`                                                                  | aggregate                                                                                                   |
-| `status`                                                                            | aggregate; `update-recipe-status` co-writes it, unversioned                                                 |
+| `status`                                                                            | aggregate; `update-recipe-statuses` co-writes it, unversioned                                                 |
 | `locked`                                                                            | no writer                                                                                                   |
 | `menu_price_cents`                                                                  | `recipe:<id>:costing`; aggregate only for create/copy/import                                                |
 | `nutrition_serving_amount`, `nutrition_serving_unit`                                | `recipe:<id>:serving`                                                                                       |

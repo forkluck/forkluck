@@ -7,7 +7,7 @@ from django.test.utils import CaptureQueriesContext
 from .demo_data import DEMO_EMAIL
 from .domains.recipes.actions import (
     action_save_recipe,
-    action_update_recipe_status,
+    action_update_recipe_statuses,
 )
 from .domains.shared.billing import EntitlementError
 from .models import BillingAccount, Recipe, RecipeShare, User
@@ -65,10 +65,10 @@ class RecipeLimitTests(InternalApiTestCase):
 
     def test_archiving_frees_nothing_but_deleting_frees_a_slot(self):
         fill(self.user, 10)
-        action_update_recipe_status(
+        action_update_recipe_statuses(
             self.user,
             {
-                "recipeId": str(Recipe.objects.filter(user=self.user).first().id),
+                "recipeIds": [str(Recipe.objects.filter(user=self.user).first().id)],
                 "status": Recipe.STATUS_ARCHIVED,
             },
         )
@@ -102,9 +102,9 @@ class RecipeLimitTests(InternalApiTestCase):
 
         owned = Recipe.objects.filter(user=self.user).first()
         action_save_recipe(self.user, {"id": str(owned.id), "title": "Renamed"})
-        action_update_recipe_status(
+        action_update_recipe_statuses(
             self.user,
-            {"recipeId": str(owned.id), "status": Recipe.STATUS_ARCHIVED},
+            {"recipeIds": [str(owned.id)], "status": Recipe.STATUS_ARCHIVED},
         )
         owned.refresh_from_db()
         self.assertEqual(owned.title, "Renamed")

@@ -10,10 +10,18 @@ import {
   waitFor,
 } from "@testing-library/react"
 
-const { deleteRecipe, updateRecipeStatus, toastAdd } = vi.hoisted(() => ({
+const {
+  deleteRecipe,
+  updateRecipeStatuses,
+  toastAdd,
+  toastUpdate,
+  toastClose,
+} = vi.hoisted(() => ({
   deleteRecipe: vi.fn(),
-  updateRecipeStatus: vi.fn(),
-  toastAdd: vi.fn(),
+  updateRecipeStatuses: vi.fn(),
+  toastAdd: vi.fn((_options: unknown) => "toast-1"),
+  toastUpdate: vi.fn(),
+  toastClose: vi.fn(),
 }))
 
 vi.mock("next/navigation", () => ({
@@ -23,10 +31,11 @@ vi.mock("@/app/(app)/recipes/actions", () => ({
   deleteRecipe,
   deleteRecipes: vi.fn(),
   duplicateRecipe: vi.fn(),
-  updateRecipeStatus,
+  updateRecipeStatuses,
 }))
-vi.mock("@/components/ui/toast", () => ({
-  useToast: () => ({ add: toastAdd }),
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  useToast: () => ({ add: toastAdd, update: toastUpdate, close: toastClose }),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
   GuardedLink: ({
@@ -146,30 +155,105 @@ describe("deleting a recipe from its row", () => {
 })
 
 describe("archiving a recipe from its row", () => {
-  it("shows the wait on the row, changes nothing early, and reports", async () => {
-    const answer = deferred<{ ok: true }>()
-    updateRecipeStatus.mockReturnValue(answer.promise)
+  it("shows the wait on the row, changes nothing early, and reports with a way back", async () => {
+    const answer = deferred<{ ok: true; changed: number }>()
+    updateRecipeStatuses.mockReturnValue(answer.promise)
     render(<RecipesTable rows={[recipe({})]} currencyCode="USD" />)
 
     await openRowMenu("Focaccia, sea salt")
     fireEvent.click(await screen.findByRole("menuitem", { name: "Archive" }))
 
     await waitFor(() =>
-      expect(updateRecipeStatus).toHaveBeenCalledWith("rec-1", "archived")
+      expect(updateRecipeStatuses).toHaveBeenCalledWith(["rec-1"], "archived")
     )
-    // The menu has closed, so the row itself carries the wait.
     // The menu has closed, so the row itself carries the wait.
     const mark = await screen.findByText("Working")
     expect(mark.closest('[role="status"]')).not.toBeNull()
     expect(screen.queryByText("Archived")).toBeNull()
 
-    await act(async () => answer.resolve({ ok: true }))
+    await act(async () => answer.resolve({ ok: true, changed: 1 }))
 
     await waitFor(() =>
-      expect(toastAdd).toHaveBeenCalledWith({
-        title: "Archived Focaccia, sea salt",
-      })
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Archived Focaccia, sea salt",
+          actionProps: expect.objectContaining({ children: "Undo" }),
+        })
+      )
     )
     await waitFor(() => expect(screen.queryByText("Working")).toBeNull())
+  })
+
+  it("undoes through the same row and the same wait", async () => {
+    updateRecipeStatuses.mockResolvedValueOnce({ ok: true, changed: 1 })
+    render(<RecipesTable rows={[recipe({})]} currencyCode="USD" />)
+
+    await openRowMenu("Focaccia, sea salt")
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Archive" }))
+    await waitFor(() => expect(toastAdd).toHaveBeenCalledTimes(1))
+
+    const restore = deferred<{ ok: true; changed: number }>()
+    updateRecipeStatuses.mockReturnValueOnce(restore.promise)
+    const undo = toastAdd.mock.calls[0]![0] as {
+      actionProps: { onClick: () => void }
+    }
+    await act(async () => undo.actionProps.onClick())
+
+    // The pill stops its clock and reads Undoing; the row shows the wait.
+    expect(toastUpdate).toHaveBeenCalledWith(
+      "toast-1",
+      expect.objectContaining({
+        timeout: 0,
+        actionProps: expect.objectContaining({ children: "Undoing…" }),
+      })
+    )
+    expect(updateRecipeStatuses).toHaveBeenLastCalledWith(["rec-1"], "active")
+    expect(await screen.findByText("Working")).toBeTruthy()
+
+    await act(async () => restore.resolve({ ok: true, changed: 1 }))
+    await waitFor(() => expect(toastClose).toHaveBeenCalledWith("toast-1"))
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenLastCalledWith(
+        expect.objectContaining({ title: "Restored Focaccia, sea salt" })
+      )
+    )
+  })
+})
+
+describe("archiving a selection", () => {
+  it("moves every selected recipe in one request and says so once", async () => {
+    const answer = deferred<{ ok: true; changed: number }>()
+    updateRecipeStatuses.mockReturnValue(answer.promise)
+    render(
+      <RecipesTable
+        rows={[recipe({}), recipe({ id: "rec-2", title: "Mooncake" })]}
+        currencyCode="USD"
+      />
+    )
+
+    for (const box of screen.getAllByLabelText("Select row"))
+      fireEvent.click(box)
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Archive selected" })
+    )
+
+    await waitFor(() =>
+      expect(updateRecipeStatuses).toHaveBeenCalledWith(
+        ["rec-1", "rec-2"],
+        "archived"
+      )
+    )
+    expect(updateRecipeStatuses).toHaveBeenCalledTimes(1)
+
+    await act(async () => answer.resolve({ ok: true, changed: 2 }))
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Archived 2 recipes",
+          actionProps: expect.objectContaining({ children: "Undo" }),
+        })
+      )
+    )
   })
 })

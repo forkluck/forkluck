@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useToast } from "@/components/ui/toast"
+import { undoableToast, useToast } from "@/components/ui/toast"
 import {
   Archive,
   ArchiveRestore,
@@ -47,7 +47,7 @@ import {
   deleteRecipe,
   deleteRecipes,
   duplicateRecipe,
-  updateRecipeStatus,
+  updateRecipeStatuses,
 } from "@/app/(app)/recipes/actions"
 import { useDialogTarget } from "@/components/ui/dialog"
 
@@ -183,26 +183,38 @@ export function RecipesTable({
   )
 
   // One row shows the wait on itself; a selection shows it on the menu that
-  // asked. Either way the status changes when the server says so, and a
-  // toast names what changed.
+  // asked. Either way the status changes when the server says so, in one
+  // request for the whole selection, and a toast names what changed and
+  // offers the way back: Undo is this same function with the opposite
+  // status, so it waits and reports exactly as the first press did.
   const setStatus = React.useCallback(
-    (recipes: RecipeHealth[], next: "active" | "archived") => {
+    function setStatus(
+      recipes: RecipeHealth[],
+      next: "active" | "archived"
+    ): Promise<boolean> {
       if (recipes.length === 1) setBusyId(recipes[0].id)
       return new Promise<boolean>((resolve) =>
         startStatus(async () => {
           try {
-            for (const recipe of recipes) {
-              const result = await updateRecipeStatus(recipe.id, next)
-              if ("error" in result) throw new Error(result.error)
-            }
+            const result = await updateRecipeStatuses(
+              recipes.map((recipe) => recipe.id),
+              next
+            )
+            if ("error" in result) throw new Error(result.error)
             startStatus(() => {
-              toast.add({
-                title: `${next === "archived" ? "Archived" : "Restored"} ${
+              undoableToast(
+                toast,
+                `${next === "archived" ? "Archived" : "Restored"} ${
                   recipes.length === 1
                     ? recipes[0].title
                     : `${recipes.length} recipes`
                 }`,
-              })
+                () =>
+                  setStatus(
+                    recipes,
+                    next === "archived" ? "active" : "archived"
+                  )
+              )
             })
             resolve(true)
           } catch (cause) {

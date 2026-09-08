@@ -241,7 +241,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "update-account": "action_update_account",
     "set-newsletter": "action_set_newsletter",
     "update-business-settings": "action_update_business_settings",
-    "update-recipe-status": "action_update_recipe_status",
+    "update-recipe-statuses": "action_update_recipe_statuses",
     "update-recipe-costing": "action_update_recipe_costing",
     "set-recipe-nutrition-serving": "action_set_recipe_nutrition_serving",
     "set-recipe-item-yield-after-cooking": "action_set_recipe_item_yield_after_cooking",

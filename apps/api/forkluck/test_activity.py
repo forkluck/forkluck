@@ -1,7 +1,10 @@
 """The workspace activity log: what writes to it, and what reads it back."""
 
 from datetime import timedelta
+from uuid import uuid4
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
 from .domains.shared.activity import record_event
@@ -84,7 +87,12 @@ class ActionEventTests(InternalApiTestCase):
 
     def test_a_recipe_save_that_changes_nothing_records_one_edit(self):
         created = self.save_recipe(
-            {"id": None, "title": "Country loaf", "body": "500 g Flour", "yieldUnit": "pcs"}
+            {
+                "id": None,
+                "title": "Country loaf",
+                "body": "500 g Flour",
+                "yieldUnit": "pcs",
+            }
         )
         recipe_id = created.json()["id"]
         self.assertEqual(
@@ -106,9 +114,7 @@ class ActionEventTests(InternalApiTestCase):
 
         # A real change is a second line, not a suppressed one.
         self.save_recipe({**payload, "body": "500 g Flour\n350 g Water"})
-        self.assertEqual(
-            len(self.events(resource_type="recipe", event="edited")), 2
-        )
+        self.assertEqual(len(self.events(resource_type="recipe", event="edited")), 2)
 
     def test_archiving_then_restoring_a_recipe_reads_back_as_two_lines(self):
         created = self.save_recipe(
@@ -117,7 +123,8 @@ class ActionEventTests(InternalApiTestCase):
         recipe_id = created.json()["id"]
         for status in ("archived", "active"):
             self.post_internal(
-                "update-recipe-status", {"recipeId": recipe_id, "status": status}
+                "update-recipe-statuses",
+                {"recipeIds": [recipe_id], "status": status},
             )
         self.assertEqual(
             [
@@ -126,6 +133,51 @@ class ActionEventTests(InternalApiTestCase):
             ][:3],
             ["added", "archived", "restored"],
         )
+
+    def test_a_selection_is_archived_whole_or_not_at_all(self):
+        mine = self.save_recipe(
+            {"id": None, "title": "Focaccia", "body": "", "yieldUnit": "pcs"}
+        ).json()["id"]
+        refused = self.post_internal(
+            "update-recipe-statuses",
+            {"recipeIds": [mine, str(uuid4())], "status": "archived"},
+        )
+        self.assertEqual(refused.status_code, 400)
+        self.assertEqual(Recipe.objects.get(id=mine).status, Recipe.STATUS_ACTIVE)
+        self.assertEqual(self.events(resource_type="recipe", event="archived"), [])
+
+    def test_archiving_twice_reads_back_as_one_line(self):
+        recipe_id = self.save_recipe(
+            {"id": None, "title": "Focaccia", "body": "", "yieldUnit": "pcs"}
+        ).json()["id"]
+        for _ in range(2):
+            answer = self.post_internal(
+                "update-recipe-statuses",
+                {"recipeIds": [recipe_id, recipe_id], "status": "archived"},
+            )
+            self.assertEqual(answer.status_code, 200)
+        self.assertEqual(answer.json(), {"ok": True, "changed": 0})
+        self.assertEqual(len(self.events(resource_type="recipe", event="archived")), 1)
+
+    def test_archiving_a_selection_costs_the_same_queries_at_any_size(self):
+        def ids(count: int) -> list[str]:
+            return [
+                self.save_recipe(
+                    {"id": None, "title": f"Loaf {i}", "body": "", "yieldUnit": "pcs"}
+                ).json()["id"]
+                for i in range(count)
+            ]
+
+        def queries(recipe_ids: list[str]) -> int:
+            with CaptureQueriesContext(connection) as captured:
+                answer = self.post_internal(
+                    "update-recipe-statuses",
+                    {"recipeIds": recipe_ids, "status": "archived"},
+                )
+            self.assertEqual(answer.json(), {"ok": True, "changed": len(recipe_ids)})
+            return len(captured)
+
+        self.assertEqual(queries(ids(2)), queries(ids(5)))
 
     def test_archiving_then_restoring_an_ingredient(self):
         ingredient = make_ingredient(self.user, "Butter")
@@ -150,7 +202,10 @@ class ActionEventTests(InternalApiTestCase):
         )
         self.assertEqual(response.status_code, 200)
         event = self.events(resource_type="category")[0]
-        self.assertEqual((event.event, event.name, event.context), ("edited", "Breads", {"kind": "recipe"}))
+        self.assertEqual(
+            (event.event, event.name, event.context),
+            ("edited", "Breads", {"kind": "recipe"}),
+        )
 
     def test_renaming_an_ingredient_category_is_logged_with_its_kind(self):
         IngredientCategory.objects.create(
@@ -208,7 +263,9 @@ class ActivityViewTests(InternalApiTestCase):
                 ("recipe", "deleted"),
             ]
         ):
-            row = record_event(self.user, self.user, resource_type, event, name=f"n{index}")
+            row = record_event(
+                self.user, self.user, resource_type, event, name=f"n{index}"
+            )
             # auto_now_add fixes created_at, so the ordering is set afterwards.
             ActivityEvent.objects.filter(id=row.id).update(
                 created_at=now - timedelta(minutes=10 - index)
@@ -223,7 +280,9 @@ class ActivityViewTests(InternalApiTestCase):
 
     def test_newest_first_and_scoped_to_the_tenant(self):
         payload = self.load()
-        self.assertEqual([item["name"] for item in payload["items"]], ["n2", "n1", "n0"])
+        self.assertEqual(
+            [item["name"] for item in payload["items"]], ["n2", "n1", "n0"]
+        )
         self.assertIsNone(payload["nextBefore"])
         self.assertEqual(payload["items"][0]["actorName"], "View Chef")
 

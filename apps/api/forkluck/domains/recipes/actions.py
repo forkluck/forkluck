@@ -10,6 +10,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from typing import Any
 from urllib.parse import quote
+from uuid import UUID
 
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
@@ -65,7 +66,7 @@ from ...integrations.emails import (
     send_shares_notification,
 )
 from ..sales.bundles import BundleIndex
-from ..shared.activity import record_event
+from ..shared.activity import activity_event, record_event
 from ..shared.billing import EntitlementError, billing_json, write_blocked
 from ..shared.locking import lock_workspace
 from ..shared.ingredient_identity import save_line_match
@@ -674,9 +675,7 @@ def _prep_time_unit(value: Any) -> str:
     return value
 
 
-def _save_normalized_content(
-    recipe: Recipe, body: JsonObject, *, actor: User
-) -> None:
+def _save_normalized_content(recipe: Recipe, body: JsonObject, *, actor: User) -> None:
     """Validate the complete aggregate before replacing supplied collections.
 
     The payload is an aggregate snapshot: omitted collections are preserved;
@@ -1047,9 +1046,7 @@ def _notify_share_recipient(
     transaction.on_commit(send)
 
 
-def _mint_guest_link(
-    user: User, recipe: Recipe, email: str, role: str
-) -> JsonObject:
+def _mint_guest_link(user: User, recipe: Recipe, email: str, role: str) -> JsonObject:
     try:
         throttling.hit(
             "guest-share",
@@ -1105,9 +1102,7 @@ def action_share_recipes(user: User, body: JsonObject) -> JsonObject:
         recipe_id = uuid_value(value, "recipe id")
         if recipe_id not in ids:
             ids.append(recipe_id)
-    title = text_value(
-        body.get("title", ""), "Title", max_length=120, allow_blank=True
-    )
+    title = text_value(body.get("title", ""), "Title", max_length=120, allow_blank=True)
     if len(ids) == 1:
         # One recipe is a plain share: the (recipe, email) rotation and the
         # Share dialog's own listing stay exactly as they are.
@@ -1331,24 +1326,49 @@ def action_delete_recipe(user: User, body: JsonObject) -> JsonObject:
     return {"ok": True}
 
 
-def action_update_recipe_status(user: User, body: JsonObject) -> JsonObject:
-    row = Recipe.objects.filter(user=user, id=uuid_value(body.get("recipeId"))).first()
-    if row is None:
-        raise ValueError("Recipe not found")
+def action_update_recipe_statuses(user: User, body: JsonObject) -> JsonObject:
+    """Archive or restore a selection in one transaction.
+
+    Refused whole when any id is not the owner's: a selection the owner does
+    not own is a mistake, not an instruction to archive part of it. A recipe
+    already in that status is left alone and writes no line, so archiving
+    twice reads back as one event. The status is not a versioned field, so
+    `edit_version` stays where it was.
+    """
+    raw = body.get("recipeIds")
+    if not isinstance(raw, list) or not 1 <= len(raw) <= 200:
+        raise ValueError("Select between 1 and 200 recipes")
+    ids: list[UUID] = []
+    for value in raw:
+        recipe_id = uuid_value(value, "recipe id")
+        if recipe_id not in ids:
+            ids.append(recipe_id)
     status = recipe_status_value(body.get("status"))
-    if row.status != status:
-        row.status = status
-        row.save(update_fields=["status", "updated_at"])
-        record_event(
-            user,
-            user,
-            "recipe",
-            "archived" if status == Recipe.STATUS_ARCHIVED else "restored",
-            resource_id=row.id,
-            name=row.title,
-            publicId=row.public_id,
-        )
-    return {"ok": True}
+    event = "archived" if status == Recipe.STATUS_ARCHIVED else "restored"
+    with transaction.atomic():
+        rows = list(Recipe.objects.filter(user=user, id__in=ids))
+        if len(rows) != len(ids):
+            raise ValueError("Recipe not found")
+        changed = [row for row in rows if row.status != status]
+        if changed:
+            Recipe.objects.filter(id__in=[row.id for row in changed]).update(
+                status=status, updated_at=timezone.now()
+            )
+            ActivityEvent.objects.bulk_create(
+                [
+                    activity_event(
+                        user,
+                        user,
+                        "recipe",
+                        event,
+                        resource_id=row.id,
+                        name=row.title,
+                        publicId=row.public_id,
+                    )
+                    for row in changed
+                ]
+            )
+    return {"ok": True, "changed": len(changed)}
 
 
 def action_update_recipe_costing(user: User, body: JsonObject) -> JsonObject:
@@ -2338,7 +2358,7 @@ def action_delete_menu(user: User, body: JsonObject) -> JsonObject:
 ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "save-recipe": action_save_recipe,
     "delete-recipe": action_delete_recipe,
-    "update-recipe-status": action_update_recipe_status,
+    "update-recipe-statuses": action_update_recipe_statuses,
     "update-recipe-costing": action_update_recipe_costing,
     "set-recipe-nutrition-serving": action_set_recipe_nutrition_serving,
     "set-recipe-item-yield-after-cooking": action_set_recipe_item_yield_after_cooking,
