@@ -66,6 +66,7 @@ vi.mock("@/components/ui/toast", () => ({
   useToast: () => ({ add: toastAdd }),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,
@@ -385,7 +386,8 @@ describe("recipe nutrition view", () => {
         2
       )
     )
-    await waitFor(() => expect(refresh).toHaveBeenCalled())
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("saves the serving size on blur when it changed", async () => {
@@ -405,7 +407,7 @@ describe("recipe nutrition view", () => {
     )
     expect(setSaveState).toHaveBeenCalledWith("saving")
     await waitFor(() => expect(setSaveState).toHaveBeenCalledWith("saved"))
-    expect(refresh).toHaveBeenCalled()
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("saves the package on blur and clears it when the amount goes", async () => {

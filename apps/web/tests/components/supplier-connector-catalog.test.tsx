@@ -96,7 +96,7 @@ describe("the supplier connector catalog", () => {
     expect(screen.queryByText("Connected")).toBeNull()
   })
 
-  it("queues a manual sync and releases the control after refreshing", async () => {
+  it("queues a manual sync and releases the control", async () => {
     enqueueConnectorSync.mockResolvedValue({
       run: { id: "22222222-2222-4222-8222-222222222222" },
     })
@@ -120,13 +120,14 @@ describe("the supplier connector catalog", () => {
     expect(enqueueConnectorSync).toHaveBeenCalledWith(
       "11111111-1111-4111-8111-111111111111"
     )
-    await waitFor(() => expect(refresh).toHaveBeenCalledOnce())
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Sync now" })).toHaveProperty(
         "disabled",
         false
       )
     )
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 })
 
@@ -144,13 +145,6 @@ describe("supplier authorization return", () => {
           ? { error: "Connection failed" }
           : { connection: { id: "synthetic" } }
       )
-      refresh.mockImplementation(() => {
-        expect(window.location.pathname).toBe(
-          "/integrations/suppliers/connections"
-        )
-        expect(window.location.search).toBe("")
-        expect(toast.add).not.toHaveBeenCalled()
-      })
       render(
         <SupplierConnectorCatalog
           connectors={{ configured: true, providers: [acme], connections: [] }}
@@ -161,8 +155,7 @@ describe("supplier authorization return", () => {
       expect(completeConnectorAuthorization).toHaveBeenCalledOnce()
       expect(window.location.search).toBe("")
       expect(replace).not.toHaveBeenCalled()
-      if (failed) expect(refresh).not.toHaveBeenCalled()
-      else expect(refresh).toHaveBeenCalledOnce()
+      expect(refresh).not.toHaveBeenCalled()
       expect(toast.add).toHaveBeenCalledWith(
         failed
           ? { title: "Connection failed", type: "error" }

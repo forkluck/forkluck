@@ -1,13 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { CloudUpload, FileText, Trash2 } from "lucide-react"
 
-import { deleteInvoice } from "@/app/(app)/invoices/actions"
+import { deleteInvoice, deleteInvoices } from "@/app/(app)/invoices/actions"
 import { issueText } from "@/components/invoices/invoice-issue"
 import { AlertFlag } from "@/components/menu/product-cells"
-import { GuardedLink } from "@/components/navigation-blocker"
+import {
+  GuardedLink,
+  useGuardedNavigate,
+} from "@/components/navigation-blocker"
 import { Badge } from "@/components/ui/badge"
 import { BulkDeleteMenu } from "@/components/ui/bulk-delete-menu"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
@@ -24,9 +26,7 @@ import type { InvoiceRow } from "@/lib/backend/types"
 import { invoiceDetailHref } from "@/lib/invoice-navigation"
 import { formatCents } from "@/lib/money"
 import { formatCalendarDayMonth } from "@/lib/datetime"
-import { deleteEach } from "@/lib/delete-each"
 import { cn } from "@/lib/utils"
-import { useRefresh } from "@/hooks/use-refresh"
 
 const helper = dataTableColumns<InvoiceRow>()
 
@@ -76,28 +76,26 @@ export function InvoicesTable({
   /** The current list URL, carried through the detail screen's way back. */
   listHref?: string
 }) {
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const [deleting, setDeleting] = React.useState<InvoiceRow | null>(null)
-  const [pending, setPending] = React.useState(false)
+  // A transition: "Deleting…" holds until the rows the action answered with
+  // have committed. After an await React has lost the transition's scope, so
+  // the dialog leaves and the toast arrives from inside it again.
+  const [pending, startDelete] = React.useTransition()
 
-  const removeOne = async (row: InvoiceRow) => {
-    setPending(true)
-    try {
+  const removeOne = (row: InvoiceRow) =>
+    startDelete(async () => {
       const result = await deleteInvoice(row.id)
       if ("error" in result) {
         toast.add({ title: result.error, type: "error" })
         return
       }
-      // The dialog leaves once the row has.
-      await refresh()
-      setDeleting(null)
-      toast.add({ title: "Deleted invoice" })
-    } finally {
-      setPending(false)
-    }
-  }
+      startDelete(() => {
+        setDeleting(null)
+        toast.add({ title: "Deleted invoice" })
+      })
+    })
 
   const columns = React.useMemo(
     () => [
@@ -265,29 +263,22 @@ export function InvoicesTable({
             count={rows.length}
             noun="invoice"
             description="Ingredient prices they set stay as they are."
+            refreshAfterDelete={false}
             onDelete={async () => {
-              const result = await deleteEach(rows, (row) =>
-                deleteInvoice(row.id)
-              )
+              const result = await deleteInvoices(rows.map((row) => row.id))
               if ("error" in result) {
+                // Earlier rows may already be gone; the answer carries the
+                // list without them. The confirmation stays open so the rest
+                // of the selection can be retried.
                 toast.add({ title: result.error, type: "error" })
-                // Earlier rows may already be gone. Refresh their data while
-                // keeping the confirmation open so the remaining selection
-                // can be retried instead of reporting a completed batch.
-                void refresh()
                 return false
               }
-              toast.add({
-                title: `Deleted ${rows.length} invoice${rows.length === 1 ? "" : "s"}`,
-              })
-              clear()
               return true
             }}
+            onDeleted={clear}
           />
         )}
-        onRowClick={(row) =>
-          router.push(invoiceDetailHref(row.publicId, listHref))
-        }
+        onRowClick={(row) => void go(invoiceDetailHref(row.publicId, listHref))}
       />
 
       <ConfirmDialog

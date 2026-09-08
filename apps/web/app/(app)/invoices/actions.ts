@@ -396,23 +396,54 @@ export async function listExpenseCategories(): Promise<ExpenseCategoryRow[]> {
   return status.categories
 }
 
+async function deleteOneInvoice(id: string) {
+  const answer = await djangoAction<{ ok: true; documentKey: string | null }>(
+    "delete-invoice",
+    { id }
+  )
+  if (answer.documentKey) {
+    // The invoice is gone either way; a stranded blob is not worth an error.
+    await deleteDocument(answer.documentKey).catch((cause) => {
+      console.error("Couldn't delete stored invoice document", cause)
+    })
+  }
+}
+
 export async function deleteInvoice(
   id: string
 ): Promise<{ ok: true } | { error: string }> {
   try {
-    const answer = await djangoAction<{ ok: true; documentKey: string | null }>(
-      "delete-invoice",
-      { id: z.string().uuid().parse(id) }
-    )
-    if (answer.documentKey) {
-      // The invoice is gone either way; a stranded blob is not worth an error.
-      await deleteDocument(answer.documentKey).catch((cause) => {
-        console.error("Couldn't delete stored invoice document", cause)
-      })
-    }
+    await deleteOneInvoice(z.string().uuid().parse(id))
+    // Also purges the client's copy of the list the detail page leaves for.
+    revalidatePath("/invoices")
     return { ok: true }
   } catch (error) {
     return { error: actionErrorMessage(error, "Couldn't delete that invoice.") }
+  }
+}
+
+/** Every selected invoice in turn, one revalidation at the end; see
+ *  deleteRecipes in the recipes actions. */
+export async function deleteInvoices(
+  ids: string[]
+): Promise<{ ok: true } | { error: string; deleted: number }> {
+  const parsed = z.array(z.string().uuid()).min(1).max(200).safeParse(ids)
+  if (!parsed.success)
+    return { error: "Invoice ids look malformed.", deleted: 0 }
+  let deleted = 0
+  try {
+    for (const id of parsed.data) {
+      await deleteOneInvoice(id)
+      deleted += 1
+    }
+    return { ok: true }
+  } catch (error) {
+    return {
+      error: actionErrorMessage(error, "Couldn't delete those invoices."),
+      deleted,
+    }
+  } finally {
+    if (deleted) revalidatePath("/invoices")
   }
 }
 

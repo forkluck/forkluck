@@ -677,6 +677,35 @@ export async function deletePreparations(ids: string[]): Promise<
   }
 }
 
+/** Every selected ingredient in turn, one revalidation at the end; see
+ *  deleteRecipes. A refusal for one in use stops the batch there. */
+export async function deleteIngredients(
+  ids: string[]
+): Promise<{ ok: true } | { error: string; deleted: number }> {
+  const parsed = z.array(z.string().min(1)).min(1).max(200).safeParse(ids)
+  if (!parsed.success)
+    return { error: "Ingredient ids are required.", deleted: 0 }
+  let deleted = 0
+  try {
+    for (const id of parsed.data) {
+      const result = await djangoAction<{ ok: true } | { error: string }>(
+        "delete-ingredient",
+        { id }
+      )
+      if ("error" in result) return { error: result.error, deleted }
+      deleted += 1
+    }
+    return { ok: true }
+  } catch (cause) {
+    return {
+      error: actionErrorMessage(cause, "Couldn’t delete the ingredients."),
+      deleted,
+    }
+  } finally {
+    if (deleted) revalidateIngredientReads()
+  }
+}
+
 export async function deleteIngredient(id: string): Promise<
   | { ok: true }
   | {

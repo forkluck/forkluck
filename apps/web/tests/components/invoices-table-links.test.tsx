@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { cleanup, fireEvent, render, screen } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 
 vi.mock("server-only", () => ({}))
 vi.mock("@/app/(app)/invoices/actions", () => ({ deleteInvoice: vi.fn() }))
@@ -43,7 +49,7 @@ function invoice(): InvoiceRow {
 }
 
 describe("the invoices list", () => {
-  it("draws the screen's primary and points every row at its own screen", () => {
+  it("draws the screen's primary and points every row at its own screen", async () => {
     render(
       <InvoicesTable
         invoices={[invoice()]}
@@ -60,8 +66,11 @@ describe("the invoices list", () => {
       screen.getByRole("link", { name: "Local Farm" }).getAttribute("href")
     ).toBe("/invoices/inv_k8f3m29qp7vw?returnTo=%2Finvoices%3Fmonth%3D2026-07")
     fireEvent.click(screen.getByText("Local Farm").closest("tr")!)
-    expect(push).toHaveBeenCalledWith(
-      "/invoices/inv_k8f3m29qp7vw?returnTo=%2Finvoices%3Fmonth%3D2026-07"
+    // The row click goes through the guard, which answers on the next tick.
+    await waitFor(() =>
+      expect(push).toHaveBeenCalledWith(
+        "/invoices/inv_k8f3m29qp7vw?returnTo=%2Finvoices%3Fmonth%3D2026-07"
+      )
     )
   })
 })

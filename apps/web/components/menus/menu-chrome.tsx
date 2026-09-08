@@ -3,7 +3,6 @@
 import * as React from "react"
 import { usePathname } from "next/navigation"
 
-import { LoadingRegion } from "@/components/ui/loading-region"
 import {
   PageHeader,
   PageParent,
@@ -48,9 +47,6 @@ export function MenuChrome({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  // A section tab changes a sibling page under the same menu, which the
-  // router answers with no loading screen of its own.
-  const [sectionPending, setSectionPending] = React.useState(false)
   const {
     dirty,
     setDirty,
@@ -95,7 +91,7 @@ export function MenuChrome({
       </PageHeader>
 
       {publicId ? (
-        <SectionTabs onPendingChange={setSectionPending}>
+        <SectionTabs>
           {[
             {
               label: "Worksheet",
@@ -121,9 +117,7 @@ export function MenuChrome({
         </SectionTabs>
       ) : null}
 
-      <LoadingRegion pending={sectionPending} label="Loading page">
-        {children}
-      </LoadingRegion>
+      {children}
     </MenuEditContext.Provider>
   )
 }

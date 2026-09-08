@@ -5,10 +5,14 @@ import { usePathname } from "next/navigation"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { MainHeader } from "@/components/main-header"
-import { NavigationBlockerProvider } from "@/components/navigation-blocker"
+import {
+  NavigationBlockerProvider,
+  useNavigationBlocker,
+} from "@/components/navigation-blocker"
 import { KitchenToolsWebMcp } from "@/components/primo/kitchen-tools-webmcp"
 import { PrimoProvider, usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRail } from "@/components/primo/primo-rail"
+import { LoadingRegion } from "@/components/ui/loading-region"
 import { ToastProvider } from "@/components/ui/toast"
 import type { SessionUser } from "@/lib/auth-session"
 import type { ActiveKitchen } from "@/lib/kitchen"
@@ -44,6 +48,20 @@ function AppShellContents({
   const inlineChat = inlineCount > 0 || homeChat
   const viewport = useVisualViewport(inlineCount > 0)
   const primoRailVisible = primoOpen && !inlineChat
+  // A navigation keeps the page you were on. Past 200 ms it dims behind one
+  // mark; a warm route lands inside that and shows nothing at all, which
+  // reads as faster than a page that blinked to a spinner and back.
+  const { navigationPending } = useNavigationBlocker()
+  const [passedThreshold, setPassedThreshold] = React.useState(false)
+  // Reset in render, the moment the wait ends, so the next one starts its
+  // 200 ms from zero.
+  if (!navigationPending && passedThreshold) setPassedThreshold(false)
+  React.useEffect(() => {
+    if (!navigationPending) return
+    const timer = window.setTimeout(() => setPassedThreshold(true), 200)
+    return () => window.clearTimeout(timer)
+  }, [navigationPending])
+  const slow = navigationPending && passedThreshold
 
   function setPrimoVisibility(open: boolean) {
     setPrimoOpen(open)
@@ -97,7 +115,13 @@ function AppShellContents({
               onTogglePrimo={() => setPrimoVisibility(!primoOpen)}
               primoTriggerRef={primoTriggerRef}
             />
-            {children}
+            <LoadingRegion
+              pending={slow}
+              label="Loading page"
+              className="flex-1"
+            >
+              {children}
+            </LoadingRegion>
           </div>
           {primoEnabled && !homeChat ? (
             <PrimoRail

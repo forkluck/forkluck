@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => ({
 }))
 // The name cell links out through the blocker; the table needs no router.
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

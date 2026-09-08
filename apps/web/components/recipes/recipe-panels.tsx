@@ -199,7 +199,7 @@ export function RecipeCostingPanel({
   yieldWord?: string | null
   labor: CostBreakdown | null
   priceList: PriceListEntry[]
-  onLinked: (match: PriceLineMatch) => void
+  onLinked?: (match: PriceLineMatch) => void
   fixUnitHref?: string
   /** False where this reader cannot change what a line is priced from. */
   canPrice?: boolean

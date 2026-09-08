@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
+  useDialogTarget,
 } from "@/components/ui/dialog"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
@@ -55,9 +56,11 @@ export function SuppliersList() {
   const [error, setError] = React.useState<string | null>(null)
   const [editing, setEditing] = React.useState<SupplierSummary | null>(null)
   const [editorOpen, setEditorOpen] = React.useState(false)
+  const editorShown = useDialogTarget(editorOpen ? true : null)
   const [mergeSource, setMergeSource] = React.useState<SupplierSummary | null>(
     null
   )
+  const heldMerge = useDialogTarget(mergeSource)
   const [deleteTarget, setDeleteTarget] =
     React.useState<SupplierSummary | null>(null)
   const [pending, setPending] = React.useState(false)
@@ -184,9 +187,9 @@ export function SuppliersList() {
       ) : null}
 
       {/* Mounted per edit, so the form starts from the row it opened on. */}
-      {editorOpen ? (
+      {editorShown ? (
         <SupplierDialog
-          open
+          open={editorOpen}
           supplier={editing}
           categories={categories}
           onOpenChange={setEditorOpen}
@@ -195,9 +198,10 @@ export function SuppliersList() {
       ) : null}
 
       {/* Mounted per merge, so the picker starts empty every time. */}
-      {mergeSource ? (
+      {heldMerge ? (
         <MergeSupplierDialog
-          source={mergeSource}
+          open={mergeSource !== null}
+          source={heldMerge}
           rows={rows ?? []}
           onClose={() => setMergeSource(null)}
           onMerged={load}
@@ -224,11 +228,13 @@ export function SuppliersList() {
  * the trade before it will do anything.
  */
 function MergeSupplierDialog({
+  open,
   source,
   rows,
   onClose,
   onMerged,
 }: {
+  open: boolean
   source: SupplierSummary
   rows: SupplierSummary[]
   onClose: () => void
@@ -259,7 +265,7 @@ function MergeSupplierDialog({
 
   return (
     <Dialog
-      open
+      open={open}
       onOpenChange={(next) => {
         if (!next) dismiss()
       }}

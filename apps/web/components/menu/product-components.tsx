@@ -34,6 +34,7 @@ import type {
   ProductComponent,
   ProductDetail,
 } from "@/lib/backend/types"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const COMPONENTS_FIELD = "product-components"
 const UNIT_OPTIONS = recipeUnitOptions()
@@ -358,6 +359,7 @@ export function ProductComponentsCard({
       )
     )
   const [adding, setAdding] = React.useState(false)
+  const addShown = useDialogTarget(adding ? true : null)
   const add = (drafts: ProductComponentDraft[]) => {
     onChange([...rows, ...drafts])
     setAdding(false)
@@ -437,9 +439,9 @@ export function ProductComponentsCard({
           onClick={() => setAdding(true)}
         />
       </div>
-      {adding ? (
+      {addShown ? (
         <AddComponentsDialog
-          open
+          open={adding}
           onOpenChange={setAdding}
           recipes={recipes}
           ingredients={ingredients}

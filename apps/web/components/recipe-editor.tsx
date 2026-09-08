@@ -31,7 +31,6 @@ import type { BatchSize } from "@/components/recipes/recipe-chrome"
 import { useRecipeEdit } from "@/components/recipes/recipe-chrome"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
 import { useHydrated } from "@/hooks/use-hydrated"
-import { useRefresh } from "@/hooks/use-refresh"
 import { UnitConversionFields } from "@/components/unit-conversion-fields"
 import { IngredientTagsCard } from "@/components/ingredients/ingredient-tags-card"
 import { Button } from "@/components/ui/button"
@@ -604,7 +603,6 @@ export function RecipeEditor({
   ownerId,
   tagOptions = [],
 }: Props) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   // Until React owns the page, what is typed into it would be lost.
   const hydrated = useHydrated()
@@ -2140,7 +2138,6 @@ export function RecipeEditor({
                             setCommentBusy(comment.id)
                             try {
                               notifyError(await deleteRecipeComment(comment.id))
-                              await refresh()
                             } finally {
                               setCommentBusy(null)
                             }
@@ -2200,10 +2197,7 @@ export function RecipeEditor({
                           body: commentDraft,
                         })
                         notifyError(result)
-                        if (!("error" in result)) {
-                          setCommentDraft("")
-                          await refresh()
-                        }
+                        if (!("error" in result)) setCommentDraft("")
                       } finally {
                         setCommentBusy(null)
                       }

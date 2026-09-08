@@ -37,7 +37,6 @@ import {
 import { dollarsToCents, formatCents, quantityFormat } from "@/lib/money"
 import type { ProductDetail } from "@/lib/backend/types"
 import { formatDateRangeLabel } from "@/lib/date-range-label"
-import { useRefresh } from "@/hooks/use-refresh"
 
 type ProductManualSaleRow = ProductDetail["sales"]["manualSales"][number]
 
@@ -94,14 +93,16 @@ function ManualSalesForm({
   product: ProductDetail
   onRecorded: () => void
 }) {
-  const { refresh } = useRefresh()
   const [soldOn, setSoldOn] = React.useState("")
   const [quantity, setQuantity] = React.useState("")
   const [totalNet, setTotalNet] = React.useState("")
-  const [pending, setPending] = React.useState(false)
+  // A transition: the button holds until the table the action answered with
+  // has committed. After an await React has lost the transition's scope, so
+  // the reset starts it again.
+  const [pending, startRecord] = React.useTransition()
   const [error, setError] = React.useState<string | null>(null)
 
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
+  function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     const parsedQuantity = Number(quantity)
@@ -119,8 +120,7 @@ function ManualSalesForm({
       return
     }
 
-    setPending(true)
-    try {
+    startRecord(async () => {
       const result = await recordManualSales({
         productId: product.publicId,
         soldOn,
@@ -131,14 +131,13 @@ function ManualSalesForm({
         setError(result.error)
         return
       }
-      setSoldOn("")
-      setQuantity("")
-      setTotalNet("")
-      await refresh()
-      onRecorded()
-    } finally {
-      setPending(false)
-    }
+      startRecord(() => {
+        setSoldOn("")
+        setQuantity("")
+        setTotalNet("")
+        onRecorded()
+      })
+    })
   }
 
   return (
@@ -209,28 +208,27 @@ function ManualSalesForm({
 }
 
 function ManualSalesTable({ product }: { product: ProductDetail }) {
-  const { refresh } = useRefresh()
   const rows = manualRows(product)
-  const [pendingId, setPendingId] = React.useState<string | null>(null)
+  // The row's button holds until the table the action answered with has
+  // committed, which is what the transition's pending covers.
+  const [removing, startRemove] = React.useTransition()
+  const [removingId, setRemovingId] = React.useState<string | null>(null)
+  const pendingId = removing ? removingId : null
   const [error, setError] = React.useState<string | null>(null)
 
-  async function remove(row: ProductManualSaleRow) {
+  const remove = (row: ProductManualSaleRow) => {
+    // Before the transition: React holds updates made inside an async
+    // transition until the action has finished.
     setError(null)
-    setPendingId(row.id)
-    try {
+    setRemovingId(row.id)
+    startRemove(async () => {
       const result = await recordManualSales({
         productId: product.publicId,
         soldOn: row.soldOn,
         quantity: 0,
       })
-      if ("error" in result) {
-        setError(result.error)
-        return
-      }
-      await refresh()
-    } finally {
-      setPendingId(null)
-    }
+      if ("error" in result) setError(result.error)
+    })
   }
 
   if (!rows.length) return null

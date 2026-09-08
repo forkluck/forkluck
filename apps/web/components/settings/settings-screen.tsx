@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import {
   BookOpen,
   ChevronRight,
@@ -54,7 +53,7 @@ import {
   type BillingState,
 } from "@/lib/billing"
 import type { BusinessSettings } from "@/lib/business-settings"
-import { useRefresh } from "@/hooks/use-refresh"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 /**
  * Settings is a 640px column of grouped cards. Each group is a heading over a
@@ -161,8 +160,7 @@ export function SettingsScreen({
   const categories = useRowDialog()
   const payments = useRowDialog()
   const history = useRowDialog()
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const [deleteOpen, setDeleteOpen] = React.useState(false)
   const [deletePending, startDelete] = React.useTransition()
@@ -225,7 +223,7 @@ export function SettingsScreen({
         return
       }
       toast.add({ title: "Kitchen data deleted." })
-      router.push("/recipes")
+      void go("/recipes", { force: true })
     })
   }
 
@@ -239,7 +237,6 @@ export function SettingsScreen({
         return
       }
       toast.add({ title: "Shared links reset." })
-      void refresh()
     })
   }
 

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { Download, RotateCcw } from "lucide-react"
 
 import { loadMenuProducts, saveMenu } from "@/app/(app)/menu/actions"
@@ -27,7 +26,6 @@ import { SaveBanner } from "@/components/ui/save-banner"
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/toast"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { menuDraft } from "@/lib/draft-store"
 import { toSaveFailure, type SaveFailure } from "@/lib/save-failure"
 import type {
@@ -38,6 +36,7 @@ import type {
   SalesProductRow,
 } from "@/lib/backend/types"
 import { deriveRows, originalFigures, summarize } from "@/lib/menu/engineering"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 const TRACK_VARIANCE_KEY = "menu.trackVariance"
 
@@ -114,8 +113,7 @@ export function MenuEditor({
   timeZone: string
   currentUserId: string
 }) {
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const recipeLimit = useRecipeLimitDialog()
   const { saveRef, setDirty, setSaveState } = useMenuEdit()
@@ -224,8 +222,8 @@ export function MenuEditor({
         window.history.replaceState(null, "", `/menu/${result.menu.publicId}`)
       return { editVersion: result.menu.editVersion }
     }
-    if (creating) router.replace(`/menu/${result.menu.publicId}`)
-    else void refresh()
+    if (creating)
+      void go(`/menu/${result.menu.publicId}`, { replace: true, force: true })
     return {
       editVersion: result.menu.editVersion,
       // What the server stored, which is the same worksheet trimmed and

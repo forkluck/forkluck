@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useToast } from "@/components/ui/toast"
-import { useRouter } from "next/navigation"
 import {
   Archive,
   ArchiveRestore,
@@ -15,7 +14,7 @@ import {
 
 import {
   GuardedLink,
-  useNavigationBlocker,
+  useGuardedNavigate,
 } from "@/components/navigation-blocker"
 import { Badge } from "@/components/ui/badge"
 import { useBusinessSettings } from "@/components/business-settings-provider"
@@ -39,7 +38,6 @@ import { formatCents } from "@/lib/money"
 import type { CurrencyCode } from "@/lib/business-settings"
 import { recipeCategoryLabel } from "@/lib/recipe/categories"
 import { describeRecipeIssues, type RecipeHealth } from "@/lib/recipe/health"
-import { useRefresh } from "@/hooks/use-refresh"
 import { toSaveFailure } from "@/lib/save-failure"
 import { cn } from "@/lib/utils"
 import type { RecipeStatusFilter } from "@/components/recipes/types"
@@ -47,9 +45,11 @@ import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
 import { ShareRecipesDialog } from "@/components/recipes/share-recipes-dialog"
 import {
   deleteRecipe,
+  deleteRecipes,
   duplicateRecipe,
   updateRecipeStatus,
 } from "@/app/(app)/recipes/actions"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const helper = dataTableColumns<RecipeHealth>()
 
@@ -123,122 +123,122 @@ export function RecipesTable({
   canCreate?: boolean
 }) {
   const { timezone } = useBusinessSettings()
-  const router = useRouter()
-  const { refresh } = useRefresh()
   const toast = useToast()
-  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const { go } = useGuardedNavigate()
   const { show: showRecipeLimit, dialog: recipeLimitDialog } =
     useRecipeLimitDialog()
   const [deleteTarget, setDeleteTarget] = React.useState<RecipeHealth | null>(
     null
   )
-  const [deletePending, setDeletePending] = React.useState(false)
+  // Transitions: the wait on a control holds until the rows the action
+  // answered with have committed, not just until it answered. After an await
+  // React has lost the transition's scope, so the updates that should land
+  // with those rows start it again.
+  const [deletePending, startDelete] = React.useTransition()
+  const [statusPending, startStatus] = React.useTransition()
   // Mounted only while it is open, so each send starts on an empty form.
   const [shareTarget, setShareTarget] = React.useState<{
     recipes: { id: string; title: string }[]
     clear: () => void
   } | null>(null)
+  const heldShare = useDialogTarget(shareTarget)
   const [hiddenRowIds, setHiddenRowIds] = React.useState<Set<string>>(
     () => new Set()
   )
-  const [statusOverrides, setStatusOverrides] = React.useState<
-    Map<string, "active" | "archived">
-  >(() => new Map())
   const data = React.useMemo(
-    () =>
-      rows
-        .filter((row) => !hiddenRowIds.has(row.id))
-        .map((row) => {
-          const override = statusOverrides.get(row.id)
-          return override && override !== row.status
-            ? { ...row, status: override }
-            : row
-        }),
-    [hiddenRowIds, rows, statusOverrides]
+    () => rows.filter((row) => !hiddenRowIds.has(row.id)),
+    [hiddenRowIds, rows]
   )
   const canViewCost = rows.some((row) => row.canViewCost ?? true)
-
-  const go = React.useCallback(
-    async (href: string) => {
-      if (!(await confirmNavigation())) return
-      allowNavigation()
-      router.push(href)
-    },
-    [allowNavigation, confirmNavigation, router]
-  )
 
   // The row whose menu action is in flight: the menu has closed, so the row
   // shows the wait, and a toast says what came of it.
   const [busyId, setBusyId] = React.useState<string | null>(null)
 
+  // The action revalidates the list, so its answer carries the new row. The
+  // busy mark is set before the transition: React holds updates made inside
+  // an async transition until the action has finished.
   const duplicate = React.useCallback(
-    async (recipe: RecipeHealth) => {
+    (recipe: RecipeHealth) => {
       setBusyId(recipe.id)
-      try {
-        const result = await duplicateRecipe(recipe.id)
-        if ("error" in result) {
-          if (!showRecipeLimit(result))
-            toast.add({ title: result.error, type: "error" })
-          return
+      startStatus(async () => {
+        try {
+          const result = await duplicateRecipe(recipe.id)
+          if ("error" in result) {
+            if (!showRecipeLimit(result))
+              toast.add({ title: result.error, type: "error" })
+            return
+          }
+          startStatus(() => {
+            toast.add({ title: `Duplicated ${recipe.title}` })
+          })
+        } catch (cause) {
+          toast.add({ title: toSaveFailure(cause).message, type: "error" })
+        } finally {
+          startStatus(() => setBusyId(null))
         }
-        await refresh()
-        toast.add({ title: `Duplicated ${recipe.title}` })
-      } catch (cause) {
-        toast.add({ title: toSaveFailure(cause).message, type: "error" })
-      } finally {
-        setBusyId(null)
-      }
+      })
     },
-    [refresh, showRecipeLimit, toast]
+    [showRecipeLimit, toast]
   )
 
+  // One row shows the wait on itself; a selection shows it on the menu that
+  // asked. Either way the status changes when the server says so, and a
+  // toast names what changed.
   const setStatus = React.useCallback(
-    async (id: string, next: "active" | "archived") => {
-      setStatusOverrides((current) => new Map(current).set(id, next))
-      try {
-        const result = await updateRecipeStatus(id, next)
-        if ("error" in result) throw new Error(result.error)
-        return true
-      } catch (cause) {
-        setStatusOverrides((current) => {
-          const reverted = new Map(current)
-          reverted.delete(id)
-          return reverted
+    (recipes: RecipeHealth[], next: "active" | "archived") => {
+      if (recipes.length === 1) setBusyId(recipes[0].id)
+      return new Promise<boolean>((resolve) =>
+        startStatus(async () => {
+          try {
+            for (const recipe of recipes) {
+              const result = await updateRecipeStatus(recipe.id, next)
+              if ("error" in result) throw new Error(result.error)
+            }
+            startStatus(() => {
+              toast.add({
+                title: `${next === "archived" ? "Archived" : "Restored"} ${
+                  recipes.length === 1
+                    ? recipes[0].title
+                    : `${recipes.length} recipes`
+                }`,
+              })
+            })
+            resolve(true)
+          } catch (cause) {
+            toast.add({ title: toSaveFailure(cause).message, type: "error" })
+            resolve(false)
+          } finally {
+            startStatus(() => setBusyId(null))
+          }
         })
-        toast.add({ title: toSaveFailure(cause).message, type: "error" })
-        return false
-      }
+      )
     },
     [toast]
   )
 
-  const confirmDelete = async () => {
+  // Nothing on screen changes until the server has answered: the row goes,
+  // then the confirmation, then the toast.
+  const confirmDelete = () => {
     if (!deleteTarget) return
     const target = deleteTarget
-    setDeletePending(true)
-    setDeleteTarget(null)
-    setHiddenRowIds((current) => new Set(current).add(target.id))
-    try {
-      const result = await deleteRecipe(target.id)
-      if ("error" in result) {
-        setHiddenRowIds((current) => {
-          const next = new Set(current)
-          next.delete(target.id)
-          return next
-        })
-        toast.add({ title: result.error, type: "error" })
-      } else {
-        toast.add({ title: `Deleted ${target.title}` })
+    startDelete(async () => {
+      try {
+        const result = await deleteRecipe(target.id)
+        if ("error" in result) {
+          toast.add({ title: result.error, type: "error" })
+          return
+        }
+      } catch (cause) {
+        toast.add({ title: toSaveFailure(cause).message, type: "error" })
+        return
       }
-    } catch {
-      setHiddenRowIds((current) => {
-        const next = new Set(current)
-        next.delete(target.id)
-        return next
+      startDelete(() => {
+        setHiddenRowIds((current) => new Set(current).add(target.id))
+        setDeleteTarget(null)
+        toast.add({ title: `Deleted ${target.title}` })
       })
-    } finally {
-      setDeletePending(false)
-    }
+    })
   }
 
   // One menu, two placements: the row's trailing cell and the mobile card.
@@ -259,12 +259,12 @@ export function RecipesTable({
                 Duplicate
               </MenuItem>
               {recipe.status === "archived" ? (
-                <MenuItem onClick={() => void setStatus(recipe.id, "active")}>
+                <MenuItem onClick={() => void setStatus([recipe], "active")}>
                   <ArchiveRestore strokeWidth={1.8} aria-hidden="true" />
                   Unarchive
                 </MenuItem>
               ) : (
-                <MenuItem onClick={() => void setStatus(recipe.id, "archived")}>
+                <MenuItem onClick={() => void setStatus([recipe], "archived")}>
                   <Archive strokeWidth={1.8} aria-hidden="true" />
                   Archive
                 </MenuItem>
@@ -400,10 +400,7 @@ export function RecipesTable({
             (recipe) => !recipe.permission || recipe.permission === "owner"
           )
           const archive = async (next: "active" | "archived") => {
-            for (const recipe of owned) {
-              if (!(await setStatus(recipe.id, next))) return
-            }
-            clearSelection()
+            if (await setStatus(owned, next)) clearSelection()
           }
           return (
             <>
@@ -429,14 +426,14 @@ export function RecipesTable({
                   {selectedRows.length === 1 ? "Share recipe" : "Share recipes"}
                 </MenuItem>
                 <MenuItem
-                  disabled={owned.length === 0}
+                  disabled={owned.length === 0 || statusPending}
                   onClick={() => void archive("archived")}
                 >
                   <Archive strokeWidth={1.8} aria-hidden="true" />
                   Archive selected
                 </MenuItem>
                 <MenuItem
-                  disabled={owned.length === 0}
+                  disabled={owned.length === 0 || statusPending}
                   onClick={() => void archive("active")}
                 >
                   <ArchiveRestore strokeWidth={1.8} aria-hidden="true" />
@@ -481,27 +478,12 @@ export function RecipesTable({
               description="They are removed, along with their labor timings. Products that use them keep their sales history."
               refreshAfterDelete={false}
               onDelete={async () => {
-                const deleted: string[] = []
-                try {
-                  for (const recipe of deletable) {
-                    const result = await deleteRecipe(recipe.id)
-                    if ("error" in result) throw new Error(result.error)
-                    deleted.push(recipe.id)
-                  }
-                } finally {
-                  if (deleted.length) {
-                    setHiddenRowIds((current) => {
-                      const next = new Set(current)
-                      for (const id of deleted) next.add(id)
-                      return next
-                    })
-                    toast.add({
-                      title: `Deleted ${deleted.length} recipe${deleted.length === 1 ? "" : "s"}`,
-                    })
-                  }
-                }
-                clear()
+                const result = await deleteRecipes(
+                  deletable.map((recipe) => recipe.id)
+                )
+                if ("error" in result) throw new Error(result.error)
               }}
+              onDeleted={clear}
             />
           )
         }}
@@ -510,22 +492,22 @@ export function RecipesTable({
       <ConfirmDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null)
+          if (!open && !deletePending) setDeleteTarget(null)
         }}
         title="Delete this recipe?"
         description={`${deleteTarget?.title ?? "This recipe"} is removed, along with its labor timings. Products that use it keep their sales history.`}
-        confirmLabel="Delete recipe"
+        confirmLabel={deletePending ? "Deleting…" : "Delete recipe"}
         pending={deletePending}
         onConfirm={confirmDelete}
       />
-      {shareTarget ? (
+      {heldShare ? (
         <ShareRecipesDialog
-          open
+          open={shareTarget !== null}
           onOpenChange={(next) => {
             if (!next) setShareTarget(null)
           }}
-          recipes={shareTarget.recipes}
-          onShared={shareTarget.clear}
+          recipes={heldShare.recipes}
+          onShared={heldShare.clear}
         />
       ) : null}
       {recipeLimitDialog}

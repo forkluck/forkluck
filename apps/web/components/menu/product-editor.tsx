@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Popover } from "@base-ui/react/popover"
 import { TriangleAlert, Unlink, X } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 import {
   saveSalesProduct,
@@ -66,7 +65,6 @@ import {
 } from "@/components/ui/table"
 import { useEditChrome } from "@/hooks/use-edit-chrome"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { costIssueLine } from "@/lib/menu/cost-issues"
 import {
   isProductUnit,
@@ -84,6 +82,7 @@ import type {
   MenuRecipeOption,
   ProductDetail,
 } from "@/lib/backend/types"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 type ProductVariant = ProductDetail["variants"][number]
 
@@ -288,22 +287,22 @@ function CostIssuesCard({ issues }: { issues: ProductDetail["costIssues"] }) {
 
 function VariantsCard({ product }: { product: ProductDetail }) {
   const variants = variantGroups(product).flatMap(([, rows]) => rows)
-  const { refresh } = useRefresh()
   const [target, setTarget] = React.useState<ProductVariant | null>(null)
-  const [pending, setPending] = React.useState(false)
+  // A transition: "Untracking…" holds until the card the action answered
+  // with has committed. After an await React has lost the transition's
+  // scope, so the close starts it again.
+  const [pending, startUntrack] = React.useTransition()
   const [error, setError] = React.useState<string | null>(null)
-  const untrack = async (variant: ProductVariant) => {
-    setPending(true)
+  const untrack = (variant: ProductVariant) => {
     setError(null)
-    const result = await untrackSalesVariant(variant.id)
-    if ("error" in result) {
-      setPending(false)
-      setError(result.error)
-      return
-    }
-    await refresh()
-    setPending(false)
-    setTarget(null)
+    startUntrack(async () => {
+      const result = await untrackSalesVariant(variant.id)
+      if ("error" in result) {
+        setError(result.error)
+        return
+      }
+      startUntrack(() => setTarget(null))
+    })
   }
   return (
     <section aria-labelledby="variants-heading">
@@ -434,8 +433,7 @@ export function ProductEditor({
   salesPeriod?: { startDate: string; endDate: string }
   salesView?: "expanded" | "asSold"
 }) {
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const settings = useBusinessSettings()
   const {
     dirty,
@@ -454,9 +452,9 @@ export function ProductEditor({
   const [priceInput, setPriceInput] = React.useState(() =>
     ((product?.sellPriceCents ?? 0) / 100).toFixed(2)
   )
-  // The save response is the authority on the version, not the refreshed
-  // prop: `refresh()` re-renders the server component under a mounted
-  // editor, and reseeding here would clobber whatever is being typed.
+  // The save response is the authority on the version, not the re-rendered
+  // prop: the action's revalidation re-renders the server component under a
+  // mounted editor, and reseeding here would clobber whatever is being typed.
   const versionRef = React.useRef(product?.editVersion ?? 0)
   // The rail's figures come with the product; a new one is priced against the
   // workspace's own currency until it has been saved.
@@ -519,11 +517,10 @@ export function ProductEditor({
       // A create hands the merchant the product it just made, which is where
       // its variants, economics and sales live.
       if (!product) {
-        router.replace(productHref(result))
+        void go(productHref(result), { replace: true, force: true })
         return null
       }
       versionRef.current = result.editVersion
-      refresh()
       return null
     },
   })

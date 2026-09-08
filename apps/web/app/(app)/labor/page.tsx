@@ -77,7 +77,9 @@ export default async function LaborPage({
     comparison?: string | string[]
   }>
 }) {
-  await requireUser()
+  // The session check runs beside the reads, not ahead of them; see
+  // ingredients.
+  const user = requireUser()
   const filters = await searchParams
   const requestedStartDate =
     dateSearchParam(filters.start) ?? dateSearchParam(filters.date)
@@ -89,10 +91,13 @@ export default async function LaborPage({
     ? remembered.endDate
     : rangeEndSearchParam(startDate, filters.end)
   const comparison = comparisonSearchParam(filters.comparison)
-  const [overview, settings] = await Promise.all([
+  const reads = Promise.all([
     getLaborOverview(startDate, endDate, comparison),
     getBusinessSettings(),
   ])
+  reads.catch(() => undefined)
+  await user
+  const [overview, settings] = await reads
   const hasShifts = overview.period.availableDates.length > 0
 
   // Labor as a share of net sales needs the sales for the same window, and the

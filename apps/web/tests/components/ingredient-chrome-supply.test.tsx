@@ -27,6 +27,7 @@ vi.mock("@/app/(app)/ingredients/actions", () => ({
 }))
 
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,
@@ -108,10 +109,13 @@ describe("a supply's chrome", () => {
       screen.getByRole("button", { name: "Convert to ingredient" })
     )
 
-    await waitFor(() => expect(refresh).toHaveBeenCalled())
-    expect(updateIngredientNutritionSettings).toHaveBeenCalledWith("ing-1", {
-      nonEdible: false,
-    })
+    await waitFor(() =>
+      expect(updateIngredientNutritionSettings).toHaveBeenCalledWith("ing-1", {
+        nonEdible: false,
+      })
+    )
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 })
 

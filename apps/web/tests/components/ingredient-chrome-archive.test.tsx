@@ -28,6 +28,7 @@ vi.mock("@/app/(app)/ingredients/actions", () => ({
 }))
 
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,
@@ -91,8 +92,11 @@ describe("archiving an ingredient from its header", () => {
     expect(screen.queryByText("Archived")).toBeNull()
     fireEvent.click(screen.getByText("Archive ingredient"))
 
-    await waitFor(() => expect(refresh).toHaveBeenCalled())
-    expect(archiveIngredient).toHaveBeenCalledWith("ing-1", true)
+    await waitFor(() =>
+      expect(archiveIngredient).toHaveBeenCalledWith("ing-1", true)
+    )
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("restores an archived one and says it is archived", async () => {
@@ -102,7 +106,9 @@ describe("archiving an ingredient from its header", () => {
     expect(screen.getByText("Archived")).not.toBeNull()
     fireEvent.click(screen.getByText("Restore ingredient"))
 
-    await waitFor(() => expect(refresh).toHaveBeenCalled())
-    expect(archiveIngredient).toHaveBeenCalledWith("ing-1", false)
+    await waitFor(() =>
+      expect(archiveIngredient).toHaveBeenCalledWith("ing-1", false)
+    )
+    expect(refresh).not.toHaveBeenCalled()
   })
 })

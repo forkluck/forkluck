@@ -6,6 +6,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 
 vi.mock("@/app/(app)/menu/actions", () => ({ priceMenuComponent: vi.fn() }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

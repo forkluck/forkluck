@@ -7,6 +7,7 @@ import {
   render,
   screen,
   within,
+  waitFor,
 } from "@testing-library/react"
 
 const push = vi.hoisted(() => vi.fn())
@@ -375,12 +376,13 @@ describe("the hidden products columns", () => {
 })
 
 describe("opening a product", () => {
-  it("navigates when a row is clicked", () => {
+  it("navigates when a row is clicked", async () => {
     renderTable({ rows: [productRow()] })
 
     fireEvent.click(table().getByText("Pastry"))
 
-    expect(push).toHaveBeenCalledWith("/products/linzer")
+    // The click goes through the guard, which answers on the next tick.
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/products/linzer"))
   })
 
   it("archives a product from the row menu, and restores it", () => {
@@ -417,7 +419,7 @@ describe("opening a product", () => {
     })
   })
 
-  it("navigates from the row menu rather than opening a dialog", () => {
+  it("navigates from the row menu rather than opening a dialog", async () => {
     renderTable({ rows: [productRow()] })
 
     fireEvent.click(
@@ -425,7 +427,7 @@ describe("opening a product", () => {
     )
     fireEvent.click(screen.getByRole("menuitem", { name: "Edit product" }))
 
-    expect(push).toHaveBeenCalledWith("/products/linzer")
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/products/linzer"))
     expect(screen.queryByRole("dialog")).toBeNull()
   })
 })

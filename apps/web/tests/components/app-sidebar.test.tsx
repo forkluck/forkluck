@@ -13,6 +13,7 @@ vi.mock("@/components/kitchen-switcher", () => ({
   KitchenSwitcher: () => <div data-testid="kitchen-switcher" />,
 }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

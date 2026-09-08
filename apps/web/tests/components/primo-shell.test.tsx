@@ -45,6 +45,7 @@ vi.mock("@/components/primo/primo-rail", () => ({
   ),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   NavigationBlockerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
   useNavigationBlocker: () => ({

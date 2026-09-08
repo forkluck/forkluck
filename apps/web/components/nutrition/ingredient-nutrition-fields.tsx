@@ -36,6 +36,7 @@ import {
 } from "@/lib/nutrition/allergens"
 import { CUSTOM_NUTRITION_FIELDS } from "@/lib/nutrition/custom-values"
 import { formatAmount } from "@/lib/nutrition/label"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 function SentRequestValues({
   request,
@@ -227,6 +228,7 @@ export function IngredientNutritionFields({
   )
   const [packageOpen, setPackageOpen] = React.useState(false)
   const [requestOpen, setRequestOpen] = React.useState(false)
+  const requestShown = useDialogTarget(requestOpen ? true : null)
   const [requestPending, setRequestPending] = React.useState(
     ingredient.nutritionRequest?.status === "pending"
   )
@@ -542,11 +544,11 @@ export function IngredientNutritionFields({
         ) : null}
       </div>
 
-      {requestOpen ? (
+      {requestShown ? (
         <RequestCustomNutritionDialog
           ingredientId={ingredient.id}
           ingredientName={ingredient.name}
-          open
+          open={requestOpen}
           onOpenChange={(next) => {
             if (!next) setRequestOpen(false)
           }}

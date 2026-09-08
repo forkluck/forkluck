@@ -99,7 +99,8 @@ describe("sharing a selection of recipes", () => {
     expect(toastAdd).toHaveBeenCalledWith({
       title: "chef@example.com added to 2 recipes",
     })
-    expect(refresh).toHaveBeenCalled()
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
     expect(onShared).toHaveBeenCalled()
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })

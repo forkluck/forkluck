@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 
 import {
   ChevronDown,
@@ -32,7 +31,10 @@ import {
 } from "@/components/ingredients/purchase-unit-fields"
 import { inlineChipClassName } from "@/components/ingredients/unit-combobox"
 import { UnitConversionFields } from "@/components/unit-conversion-fields"
-import { GuardedLink } from "@/components/navigation-blocker"
+import {
+  GuardedLink,
+  useGuardedNavigate,
+} from "@/components/navigation-blocker"
 import { UsedInList, useUsedInRows } from "@/components/recipes/used-in-list"
 
 import { BulkDeleteMenu } from "@/components/ui/bulk-delete-menu"
@@ -64,7 +66,7 @@ import { productHref } from "@/lib/product-href"
 import { formatKitchenAmount } from "@/lib/recipe"
 import { AddButton } from "@/components/ui/add-button"
 import type { IngredientRow, IngredientTagOptionRow } from "@/lib/backend/types"
-import { useRefresh } from "@/hooks/use-refresh"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const CONVERSION_UNITS = conversionUnitOptions()
 
@@ -549,7 +551,6 @@ export function IngredientPanel({
   availableTags: IngredientTagOptionRow[]
   categoryOptions?: readonly string[]
 }) {
-  const { refresh } = useRefresh()
   const binding = useIngredientFormBinding()
   const { addPreparation, editPreparation, removePreparations } =
     useIngredientEdit()
@@ -560,6 +561,7 @@ export function IngredientPanel({
     id: string
     name: string
   } | null>(null)
+  const heldDeleting = useDialogTarget(deleting)
   const toast = useToast()
   const preparations = ingredient.preparations
 
@@ -583,7 +585,6 @@ export function IngredientPanel({
       availableTags={availableTags}
       categoryOptions={categoryOptions}
       initial={formValues(ingredient)}
-      onDone={() => void refresh()}
     >
       {/* A supply is bought and used in one unit: nothing to prepare, and
           no measures to convert between. Its cost sits on this one page
@@ -783,18 +784,19 @@ export function IngredientPanel({
       ) : (
         <UsedInSection usedInRecipes={ingredient.usedInRecipes} />
       )}
-      {deleting ? (
+      {heldDeleting ? (
         <DeleteWithUsageDialog
+          key={heldDeleting.id}
           title="Delete preparation?"
           description="Recipes asking this ingredient for in this state lose the yield and conversions it carried."
-          name={deleting.name}
+          name={heldDeleting.name}
           confirmLabel="Delete preparation"
           blockedMessage="This preparation can’t be deleted because it is used in the following recipes:"
-          open
+          open={deleting !== null}
           onOpenChange={(next) => {
             if (!next) setDeleting(null)
           }}
-          onDelete={() => removePreparations([deleting.id])}
+          onDelete={() => removePreparations([heldDeleting.id])}
           onDeleted={() => setDeleting(null)}
         />
       ) : null}
@@ -838,7 +840,7 @@ export function NewIngredientPanel({
   /** Creates a supply; it lands on the same ingredient screen. */
   nonEdible?: boolean
 }) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const binding = useIngredientFormBinding()
 
   return (
@@ -851,7 +853,7 @@ export function NewIngredientPanel({
       categoryOptions={categoryOptions}
       initial={null}
       onSaved={(_id, values) =>
-        router.push(`/ingredients/${values.publicId}/ingredient`)
+        void go(`/ingredients/${values.publicId}/ingredient`, { force: true })
       }
       onDone={() => undefined}
     >

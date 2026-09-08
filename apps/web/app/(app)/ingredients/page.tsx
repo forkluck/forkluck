@@ -33,7 +33,9 @@ export default async function IngredientsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  await requireUser()
+  // The session check runs beside the reads, not ahead of them: a signed-out
+  // reader is redirected before any result is awaited.
+  const user = requireUser()
   const params = await searchParams
   const query = (singleSearchParam(params.q) ?? "").trim().slice(0, 200)
   const page = positivePage(singleSearchParam(params.page))
@@ -51,7 +53,7 @@ export default async function IngredientsPage({
   let duplicateSuggestions
   try {
     // Both reads go out together; the duplicate scan never waits on the page.
-    ;[result, duplicateSuggestions] = await Promise.all([
+    const reads = Promise.all([
       browseIngredients({
         page,
         limit: 50,
@@ -61,6 +63,9 @@ export default async function IngredientsPage({
       }),
       getIngredientDuplicates(),
     ])
+    reads.catch(() => undefined)
+    await user
+    ;[result, duplicateSuggestions] = await reads
   } catch (cause) {
     if (
       page > 1 &&

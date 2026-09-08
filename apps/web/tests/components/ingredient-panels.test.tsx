@@ -96,6 +96,7 @@ vi.mock("@/components/ingredients/ingredient-form", () => ({
 }))
 
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   GuardedLink: ({
     href,
     children,

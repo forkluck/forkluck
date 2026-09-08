@@ -12,51 +12,70 @@ import { toSaveFailure } from "@/lib/save-failure"
 
 /**
  * The "…" menu in every table's selection bar. Delete sits behind a
- * confirmation dialog; deletion happens one row at a time via the passed
- * callback — fine at the sizes a kitchen selects. `children` are extra
- * items a screen adds above Delete.
+ * confirmation dialog and reports in the one order every delete keeps: the
+ * rows change, the confirmation leaves, a toast says how many went.
+ * `children` are extra items a screen adds above Delete.
  */
 export function BulkDeleteMenu({
   count,
   noun,
+  plural = `${noun}s`,
   description,
   onDelete,
+  onDeleted,
   refreshAfterDelete = true,
   children,
 }: {
   count: number
   /** Singular item name, e.g. "recipe" or "menu item". */
   noun: string
+  /** Only where adding an s is wrong ("supply"). */
+  plural?: string
   /** One sentence under the confirm title describing the consequence. */
   description: string
-  /** False keeps the confirmation and selection open after a failed batch. */
+  /**
+   * Deletes the selection, in one request. False keeps the confirmation and
+   * selection open after a failed batch.
+   */
   onDelete: () => Promise<void | boolean>
+  /** Once the rows are gone: the moment to clear the selection. */
+  onDeleted?: () => void
+  /**
+   * False when the action revalidates the route it was called from: its
+   * response already carries the fresh rows.
+   */
   refreshAfterDelete?: boolean
   children?: React.ReactNode
 }) {
   const { refresh } = useRefresh()
   const toast = useToast()
   const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [pending, setPending] = React.useState(false)
+  // A transition, so "Deleting…" holds until the rows the action answered
+  // with have committed, not just until it answered. After an await React
+  // has lost the transition's scope, so the updates that should land with
+  // those rows are started again inside it.
+  const [pending, startTransition] = React.useTransition()
 
-  const plural = count === 1 ? noun : `${noun}s`
+  const counted = count === 1 ? noun : plural
 
-  const confirmDelete = async () => {
-    setPending(true)
-    try {
-      const deleted = await onDelete()
-      if (deleted === false) return
-      // "Deleting…" holds until the refreshed rows show them gone; only then
-      // does the confirmation leave.
-      if (refreshAfterDelete) await refresh()
-      setConfirmOpen(false)
-    } catch (cause) {
-      // A batch that threw part-way has no other way to say so.
-      toast.add({ title: toSaveFailure(cause).message, type: "error" })
-    } finally {
-      setPending(false)
-    }
-  }
+  const confirmDelete = () =>
+    startTransition(async () => {
+      try {
+        if ((await onDelete()) === false) return
+      } catch (cause) {
+        // A batch that threw part-way has no other way to say so.
+        toast.add({ title: toSaveFailure(cause).message, type: "error" })
+        return
+      }
+      const done = () => {
+        setConfirmOpen(false)
+        onDeleted?.()
+        toast.add({ title: `Deleted ${count} ${counted}` })
+      }
+      // Not awaited: inside a transition the refresh would wait on itself.
+      if (refreshAfterDelete) void refresh().then(done)
+      else startTransition(done)
+    })
 
   return (
     <>
@@ -89,7 +108,7 @@ export function BulkDeleteMenu({
               strokeWidth={1.8}
               aria-hidden="true"
             />
-            Delete {plural}
+            Delete {counted}
           </MenuItem>
         </MenuContent>
       </Menu>
@@ -97,9 +116,9 @@ export function BulkDeleteMenu({
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title={`Delete ${count} ${plural}?`}
+        title={`Delete ${count} ${counted}?`}
         description={description}
-        confirmLabel={pending ? "Deleting…" : `Delete ${plural}`}
+        confirmLabel={pending ? "Deleting…" : `Delete ${counted}`}
         pending={pending}
         onConfirm={confirmDelete}
       />

@@ -40,12 +40,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useCommit, type Commit } from "@/hooks/use-commit"
-import { useRefresh } from "@/hooks/use-refresh"
 import { formatAmount } from "@/lib/nutrition/label"
 import type { RecipeNutrition, RecipeNutritionLine } from "@/lib/backend/types"
 import { servingUnitOptions } from "@/lib/unit-registry"
 import { formatWeight } from "@/lib/units"
 import { cn } from "@/lib/utils"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const SERVING_UNITS = servingUnitOptions()
 
@@ -179,7 +179,6 @@ export function RecipeNutritionView({
   recipeTitle: string
   nutrition: RecipeNutrition
 }) {
-  const { refresh } = useRefresh()
   const toast = useToast()
   const { measurementSystem, labelRegion } = useBusinessSettings()
   const { registerSave, setDirty, setSaveState } = useRecipeEdit()
@@ -204,11 +203,11 @@ export function RecipeNutritionView({
     unit: nutrition.package.unit,
   })
   const [dialogFor, setDialogFor] = React.useState<string | null>(null)
+  const heldDialogFor = useDialogTarget(dialogFor)
   // The yield a line's own commit put on screen, over what the server sent.
   const [yields, setYields] = React.useState<Record<string, number>>({})
   const commit = useCommit({
     onSaveState: setSaveState,
-    onSaved: () => refresh(),
   })
   // Every control here saves itself, so a failure has nowhere to live but a
   // toast.
@@ -745,15 +744,14 @@ export function RecipeNutritionView({
         </div>
       )}
 
-      {dialogFor ? (
+      {heldDialogFor ? (
         <IngredientNutritionDialog
-          key={dialogFor}
-          publicId={dialogFor}
-          open
+          key={heldDialogFor}
+          publicId={heldDialogFor}
+          open={dialogFor !== null}
           onOpenChange={(next) => {
             if (!next) setDialogFor(null)
           }}
-          onSaved={() => refresh()}
         />
       ) : null}
     </div>

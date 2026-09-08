@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import {
   Archive,
   ArchiveRestore,
@@ -25,7 +25,7 @@ import {
   PurchaseUnitDialog,
   type PurchaseUnit,
 } from "@/components/ingredients/purchase-unit-dialog"
-import { useNavigationBlocker } from "@/components/navigation-blocker"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { MenuItem } from "@/components/ui/menu"
@@ -41,10 +41,10 @@ import { SaveStatus, type SaveStatusState } from "@/components/ui/save-status"
 import { useToast } from "@/components/ui/toast"
 import { useCommit } from "@/hooks/use-commit"
 import { useEditChrome } from "@/hooks/use-edit-chrome"
-import { useRefresh } from "@/hooks/use-refresh"
 import { savePurchaseUnit as writePurchaseUnit } from "@/lib/ingredients/save-purchase-unit"
 import { toSaveFailure, type SaveFailure } from "@/lib/save-failure"
 import type { IngredientRow } from "@/lib/backend/types"
+import { useDialogTarget } from "@/components/ui/dialog"
 
 const TABS = [
   { slug: "ingredient", label: "Ingredient", disabled: false },
@@ -114,10 +114,8 @@ export function IngredientChrome({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
-  const { allowNavigation } = useNavigationBlocker()
   const {
     dirty,
     setDirty,
@@ -129,6 +127,7 @@ export function IngredientChrome({
     save,
   } = useEditChrome()
   const [preparationOpen, setPreparationOpen] = React.useState(false)
+  const preparationShown = useDialogTarget(preparationOpen ? true : null)
   // The row being edited, so the dialog opens seeded and saves back onto it.
   const [preparationEdit, setPreparationEdit] =
     React.useState<PreparationInput | null>(null)
@@ -137,17 +136,20 @@ export function IngredientChrome({
   )
   const [purchaseTarget, setPurchaseTarget] =
     React.useState<PurchaseUnit | null>(null)
+  const heldPurchase = useDialogTarget(purchaseTarget)
   const [confirmDelete, setConfirmDelete] = React.useState(false)
   const [confirmConvert, setConfirmConvert] = React.useState(false)
-  const [converting, setConverting] = React.useState(false)
+  // Transitions: the wait holds until the screen the action answered with
+  // has committed. After an await React has lost the transition's scope, so
+  // the updates that should land with that screen start it again.
+  const [converting, startConvert] = React.useTransition()
   // An archive in flight: the menu that asked has closed, so the header pill
   // and the menu itself carry the wait.
-  const [archiving, setArchiving] = React.useState(false)
+  const [archiving, startArchive] = React.useTransition()
   // The version a purchase-unit write echoed, for the form to save against.
   const [packVersion, setPackVersion] = React.useState<number | null>(null)
   const commit = useCommit({
     onSaveState: setSaveState,
-    onSaved: () => refresh(),
     onVersion: setPackVersion,
   })
 
@@ -171,10 +173,9 @@ export function IngredientChrome({
         // click dies with nothing on screen at all.
         result = { error: toSaveFailure(cause).message }
       }
-      if ("ok" in result) await refresh()
       return result
     },
-    [refresh]
+    []
   )
 
   const editPurchaseUnit = React.useCallback(
@@ -182,31 +183,30 @@ export function IngredientChrome({
     []
   )
   const archived = status === "archived"
-  const toggleArchive = React.useCallback(async () => {
+  const toggleArchive = React.useCallback(() => {
     if (!id) return
-    setArchiving(true)
+    // Before the transition: React holds updates made inside an async
+    // transition until the action has finished.
     setSaveState("saving")
-    try {
+    startArchive(async () => {
       const result = await archiveIngredient(id, !archived)
       if ("error" in result) {
         setSaveState("error")
         toast.add({ title: result.error, type: "error" })
         return
       }
-      await refresh()
-      setSaveState("saved")
-      toast.add({ title: archived ? `Restored ${name}` : `Archived ${name}` })
-    } finally {
-      setArchiving(false)
-    }
-  }, [archived, id, name, refresh, setSaveState, toast])
+      startArchive(() => {
+        setSaveState("saved")
+        toast.add({ title: archived ? `Restored ${name}` : `Archived ${name}` })
+      })
+    })
+  }, [archived, id, name, setSaveState, toast])
 
   // The "Not food" checkbox lives on the Nutrition tab, which a supply does
   // not have; this is how a supply becomes an ingredient again.
-  const convert = React.useCallback(async () => {
+  const convert = React.useCallback(() => {
     if (!id) return
-    setConverting(true)
-    try {
+    startConvert(async () => {
       const result = await updateIngredientNutritionSettings(id, {
         nonEdible: !nonEdible,
       })
@@ -215,12 +215,9 @@ export function IngredientChrome({
         return
       }
       // The confirm stays up, spinning, until the screen is the other kind.
-      await refresh()
-      setConfirmConvert(false)
-    } finally {
-      setConverting(false)
-    }
-  }, [id, nonEdible, refresh, toast])
+      startConvert(() => setConfirmConvert(false))
+    })
+  }, [id, nonEdible, toast])
 
   const savePurchaseUnit = React.useCallback(
     (unit: PurchaseUnit) => {
@@ -378,9 +375,9 @@ export function IngredientChrome({
 
       {/* Mounted per open, so a preparation that just saved never seeds the
           next one's fields. */}
-      {preparationOpen ? (
+      {preparationShown ? (
         <PreparationDialog
-          open
+          open={preparationOpen}
           initial={preparationEdit}
           onOpenChange={(next) => {
             setPreparationOpen(next)
@@ -399,20 +396,19 @@ export function IngredientChrome({
               each: preparation.each,
             })
             if ("error" in result) return toSaveFailure(result)
-            await refresh()
             return null
           }}
         />
       ) : null}
 
       {/* Mounted per open so the row being edited seeds the fields once. */}
-      {purchaseTarget ? (
+      {heldPurchase ? (
         <PurchaseUnitDialog
-          open
+          open={purchaseTarget !== null}
           onOpenChange={(next) => {
             if (!next) setPurchaseTarget(null)
           }}
-          initial={purchaseTarget}
+          initial={heldPurchase}
           invoicePrices={invoicePrices}
           onSave={savePurchaseUnit}
           allowItemSync={Boolean(id)}
@@ -442,8 +438,8 @@ export function IngredientChrome({
           onOpenChange={setConfirmDelete}
           onDeleted={() => {
             setDirty(false)
-            allowNavigation()
-            router.push(nonEdible ? "/supplies" : "/ingredients")
+            setConfirmDelete(false)
+            void go(nonEdible ? "/supplies" : "/ingredients", { force: true })
           }}
         />
       ) : null}

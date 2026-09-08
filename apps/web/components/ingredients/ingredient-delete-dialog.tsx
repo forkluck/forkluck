@@ -73,8 +73,9 @@ export function DeleteWithUsageDialog({
       }
       return
     }
-    toast.add({ title: `Deleted ${name}` })
+    // The row or the screen goes first, then the word that it did.
     onDeleted()
+    toast.add({ title: `Deleted ${name}` })
   }
 
   const setOpen = (next: boolean) => {

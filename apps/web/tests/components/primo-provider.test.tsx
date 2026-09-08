@@ -53,6 +53,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
+  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
   useNavigationBlocker: () => ({ confirmNavigation, allowNavigation }),
 }))
 vi.mock("@ai-sdk/react", () => ({

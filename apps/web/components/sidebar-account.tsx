@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { ChevronDown, ChevronUp, LogOut, Scale, UserRound } from "lucide-react"
 
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/menu"
 import {
   GuardedLink,
+  useGuardedNavigate,
   useNavigationBlocker,
 } from "@/components/navigation-blocker"
 import { authClient } from "@/lib/auth-client"
@@ -36,10 +36,10 @@ export function SidebarAccount({
   user: SessionUser
   onNavigate?: () => void
 }) {
-  const router = useRouter()
+  const { go } = useGuardedNavigate()
   const { refresh } = useRefresh()
   const toast = useToast()
-  const { allowNavigation, confirmNavigation } = useNavigationBlocker()
+  const { confirmNavigation } = useNavigationBlocker()
   const [pending, setPending] = React.useState(false)
 
   const signOut = async () => {
@@ -56,8 +56,7 @@ export function SidebarAccount({
       return
     }
     clearDraftsForUser(user.id)
-    allowNavigation()
-    router.push("/login")
+    void go("/login", { force: true })
     void refresh()
   }
 

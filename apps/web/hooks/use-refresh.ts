@@ -13,6 +13,11 @@ import { useRouter } from "next/navigation"
  *   <Button pending={saving || refreshing} …>
  *   await refresh()   // the screen now shows the result
  *
+ * Only for actions that do not revalidate. One that calls `revalidatePath`
+ * answers with the re-rendered route already, and a refresh after it is a
+ * second full render; run that handler in a transition instead (AGENTS.md,
+ * Feedback).
+ *
  * Inside an async React transition, use `void refresh()` instead. React
  * joins the refresh to the outer transition; awaiting its completion there
  * makes the transition wait on itself. Follow-up work can use `.then()`

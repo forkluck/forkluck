@@ -248,7 +248,8 @@ describe("ingredient nutrition panel", () => {
     )
     expect(setSaveState).toHaveBeenCalledWith("saving")
     await waitFor(() => expect(setSaveState).toHaveBeenCalledWith("saved"))
-    expect(refresh).toHaveBeenCalled()
+    // The action revalidates, so its answer is the refresh.
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("states does not contain when a catalog tag is deselected, and moves a tag between rows", async () => {
@@ -442,7 +443,7 @@ describe("ingredient nutrition panel", () => {
         { key: "wheat", status: "contains" },
       ])
     )
-    expect(refresh).toHaveBeenCalled()
+    expect(refresh).not.toHaveBeenCalled()
   })
 
   it("confirms a may contain hint into the May contain row", async () => {

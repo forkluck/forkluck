@@ -10,7 +10,6 @@ import { IngredientNutritionFields } from "@/components/nutrition/ingredient-nut
 import { NutritionLabelCard } from "@/components/nutrition/nutrition-label"
 import { Input, InputAffix, InputGroup } from "@/components/ui/input"
 import type { IngredientDetail } from "@/lib/backend/types"
-import { useRefresh } from "@/hooks/use-refresh"
 import {
   missingNutrients,
   nutrientsFromComposition,
@@ -23,7 +22,6 @@ export function IngredientNutritionPanel({
 }: {
   ingredient: IngredientDetail
 }) {
-  const { refresh } = useRefresh()
   const { saveRef, setDirty, setSaveState } = useIngredientEdit()
   useIngredientTabSave()
   const [servingGrams, setServingGrams] = React.useState("100")
@@ -67,7 +65,6 @@ export function IngredientNutritionPanel({
           saveRef={saveRef}
           onDirtyChange={setDirty}
           onSaveState={setSaveState}
-          onSaved={() => refresh()}
         />
       </section>
       <hr className="mt-8 h-1.5 w-full max-w-[640px] rounded-sm border-0 bg-secondary print:hidden" />

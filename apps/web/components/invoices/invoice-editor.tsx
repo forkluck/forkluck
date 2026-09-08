@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { ExternalLink, Trash2, TriangleAlert } from "lucide-react"
 
 import { reviewInvoiceLine, saveInvoice } from "@/app/(app)/invoices/actions"
@@ -46,7 +45,6 @@ import { SaveBanner } from "@/components/ui/save-banner"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/toast"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
-import { useRefresh } from "@/hooks/use-refresh"
 import { invoiceDraft } from "@/lib/draft-store"
 import {
   invoiceLinePackPriceCents,
@@ -57,6 +55,7 @@ import type { ExpenseCategoryRow } from "@/lib/backend/types"
 import type { InvoiceDetail, InvoicePaymentMethod } from "@/lib/backend/schemas"
 import { centsToDollarInput, dollarsToCents, formatCents } from "@/lib/money"
 import { cn } from "@/lib/utils"
+import { useGuardedNavigate } from "@/components/navigation-blocker"
 
 /** The wire values every workspace has. A workspace's own methods are stored
  *  under their own names, so those are their own labels. */
@@ -290,8 +289,7 @@ export function InvoiceEditor({
   paymentMethods: Array<{ id: string; name: string }>
   currentUserId: string
 }) {
-  const router = useRouter()
-  const { refresh } = useRefresh()
+  const { go } = useGuardedNavigate()
   const toast = useToast()
   const settings = useBusinessSettings()
   const { saveRef, dirty, setDirty, setSaveState } = useInvoiceEdit()
@@ -438,9 +436,6 @@ export function InvoiceEditor({
     }
     setLines(result.item.lines.map(lineState))
     setReview(null)
-    // The page keys this editor on how many lines still need review, so the
-    // refresh remounts it against what the server now holds.
-    await refresh()
     setReviewSaving(false)
   }
 
@@ -528,8 +523,7 @@ export function InvoiceEditor({
         )
       return { editVersion: result.item.editVersion }
     }
-    if (creating) router.push(`/invoices/${result.item.publicId}`)
-    else void refresh()
+    if (creating) void go(`/invoices/${result.item.publicId}`, { force: true })
     return { editVersion: result.item.editVersion }
   }
 
