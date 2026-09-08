@@ -51,6 +51,8 @@ import { primoMessageText, type PrimoMention } from "@/lib/primo/messages"
 import type { PrimoRecipeDraft } from "@/lib/primo/recipe"
 import { formatCents, quantityFormat } from "@/lib/money"
 import { cn } from "@/lib/utils"
+import { useBusinessSettings } from "@/components/business-settings-provider"
+import { formatDayMonthTime } from "@/lib/datetime"
 
 type CostResult = RecipeCostDiff & { omittedLines?: number }
 
@@ -211,6 +213,7 @@ export function PrimoConversation({
     isDesktop,
   } = usePrimo()
   const { messages, status, error, regenerate, stop } = chat
+  const { timezone } = useBusinessSettings()
   const busy = status === "submitted" || status === "streaming"
   const empty = messages.length === 0
   const starterQuestions = home
@@ -530,14 +533,12 @@ export function PrimoConversation({
                           message.createdAt ?? message.metadata!.createdAt!
                         ).toISOString()}
                       >
-                        {new Date(
-                          message.createdAt ?? message.metadata!.createdAt!
-                        ).toLocaleString(undefined, {
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}
+                        {formatDayMonthTime(
+                          new Date(
+                            message.createdAt ?? message.metadata!.createdAt!
+                          ),
+                          timezone
+                        )}
                       </time>
                     ) : null}
                     {!busy ? (

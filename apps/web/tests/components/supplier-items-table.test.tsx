@@ -129,7 +129,7 @@ describe("the supplier items table", () => {
     expect(screen.getByText("Butter")).toBeTruthy()
     expect(screen.getByText("$124.50")).toBeTruthy()
     expect(screen.getByText("7")).toBeTruthy()
-    expect(screen.getByText("9 Aug")).toBeTruthy()
+    expect(screen.getByText("Aug 9")).toBeTruthy()
   })
 
   it("shows the description where a pack has no printed code", () => {

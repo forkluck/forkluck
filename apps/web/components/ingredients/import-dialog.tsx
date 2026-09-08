@@ -51,15 +51,9 @@ import {
   type PackUnitSlug,
 } from "@/lib/unit-registry"
 import { cn } from "@/lib/utils"
+import { formatCalendarDate } from "@/lib/datetime"
 
 const PACK_UNIT_GROUPS = packUnitGroups()
-
-const dateFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
 
 /** A "create a new ingredient" choice needs a value the picker can carry. */
 const CREATE_NEW = "new"
@@ -67,7 +61,7 @@ const CREATE_NEW = "new"
 function periodLabel(preview: PurchaseImport) {
   const { source } = preview
   if (!source?.periodStart || !source.periodEnd) return "Purchase report"
-  return `${dateFormat.format(new Date(`${source.periodStart}T00:00:00Z`))} – ${dateFormat.format(new Date(`${source.periodEnd}T00:00:00Z`))}`
+  return `${formatCalendarDate(source.periodStart)} – ${formatCalendarDate(source.periodEnd)}`
 }
 
 /** The row state machine the recipe paste preview drives too. */

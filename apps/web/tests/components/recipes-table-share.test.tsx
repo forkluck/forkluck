@@ -12,7 +12,7 @@ vi.mock("@/app/(app)/recipes/actions", () => ({
   deleteRecipe: vi.fn(),
   duplicateRecipe: vi.fn(),
   shareRecipes,
-  updateRecipeStatus: vi.fn(),
+  updateRecipeStatuses: vi.fn(),
 }))
 
 vi.mock("@/components/ui/toast", () => ({

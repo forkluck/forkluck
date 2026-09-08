@@ -6,13 +6,8 @@ import { Popover } from "@base-ui/react/popover"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { monthFormat } from "@/components/ui/month-grid"
 import { cn } from "@/lib/utils"
-
-const shortMonthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  timeZone: "UTC",
-})
+import { formatInZone, formatMonthYear } from "@/lib/datetime"
 
 /** A month key (`YYYY-MM`) as the UTC first of that month. */
 function monthDate(month: string) {
@@ -89,13 +84,13 @@ export function InvoiceMonthFilter({
             variant="filter"
             className={cn("shrink-0 gap-1.5", className)}
             pending={pending}
-            aria-label={`Month: ${monthFormat.format(monthDate(month))}`}
+            aria-label={`Month: ${formatMonthYear(monthDate(month))}`}
           />
         }
       >
         Month
         <span className="font-medium text-foreground">
-          {monthFormat.format(monthDate(month))}
+          {formatMonthYear(monthDate(month))}
         </span>
       </Popover.Trigger>
       <Popover.Portal>
@@ -137,7 +132,7 @@ export function InvoiceMonthFilter({
                     type="button"
                     // A month with no invoices has nothing to navigate to.
                     disabled={!available.has(key)}
-                    aria-label={monthFormat.format(monthDate(key))}
+                    aria-label={formatMonthYear(monthDate(key))}
                     aria-pressed={selected}
                     onClick={() => choose(key)}
                     className={cn(
@@ -147,7 +142,7 @@ export function InvoiceMonthFilter({
                         : "enabled:hover:bg-muted"
                     )}
                   >
-                    {shortMonthFormat.format(monthDate(key))}
+                    {formatInZone(monthDate(key), "UTC", { month: "short" })}
                   </button>
                 )
               })}

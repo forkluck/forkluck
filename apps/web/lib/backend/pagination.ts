@@ -73,3 +73,47 @@ export function allowedSearchParam<const Value extends string>(
 ): Value {
   return allowed.includes(value as Value) ? (value as Value) : fallback
 }
+
+/**
+ * What every list page reads off its URL: the search text, the page number
+ * and the sort, each normalized. Every browse order list carries the
+ * document default, which is why it can stand in as the fallback.
+ */
+export function parseBrowseParams<const Order extends string>(
+  params: Record<string, string | string[] | undefined>,
+  orders: readonly Order[]
+): { query: string; page: number; order: Order } {
+  return {
+    query: (singleSearchParam(params.q) ?? "").trim().slice(0, 200),
+    page: positivePage(singleSearchParam(params.page)),
+    order: allowedSearchParam(
+      singleSearchParam(params.order),
+      orders,
+      DOCUMENT_DEFAULT_ORDER as Order
+    ),
+  }
+}
+
+/** Recipes, ingredients and supplies share one status vocabulary. */
+export type ArchiveStatusFilter = "active" | "archived" | null
+
+/** Absent means active only; "all" drops the filter. */
+export function parseArchiveStatusFilter(status?: string): ArchiveStatusFilter {
+  if (status === "archived") return "archived"
+  if (status === "all") return null
+  return "active"
+}
+
+/**
+ * The filter as it travels: active is the list's resting state, so only the
+ * two widening choices go in a URL or to the backend.
+ */
+export function archiveStatusParam(
+  status: ArchiveStatusFilter
+): "archived" | "all" | undefined {
+  return status === "archived"
+    ? "archived"
+    : status === null
+      ? "all"
+      : undefined
+}

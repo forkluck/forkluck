@@ -2,6 +2,7 @@ import type { Channel } from "@/components/overview/channel-filter"
 import type { NetSalesTrend } from "@/lib/backend/types"
 import { withLabelSteps } from "@/lib/chart-axis"
 import { parseDateKey } from "@/lib/date-presets"
+import { formatDayMonth, formatInZone, formatMonthYear } from "@/lib/datetime"
 
 /**
  * The arithmetic behind the Analytics screen: what the bars are, what the
@@ -9,51 +10,24 @@ import { parseDateKey } from "@/lib/date-presets"
  * the cards so it stays testable on its own.
  */
 
-const weekdayFormat = new Intl.DateTimeFormat("en-US", {
-  weekday: "short",
-  timeZone: "UTC",
-})
-
-const dayMonthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
-
-const fullDateFormat = new Intl.DateTimeFormat("en-US", {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
-
-const hourFormat = new Intl.DateTimeFormat("en-US", {
-  hour: "numeric",
-  timeZone: "UTC",
-})
-
-const monthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  timeZone: "UTC",
-})
-
-const monthYearFormat = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-const dayOfMonthFormat = new Intl.DateTimeFormat("en-US", {
-  day: "numeric",
-  timeZone: "UTC",
-})
+// Chart axis shapes no shared stamp names: a weekday, an hour, a bare month
+// or day. Each is the one base formatter over a UTC-read calendar date.
+const weekday = (date: Date) => formatInZone(date, "UTC", { weekday: "short" })
+const weekdayDate = (date: Date) =>
+  formatInZone(date, "UTC", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  })
+const monthShort = (date: Date) => formatInZone(date, "UTC", { month: "short" })
+const dayOfMonth = (date: Date) => formatInZone(date, "UTC", { day: "numeric" })
 
 const MAX_DAY_BARS = 31
 const MAX_WEEK_BARS = 26
 const WEEKDAY_LABEL_LIMIT = 7
 
 function formatHour(hour: number) {
-  return hourFormat.format(new Date(Date.UTC(2026, 0, 1, hour)))
+  return formatInZone(Date.UTC(2026, 0, 1, hour), "UTC", { hour: "numeric" })
 }
 
 function channelCents(
@@ -131,8 +105,8 @@ export function trendBars(trend: NetSalesTrend, channel: Channel): TrendBar[] {
           const end = parseDateKey(group[group.length - 1].date)
           return {
             key: group[0].date,
-            label: dayMonthFormat.format(start),
-            tooltipLabel: `${dayMonthFormat.format(start)} – ${dayMonthFormat.format(end)}`,
+            label: formatDayMonth(start, "UTC"),
+            tooltipLabel: `${formatDayMonth(start, "UTC")} – ${formatDayMonth(end, "UTC")}`,
             ...sumGroup(group, channel),
           }
         })
@@ -147,8 +121,8 @@ export function trendBars(trend: NetSalesTrend, channel: Channel): TrendBar[] {
         const start = parseDateKey(group.days[0].date)
         return {
           key: group.key,
-          label: monthFormat.format(start),
-          tooltipLabel: monthYearFormat.format(start),
+          label: monthShort(start),
+          tooltipLabel: formatMonthYear(start),
           ...sumGroup(group.days, channel),
         }
       })
@@ -161,8 +135,8 @@ export function trendBars(trend: NetSalesTrend, channel: Channel): TrendBar[] {
       const date = parseDateKey(point.date)
       return {
         key: point.date,
-        label: (namesDays ? weekdayFormat : dayOfMonthFormat).format(date),
-        tooltipLabel: fullDateFormat.format(date),
+        label: namesDays ? weekday(date) : dayOfMonth(date),
+        tooltipLabel: weekdayDate(date),
         currentCents: channelCents(point, "current", channel),
         previousCents: channelCents(point, "previous", channel),
       }

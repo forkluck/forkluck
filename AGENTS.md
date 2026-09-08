@@ -152,6 +152,22 @@ An action chosen from a menu reports back, with a toast or a row that visibly
 changed, because the menu that closed is the only feedback the click had.
 `apps/web/tests/feedback-pins.test.ts` holds these lines.
 
+## Dates
+
+Every date and time the app prints comes through `apps/web/lib/datetime.ts`,
+in one locale and on one clock: "Aug 9", "Aug 9, 2026", "Aug 9, 2:32 PM",
+"Aug 9, 2026, 2:32 PM", the way `lib/money.ts` prints money. An instant takes
+the kitchen's zone from `useBusinessSettings().timezone` (or the zone the
+record itself names, for a sale or a shift); a calendar date ("2026-08-09")
+carries no zone and is read at UTC midnight through `formatCalendarDate` and
+`formatCalendarDayMonth`. A shape no stamp names, such as a chart axis
+weekday, goes through `formatInZone` with the options spelled out.
+
+The app once printed "9 Aug" beside "Aug 9" on one screen, and a shift time
+in 24-hour next to a sync time in 12-hour, because forty formatters were
+built where they were used. `apps/web/tests/datetime-pins.test.ts` fails on
+an `Intl.DateTimeFormat` or a locale method anywhere else.
+
 ## Control heights
 
 Five rungs, and a control sits on one of them: **20px** (badges and chips),

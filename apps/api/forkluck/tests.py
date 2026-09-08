@@ -110,8 +110,9 @@ class ForkluckApiTests(InternalApiTestCase):
         # link; the seven it has no row for wait for the cook to pull them in.
         self.assertEqual(
             sorted(
-                Ingredient.objects.filter(user__email="chef@example.com")
-                .values_list("normalized_name", flat=True)
+                Ingredient.objects.filter(user__email="chef@example.com").values_list(
+                    "normalized_name", flat=True
+                )
             ),
             ["buttermilk", "cake flour"],
         )
@@ -126,9 +127,7 @@ class ForkluckApiTests(InternalApiTestCase):
     def test_registration_leaves_a_starter_the_cake_does_not_call_for(self):
         self.assertEqual(self.register().status_code, 201)
 
-        self.assertFalse(
-            Ingredient.objects.filter(normalized_name="bay leaf").exists()
-        )
+        self.assertFalse(Ingredient.objects.filter(normalized_name="bay leaf").exists())
 
     def test_reset_restores_the_catalog_conversion_and_is_tenant_scoped(self):
         self.assertEqual(self.register().status_code, 201)
@@ -383,9 +382,7 @@ class ForkluckApiTests(InternalApiTestCase):
             return_value=False,
         ):
             unconfigured = self.get_internal("newsletter/")
-        self.assertEqual(
-            unconfigured.json(), {"enabled": None, "available": False}
-        )
+        self.assertEqual(unconfigured.json(), {"enabled": None, "available": False})
 
         with (
             mock.patch(
@@ -663,7 +660,7 @@ class ForkluckApiTests(InternalApiTestCase):
         self.assertEqual(duplicate_code.status_code, 400)
 
         archived = self.post_internal(
-            "update-recipe-status", {"recipeId": first_id, "status": "archived"}
+            "update-recipe-statuses", {"recipeIds": [first_id], "status": "archived"}
         )
         self.assertEqual(archived.status_code, 200)
         overview = self.client.get(
@@ -673,7 +670,7 @@ class ForkluckApiTests(InternalApiTestCase):
         self.assertNotIn(first_id, [recipe["id"] for recipe in overview["recipes"]])
 
         invalid_status = self.post_internal(
-            "update-recipe-status", {"recipeId": first_id, "status": "hidden"}
+            "update-recipe-statuses", {"recipeIds": [first_id], "status": "hidden"}
         )
         self.assertEqual(invalid_status.status_code, 400)
 
@@ -747,7 +744,9 @@ class ForkluckApiTests(InternalApiTestCase):
         )
         mine = User.objects.get(email="chef@example.com")
         breads = RecipeCategory.objects.get(user=mine, normalized_name="breads")
-        RecipeCategory.objects.create(user=mine, name="Pastry", normalized_name="pastry")
+        RecipeCategory.objects.create(
+            user=mine, name="Pastry", normalized_name="pastry"
+        )
         other = User.objects.create_user(
             email="other-tenant@example.com",
             name="Other",
@@ -1331,7 +1330,9 @@ class EmailVerificationTests(TestCase):
 
     @override_settings(FORKLUCK_REQUIRE_EMAIL_VERIFICATION=True)
     def test_signup_email_failure_leaves_no_account_or_session(self):
-        self.send_code.side_effect = EmailNotConfigured("ACS_CONNECTION_STRING is not set")
+        self.send_code.side_effect = EmailNotConfigured(
+            "ACS_CONNECTION_STRING is not set"
+        )
 
         registered = self.post_public(
             "/api/auth/register",
@@ -1673,9 +1674,7 @@ class MommyIndexTests(TestCase):
         # Every other page's sidebar follows the same grouping.
         changelist = self.client.get("/mommy/forkluck/user/")
         self.assertContains(changelist, 'href="/mommy/#support-requests"')
-        self.assertNotContains(
-            changelist, 'title="Models in the Forkluck application"'
-        )
+        self.assertNotContains(changelist, 'title="Models in the Forkluck application"')
 
     def test_sections_with_no_visible_table_are_dropped(self):
         support = User.objects.create_user(

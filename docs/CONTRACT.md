@@ -1106,7 +1106,8 @@ settings edit carries `changed`. `actorName` is the actor's name copied in at
 write time, and is blank for a background connector sync.
 
 Lines are written by save-recipe (added or edited), delete-recipe,
-update-recipe-status (archived or restored), save-ingredient, archive-ingredient,
+update-recipe-statuses (archived or restored, one line per recipe that
+changed), save-ingredient, archive-ingredient,
 delete-ingredient, merge-ingredients (as an edit of the surviving row),
 save-menu, delete-menu, the recipe and ingredient category renames and deletes,
 the ingredient, labor and POS sales imports, the recipe paste,
@@ -1137,7 +1138,10 @@ the archive fields without changing `updatedAt` or `lastMessageAt`, preserving
 the conversation's list position. Delete cascades through its messages.
 
 **Recipes / normalized content and bench costing (29)**
-`save-recipe`, `delete-recipe`, `update-recipe-status`,
+`save-recipe`, `delete-recipe`, `update-recipe-statuses` (with
+`{recipeIds, status}`, 1 to 200 ids, owner only, in one transaction: refused
+whole when any id is not the owner's, a recipe already in that status left
+alone without a line; answers `{ok, changed}`),
 `update-recipe-costing`
 (with `{recipeId, servingAmount|null, servingUnit, menuPriceCents|null}`, owner
 only; the portion amount and unit are both supplied or both cleared, the amount

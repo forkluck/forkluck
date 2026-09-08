@@ -42,18 +42,12 @@ import { readAsBase64 } from "@/lib/client-file"
 import { normalizeEmployeeName, type LaborColumnMap } from "@/lib/labor-import"
 import { currencySymbol } from "@/lib/business-settings"
 import { cn } from "@/lib/utils"
+import { formatDayMonthTime } from "@/lib/datetime"
 
-const localDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-  timeZone: "UTC",
-})
-
+/** A shift's wall-clock moment, as the file wrote it: read as UTC so no
+ *  zone can move it, printed on the app's one clock. */
 function formatLocalDateTime(value: string) {
-  return localDateTimeFormat.format(new Date(`${value}Z`))
+  return formatDayMonthTime(new Date(`${value}Z`), "UTC")
 }
 
 /** The sentinel a Base UI select needs for "this column is not in the file". */
@@ -168,7 +162,8 @@ function ImportReceiptView({
 }
 
 function ImportBody({ onDone }: { onDone: () => void }) {
-  const { currencyCode } = useBusinessSettings()
+  // The file's naive times belong to the kitchen's zone, not the browser's.
+  const { currencyCode, timezone } = useBusinessSettings()
   const [busy, setBusy] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [fileName, setFileName] = React.useState("")
@@ -212,7 +207,6 @@ function ImportBody({ onDone }: { onDone: () => void }) {
     setFileName(file.name)
     try {
       const base64 = await readAsBase64(file)
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
       const result = await parseLaborFile(base64, file.name, timezone)
       setFileData(base64)
       if ("error" in result) {

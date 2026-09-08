@@ -7,7 +7,15 @@ import { cleanup, render, screen, within } from "@testing-library/react"
 let mockPathname = "/"
 
 vi.mock("next/navigation", () => ({ usePathname: () => mockPathname }))
-vi.mock("@/components/app-search", () => ({ AppSearch: () => null }))
+vi.mock("@/components/app-search", () => ({
+  // The palette is its own test; here only the places the sidebar hands it.
+  AppSearch: ({ places }: { places: { label: string }[] }) => (
+    <div
+      data-testid="search-places"
+      data-places={places.map((place) => place.label).join(", ")}
+    />
+  ),
+}))
 vi.mock("@/components/sidebar-account", () => ({ SidebarAccount: () => null }))
 vi.mock("@/components/kitchen-switcher", () => ({
   KitchenSwitcher: () => <div data-testid="kitchen-switcher" />,
@@ -165,6 +173,25 @@ describe("the sidebar inside someone else's kitchen", () => {
     ).toEqual(["/recipes", "/recipes/new"])
     expect(screen.queryByRole("group", { name: "Integrations" })).toBeNull()
     expect(screen.getByRole("link", { name: "Submit an issue" })).toBeDefined()
+  })
+
+  it("hands the search palette every place this reader can reach", () => {
+    renderSidebar()
+    expect(
+      screen.getByTestId("search-places").getAttribute("data-places")
+    ).toBe(
+      "Home, Analytics, Products, Supplies, Recipes, New recipe, Ingredients, Menus, Invoices, Labor, Sales, Suppliers, Settings"
+    )
+  })
+
+  it("hands a viewer's palette only the recipe book", () => {
+    renderSidebar({
+      kitchen: { ...ROSA, role: "viewer" },
+      kitchens: [{ ...ROSA, role: "viewer" }],
+    })
+    expect(
+      screen.getByTestId("search-places").getAttribute("data-places")
+    ).toBe("Recipes")
   })
 
   it("gives a viewer the list without the way to add to it", () => {

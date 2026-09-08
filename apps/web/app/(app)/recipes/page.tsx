@@ -7,21 +7,17 @@ import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { EmptyState, PageHeader, PageTitle, Page } from "@/components/ui/page"
 import { RecipesBrowser } from "@/components/recipes/recipes-browser"
-import {
-  RECIPE_BROWSE_ORDERS,
-  parseRecipeStatusFilter,
-} from "@/components/recipes/types"
+import { RECIPE_BROWSE_ORDERS } from "@/components/recipes/types"
 import { NoticeBanner, NoticeBannerAction } from "@/components/ui/notice-banner"
 import { getSession } from "@/lib/auth-session"
-import { BackendRequestError } from "@/lib/backend/client"
+import { redirectOnInvalidPage } from "@/lib/backend/client"
 import { browseRecipeHealth } from "@/lib/backend/queries"
 import { recipeCapNotice } from "@/lib/billing"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import {
-  DOCUMENT_DEFAULT_ORDER,
-  allowedSearchParam,
-  browsePath,
-  positivePage,
+  archiveStatusParam,
+  parseArchiveStatusFilter,
+  parseBrowseParams,
   singleSearchParam,
 } from "@/lib/backend/pagination"
 
@@ -45,15 +41,8 @@ export default async function RecipesPage({
   const capNotice = kitchen ? null : recipeCapNotice(session.billing)
   const canCreate = !kitchen || kitchen.role === "editor"
   const params = await searchParams
-  const query = (singleSearchParam(params.q) ?? "").trim().slice(0, 200)
-  const page = positivePage(singleSearchParam(params.page))
-  const order = allowedSearchParam(
-    singleSearchParam(params.order),
-    RECIPE_BROWSE_ORDERS,
-    DOCUMENT_DEFAULT_ORDER
-  )
-  const statusParam = singleSearchParam(params.status)
-  const status = parseRecipeStatusFilter(statusParam)
+  const { query, page, order } = parseBrowseParams(params, RECIPE_BROWSE_ORDERS)
+  const status = parseArchiveStatusFilter(singleSearchParam(params.status))
   let result
   try {
     result = await browseRecipeHealth({
@@ -66,26 +55,12 @@ export default async function RecipesPage({
       filters: { status, kitchen: kitchen?.ownerId ?? null },
     })
   } catch (cause) {
-    if (
-      page > 1 &&
-      cause instanceof BackendRequestError &&
-      cause.status === 400 &&
-      cause.message === "Invalid page"
-    ) {
-      redirect(
-        browsePath("/recipes", {
-          q: query,
-          order: order === DOCUMENT_DEFAULT_ORDER ? undefined : order,
-          filters: {
-            status:
-              statusParam === "all" || statusParam === "archived"
-                ? statusParam
-                : null,
-          },
-        })
-      )
-    }
-    throw cause
+    redirectOnInvalidPage(cause, "/recipes", {
+      page,
+      q: query,
+      order,
+      filters: { status: archiveStatusParam(status) },
+    })
   }
   return (
     <Page>

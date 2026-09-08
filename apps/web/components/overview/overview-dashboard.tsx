@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import * as React from "react"
 
 import {
@@ -33,6 +32,7 @@ import { MetricCard } from "@/components/ui/metric-card"
 import { MetricComparisonBadge } from "@/components/ui/metric-comparison-badge"
 import { SyncStatus } from "@/components/sync-status"
 import { Page, PageTitle } from "@/components/ui/page"
+import { useBrowseUrl } from "@/hooks/use-browse-url"
 import type { CurrencyCode } from "@/lib/business-settings"
 import { formatWholeCents, percentFormat } from "@/lib/money"
 import { salesComparisonOptions } from "@/lib/period-comparison"
@@ -68,32 +68,29 @@ export function OverviewDashboard({
   priceMoves: PriceMove[]
   freePlan?: boolean
 }) {
-  const router = useRouter()
-  // The period change is a navigation to the same page; the cards below dim
-  // and the pill spins until the new figures arrive.
-  const [periodPending, startPeriod] = React.useTransition()
+  // The period change is a navigation to this same page, carried by the
+  // browse hook every filter pill uses: the URL keeps whatever else it holds,
+  // and the pills and the cards below show the wait until the new figures
+  // arrive. A value at its default leaves the URL rather than pinning it.
+  const browse = useBrowseUrl({ query: "" })
   const [selectedChannel, setSelectedChannel] = React.useState<Channel>("all")
   const trend = sales.netSalesTrend
-  const updateSalesTrend = React.useCallback(
-    (
-      startDate: string,
-      endDate: string,
-      comparison: NetSalesTrend["comparison"]
-    ) => {
-      const params = new URLSearchParams()
-      params.set("tab", "activity")
-      const defaultDate = trend.availableDates[0]
-      if (!defaultDate || startDate !== defaultDate || endDate !== startDate) {
-        params.set("start", startDate)
-      }
-      if (endDate !== startDate) params.set("end", endDate)
-      if (comparison !== "prior_day") {
-        params.set("comparison", comparison)
-      }
-      startPeriod(() => router.replace(`/?${params}`, { scroll: false }))
-    },
-    [router, trend.availableDates]
-  )
+  const updateSalesTrend = (
+    startDate: string,
+    endDate: string,
+    comparison: NetSalesTrend["comparison"]
+  ) => {
+    const defaultDate = trend.availableDates[0]
+    const defaultPeriod =
+      Boolean(defaultDate) && startDate === defaultDate && endDate === startDate
+    browse.setFilters({
+      start: defaultPeriod ? null : startDate,
+      end: endDate === startDate ? null : endDate,
+      comparison: comparison === "prior_day" ? null : comparison,
+      // The key older links carried for the start date.
+      date: null,
+    })
+  }
   const connectedChannels = connections
     .filter((connection) => connection.status === "active")
     .map((connection) => connection.provider)
@@ -150,7 +147,7 @@ export function OverviewDashboard({
               selectedStartDate={trend.periodStart!}
               selectedEndDate={trend.periodEnd!}
               timeZone={trend.timezone}
-              pending={periodPending}
+              pending={browse.isPending}
               onSelectedDateRangeChange={(startDate, endDate) =>
                 updateSalesTrend(startDate, endDate, trend.comparison)
               }
@@ -160,7 +157,7 @@ export function OverviewDashboard({
               endDate={trend.periodEnd!}
               comparison={trend.comparison}
               options={salesComparisonOptions}
-              pending={periodPending}
+              pending={browse.isPending}
               onComparisonChange={(comparison) =>
                 updateSalesTrend(
                   trend.periodStart!,
@@ -186,7 +183,7 @@ export function OverviewDashboard({
         ) : null}
       </div>
 
-      <LoadingRegion pending={periodPending} label="Loading analytics">
+      <LoadingRegion pending={browse.isPending} label="Loading analytics">
         {sales.incompleteManualRevenue ? (
           <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
             Manual count-only entries are included in product quantities but

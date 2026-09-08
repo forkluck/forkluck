@@ -36,10 +36,11 @@ describe("header connection freshness", () => {
           lastSyncedAt: "2026-08-12T11:30:00Z",
         }),
       ],
-      now
+      now,
+      "UTC"
     )
     expect(state.label).toBe("Updated 1 hour ago")
-    expect(state.title).toContain("Shopify last synced")
+    expect(state.title).toBe("Shopify last synced Aug 12, 2026, 11:30 AM")
   })
 
   it("moves old sync ages from minutes to hours and days", () => {
@@ -54,24 +55,24 @@ describe("header connection freshness", () => {
 
   it("represents never-synced and disconnected accounts explicitly", () => {
     expect(
-      connectionState([connection({ lastSyncedAt: null })], now)
+      connectionState([connection({ lastSyncedAt: null })], now, "UTC")
     ).toMatchObject({ label: "Never synced", dot: "bg-warning" })
-    expect(connectionState([], now)).toMatchObject({
+    expect(connectionState([], now, "UTC")).toMatchObject({
       label: "No channels connected",
       dot: "bg-line-strong",
     })
   })
 
   it("distinguishes a failed connection lookup from no connected channels", () => {
-    expect(connectionState(null, now)).toMatchObject({
+    expect(connectionState(null, now, "UTC")).toMatchObject({
       label: "Status unavailable",
       dot: "bg-line-strong",
     })
-    expect(connectionState([], now).label).toBe("No channels connected")
+    expect(connectionState([], now, "UTC").label).toBe("No channels connected")
   })
 
   it("does not claim a fresh timestamp before the client clock starts", () => {
-    expect(connectionState([connection()], null).label).toBe(
+    expect(connectionState([connection()], null, "UTC").label).toBe(
       "Last sync recorded"
     )
   })

@@ -9,19 +9,10 @@ import type { RecipeCostDiff } from "@/lib/backend/types"
 import { formatDateRangeLabel } from "@/lib/date-range-label"
 import { formatSignedCents } from "@/lib/format-delta"
 import { formatCents } from "@/lib/money"
+import { formatFullDate } from "@/lib/datetime"
+import { useBusinessSettings } from "@/components/business-settings-provider"
 
 type Result = RecipeCostDiff & { omittedLines?: number }
-
-const fullDate = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-function displayDate(value: string) {
-  return fullDate.format(new Date(value))
-}
 
 function sideLabel(
   side: Result["lines"][number]["from"],
@@ -40,6 +31,7 @@ export function PrimoResultCard({
   result: Result
   onSuggestion: (message: string) => void
 }) {
+  const { timezone } = useBusinessSettings()
   const complete = result.totals.fromComplete && result.totals.toComplete
   const delta = complete
     ? result.totals.deltaCents
@@ -85,7 +77,8 @@ export function PrimoResultCard({
             </p>
             {previous ? (
               <p className="mt-1 text-md leading-5 text-muted-foreground">
-                The most recent was {displayDate(previous.at)} —{" "}
+                The most recent was{" "}
+                {formatFullDate(new Date(previous.at), timezone)} —{" "}
                 {previous.ingredient.name}.
               </p>
             ) : null}
@@ -176,11 +169,11 @@ export function PrimoResultCard({
               variant="secondary"
               onClick={() =>
                 onSuggestion(
-                  `Compare this recipe since ${displayDate(previous.at)}.`
+                  `Compare this recipe since ${formatFullDate(new Date(previous.at), timezone)}.`
                 )
               }
             >
-              Compare since {displayDate(previous.at)}
+              Compare since {formatFullDate(new Date(previous.at), timezone)}
             </Button>
           ) : null}
           <Button

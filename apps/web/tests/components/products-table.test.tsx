@@ -17,7 +17,14 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/products",
   useSearchParams: () => new URLSearchParams(),
 }))
-const saveSalesProduct = vi.hoisted(() => vi.fn(async () => ({})))
+// Every save answers with the edit version it moved the row to.
+const saveSalesProduct = vi.hoisted(() =>
+  vi.fn(async (input: { id: string }) => ({
+    id: input.id,
+    publicId: input.id,
+    editVersion: 7,
+  }))
+)
 vi.mock("@/app/(app)/products/actions", () => ({
   deleteMenuItem: vi.fn(),
   saveSalesProduct,
@@ -417,6 +424,28 @@ describe("opening a product", () => {
       expectedEditVersion: expect.any(Number),
       isActive: true,
     })
+  })
+
+  it("offers Undo in the toast, sending the edit version the archive moved the row to", async () => {
+    renderTable({ rows: [productRow()] })
+
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Actions for Linzer" })[0]!
+    )
+    fireEvent.click(screen.getByRole("menuitem", { name: "Archive product" }))
+    await screen.findByText("Archived Linzer")
+
+    fireEvent.click(await screen.findByRole("button", { name: "Undo" }))
+    // The row's own version (3) is stale after the archive; the undo carries
+    // the one the save answered with, or the backend refuses it.
+    await waitFor(() =>
+      expect(saveSalesProduct).toHaveBeenLastCalledWith({
+        id: "linzer",
+        expectedEditVersion: 7,
+        isActive: true,
+      })
+    )
+    expect(await screen.findByText("Restored Linzer")).toBeTruthy()
   })
 
   it("navigates from the row menu rather than opening a dialog", async () => {

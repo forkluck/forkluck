@@ -26,13 +26,7 @@ import {
   getLaborEmployeeDetail,
 } from "@/lib/backend/queries"
 import { positivePage, singleSearchParam } from "@/lib/backend/pagination"
-
-const effectiveFromFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC",
-})
+import { formatCalendarDate } from "@/lib/datetime"
 
 function pageHref(
   employeeId: string,
@@ -90,7 +84,6 @@ export default async function EmployeeLaborPage({
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <EmployeeShiftPeriodControl
-            employeeId={employee.id}
             startDate={detail.period.start}
             endDate={detail.period.end}
             timeZone={detail.period.timezone}
@@ -136,9 +129,7 @@ export default async function EmployeeLaborPage({
           }
           note={
             employee.currentRateEffectiveFrom
-              ? `Since ${effectiveFromFormat.format(
-                  new Date(`${employee.currentRateEffectiveFrom}T12:00:00Z`)
-                )}`
+              ? `Since ${formatCalendarDate(employee.currentRateEffectiveFrom)}`
               : undefined
           }
         />

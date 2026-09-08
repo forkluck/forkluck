@@ -38,17 +38,9 @@ import {
   type WeightUnit,
 } from "@/lib/units"
 import { cn } from "@/lib/utils"
+import { formatCalendarDate } from "@/lib/datetime"
 
-const longDate = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-function dateLabel(value: string) {
-  return longDate.format(new Date(`${value}T00:00:00Z`))
-}
+const dateLabel = formatCalendarDate
 
 /**
  * Three digits a kitchen can act on: 981 g, 12.3 kg, 1.23 kg. Past a hundred a

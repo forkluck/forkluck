@@ -6,17 +6,27 @@ import { Search } from "lucide-react"
 import { searchApp } from "@/app/(app)/actions"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { rankedServerResults } from "@/lib/search"
+import { Kbd, useShortcutLabel } from "@/components/ui/kbd"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { rankedMatches, rankedServerResults } from "@/lib/search"
 import type { SearchItem } from "@/components/search/search-items"
 
+/** How many server rows show; the places to go are listed in full. */
 const MAX_RESULTS = 9
 
 /**
  * The one search surface: a centered modal off the sidebar magnifier or ⌘K.
- * With no query it lists what there is, so the modal is never a blank box.
+ * It opens on the places to go, the screens the sidebar lists for this
+ * reader, so "lab", Enter reaches Labor before any request has landed; the
+ * server's recipes and ingredients join underneath as they arrive.
  */
-export function AppSearch() {
+export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
   const { go: navigate } = useGuardedNavigate()
+  const shortcut = useShortcutLabel("K")
   const listId = React.useId()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -77,15 +87,18 @@ export function AppSearch() {
   }, [open, query])
 
   const trimmed = query.trim().toLowerCase()
-  // The rule the server just filtered by, so refining locally cannot hide a
-  // row it matched.
+  // Places are filtered here, since they were never searched by the server;
+  // server rows are only ranked, since refining them locally could hide a
+  // row the server matched on a field the browser never sees.
   const matches = React.useMemo(
-    () =>
-      rankedServerResults(items, (item) => [item.label], query).slice(
+    () => [
+      ...rankedMatches(places, (item) => [item.label], query),
+      ...rankedServerResults(items, (item) => [item.label], query).slice(
         0,
         MAX_RESULTS
       ),
-    [items, query]
+    ],
+    [items, places, query]
   )
 
   // Grouped for display, flat for keyboard: one index walks every row in the
@@ -129,15 +142,29 @@ export function AppSearch() {
 
   return (
     <>
-      {/* Icon-only trigger; the field itself only exists inside the modal. */}
-      <button
-        type="button"
-        onClick={openSearch}
-        aria-label="Search Forkluck"
-        className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-transparent text-sidebar-foreground hover:bg-sidebar-hover focus-visible:border-foreground focus-visible:outline-none md:size-8"
-      >
-        <Search className="size-[17px]" strokeWidth={1.8} aria-hidden="true" />
-      </button>
+      {/* Icon-only trigger; the field itself only exists inside the modal.
+          Hovering it names the shortcut. */}
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Search Forkluck"
+              className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-transparent text-sidebar-foreground hover:bg-sidebar-hover focus-visible:border-foreground focus-visible:outline-none md:size-8"
+            />
+          }
+        >
+          <Search
+            className="size-[17px]"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          Search <Kbd>{shortcut}</Kbd>
+        </TooltipContent>
+      </Tooltip>
 
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
@@ -199,12 +226,9 @@ export function AppSearch() {
               }}
               className="h-full min-w-0 flex-1 border-0 bg-transparent text-lg text-foreground outline-none placeholder:text-faint"
             />
-            <span
-              aria-hidden="true"
-              className="shrink-0 rounded-sm border border-border px-1.5 py-[3px] text-2xs leading-none font-medium text-faint"
-            >
+            <Kbd aria-hidden="true" className="shrink-0 text-faint">
               Esc
-            </span>
+            </Kbd>
           </div>
 
           <div

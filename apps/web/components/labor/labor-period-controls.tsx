@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 
 import { ComparisonFilter, type Comparison } from "@/components/period-filter"
 import { DateRangeFilter } from "@/components/ui/date-range-filter"
+import { useBrowseUrl } from "@/hooks/use-browse-url"
 import { laborComparisonOptions } from "@/lib/period-comparison"
 
 /**
@@ -34,19 +34,24 @@ export function LaborPeriodControls({
   /** Reports the navigation in flight, so the table below can dim. */
   onPendingChange?: (pending: boolean) => void
 }) {
-  const router = useRouter()
-  const [pending, startTransition] = React.useTransition()
+  // The same browse hook every filter pill uses: it writes to the page it is
+  // on, keeps the URL's other keys, and carries the wait.
+  const browse = useBrowseUrl({ query: "" })
+  const pending = browse.isPending
   React.useEffect(() => {
     onPendingChange?.(pending)
   }, [pending, onPendingChange])
 
   function updatePeriod(nextStart: string, nextEnd: string, next: Comparison) {
-    const params = new URLSearchParams({ start: nextStart })
-    if (nextEnd !== nextStart) params.set("end", nextEnd)
-    // Labor's default comparison is the matching weekday a year back, so that
-    // is the one left out of the URL; writing it would only add noise.
-    if (next !== "fifty_two_weeks_prior") params.set("comparison", next)
-    startTransition(() => router.replace(`/labor?${params}`, { scroll: false }))
+    browse.setFilters({
+      start: nextStart,
+      end: nextEnd !== nextStart ? nextEnd : null,
+      // Labor's default comparison is the matching weekday a year back, so
+      // that is the one left out of the URL; writing it would only add noise.
+      comparison: next !== "fifty_two_weeks_prior" ? next : null,
+      // The key older links carried for the start date.
+      date: null,
+    })
   }
 
   return (

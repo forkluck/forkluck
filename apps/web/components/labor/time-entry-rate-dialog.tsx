@@ -19,6 +19,7 @@ import { toSaveFailure } from "@/lib/save-failure"
 import type { TimeEntryRow } from "@/lib/backend/types"
 import { centsToDollarInput, dollarsToCents } from "@/lib/money"
 import { currencySymbol, type CurrencyCode } from "@/lib/business-settings"
+import { formatDateTime } from "@/lib/datetime"
 
 const RATE_FIELD = "time-entry-hourly-rate"
 
@@ -36,15 +37,7 @@ export function TimeEntryRateDialog({
       ? ""
       : centsToDollarInput(entry.hourlyRateCents)
   )
-  const shiftLabel = React.useMemo(
-    () =>
-      new Intl.DateTimeFormat("en-US", {
-        dateStyle: "medium",
-        timeStyle: "short",
-        timeZone: entry.importTimezone,
-      }).format(entry.clockIn),
-    [entry.clockIn, entry.importTimezone]
-  )
+  const shiftLabel = formatDateTime(entry.clockIn, entry.importTimezone)
 
   const form = useFormSave({
     snapshot: rate,

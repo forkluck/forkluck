@@ -15,6 +15,7 @@ import {
 
 import { runKitchenToolAction } from "@/app/(app)/actions"
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/ui/menu"
 import { Textarea } from "@/components/ui/textarea"
 import type { PrimoMention } from "@/lib/primo/messages"
@@ -497,9 +498,7 @@ export function PrimoComposer({
               <MenuItem onClick={startMention}>
                 <AtSign strokeWidth={1.8} aria-hidden="true" />
                 Mention
-                <kbd className="ml-auto rounded-sm bg-muted px-1.5 py-0.5 font-sans text-xs text-muted-foreground">
-                  @
-                </kbd>
+                <Kbd className="ml-auto text-muted-foreground">@</Kbd>
               </MenuItem>
             </MenuContent>
           </Menu>

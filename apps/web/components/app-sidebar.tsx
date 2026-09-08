@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 
 import { AppSearch } from "@/components/app-search"
+import type { SearchItem } from "@/components/search/search-items"
 import { BrandMark } from "@/components/brand-mark"
 import { KitchenSwitcher } from "@/components/kitchen-switcher"
 import { GuardedLink } from "@/components/navigation-blocker"
@@ -158,6 +159,32 @@ export function AppSidebar({
       return items.length ? [{ ...section, items }] : []
     })
   }, [kitchen, primoEnabled])
+  // The same rows, as places the search palette opens on: every screen this
+  // reader can reach, plus what a row's `+` creates and what it nests.
+  const places = React.useMemo<SearchItem[]>(
+    () =>
+      [
+        ...sections.flatMap((section) => section.items),
+        ...(kitchen ? [] : BOTTOM_ITEMS),
+      ].flatMap((item) => [
+        { label: item.label, href: item.href, group: "Go to" as const },
+        ...(item.action
+          ? [
+              {
+                label: item.action.label,
+                href: item.action.href,
+                group: "Go to" as const,
+              },
+            ]
+          : []),
+        ...(item.children ?? []).map((child) => ({
+          label: child.label,
+          href: child.href,
+          group: "Go to" as const,
+        })),
+      ]),
+    [kitchen, sections]
+  )
   const sidebarRef = React.useRef<HTMLElement>(null)
   const returnFocusRef = React.useRef<HTMLElement | null>(null)
   const [isDesktop, setIsDesktop] = React.useState(false)
@@ -342,7 +369,7 @@ export function AppSidebar({
         <div className="flex h-14 shrink-0 items-center justify-between gap-2 px-1.5 md:h-[58px]">
           <BrandMark className="min-w-0" />
           <div className="flex shrink-0 items-center gap-0.5">
-            <AppSearch />
+            <AppSearch places={places} />
             <button
               type="button"
               // Closes the drawer on mobile, hides the whole column on

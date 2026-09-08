@@ -56,6 +56,7 @@ import {
   type LabelRegion,
   type MeasurementSystem,
 } from "@/lib/business-settings"
+import { formatZoneOffset } from "@/lib/datetime"
 
 const MEASUREMENT_SYSTEM_LABELS: Record<MeasurementSystem, string> = {
   metric: "Metric (g, kg)",
@@ -65,11 +66,7 @@ const MEASUREMENT_SYSTEM_LABELS: Record<MeasurementSystem, string> = {
 /** "New York (GMT-4)" — the city, then the offset in force today. */
 function timezoneLabel(zone: string): string {
   const city = zone.split("/").pop()?.replace(/_/g, " ") ?? zone
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: zone,
-    timeZoneName: "shortOffset",
-  }).formatToParts(new Date())
-  const offset = parts.find((part) => part.type === "timeZoneName")?.value
+  const offset = formatZoneOffset(zone)
   return offset ? `${city} (${offset})` : city
 }
 

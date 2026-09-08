@@ -24,17 +24,9 @@ import {
 import { centsToDollarInput, formatCents } from "@/lib/money"
 import { cn } from "@/lib/utils"
 import type { IngredientRow, InvoiceLineOption } from "@/lib/backend/types"
+import { formatCalendarDate } from "@/lib/datetime"
 
 const PURCHASE_UNITS = purchaseUnitOptions()
-
-/** A picked line's plain invoice date, which carries no time and so is read
- *  as UTC rather than sliding a day back west of it. */
-const invoiceDateFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC",
-})
 
 export type PurchaseUnit = {
   cost: string
@@ -648,7 +640,7 @@ export function PurchaseUnitFields({
                         ·{" "}
                         {formatCents(item.purchaseCostCents, item.currencyCode)}
                         {item.invoiceDate
-                          ? ` · ${invoiceDateFormat.format(new Date(item.invoiceDate))}`
+                          ? ` · ${formatCalendarDate(item.invoiceDate)}`
                           : ""}
                       </p>
                     </div>
@@ -700,7 +692,7 @@ export function PurchaseUnitFields({
                     picked.currencyCode
                   )}
                   {picked.invoiceDate
-                    ? ` · ${invoiceDateFormat.format(new Date(picked.invoiceDate))}`
+                    ? ` · ${formatCalendarDate(picked.invoiceDate)}`
                     : ""}
                 </div>
                 <div className="w-24">

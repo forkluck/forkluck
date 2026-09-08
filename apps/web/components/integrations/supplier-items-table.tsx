@@ -38,6 +38,7 @@ import type {
 } from "@/lib/backend/types"
 import { formatCents, quantityFormat } from "@/lib/money"
 import { cn } from "@/lib/utils"
+import { formatCalendarDayMonth } from "@/lib/datetime"
 
 const MAPPING_PATH = "/integrations/suppliers/mapping"
 
@@ -70,18 +71,6 @@ export function SupplierMappingTabs({ tab }: { tab: "items" | "suppliers" }) {
 const GRID_ITEMS =
   "grid-cols-[minmax(0,1fr)_128px_96px_minmax(0,190px)_72px_96px_44px] gap-3 min-w-[940px]"
 const GRID_IGNORED = "grid-cols-[minmax(0,1fr)_160px_44px] gap-3 min-w-[560px]"
-
-/** The handoff prints "9 Aug" — day then short month, no year. */
-const dayMonth = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  timeZone: "UTC",
-})
-
-function formatInvoiceDate(value: string | null): string {
-  if (!value) return "—"
-  return dayMonth.format(new Date(`${value}T00:00:00Z`))
-}
 
 function isMappingRow(
   row: SupplierItemMappingRow | SupplierItemIgnoreRow
@@ -256,7 +245,7 @@ export function SupplierItemsTable({
                       {row.timesSeen}
                     </span>
                     <span className="text-right text-base text-muted-foreground tabular-nums">
-                      {formatInvoiceDate(row.lastInvoiceDate)}
+                      {formatCalendarDayMonth(row.lastInvoiceDate)}
                     </span>
                     <RowActionsMenu label={`Actions for ${itemCode(row)}`}>
                       <MenuItem onClick={() => setRelinkTarget(row)}>

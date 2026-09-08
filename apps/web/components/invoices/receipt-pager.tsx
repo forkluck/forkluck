@@ -4,6 +4,12 @@ import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 /** Where a keystroke belongs to the thing under it, not to the pager: a field
  * being typed in, or an open combobox / listbox / menu moving its highlight. */
@@ -104,26 +110,45 @@ export function ReceiptPager({
         {position} of {count}
       </span>
 
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="Previous receipt"
-        disabled={atStart}
-        onClick={onPrev}
-      >
-        <ChevronLeft aria-hidden="true" />
-      </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="Next receipt"
-        disabled={atEnd}
-        onClick={onNext}
-      >
-        <ChevronRight aria-hidden="true" />
-      </Button>
+      {/* Hovering an arrow says the keyboard pages the pile too. */}
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Previous receipt"
+              disabled={atStart}
+              onClick={onPrev}
+            />
+          }
+        >
+          <ChevronLeft aria-hidden="true" />
+        </TooltipTrigger>
+        <TooltipContent>
+          Previous <Kbd>←</Kbd>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Next receipt"
+              disabled={atEnd}
+              onClick={onNext}
+            />
+          }
+        >
+          <ChevronRight aria-hidden="true" />
+        </TooltipTrigger>
+        <TooltipContent>
+          Next <Kbd>→</Kbd>
+        </TooltipContent>
+      </Tooltip>
       <Button type="button" variant="ghost" onClick={onShowFiles}>
         Files ({filesCount})
       </Button>

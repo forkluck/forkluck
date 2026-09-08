@@ -1,6 +1,6 @@
 "use server"
 
-import { refresh, revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 import { requireUser } from "@/lib/auth-session"
@@ -282,7 +282,6 @@ export async function shareRecipe(input: {
       | { guest: { id: string; email: string; role: "viewer" | "editor" } }
     >("share-recipe", parsed.data)
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t share the recipe.") }
@@ -319,7 +318,6 @@ export async function shareRecipes(input: {
       } | null
     }>("share-recipes", parsed.data)
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t share the recipes.") }
@@ -335,7 +333,6 @@ export async function removeRecipeBook(input: { bookId: string }) {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {
@@ -358,7 +355,6 @@ export async function removeRecipeGuestLink(input: {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {
@@ -386,7 +382,6 @@ export async function updateRecipeShare(input: {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t update that share.") }
@@ -407,7 +402,6 @@ export async function removeRecipeShare(input: {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t remove that share.") }
@@ -433,7 +427,6 @@ export async function saveRecipeComment(input: {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t save the comment.") }
@@ -448,7 +441,6 @@ export async function deleteRecipeComment(id: string) {
       id: parsed.data,
     })
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t delete the comment.") }
@@ -580,7 +572,6 @@ export async function duplicateRecipe(
     if (!copy.success) return { error: "Couldn’t duplicate the recipe." }
     const result = await djangoAction<SavedRecipe>("save-recipe", copy.data)
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     const error = actionErrorMessage(cause, "Couldn’t duplicate the recipe.")
@@ -616,7 +607,6 @@ export async function setRecipeNutritionServing(
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {
@@ -645,7 +635,6 @@ export async function setRecipeItemYieldAfterCooking(
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {
@@ -677,7 +666,6 @@ export async function setRecipeItemExcludedFromCost(
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {
@@ -712,28 +700,34 @@ export async function updateRecipeCosting(input: {
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return { error: actionErrorMessage(cause, "Couldn’t save recipe costing.") }
   }
 }
 
-export async function updateRecipeStatus(
-  recipeId: string,
+/**
+ * Archive or restore a selection in one request and one transaction: either
+ * every recipe moves or none does, and the rows change together. One id is
+ * the row menu's case. The revalidation is the refresh.
+ */
+export async function updateRecipeStatuses(
+  ids: string[],
   status: RecipeStatus
-): Promise<{ ok: true } | { error: string }> {
+): Promise<{ ok: true; changed: number } | { error: string }> {
   const parsed = z
-    .object({ recipeId: z.string().min(1), status: z.enum(RECIPE_STATUSES) })
-    .safeParse({ recipeId, status })
+    .object({
+      recipeIds: z.array(z.string().min(1)).min(1).max(200),
+      status: z.enum(RECIPE_STATUSES),
+    })
+    .safeParse({ recipeIds: ids, status })
   if (!parsed.success) return { error: "Unknown recipe status." }
   try {
-    const result = await djangoAction<{ ok: true }>(
-      "update-recipe-status",
+    const result = await djangoAction<{ ok: true; changed: number }>(
+      "update-recipe-statuses",
       parsed.data
     )
     revalidateRecipeReads()
-    refresh()
     return result
   } catch (cause) {
     return {

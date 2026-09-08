@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest"
 
 import {
   allowedSearchParam,
+  archiveStatusParam,
   browsePath,
   browseSearchParams,
+  parseArchiveStatusFilter,
+  parseBrowseParams,
   positivePage,
   singleSearchParam,
 } from "../lib/backend/pagination"
@@ -47,6 +50,33 @@ describe("browse pagination", () => {
         filters: { status: "active", category: "" },
       })
     ).toBe("/recipes?q=bread+flour&status=active")
+  })
+
+  it("reads a list page's controls off its URL, normalized", () => {
+    expect(
+      parseBrowseParams({ q: "  bread flour  ", page: "3", order: "-name" }, [
+        "name",
+        "-name",
+        "-updatedAt",
+      ])
+    ).toEqual({ query: "bread flour", page: 3, order: "-name" })
+    expect(
+      parseBrowseParams({ q: ["a", "b"], page: "wat", order: "price" }, [
+        "name",
+        "-name",
+        "-updatedAt",
+      ])
+    ).toEqual({ query: "", page: 1, order: "-updatedAt" })
+  })
+
+  it("parses the shared archive status and puts only the widening choices in a URL", () => {
+    expect(parseArchiveStatusFilter("unknown")).toBe("active")
+    expect(parseArchiveStatusFilter()).toBe("active")
+    expect(parseArchiveStatusFilter("all")).toBeNull()
+    expect(parseArchiveStatusFilter("archived")).toBe("archived")
+    expect(archiveStatusParam("active")).toBeUndefined()
+    expect(archiveStatusParam(null)).toBe("all")
+    expect(archiveStatusParam("archived")).toBe("archived")
   })
 
   it("normalizes untrusted Next search params", () => {

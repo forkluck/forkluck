@@ -9,6 +9,12 @@ const incomingCookie = "sessionid=abc123; csrftoken=xyz789"
 vi.mock("next/headers", () => ({
   headers: async () => new Headers({ cookie: incomingCookie }),
 }))
+// Next's redirect throws to leave the render; the test reads the href off it.
+vi.mock("next/navigation", () => ({
+  redirect: (href: string) => {
+    throw new Error(`redirect:${href}`)
+  },
+}))
 
 const fetchMock = vi.fn()
 
@@ -256,6 +262,45 @@ describe("getLaborOverview comparison round-trip", () => {
     const [url] = fetchMock.mock.calls[0]
     expect(new URL(String(url)).searchParams.get("comparison")).toBe(
       "fifty_two_weeks_prior"
+    )
+  })
+})
+
+describe("redirectOnInvalidPage", () => {
+  it("sends a stale page back to the first, keeping the other controls", async () => {
+    const { BackendRequestError, redirectOnInvalidPage } = await loadClient()
+    const invalid = new BackendRequestError("Invalid page", 400)
+    expect(() =>
+      redirectOnInvalidPage(invalid, "/recipes", {
+        page: 3,
+        q: "flour",
+        order: "-updatedAt",
+        filters: { status: "all" },
+      })
+    ).toThrow("redirect:/recipes?q=flour&status=all")
+    expect(() =>
+      redirectOnInvalidPage(invalid, "/products", {
+        page: 2,
+        q: "",
+        order: "-name",
+        filters: { status: "active" },
+      })
+    ).toThrow("redirect:/products?order=-name&status=active")
+  })
+
+  it("rethrows everything that is not a page past the end", async () => {
+    const { BackendRequestError, redirectOnInvalidPage } = await loadClient()
+    const firstPage = new BackendRequestError("Invalid page", 400)
+    expect(() =>
+      redirectOnInvalidPage(firstPage, "/recipes", { page: 1 })
+    ).toThrow(firstPage)
+    const other = new BackendRequestError("Nope", 500)
+    expect(() => redirectOnInvalidPage(other, "/recipes", { page: 3 })).toThrow(
+      other
+    )
+    const plain = new Error("boom")
+    expect(() => redirectOnInvalidPage(plain, "/recipes", { page: 3 })).toThrow(
+      plain
     )
   })
 })

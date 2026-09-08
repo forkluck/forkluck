@@ -19,6 +19,7 @@ import { useBrowseUrl } from "@/hooks/use-browse-url"
 import { useIngredientOptions } from "@/hooks/use-ingredient-options"
 import type { GoogleDriveConfig } from "@/lib/google-drive"
 import { useDialogTarget } from "@/components/ui/dialog"
+import { formatCalendarDayMonth } from "@/lib/datetime"
 
 const ImportInvoicesDialog = dynamic(() =>
   import("@/components/invoices/import-invoices-dialog").then(
@@ -177,13 +178,7 @@ export function InvoicesScreen({
       {!byok && overview.aiUsage?.maxPages !== null && overview.aiUsage && (
         <p className="text-xs text-muted-foreground" role="status">
           {overview.aiUsage.usedPages} of {overview.aiUsage.maxPages} AI pages
-          used. Resets{" "}
-          {new Intl.DateTimeFormat("en-US", {
-            month: "long",
-            day: "numeric",
-            timeZone: "UTC",
-          }).format(new Date(`${overview.aiUsage.resetsOn}T00:00:00Z`))}
-          .
+          used. Resets {formatCalendarDayMonth(overview.aiUsage.resetsOn)}.
           {overview.aiUsage.exhausted &&
             " You can still enter invoices manually."}
           {overview.aiUsage.maxPages === 10 && (

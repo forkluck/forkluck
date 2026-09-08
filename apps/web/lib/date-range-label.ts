@@ -1,39 +1,22 @@
 import { parseDateKey, resolveDatePreset } from "@/lib/date-presets"
 import { dateSearchParam, rangeEndSearchParam } from "@/lib/date-search-param"
-
-const dayMonthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
-
-const dayMonthYearFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-const dayFormat = new Intl.DateTimeFormat("en-US", {
-  day: "numeric",
-  timeZone: "UTC",
-})
+import { formatDayMonth, formatFullDate } from "@/lib/datetime"
 
 export function formatDateRangeLabel(startDate: string, endDate: string) {
   const start = parseDateKey(startDate)
   const end = parseDateKey(endDate)
-  if (startDate === endDate) return dayMonthYearFormat.format(end)
+  if (startDate === endDate) return formatFullDate(end, "UTC")
 
   const sameYear = start.getUTCFullYear() === end.getUTCFullYear()
   if (!sameYear) {
-    return `${dayMonthYearFormat.format(start)} – ${dayMonthYearFormat.format(end)}`
+    return `${formatFullDate(start, "UTC")} – ${formatFullDate(end, "UTC")}`
   }
 
-  const head = dayMonthFormat.format(start)
+  const head = formatDayMonth(start, "UTC")
   if (start.getUTCMonth() === end.getUTCMonth()) {
-    return `${head} – ${dayFormat.format(end)}, ${end.getUTCFullYear()}`
+    return `${head} – ${end.getUTCDate()}, ${end.getUTCFullYear()}`
   }
-  return `${head} – ${dayMonthYearFormat.format(end)}`
+  return `${head} – ${formatFullDate(end, "UTC")}`
 }
 
 export type ResolvedPeriod = {

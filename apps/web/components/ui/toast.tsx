@@ -58,6 +58,9 @@ function ToastList() {
     >
       <ToastPrimitive.Title className="font-medium" />
       <ToastPrimitive.Description className="text-background/70" />
+      {/* Renders nothing unless the toast carries `actionProps`: the Undo an
+          archive offers. A 28px outline button on the ink, like Close. */}
+      <ToastPrimitive.Action className="mt-1.5 h-7 self-start rounded-md border border-background/30 px-2 text-sm font-medium text-background hover:bg-background/15 focus-visible:border-background focus-visible:outline-none disabled:opacity-60" />
       <ToastPrimitive.Close
         aria-label="Dismiss"
         className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-transparent text-background/70 hover:bg-background/15 hover:text-background focus-visible:border-background focus-visible:outline-none"
@@ -70,4 +73,35 @@ function ToastList() {
 
 const useToast = ToastPrimitive.useToastManager
 
-export { ToastProvider, useToast }
+/** Long enough to read the line and reach for Undo. */
+const UNDO_TIMEOUT = 8000
+
+/**
+ * A success toast with an Undo, for the writes that have an opposite:
+ * archive and restore, never delete. The press shows its wait on the button
+ * pressed: the toast stops its clock and reads "Undoing…" until `undo`
+ * settles, then leaves. What came of the undo is `undo`'s own report,
+ * through the same path the first write reported on.
+ */
+function undoableToast(
+  toast: ReturnType<typeof useToast>,
+  title: string,
+  undo: () => Promise<unknown>
+): void {
+  const id = toast.add({
+    title,
+    timeout: UNDO_TIMEOUT,
+    actionProps: {
+      children: "Undo",
+      onClick: () => {
+        toast.update(id, {
+          timeout: 0,
+          actionProps: { children: "Undoing…", disabled: true },
+        })
+        void undo().finally(() => toast.close(id))
+      },
+    },
+  })
+}
+
+export { ToastProvider, undoableToast, useToast }

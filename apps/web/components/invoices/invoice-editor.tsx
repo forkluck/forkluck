@@ -686,6 +686,7 @@ export function InvoiceEditor({
           id="invoice-date"
           value={invoiceDate}
           onChange={setInvoiceDate}
+          timeZone={settings.timezone}
         />
         <LabeledInput
           label="Number"
@@ -698,6 +699,7 @@ export function InvoiceEditor({
           id="invoice-due-date"
           value={dueDate}
           placeholder="Missing"
+          timeZone={settings.timezone}
           onChange={setDueDate}
         />
         <LabeledShell label="Payment method">

@@ -1,7 +1,13 @@
 import "server-only"
 
 import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 import type { ZodType } from "zod"
+import {
+  DOCUMENT_DEFAULT_ORDER,
+  browsePath,
+  type BrowseQuery,
+} from "@/lib/backend/pagination"
 
 const backendOrigin =
   process.env.DJANGO_INTERNAL_ORIGIN ?? "http://127.0.0.1:8001"
@@ -213,4 +219,31 @@ export function djangoSystemAction<T>(path: string, body: unknown): Promise<T> {
     "",
     true
   )
+}
+
+/**
+ * A page past the end, which a stale link reaches once rows have left,
+ * answers 400 "Invalid page": the reader is sent back to the first page with
+ * the same controls. Anything else is the page's own error.
+ */
+export function redirectOnInvalidPage(
+  cause: unknown,
+  path: string,
+  query: BrowseQuery & { page: number }
+): never {
+  if (
+    query.page > 1 &&
+    cause instanceof BackendRequestError &&
+    cause.status === 400 &&
+    cause.message === "Invalid page"
+  ) {
+    redirect(
+      browsePath(path, {
+        q: query.q,
+        order: query.order === DOCUMENT_DEFAULT_ORDER ? undefined : query.order,
+        filters: query.filters,
+      })
+    )
+  }
+  throw cause
 }

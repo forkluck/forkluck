@@ -20,13 +20,7 @@ import { preferredWeightUnit } from "@/lib/business-settings"
 import { cheaperSupplierItem } from "@/lib/ingredient-insights"
 import type { SaveFailure } from "@/lib/save-failure"
 import { formatUnitPrice } from "@/lib/pricing"
-
-const dateFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
+import { formatCalendarDate } from "@/lib/datetime"
 
 function sourceLabel(value: string) {
   return value.replace(/^./, (letter) => letter.toUpperCase())
@@ -113,8 +107,7 @@ export function SupplierProductsDialog({
                 </p>
                 {item.periodEnd ? (
                   <p className="mt-0.5 truncate text-xs text-faint">
-                    Price through{" "}
-                    {dateFormat.format(new Date(`${item.periodEnd}T00:00:00Z`))}
+                    Price through {formatCalendarDate(item.periodEnd)}
                   </p>
                 ) : null}
               </div>

@@ -37,7 +37,7 @@ import {
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
-import { useToast } from "@/components/ui/toast"
+import { undoableToast, useToast } from "@/components/ui/toast"
 import {
   Tooltip,
   TooltipContent,
@@ -56,6 +56,8 @@ import { csvCell } from "@/lib/csv"
 import { overtimeWeekLine } from "@/lib/labor/overtime"
 import { cn } from "@/lib/utils"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
+import type { SaveFailure } from "@/lib/save-failure"
+import { formatDayMonth } from "@/lib/datetime"
 
 const employeeHelper = dataTableColumns<EmployeeRow>()
 
@@ -162,19 +164,10 @@ export function LaborWorkspace({
   const [excluded, setExcluded] = React.useState<Record<string, boolean>>({})
   const commit = useCommit({})
 
-  const shiftDateFormat = React.useMemo(
-    () =>
-      new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        month: "short",
-        timeZone,
-      }),
-    [timeZone]
-  )
   const lastShift = React.useCallback(
     (row: EmployeeRow) =>
-      row.lastShiftAt ? shiftDateFormat.format(row.lastShiftAt) : "—",
-    [shiftDateFormat]
+      row.lastShiftAt ? formatDayMonth(row.lastShiftAt, timeZone) : "—",
+    [timeZone]
   )
 
   const employeeHref = React.useCallback(
@@ -186,26 +179,40 @@ export function LaborWorkspace({
     [endDate, startDate]
   )
 
-  const toggleActive = React.useCallback(
-    (employee: EmployeeRow) => {
-      const previous = employee.isActive
-      void commit({
+  // The row flips as soon as it is asked for and flips back if refused; the
+  // toast lands once the write is in, and offers the way back through the
+  // same commit with the opposite flag.
+  const setEmployeeStatus = React.useCallback(
+    function setEmployeeStatus(
+      employee: EmployeeRow,
+      isActive: boolean
+    ): Promise<SaveFailure | null> {
+      return commit({
         domain: `employee:${employee.id}:active`,
         apply: () =>
-          setActive((current) => ({ ...current, [employee.id]: !previous })),
+          setActive((current) => ({ ...current, [employee.id]: isActive })),
         revert: () =>
-          setActive((current) => ({ ...current, [employee.id]: previous })),
-        write: () =>
-          setEmployeeActive({ employeeId: employee.id, isActive: !previous }),
+          setActive((current) => ({ ...current, [employee.id]: !isActive })),
+        write: () => setEmployeeActive({ employeeId: employee.id, isActive }),
       }).then((failure) => {
-        if (failure)
+        if (failure) {
           toast.add({
-            title: previous
-              ? `Couldn’t archive ${employee.name}`
-              : `Couldn’t restore ${employee.name}`,
+            title: isActive
+              ? `Couldn’t restore ${employee.name}`
+              : `Couldn’t archive ${employee.name}`,
             description: failure.message,
             type: "error",
           })
+        } else {
+          undoableToast(
+            toast,
+            isActive
+              ? `Restored ${employee.name}`
+              : `Archived ${employee.name}`,
+            () => setEmployeeStatus(employee, !isActive)
+          )
+        }
+        return failure
       })
     },
     [commit, toast]
@@ -387,7 +394,11 @@ export function LaborWorkspace({
                   </>
                 )}
               </MenuItem>
-              <MenuItem onClick={() => toggleActive(row.original)}>
+              <MenuItem
+                onClick={() =>
+                  void setEmployeeStatus(row.original, !row.original.isActive)
+                }
+              >
                 {row.original.isActive ? (
                   <>
                     <Archive strokeWidth={1.8} aria-hidden="true" />
@@ -410,7 +421,7 @@ export function LaborWorkspace({
       employeeHref,
       lastShift,
       overtime,
-      toggleActive,
+      setEmployeeStatus,
       toggleExcluded,
     ]
   )

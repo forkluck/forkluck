@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { Archive, Pen, Plug, Plus, Trash2, Upload } from "lucide-react"
 
-import { formatInZone } from "@/lib/datetime"
+import { formatFullDate, formatInZone } from "@/lib/datetime"
 import type { ActivityEvent, ActivityEventKind } from "@/lib/backend/types"
 
 /** One logged change, drawn the same way in the history dialog and on the
@@ -34,11 +34,7 @@ const RESOURCE_LABELS: Record<ActivityEvent["resourceType"], string> = {
 }
 
 export function timestamp(createdAt: Date, timeZone: string): string {
-  const day = formatInZone(createdAt, timeZone, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
+  const day = formatFullDate(createdAt, timeZone)
   const time = formatInZone(createdAt, timeZone, {
     hour: "numeric",
     minute: "2-digit",
