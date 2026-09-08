@@ -4,14 +4,17 @@ import * as React from "react"
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-const searchApp = vi.hoisted(() => vi.fn())
+const { searchApp, go } = vi.hoisted(() => ({
+  searchApp: vi.fn(),
+  go: vi.fn().mockResolvedValue(true),
+}))
 
 vi.mock("@/app/(app)/actions", () => ({ searchApp }))
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }))
 vi.mock("@/components/navigation-blocker", () => ({
-  useGuardedNavigate: () => ({ go: vi.fn(), pending: false }),
+  useGuardedNavigate: () => ({ go, pending: false }),
   useNavigationBlocker: () => ({
     allowNavigation: vi.fn(),
     confirmNavigation: vi.fn().mockResolvedValue(true),
@@ -44,6 +47,12 @@ vi.mock("@/components/ui/dialog", () => ({
 }))
 
 import { AppSearch } from "@/components/app-search"
+import type { SearchItem } from "@/components/search/search-items"
+
+const PLACES: SearchItem[] = [
+  { label: "Recipes", href: "/recipes", group: "Go to" },
+  { label: "Labor", href: "/labor", group: "Go to" },
+]
 
 afterEach(() => {
   cleanup()
@@ -52,6 +61,7 @@ afterEach(() => {
 
 beforeEach(() => {
   searchApp.mockReset()
+  go.mockClear()
   vi.useFakeTimers()
 })
 
@@ -73,7 +83,7 @@ describe("app search", () => {
             resolveReopen = resolve
           })
       )
-    render(<AppSearch />)
+    render(<AppSearch places={PLACES} />)
 
     fireEvent.click(screen.getByLabelText("Search Forkluck"))
     await act(async () => vi.runOnlyPendingTimers())
@@ -87,8 +97,11 @@ describe("app search", () => {
     fireEvent.click(screen.getByLabelText("Search Forkluck"))
     await act(async () => vi.runOnlyPendingTimers())
 
+    // The palette reopens on the places to go, never on the old result and
+    // never on a blank "Searching…" while the default payload is in flight.
     expect(screen.queryByText("Banana bread")).toBeNull()
-    expect(screen.getByText("Searching…")).toBeTruthy()
+    expect(screen.queryByText("Searching…")).toBeNull()
+    expect(screen.getByRole("option", { name: "Recipes" })).toBeTruthy()
 
     await act(async () => resolveReopen?.([]))
   })
@@ -120,5 +133,23 @@ describe("app search", () => {
     await act(async () => vi.advanceTimersByTime(200))
     expect(screen.getByText("Granulated sugar")).toBeTruthy()
     expect(screen.queryByText("Searching…")).toBeNull()
+  })
+
+  it("reaches a screen from the keyboard before any request has landed", async () => {
+    searchApp.mockImplementation(() => new Promise(() => {}))
+    render(<AppSearch places={PLACES} />)
+
+    fireEvent.click(screen.getByLabelText("Search Forkluck"))
+    await act(async () => vi.runOnlyPendingTimers())
+    expect(screen.getByText("Go to")).toBeTruthy()
+
+    const input = screen.getByRole("combobox", { name: "Search Forkluck" })
+    fireEvent.change(input, { target: { value: "lab" } })
+    // Places filter as the user types: Recipes leaves, Labor stays and is
+    // the row Enter takes.
+    expect(screen.queryByRole("option", { name: "Recipes" })).toBeNull()
+    expect(screen.getByRole("option", { name: "Labor" })).toBeTruthy()
+    fireEvent.keyDown(input, { key: "Enter" })
+    expect(go).toHaveBeenCalledWith("/labor")
   })
 })

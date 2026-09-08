@@ -3,7 +3,8 @@ import type { SearchIndexItem } from "@/lib/backend/types"
 export type SearchItem = {
   label: string
   href: string
-  group: "Recipes" | "Ingredients"
+  /** "Go to" rows are the screens themselves; the rest come from the server. */
+  group: "Go to" | "Recipes" | "Ingredients"
   meta?: string
 }
 
