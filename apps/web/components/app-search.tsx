@@ -6,6 +6,12 @@ import { Search } from "lucide-react"
 import { searchApp } from "@/app/(app)/actions"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Kbd, useShortcutLabel } from "@/components/ui/kbd"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { rankedMatches, rankedServerResults } from "@/lib/search"
 import type { SearchItem } from "@/components/search/search-items"
 
@@ -20,6 +26,7 @@ const MAX_RESULTS = 9
  */
 export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
   const { go: navigate } = useGuardedNavigate()
+  const shortcut = useShortcutLabel("K")
   const listId = React.useId()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -135,15 +142,29 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
 
   return (
     <>
-      {/* Icon-only trigger; the field itself only exists inside the modal. */}
-      <button
-        type="button"
-        onClick={openSearch}
-        aria-label="Search Forkluck"
-        className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-transparent text-sidebar-foreground hover:bg-sidebar-hover focus-visible:border-foreground focus-visible:outline-none md:size-8"
-      >
-        <Search className="size-[17px]" strokeWidth={1.8} aria-hidden="true" />
-      </button>
+      {/* Icon-only trigger; the field itself only exists inside the modal.
+          Hovering it names the shortcut. */}
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Search Forkluck"
+              className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-transparent text-sidebar-foreground hover:bg-sidebar-hover focus-visible:border-foreground focus-visible:outline-none md:size-8"
+            />
+          }
+        >
+          <Search
+            className="size-[17px]"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          Search <Kbd>{shortcut}</Kbd>
+        </TooltipContent>
+      </Tooltip>
 
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
@@ -205,12 +226,9 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
               }}
               className="h-full min-w-0 flex-1 border-0 bg-transparent text-lg text-foreground outline-none placeholder:text-faint"
             />
-            <span
-              aria-hidden="true"
-              className="shrink-0 rounded-sm border border-border px-1.5 py-[3px] text-2xs leading-none font-medium text-faint"
-            >
+            <Kbd aria-hidden="true" className="shrink-0 text-faint">
               Esc
-            </span>
+            </Kbd>
           </div>
 
           <div
