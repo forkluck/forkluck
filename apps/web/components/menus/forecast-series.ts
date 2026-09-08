@@ -1,24 +1,21 @@
 import type { MenuForecast } from "@/lib/backend/types"
 import { parseDateKey } from "@/lib/date-presets"
 import { formatWholeCents } from "@/lib/money"
+import { formatDayMonth, formatInZone } from "@/lib/datetime"
 
 /**
  * The arithmetic behind the one forecast chart and the one accuracy sentence.
  * Kept out of the chart so it stays testable without a DOM.
  */
 
-const dayMonthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
-
-const fullDateFormat = new Intl.DateTimeFormat("en-US", {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
+/** "Wed, Aug 9": the tooltip names the weekday, which no shared stamp does. */
+function weekdayDate(date: Date) {
+  return formatInZone(date, "UTC", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  })
+}
 
 export type ForecastChartPoint = {
   key: string
@@ -39,8 +36,8 @@ export function forecastChartPoints(
     const date = parseDateKey(row.date)
     return {
       key: row.date,
-      label: dayMonthFormat.format(date),
-      tooltipLabel: fullDateFormat.format(date),
+      label: formatDayMonth(date, "UTC"),
+      tooltipLabel: weekdayDate(date),
       actualCents: row.actualCents,
       typicalCents: row.typicalCents,
       band:

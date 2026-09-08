@@ -44,7 +44,7 @@ describe("the toast", () => {
 describe("an undoable toast", () => {
   it("holds while the undo runs, then leaves", async () => {
     const manager = {
-      add: vi.fn((_options: unknown) => "t1"),
+      add: vi.fn<(options: object) => string>(() => "t1"),
       update: vi.fn(),
       close: vi.fn(),
     }

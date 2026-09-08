@@ -11,7 +11,7 @@ afterEach(cleanup)
 function field(initial = "2026-08-12") {
   function Harness() {
     const [value, setValue] = React.useState(initial)
-    return <DateField id="d" value={value} onChange={setValue} />
+    return <DateField id="d" value={value} onChange={setValue} timeZone="UTC" />
   }
   render(<Harness />)
   return () => (screen.getByLabelText("Date") as HTMLInputElement).value

@@ -1,7 +1,8 @@
-import { readdirSync, readFileSync } from "node:fs"
-import { join } from "node:path"
+import { readFileSync } from "node:fs"
 
 import { describe, expect, it } from "vitest"
+
+import { sourceFiles } from "./source-files"
 
 /**
  * The wait after a press belongs to the control that was pressed
@@ -24,16 +25,6 @@ const BARE_NAVIGATION = /\brouter\.(push|replace)\(/
 /** A push or replace carried by a transition of its own, on this or the
  *  line before: a filter or tab that dims the region it replaces. */
 const CARRIED = /\bstart\w*\(\(\) =>/
-
-function sourceFiles(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true, recursive: true })
-    .filter(
-      (entry) =>
-        entry.isFile() &&
-        (entry.name.endsWith(".ts") || entry.name.endsWith(".tsx"))
-    )
-    .map((entry) => join(entry.parentPath, entry.name))
-}
 
 function offenders(pattern: RegExp): string[] {
   const found: string[] = []

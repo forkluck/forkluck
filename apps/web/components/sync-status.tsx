@@ -11,6 +11,7 @@ import { connectionState } from "@/lib/connection-status"
 import { queueHeaderConnections } from "@/lib/header-refresh"
 import { cn } from "@/lib/utils"
 import { useRefresh } from "@/hooks/use-refresh"
+import { useBusinessSettings } from "@/components/business-settings-provider"
 
 /** How fresh the channel data is, with a button that queues a sync. */
 export function SyncStatus({
@@ -19,6 +20,7 @@ export function SyncStatus({
   connections: PosConnectionRow[] | null
 }) {
   const { refresh } = useRefresh()
+  const { timezone } = useBusinessSettings()
   const toast = useToast()
   // The server-safe first paint uses an exact sync title. Once mounted, the
   // clock switches the visible label to a relative age and advances it.
@@ -115,7 +117,7 @@ export function SyncStatus({
     }
   }, [watchedIds, refresh, toast])
 
-  const connection = connectionState(connections, now)
+  const connection = connectionState(connections, now, timezone)
   const syncing = refreshing || watched.length > 0
   const canRefresh = Boolean(
     connections?.some((connection) => connection.status === "active")

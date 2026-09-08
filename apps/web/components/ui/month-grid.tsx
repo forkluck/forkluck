@@ -3,19 +3,7 @@
 import * as React from "react"
 
 import { dateKey, parseDateKey, startOfMonth } from "@/lib/date-presets"
-
-export const monthFormat = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-const dayFormat = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
+import { formatCalendarDate } from "@/lib/datetime"
 
 const weekdayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
 
@@ -23,10 +11,6 @@ export function addMonths(value: Date, amount: number) {
   return new Date(
     Date.UTC(value.getUTCFullYear(), value.getUTCMonth() + amount, 1)
   )
-}
-
-export function formatDay(date: string) {
-  return dayFormat.format(new Date(`${date}T12:00:00Z`))
 }
 
 function daysInMonth(value: Date) {
@@ -116,7 +100,7 @@ export function MonthGrid({
               key={key}
               type="button"
               disabled={disabled}
-              aria-label={formatDay(key)}
+              aria-label={formatCalendarDate(key)}
               aria-pressed={pressed}
               onClick={() => onSelectDate(key)}
               onFocus={() => onHoverDate?.(key)}

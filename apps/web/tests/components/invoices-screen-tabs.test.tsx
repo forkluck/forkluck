@@ -173,7 +173,7 @@ describe("the invoices screen's tabs", () => {
       }),
     })
     expect(screen.getByRole("status").textContent).toContain(
-      "10 of 10 AI pages used. Resets October 1."
+      "10 of 10 AI pages used. Resets Oct 1."
     )
     expect(screen.getByRole("status").textContent).toContain(
       "enter invoices manually"

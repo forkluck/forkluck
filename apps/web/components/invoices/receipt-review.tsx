@@ -65,7 +65,7 @@ export function ReceiptReview({
   selectedKey: string | null
   onSelectLine: (lineKey: string) => void
 }) {
-  const { currencyCode } = useBusinessSettings()
+  const { currencyCode, timezone } = useBusinessSettings()
   const categories = invoice.result.categories
   const reviewCount = invoice.lines.filter((line) =>
     lineNeedsReview(line, categories)
@@ -119,6 +119,7 @@ export function ReceiptReview({
           id={`${invoice.key}-date`}
           value={invoice.invoiceDate}
           onChange={(next) => onChange(invoice.key, { invoiceDate: next })}
+          timeZone={timezone}
         />
         <LabeledInput
           label={`Total (${currencyCode})`}

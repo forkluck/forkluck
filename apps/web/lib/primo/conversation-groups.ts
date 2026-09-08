@@ -1,4 +1,5 @@
 import type { PrimoConversationSummary } from "@/lib/backend/types"
+import { formatInZone } from "@/lib/datetime"
 
 export type PrimoConversationGroup = {
   label: string
@@ -29,7 +30,11 @@ export function groupConversationsByDate(
             : days <= 30
               ? "Previous 30 days"
               : day.getFullYear() === today.getFullYear()
-                ? day.toLocaleDateString(undefined, { month: "long" })
+                ? formatInZone(
+                    Date.UTC(day.getFullYear(), day.getMonth(), 1),
+                    "UTC",
+                    { month: "long" }
+                  )
                 : String(day.getFullYear())
     const rows = groups.get(label) ?? []
     rows.push(conversation)

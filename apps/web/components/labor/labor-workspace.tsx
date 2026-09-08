@@ -57,6 +57,7 @@ import { overtimeWeekLine } from "@/lib/labor/overtime"
 import { cn } from "@/lib/utils"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
 import type { SaveFailure } from "@/lib/save-failure"
+import { formatDayMonth } from "@/lib/datetime"
 
 const employeeHelper = dataTableColumns<EmployeeRow>()
 
@@ -163,19 +164,10 @@ export function LaborWorkspace({
   const [excluded, setExcluded] = React.useState<Record<string, boolean>>({})
   const commit = useCommit({})
 
-  const shiftDateFormat = React.useMemo(
-    () =>
-      new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        month: "short",
-        timeZone,
-      }),
-    [timeZone]
-  )
   const lastShift = React.useCallback(
     (row: EmployeeRow) =>
-      row.lastShiftAt ? shiftDateFormat.format(row.lastShiftAt) : "—",
-    [shiftDateFormat]
+      row.lastShiftAt ? formatDayMonth(row.lastShiftAt, timeZone) : "—",
+    [timeZone]
   )
 
   const employeeHref = React.useCallback(

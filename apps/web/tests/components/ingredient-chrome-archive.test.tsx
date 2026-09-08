@@ -13,7 +13,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 const { archiveIngredient, refresh, toastAdd } = vi.hoisted(() => ({
   archiveIngredient: vi.fn(),
   refresh: vi.fn(),
-  toastAdd: vi.fn((_options: unknown) => "toast-1"),
+  toastAdd: vi.fn<(options: object) => string>(() => "toast-1"),
 }))
 
 vi.mock("next/navigation", () => ({

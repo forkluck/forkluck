@@ -25,7 +25,7 @@ import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/ui/menu"
 import { StatusDot } from "@/components/ui/status-dot"
 import { useToast } from "@/components/ui/toast"
 import type { PosConnectionRow, PosSyncRun } from "@/lib/backend/types"
-import { formatInZone } from "@/lib/datetime"
+import { formatDateTime } from "@/lib/datetime"
 import { activeSyncRun, syncRunForConnection } from "@/lib/pos-sync-runs"
 import { useRefresh } from "@/hooks/use-refresh"
 
@@ -63,10 +63,7 @@ const CHANNELS: Array<{ provider: Provider; name: string; blurb: string }> = [
 
 function lastSyncedLabel(connection: PosConnectionRow, timeZone: string) {
   if (!connection.lastSyncedAt) return "Never synced"
-  const at = formatInZone(new Date(connection.lastSyncedAt), timeZone, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  })
+  const at = formatDateTime(new Date(connection.lastSyncedAt), timeZone)
   return `Last synced ${at}`
 }
 

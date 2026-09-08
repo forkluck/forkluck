@@ -84,7 +84,7 @@ import {
   useSortableRows,
 } from "@/components/recipes/use-sortable-rows"
 import { useBusinessSettings } from "@/components/business-settings-provider"
-import { formatInZone } from "@/lib/datetime"
+import { formatFullDate } from "@/lib/datetime"
 import { useToast } from "@/components/ui/toast"
 import { Spinner } from "@/components/ui/spinner"
 import {
@@ -2120,11 +2120,7 @@ export function RecipeEditor({
                       {comment.authorName}
                     </span>
                     <span className="flex items-center gap-2">
-                      {formatInZone(comment.createdAt, timezone, {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                      })}
+                      {formatFullDate(comment.createdAt, timezone)}
                       {owner || comment.authorId === currentUserId ? (
                         <button
                           type="button"

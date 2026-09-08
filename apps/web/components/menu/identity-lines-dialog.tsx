@@ -15,35 +15,10 @@ import type { SalesIdentityLine, SalesReviewItem } from "@/lib/backend/types"
 import { formatCents, quantityFormat } from "@/lib/money"
 import { channelLabel } from "@/lib/sales-identity"
 import { cn } from "@/lib/utils"
+import { formatDateTime } from "@/lib/datetime"
 
 const GRID =
   "grid-cols-[136px_minmax(0,1fr)_56px_88px_88px_100px] gap-3 min-w-[640px]"
-
-const SOLD_AT_OPTIONS: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-}
-
-/** "9 Aug 2026, 14:32" in the zone the sale was recorded in. */
-const formatters = new Map<string, Intl.DateTimeFormat>()
-function soldAtFormat(timezone: string): Intl.DateTimeFormat {
-  let formatter = formatters.get(timezone)
-  if (!formatter) {
-    try {
-      formatter = new Intl.DateTimeFormat("en-GB", {
-        ...SOLD_AT_OPTIONS,
-        timeZone: timezone,
-      })
-    } catch {
-      formatter = new Intl.DateTimeFormat("en-GB", SOLD_AT_OPTIONS)
-    }
-    formatters.set(timezone, formatter)
-  }
-  return formatter
-}
 
 function lineMeta(line: SalesIdentityLine): string {
   return [line.location, line.orderSource, line.employeeName]
@@ -135,7 +110,8 @@ export function IdentityLinesDialog({
                     )}
                   >
                     <span className="text-base text-muted-foreground tabular-nums">
-                      {soldAtFormat(line.timezone).format(line.soldAt)}
+                      {/* In the zone the sale was recorded in. */}
+                      {formatDateTime(line.soldAt, line.timezone)}
                     </span>
                     <span className="min-w-0">
                       <span

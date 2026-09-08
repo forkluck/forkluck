@@ -1,18 +1,10 @@
 import type { PosConnectionRow } from "./backend/types"
+import { formatDateTime } from "@/lib/datetime"
 
 const MINUTE = 60_000
 const providerName = { square: "Square", shopify: "Shopify" } as const
 const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
   numeric: "always",
-})
-
-const syncedFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "UTC",
 })
 
 export function updatedLabel(minutes: number) {
@@ -35,7 +27,8 @@ export function updatedLabel(minutes: number) {
  */
 export function connectionState(
   connections: PosConnectionRow[] | null,
-  now: number | null
+  now: number | null,
+  timeZone: string
 ) {
   if (connections === null) {
     return {
@@ -100,6 +93,6 @@ export function connectionState(
   return {
     dot: "bg-success-dot",
     label: minutes === null ? "Last sync recorded" : updatedLabel(minutes),
-    title: `${providerName[oldest.row.provider]} last synced ${syncedFormat.format(new Date(oldest.timestamp))} UTC`,
+    title: `${providerName[oldest.row.provider]} last synced ${formatDateTime(oldest.timestamp, timeZone)}`,
   }
 }

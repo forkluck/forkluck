@@ -19,7 +19,7 @@ const {
 } = vi.hoisted(() => ({
   deleteRecipe: vi.fn(),
   updateRecipeStatuses: vi.fn(),
-  toastAdd: vi.fn((_options: unknown) => "toast-1"),
+  toastAdd: vi.fn<(options: object) => string>(() => "toast-1"),
   toastUpdate: vi.fn(),
   toastClose: vi.fn(),
 }))

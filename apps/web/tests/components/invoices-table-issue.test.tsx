@@ -91,13 +91,13 @@ describe("the invoices table's issue marker", () => {
     expect(screen.queryByText("Applied")).toBeNull()
   })
 
-  it("keeps the handoff's day-and-month date", () => {
+  it("prints the invoice date as the day and month every screen uses", () => {
     render(
       <InvoicesTable
         invoices={[invoice()]}
         emptyMessage="No invoices in this month."
       />
     )
-    expect(screen.getByText("9 Aug")).toBeTruthy()
+    expect(screen.getByText("Aug 9")).toBeTruthy()
   })
 })

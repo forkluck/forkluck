@@ -37,6 +37,7 @@ import {
 import { dollarsToCents, formatCents, quantityFormat } from "@/lib/money"
 import type { ProductDetail } from "@/lib/backend/types"
 import { formatDateRangeLabel } from "@/lib/date-range-label"
+import { formatCalendarDate } from "@/lib/datetime"
 
 type ProductManualSaleRow = ProductDetail["sales"]["manualSales"][number]
 
@@ -47,15 +48,7 @@ function channelLabel(channel: string) {
   return channel || "Sales channel"
 }
 
-function dateLabel(value: string) {
-  const date = new Date(`${value}T00:00:00`)
-  if (Number.isNaN(date.getTime())) return value
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date)
-}
+const dateLabel = formatCalendarDate
 
 function manualRowsWithMissingTotals(rows: ProductManualSaleRow[]) {
   return rows.filter((row) => row.totalNetCents === null).length

@@ -6,13 +6,9 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
-import {
-  MonthGrid,
-  addMonths,
-  monthFormat,
-  openingMonth,
-} from "@/components/ui/month-grid"
+import { MonthGrid, addMonths, openingMonth } from "@/components/ui/month-grid"
 import { localDateKey } from "@/lib/date-presets"
+import { formatMonthYear } from "@/lib/datetime"
 
 /**
  * A single date as `YYYY-MM-DD`: the field is still typed into, and the
@@ -27,6 +23,7 @@ export function DateField({
   onChange,
   placeholder,
   containerClassName,
+  timeZone,
 }: {
   label?: string
   id: string
@@ -34,11 +31,11 @@ export function DateField({
   onChange: (next: string) => void
   placeholder?: string
   containerClassName?: string
+  /** The kitchen's zone: it decides which day the calendar calls today. */
+  timeZone: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const today = localDateKey(
-    Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
-  )
+  const today = localDateKey(timeZone)
   const [month, setMonth] = React.useState(() => openingMonth(value, today))
 
   return (
@@ -87,7 +84,7 @@ export function DateField({
                     <ChevronLeft />
                   </Button>
                   <p className="text-md font-semibold">
-                    {monthFormat.format(month)}
+                    {formatMonthYear(month)}
                   </p>
                   <Button
                     variant="quiet"

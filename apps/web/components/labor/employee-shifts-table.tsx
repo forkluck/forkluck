@@ -8,23 +8,11 @@ import { DataTable, dataTableColumns } from "@/components/ui/data-table"
 import type { CurrencyCode } from "@/lib/business-settings"
 import type { TimeEntryRow } from "@/lib/backend/types"
 import { formatCents } from "@/lib/money"
+import { formatDayMonthTime } from "@/lib/datetime"
 
-const dateTimeFormats = new Map<string, Intl.DateTimeFormat>()
-
+/** A shift's moment, in the zone its import named. */
 function formatEntryDateTime(entry: TimeEntryRow, value: Date) {
-  let formatter = dateTimeFormats.get(entry.importTimezone)
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: entry.importTimezone,
-    })
-    dateTimeFormats.set(entry.importTimezone, formatter)
-  }
-  return formatter.format(value)
+  return formatDayMonthTime(value, entry.importTimezone)
 }
 
 const entryHelper = dataTableColumns<TimeEntryRow>()

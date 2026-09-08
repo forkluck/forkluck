@@ -14,7 +14,7 @@ const { setEmployeeActive, setEmployeeExcludedFromCost, toastAdd } = vi.hoisted(
   () => ({
     setEmployeeActive: vi.fn(),
     setEmployeeExcludedFromCost: vi.fn(),
-    toastAdd: vi.fn((_options: unknown) => "toast-1"),
+    toastAdd: vi.fn<(options: object) => string>(() => "toast-1"),
   })
 )
 

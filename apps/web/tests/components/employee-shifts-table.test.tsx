@@ -51,7 +51,7 @@ describe("employee shift rate editing", () => {
     })
     render(<EmployeeShiftsTable entries={[entry]} currencyCode="USD" />)
 
-    fireEvent.click(screen.getByText("15 Jun, 08:00"))
+    fireEvent.click(screen.getByText("Jun 15, 8:00 AM"))
 
     expect(
       screen.getByRole("heading", { name: "Edit shift rate" })

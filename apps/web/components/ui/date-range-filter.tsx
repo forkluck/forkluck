@@ -5,12 +5,7 @@ import { Popover } from "@base-ui/react/popover"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-  MonthGrid,
-  addMonths,
-  formatDay,
-  monthFormat,
-} from "@/components/ui/month-grid"
+import { MonthGrid, addMonths } from "@/components/ui/month-grid"
 import {
   dateKey,
   datePresetGroups,
@@ -23,6 +18,7 @@ import {
 } from "@/lib/date-presets"
 import { formatDateRangeLabel } from "@/lib/date-range-label"
 import { cn } from "@/lib/utils"
+import { formatCalendarDate, formatMonthYear } from "@/lib/datetime"
 
 function anchorMonth(startDate: string, endDate: string, today: string) {
   const anchor = addMonths(startOfMonth(parseDateKey(endDate)), -1)
@@ -32,8 +28,8 @@ function anchorMonth(startDate: string, endDate: string, today: string) {
 
 /** The spoken form, for the trigger's label. */
 function formatDateRange(startDate: string, endDate: string) {
-  if (startDate === endDate) return formatDay(startDate)
-  return `${formatDay(startDate)} – ${formatDay(endDate)}`
+  if (startDate === endDate) return formatCalendarDate(startDate)
+  return `${formatCalendarDate(startDate)} – ${formatCalendarDate(endDate)}`
 }
 
 const COOKIE_MAX_AGE_DAYS = 180
@@ -309,7 +305,7 @@ export function DateRangeFilter({
                           <span className="size-7" />
                         )}
                         <p className="text-md font-semibold">
-                          {monthFormat.format(month)}
+                          {formatMonthYear(month)}
                         </p>
                         {isLeadingMonth ? (
                           <>
