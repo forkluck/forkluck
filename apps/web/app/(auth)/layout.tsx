@@ -1,41 +1,52 @@
 import { BrandMark } from "@/components/brand-mark"
 import { MARKETING_ORIGIN } from "@/lib/public-site"
 
+const legalLinkClassName =
+  "rounded-sm font-medium text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
+
 export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     // Sign-in copy is prose, not dashboard chrome, so it keeps the 1.5 leading
     // that <body> gives up for the handoff's `font:`-shorthand metric.
-    <main className="relative flex min-h-svh flex-col items-center justify-center bg-card px-6 py-24 leading-normal">
+    <main className="relative flex min-h-svh w-full flex-col items-center justify-between bg-card leading-normal">
       {/* The same mark the sidebar draws, so signing in and being signed in
           share one brand. */}
       <a
         href={MARKETING_ORIGIN}
         aria-label="Forkluck home"
-        className="absolute top-14 left-1/2 -translate-x-1/2 rounded-sm outline-none focus-visible:underline focus-visible:underline-offset-4"
+        className="absolute top-6 left-1/2 z-10 -translate-x-1/2 rounded-sm outline-none focus-visible:underline focus-visible:underline-offset-4"
       >
         <BrandMark />
       </a>
-      <div className="w-full max-w-[21.5rem] md:absolute md:inset-x-0 md:top-[32.7svh] md:mx-auto">
-        {children}
+
+      {/* The two spacers split the slack, so the column floats a little
+          above centre and the legal line stays on the bottom edge. The 96px
+          floor keeps the column clear of the wordmark on short screens. */}
+      <div className="grow basis-0">
+        <div className="h-24" />
       </div>
-      <div className="absolute bottom-8 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
-        <p>
-          Need help?{" "}
+
+      <div className="relative flex w-full flex-col items-center justify-center px-6">
+        <div className="w-full max-w-sm">{children}</div>
+      </div>
+
+      <div className="flex grow basis-0 flex-col justify-end">
+        <p className="px-6 py-8 text-center text-xs leading-5 text-faint">
+          By continuing, you agree to our{" "}
+          <a href={`${MARKETING_ORIGIN}/terms`} className={legalLinkClassName}>
+            Terms of Service
+          </a>{" "}
+          and{" "}
           <a
-            href="mailto:guero@forkluck.com?subject=Forkluck%20support"
-            className="rounded-sm font-medium text-foreground underline decoration-border underline-offset-4 outline-none hover:decoration-foreground focus-visible:decoration-foreground"
+            href={`${MARKETING_ORIGIN}/privacy`}
+            className={legalLinkClassName}
           >
-            guero@forkluck.com
+            Privacy Policy
           </a>
+          .
         </p>
-        <a
-          href={MARKETING_ORIGIN}
-          className="rounded-sm transition-colors outline-none hover:text-foreground focus-visible:text-foreground"
-        >
-          &larr; Back to forkluck.com
-        </a>
       </div>
     </main>
   )

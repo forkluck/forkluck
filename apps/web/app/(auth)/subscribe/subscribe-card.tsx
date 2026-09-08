@@ -5,7 +5,14 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
+import {
+  authHeadingClassName,
+  authLinkClassName,
+  authSubtitleClassName,
+  authSwitchClassName,
+} from "@/components/auth/auth-styles"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { useRefresh } from "@/hooks/use-refresh"
 
 import { createStripeCheckout, syncStripeSubscription } from "./actions"
@@ -58,12 +65,17 @@ export function SubscribeCard({
     void refresh()
   }
 
+  const secondaryClassName = cn(
+    "mt-6 self-center text-sm leading-5",
+    authLinkClassName
+  )
+
   return (
     <div className="flex flex-col">
-      <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
+      <h1 className={authHeadingClassName}>
         {firstSubscription ? "Upgrade your account" : "Resubscribe to Forkluck"}
       </h1>
-      <p className="mt-2 text-left text-lg leading-6 text-muted-foreground">
+      <p className={authSubtitleClassName}>
         {firstSubscription
           ? "Forkluck is $7 a month. Cancel anytime. Upgrading lifts the 10-recipe limit on the Free plan."
           : "Your subscription has ended and your account is on the Free plan. Forkluck is $7 a month. Cancel anytime. Everything you made is still here."}
@@ -75,7 +87,7 @@ export function SubscribeCard({
         </p>
       ) : null}
 
-      <Button size="lg" pending={pending} onClick={checkout} className="mt-4">
+      <Button size="lg" pending={pending} onClick={checkout} className="mt-6">
         {firstSubscription ? "Upgrade" : "Resubscribe"}
       </Button>
 
@@ -83,27 +95,20 @@ export function SubscribeCard({
         type="button"
         onClick={syncSubscription}
         disabled={pending}
-        className="mt-4 text-left text-lg leading-6 font-medium text-foreground underline underline-offset-4"
+        className={secondaryClassName}
       >
         Already subscribed? Refresh status
       </button>
 
       {canReturn ? (
-        <Link
-          href="/"
-          className="mt-4 text-left text-lg leading-6 font-medium text-foreground underline underline-offset-4"
-        >
+        <Link href="/" className={secondaryClassName}>
           Back to Forkluck
         </Link>
       ) : null}
 
-      <p className="mt-4 text-left text-lg leading-6 text-muted-foreground">
-        Signed in as {email} —{" "}
-        <button
-          type="button"
-          onClick={signOut}
-          className="font-medium text-foreground underline underline-offset-4"
-        >
+      <p className={authSwitchClassName}>
+        Signed in as {email}.{" "}
+        <button type="button" onClick={signOut} className={authLinkClassName}>
           Sign out
         </button>
       </p>

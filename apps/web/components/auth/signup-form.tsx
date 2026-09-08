@@ -6,10 +6,15 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
+import {
+  authHeadingClassName,
+  authLinkClassName,
+  authSwitchClassName,
+} from "@/components/auth/auth-styles"
+import { PasswordHint } from "@/components/auth/password-hint"
 import { PasswordToggle } from "@/components/auth/password-toggle"
 import { VerifyCodeForm } from "@/components/auth/verify-code-form"
 import { authClient } from "@/lib/auth-client"
-import { MARKETING_ORIGIN } from "@/lib/public-site"
 import { useRefresh } from "@/hooks/use-refresh"
 
 export function SignupForm({ next = "/" }: { next?: string }) {
@@ -62,31 +67,27 @@ export function SignupForm({ next = "/" }: { next?: string }) {
   }
 
   return (
-    <>
-      <form onSubmit={submit} className="flex flex-col" data-auth-form="signup">
-        <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
-          Create your account
-        </h1>
-        <p className="mt-2 mb-6 text-left text-lg leading-6 text-muted-foreground">
-          Free to start. No card needed.
-        </p>
+    <form onSubmit={submit} className="flex flex-col" data-auth-form="signup">
+      <h1 className={authHeadingClassName}>Create your account</h1>
 
-        <div className="flex flex-col gap-2.5">
-          <LabeledInput
-            label="Name"
-            id="signup-name"
-            autoComplete="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <LabeledInput
-            label="Email"
-            id="signup-email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+      <div className="mt-8 flex flex-col gap-5">
+        <LabeledInput
+          label="Name"
+          id="signup-name"
+          autoComplete="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <LabeledInput
+          label="Email"
+          id="signup-email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@restaurant.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <div className="flex flex-col gap-2">
           <LabeledInput
             label="Password"
             id="signup-password"
@@ -102,53 +103,31 @@ export function SignupForm({ next = "/" }: { next?: string }) {
               />
             }
           />
-          <p className="text-md leading-5 text-muted-foreground">
-            At least 8 characters.
-          </p>
+          <PasswordHint password={password} />
         </div>
+      </div>
 
-        {error ? (
-          <p role="alert" className="mt-4 text-md leading-5 text-destructive">
-            {error}
-          </p>
-        ) : null}
-
-        <Button type="submit" size="lg" pending={pending} className="mt-4">
-          Create account
-        </Button>
-
-        <p className="mt-4 text-left text-lg leading-6 text-muted-foreground">
-          Already have an account?{" "}
-          <Link
-            href={
-              next === "/"
-                ? "/login"
-                : `/login?next=${encodeURIComponent(next)}`
-            }
-            className="font-medium text-foreground underline underline-offset-4"
-          >
-            Sign in
-          </Link>
+      {error ? (
+        <p role="alert" className="mt-4 text-md leading-5 text-destructive">
+          {error}
         </p>
-      </form>
+      ) : null}
 
-      <p className="mt-8 text-left text-xs leading-5 text-muted-foreground">
-        By creating an account, you agree to our{" "}
-        <a
-          href={`${MARKETING_ORIGIN}/terms`}
-          className="font-medium text-foreground underline underline-offset-4"
+      <Button type="submit" size="lg" pending={pending} className="mt-6">
+        Create account
+      </Button>
+
+      <p className={authSwitchClassName}>
+        Already have an account?{" "}
+        <Link
+          href={
+            next === "/" ? "/login" : `/login?next=${encodeURIComponent(next)}`
+          }
+          className={authLinkClassName}
         >
-          Terms of Service
-        </a>{" "}
-        and have read and understood the{" "}
-        <a
-          href={`${MARKETING_ORIGIN}/privacy`}
-          className="font-medium text-foreground underline underline-offset-4"
-        >
-          Privacy Policy
-        </a>
-        {". We'll send occasional product updates. Unsubscribe anytime."}
+          Sign in
+        </Link>
       </p>
-    </>
+    </form>
   )
 }
