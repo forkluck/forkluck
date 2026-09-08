@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
+import {
+  authHeadingClassName,
+  authLinkClassName,
+  authSubtitleClassName,
+} from "@/components/auth/auth-styles"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { useRefresh } from "@/hooks/use-refresh"
 
 /** The 6-digit step shared by signup and sign-in for unverified accounts. */
@@ -64,10 +70,8 @@ export function VerifyCodeForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col">
-      <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
-        Check your email
-      </h1>
-      <p className="mt-2 text-left text-lg leading-6 text-muted-foreground">
+      <h1 className={authHeadingClassName}>Check your email</h1>
+      <p className={authSubtitleClassName}>
         We sent a 6-digit code to {email}. Enter it to finish signing in.
       </p>
 
@@ -106,13 +110,13 @@ export function VerifyCodeForm({
           A new code is on its way.
         </p>
       ) : null}
-      <Button type="submit" size="lg" pending={pending} className="mt-4">
+      <Button type="submit" size="lg" pending={pending} className="mt-6">
         Verify
       </Button>
       <button
         type="button"
         onClick={resend}
-        className="mt-4 text-left text-lg leading-6 font-medium text-foreground underline underline-offset-4"
+        className={cn("mt-6 self-center text-sm leading-5", authLinkClassName)}
       >
         Resend code
       </button>

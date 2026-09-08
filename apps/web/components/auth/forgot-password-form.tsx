@@ -5,6 +5,13 @@ import Link from "next/link"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
+import {
+  authHeadingClassName,
+  authLinkClassName,
+  authSubtitleClassName,
+  authSwitchClassName,
+} from "@/components/auth/auth-styles"
+import { PasswordHint } from "@/components/auth/password-hint"
 import { PasswordToggle } from "@/components/auth/password-toggle"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
@@ -74,11 +81,9 @@ export function ForgotPasswordForm() {
 
   if (stage === "complete") {
     return (
-      <div className="flex flex-col text-left">
-        <h1 className="text-2xl leading-8 font-semibold tracking-[-0.03em]">
-          Password reset
-        </h1>
-        <p className="mt-2 text-lg leading-6 text-muted-foreground">
+      <div className="flex flex-col">
+        <h1 className={authHeadingClassName}>Password reset</h1>
+        <p className={authSubtitleClassName}>
           Your password has been changed. You can now sign in with your new
           password.
         </p>
@@ -95,18 +100,15 @@ export function ForgotPasswordForm() {
   if (stage === "request") {
     return (
       <form onSubmit={requestCode} className="flex flex-col">
-        <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
-          Reset your password
-        </h1>
-        <p className="mt-2 text-left text-lg leading-6 text-muted-foreground">
-          We&apos;ll email you a code.
-        </p>
+        <h1 className={authHeadingClassName}>Reset your password</h1>
+        <p className={authSubtitleClassName}>We&apos;ll email you a code.</p>
 
         <LabeledInput
           label="Email"
           id="forgot-password-email"
           type="email"
           autoComplete="email"
+          placeholder="you@restaurant.com"
           autoFocus
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -120,16 +122,13 @@ export function ForgotPasswordForm() {
           </p>
         ) : null}
 
-        <Button type="submit" size="lg" pending={pending} className="mt-4">
+        <Button type="submit" size="lg" pending={pending} className="mt-6">
           Send reset code
         </Button>
 
-        <p className="mt-4 text-left text-lg leading-6 text-muted-foreground">
+        <p className={authSwitchClassName}>
           Remembered it?{" "}
-          <Link
-            href="/login"
-            className="font-medium text-foreground underline underline-offset-4"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Sign in
           </Link>
         </p>
@@ -138,15 +137,13 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={resetPassword} className="flex flex-col md:-translate-y-12">
-      <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
-        Check your email
-      </h1>
-      <p className="mt-2 text-left text-lg leading-6 text-muted-foreground">
+    <form onSubmit={resetPassword} className="flex flex-col">
+      <h1 className={authHeadingClassName}>Check your email</h1>
+      <p className={authSubtitleClassName}>
         We sent a 6-digit reset code to {email.trim().toLowerCase()}.
       </p>
 
-      <div className="mt-6 flex flex-col gap-2.5">
+      <div className="mt-6 flex flex-col gap-5">
         <LabeledInput
           label="Reset code"
           id="password-reset-code"
@@ -160,25 +157,25 @@ export function ForgotPasswordForm() {
           aria-invalid={Boolean(error)}
           className="tracking-[0.24em] tabular-nums"
         />
-        <LabeledInput
-          label="New password"
-          id="password-reset-new-password"
-          type={passwordVisible ? "text" : "password"}
-          autoComplete="new-password"
-          minLength={8}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          aria-invalid={Boolean(error)}
-          trailing={
-            <PasswordToggle
-              visible={passwordVisible}
-              onToggle={() => setPasswordVisible((visible) => !visible)}
-            />
-          }
-        />
-        <p className="text-md leading-5 text-muted-foreground">
-          At least 8 characters.
-        </p>
+        <div className="flex flex-col gap-2">
+          <LabeledInput
+            label="New password"
+            id="password-reset-new-password"
+            type={passwordVisible ? "text" : "password"}
+            autoComplete="new-password"
+            minLength={8}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            aria-invalid={Boolean(error)}
+            trailing={
+              <PasswordToggle
+                visible={passwordVisible}
+                onToggle={() => setPasswordVisible((visible) => !visible)}
+              />
+            }
+          />
+          <PasswordHint password={password} />
+        </div>
       </div>
 
       {error ? (
@@ -196,7 +193,7 @@ export function ForgotPasswordForm() {
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" pending={pending} className="mt-4">
+      <Button type="submit" size="lg" pending={pending} className="mt-6">
         Reset password
       </Button>
 
@@ -204,7 +201,10 @@ export function ForgotPasswordForm() {
         type="button"
         onClick={resendCode}
         disabled={pending}
-        className="mt-4 text-left text-lg leading-6 font-medium text-foreground underline underline-offset-4 disabled:pointer-events-none disabled:opacity-50"
+        className={cn(
+          "mt-6 self-center text-sm leading-5 disabled:pointer-events-none disabled:opacity-50",
+          authLinkClassName
+        )}
       >
         Send a new code
       </button>

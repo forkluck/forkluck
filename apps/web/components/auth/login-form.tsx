@@ -6,6 +6,11 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
+import {
+  authHeadingClassName,
+  authLinkClassName,
+  authSwitchClassName,
+} from "@/components/auth/auth-styles"
 import { PasswordToggle } from "@/components/auth/password-toggle"
 import { VerifyCodeForm } from "@/components/auth/verify-code-form"
 import { authClient } from "@/lib/auth-client"
@@ -61,42 +66,40 @@ export function LoginForm({ next = "/" }: { next?: string }) {
 
   return (
     <form onSubmit={submit} className="flex flex-col">
-      <h1 className="text-left text-2xl leading-8 font-semibold tracking-[-0.03em]">
-        Welcome back
-      </h1>
-      <p className="mt-2 mb-6 text-left text-lg leading-6 text-muted-foreground">
-        Sign in to your kitchen.
-      </p>
+      <h1 className={authHeadingClassName}>Welcome back</h1>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="mt-8 flex flex-col gap-5">
         <LabeledInput
           label="Email"
           id="login-email"
           type="email"
           autoComplete="email"
+          placeholder="you@restaurant.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <LabeledInput
-          label="Password"
-          id="login-password"
-          type={passwordVisible ? "text" : "password"}
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          trailing={
-            <PasswordToggle
-              visible={passwordVisible}
-              onToggle={() => setPasswordVisible((visible) => !visible)}
-            />
-          }
-        />
-        <Link
-          href="/forgot-password"
-          className="self-start text-md leading-5 text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4 focus-visible:outline-none"
-        >
-          Forgot your password?
-        </Link>
+        <div className="flex flex-col gap-2">
+          <LabeledInput
+            label="Password"
+            id="login-password"
+            type={passwordVisible ? "text" : "password"}
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            trailing={
+              <PasswordToggle
+                visible={passwordVisible}
+                onToggle={() => setPasswordVisible((visible) => !visible)}
+              />
+            }
+          />
+          <Link
+            href="/forgot-password"
+            className="self-start rounded-sm text-sm leading-5 text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
+          >
+            Forgot your password?
+          </Link>
+        </div>
       </div>
 
       {error ? (
@@ -105,11 +108,11 @@ export function LoginForm({ next = "/" }: { next?: string }) {
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" pending={pending} className="mt-4">
+      <Button type="submit" size="lg" pending={pending} className="mt-6">
         Sign in
       </Button>
 
-      <p className="mt-4 text-left text-lg leading-6 text-muted-foreground">
+      <p className={authSwitchClassName}>
         Don&apos;t have an account?{" "}
         <Link
           href={
@@ -117,7 +120,7 @@ export function LoginForm({ next = "/" }: { next?: string }) {
               ? "/signup"
               : `/signup?next=${encodeURIComponent(next)}`
           }
-          className="font-medium text-foreground underline underline-offset-4"
+          className={authLinkClassName}
         >
           Sign up
         </Link>
