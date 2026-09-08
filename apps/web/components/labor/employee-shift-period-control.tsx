@@ -1,37 +1,34 @@
 "use client"
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-
 import { DateRangeFilter } from "@/components/ui/date-range-filter"
+import { useBrowseUrl } from "@/hooks/use-browse-url"
 
 export function EmployeeShiftPeriodControl({
-  employeeId,
   startDate,
   endDate,
   timeZone,
 }: {
-  employeeId: string
   startDate: string
   endDate: string
   timeZone: string
 }) {
-  const router = useRouter()
-  const [pending, startTransition] = React.useTransition()
+  // The same browse hook every filter pill uses: it writes to the page it is
+  // on and carries the wait.
+  const browse = useBrowseUrl({ query: "" })
 
   return (
     <DateRangeFilter
       selectedStartDate={startDate}
       selectedEndDate={endDate}
       timeZone={timeZone}
-      pending={pending}
-      onSelectedDateRangeChange={(nextStart, nextEnd) => {
-        const params = new URLSearchParams({ start: nextStart })
-        if (nextEnd !== nextStart) params.set("end", nextEnd)
-        startTransition(() =>
-          router.replace(`/labor/${employeeId}?${params}`, { scroll: false })
-        )
-      }}
+      pending={browse.isPending}
+      onSelectedDateRangeChange={(nextStart, nextEnd) =>
+        browse.setFilters({
+          start: nextStart,
+          end: nextEnd !== nextStart ? nextEnd : null,
+          date: null,
+        })
+      }
     />
   )
 }

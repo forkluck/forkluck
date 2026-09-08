@@ -51,6 +51,33 @@ afterEach(() => {
   cleanup()
 })
 
+describe("a filter pill that writes to the URL", () => {
+  it("writes to the page it is on, keeps other keys, and drops defaults", () => {
+    currentParams = new URLSearchParams({
+      page: "3",
+      comparison: "prior_year",
+      order: "title",
+    })
+    const view = renderHook(() => useBrowseUrl({ query: "" }))
+    act(() =>
+      view.result.current.setFilters({
+        start: "2026-08-01",
+        end: null,
+        comparison: null,
+        date: null,
+      })
+    )
+    // The page resets, the null keys leave, the order the pill never touched
+    // stays, and the path is the page's own.
+    expect(replace).toHaveBeenCalledWith(
+      "/products?order=title&start=2026-08-01",
+      {
+        scroll: false,
+      }
+    )
+  })
+})
+
 describe("typing in a table's search box", () => {
   it("writes the URL once the typing stops, not once per keystroke", () => {
     const browse = browsing()

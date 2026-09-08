@@ -90,7 +90,6 @@ export default async function EmployeeLaborPage({
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <EmployeeShiftPeriodControl
-            employeeId={employee.id}
             startDate={detail.period.start}
             endDate={detail.period.end}
             timeZone={detail.period.timezone}
