@@ -6,6 +6,7 @@ import {
   chartSummary,
 } from "@/components/menus/forecast-series"
 import { MenuForecastChart } from "@/components/menus/menu-forecast-chart"
+import { ProductForecastTable } from "@/components/menus/product-forecast-table"
 import {
   AnalyticsCard,
   CardLabel,
@@ -29,7 +30,6 @@ import type {
 } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
 import { formatWholeCents } from "@/lib/money"
-import { productHref } from "@/lib/product-href"
 import { unitShort } from "@/lib/unit-registry"
 import {
   displayWeight,
@@ -79,27 +79,6 @@ function quantities(
 ) {
   if (!rows.length) return "—"
   return rows.map((row) => measure(row.quantity, row.unit, system)).join(", ")
-}
-
-/**
- * Whole units. A projection is good to a tenth or so of its total, never to a
- * thousandth of a cookie, and the kitchen bakes 13, not 12.965. Demand that
- * rounds to nothing but is not nothing prints as "<1", so a product that
- * sells some weeks does not read as one that never sells.
- */
-const wholeUnitFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
-})
-
-function units(quantity: number) {
-  if (quantity > 0 && quantity < 0.5) return "<1"
-  return wholeUnitFormat.format(quantity)
-}
-
-function historyLabel(weeksObserved: number) {
-  return weeksObserved
-    ? `${weeksObserved} of 8 weeks`
-    : "No sales in the last 8 weeks"
 }
 
 function planBadge(plan: MenuForecastPlan) {
@@ -157,100 +136,6 @@ function ProjectedSales({ forecast }: { forecast: MenuForecastData }) {
         </>
       )}
     </AnalyticsCard>
-  )
-}
-
-function ProductForecastTable({ forecast }: { forecast: MenuForecastData }) {
-  const busy = forecast.basis.plan === "busy"
-  return (
-    <section>
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">
-            Product demand
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Weekday-matched from the last eight weeks, summed over the horizon.
-          </p>
-        </div>
-        <Badge variant="secondary">
-          {forecast.coverage.productsWithHistory} of{" "}
-          {forecast.coverage.products} with history
-        </Badge>
-      </div>
-      <TableFrame className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableHeaderRow>
-              <TableHead className="min-w-48">Product</TableHead>
-              <TableHead
-                className={cn(
-                  "min-w-24 text-right",
-                  !busy && "text-foreground"
-                )}
-              >
-                Typical
-              </TableHead>
-              <TableHead
-                className={cn("min-w-24 text-right", busy && "text-foreground")}
-              >
-                Busy
-              </TableHead>
-              <TableHead className="min-w-32">History</TableHead>
-            </TableHeaderRow>
-          </TableHeader>
-          <TableBody>
-            {forecast.products.length ? (
-              forecast.products.map((product) => (
-                <TableRow key={product.productId}>
-                  <TableCell>
-                    <Link
-                      href={productHref({
-                        publicId: product.productPublicId,
-                      })}
-                      className="font-medium text-foreground hover:underline"
-                    >
-                      {product.productName}
-                    </Link>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {!product.menuMember ? (
-                        <Badge variant="secondary">Modifier</Badge>
-                      ) : null}
-                      {!product.isActive ? (
-                        <Badge variant="secondary">Inactive</Badge>
-                      ) : null}
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      "text-right tabular-nums",
-                      !busy && "font-medium"
-                    )}
-                  >
-                    {units(product.typicalQuantity)}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      "text-right tabular-nums",
-                      busy && "font-medium"
-                    )}
-                  >
-                    {units(product.busyQuantity)}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {historyLabel(product.weeksObserved)}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableEmpty colSpan={4}>
-                Link Products to this Menu to forecast demand.
-              </TableEmpty>
-            )}
-          </TableBody>
-        </Table>
-      </TableFrame>
-    </section>
   )
 }
 

@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 
 import * as React from "react"
-import { cleanup, render, screen } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react"
 import { afterEach, describe, expect, it } from "vitest"
 
 import { MenuForecast } from "@/components/menus/menu-forecast"
@@ -152,6 +158,13 @@ const FORECAST: MenuForecastData = {
     },
   ],
 }
+
+/** The Product demand table is the first on the page; one link per row. */
+const demand = () => within(document.querySelector("table") as HTMLElement)
+const demandRows = () =>
+  demand()
+    .getAllByRole("link")
+    .map((link) => link.textContent)
 
 const busy = (): MenuForecastData => ({
   ...FORECAST,
@@ -365,5 +378,25 @@ describe("Menu forecast", () => {
     expect(
       screen.getByRole("link", { name: "Busy" }).getAttribute("aria-current")
     ).toBeNull()
+  })
+
+  it("sorts product demand by a clicked header and flips it on a second click", () => {
+    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
+
+    // The backend's A–Z order stands until a header is chosen.
+    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
+
+    fireEvent.click(demand().getByRole("button", { name: "Typical" }))
+    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
+    fireEvent.click(demand().getByRole("button", { name: "Typical" }))
+    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
+
+    fireEvent.click(demand().getByRole("button", { name: "History" }))
+    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
+
+    fireEvent.click(demand().getByRole("button", { name: "Product" }))
+    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
+    fireEvent.click(demand().getByRole("button", { name: "Product" }))
+    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
   })
 })
