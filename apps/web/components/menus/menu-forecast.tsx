@@ -1,89 +1,26 @@
-import Link from "next/link"
-
 import { ForecastControls } from "@/components/menus/forecast-controls"
 import {
   accuracySentence,
   chartSummary,
 } from "@/components/menus/forecast-series"
 import { MenuForecastChart } from "@/components/menus/menu-forecast-chart"
-import { ProductForecastTable } from "@/components/menus/product-forecast-table"
+import {
+  ProductForecastTable,
+  Requirements,
+} from "@/components/menus/forecast-tables"
 import {
   AnalyticsCard,
   CardLabel,
   CardNote,
 } from "@/components/overview/analytics-cards"
 import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableEmpty,
-  TableFrame,
-  TableHead,
-  TableHeader,
-  TableHeaderRow,
-  TableRow,
-} from "@/components/ui/table"
-import type {
-  MenuForecast as MenuForecastData,
-  MenuForecastPlan,
-} from "@/lib/backend/types"
+import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
 import { formatWholeCents } from "@/lib/money"
-import { unitShort } from "@/lib/unit-registry"
-import {
-  displayWeight,
-  toGrams,
-  WEIGHT_UNITS,
-  type WeightUnit,
-} from "@/lib/units"
 import { cn } from "@/lib/utils"
 import { formatCalendarDate } from "@/lib/datetime"
 
 const dateLabel = formatCalendarDate
-
-/**
- * Three digits a kitchen can act on: 981 g, 12.3 kg, 1.23 kg. Past a hundred a
- * fraction is noise on a forecast that is only good to a tenth or so of its
- * total, and the backend's thousandths never reach the screen.
- */
-const amountFormats = [0, 1, 2].map(
-  (digits) => new Intl.NumberFormat("en-US", { maximumFractionDigits: digits })
-)
-
-function amount(value: number) {
-  return amountFormats[value >= 100 ? 0 : value >= 10 ? 1 : 2].format(value)
-}
-
-/**
- * A weight in the kitchen's own system, stepping up to the larger unit once
- * it gets there: 1,234 g reads 1.23 kg, and a thousand millilitres a litre.
- * Cups, cases and pieces are shown as they stand.
- */
-function measure(quantity: number, unit: string, system: MeasurementSystem) {
-  if (WEIGHT_UNITS.includes(unit as WeightUnit)) {
-    const display = displayWeight(toGrams(quantity, unit as WeightUnit), system)
-    return `${amount(display.amount)} ${display.unit}`
-  }
-  if (unit === "ml" || unit === "l") {
-    const millilitres = unit === "l" ? quantity * 1000 : quantity
-    const litres = millilitres >= 1000
-    return `${amount(litres ? millilitres / 1000 : millilitres)} ${unitShort(litres ? "l" : "ml")}`
-  }
-  return `${amount(quantity)} ${unitShort(unit) || unit}`
-}
-
-function quantities(
-  rows: Array<{ quantity: number; unit: string }>,
-  system: MeasurementSystem
-) {
-  if (!rows.length) return "—"
-  return rows.map((row) => measure(row.quantity, row.unit, system)).join(", ")
-}
-
-function planBadge(plan: MenuForecastPlan) {
-  return plan === "busy" ? "Busy plan" : "Typical plan"
-}
 
 function ProjectedSales({ forecast }: { forecast: MenuForecastData }) {
   const { revenue, basis } = forecast
@@ -136,114 +73,6 @@ function ProjectedSales({ forecast }: { forecast: MenuForecastData }) {
         </>
       )}
     </AnalyticsCard>
-  )
-}
-
-function Requirements({
-  forecast,
-  measurementSystem,
-}: {
-  forecast: MenuForecastData
-  measurementSystem: MeasurementSystem
-}) {
-  const ingredients = forecast.materialRequirements.filter(
-    (row) => row.kind === "ingredient"
-  )
-  const supplies = forecast.materialRequirements.filter(
-    (row) => row.kind === "supply"
-  )
-  const badge = planBadge(forecast.basis.plan)
-  return (
-    <div className="grid gap-6 xl:grid-cols-2">
-      <section>
-        <div className="mb-3 flex flex-wrap items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            Recipe batches
-          </h2>
-          <Badge variant="secondary">{badge}</Badge>
-        </div>
-        <TableFrame className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableHeaderRow>
-                <TableHead>Recipe</TableHead>
-                <TableHead className="text-right">Batches</TableHead>
-              </TableHeaderRow>
-            </TableHeader>
-            <TableBody>
-              {forecast.recipeRequirements.length ? (
-                forecast.recipeRequirements.map((row) => (
-                  <TableRow key={row.recipeId}>
-                    <TableCell>
-                      <Link
-                        href={`/recipes/${encodeURIComponent(row.recipePublicId)}`}
-                        className="font-medium text-foreground hover:underline"
-                      >
-                        {row.recipeTitle}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {amount(row.batches)}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableEmpty colSpan={2}>No recipe demand.</TableEmpty>
-              )}
-            </TableBody>
-          </Table>
-        </TableFrame>
-      </section>
-
-      <section>
-        <div className="mb-3 flex flex-wrap items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            Ingredients and supplies
-          </h2>
-          <Badge variant="secondary">{badge}</Badge>
-        </div>
-        <TableFrame className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableHeaderRow>
-                <TableHead>Material</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Purchase units</TableHead>
-              </TableHeaderRow>
-            </TableHeader>
-            <TableBody>
-              {[...ingredients, ...supplies].length ? (
-                [...ingredients, ...supplies].map((row) => (
-                  <TableRow key={row.ingredientId}>
-                    <TableCell>
-                      <Link
-                        href={`/ingredients/${encodeURIComponent(row.ingredientPublicId)}`}
-                        className="font-medium text-foreground hover:underline"
-                      >
-                        {row.ingredientName}
-                      </Link>
-                      {row.kind === "supply" ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Supply
-                        </Badge>
-                      ) : null}
-                    </TableCell>
-                    <TableCell className="tabular-nums">
-                      {quantities(row.usage, measurementSystem)}
-                    </TableCell>
-                    <TableCell className="tabular-nums">
-                      {quantities(row.purchase, measurementSystem)}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableEmpty colSpan={3}>No material demand.</TableEmpty>
-              )}
-            </TableBody>
-          </Table>
-        </TableFrame>
-      </section>
-    </div>
   )
 }
 

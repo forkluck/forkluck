@@ -159,10 +159,12 @@ const FORECAST: MenuForecastData = {
   ],
 }
 
-/** The Product demand table is the first on the page; one link per row. */
-const demand = () => within(document.querySelector("table") as HTMLElement)
-const demandRows = () =>
-  demand()
+/** The tables in page order: Product demand, Recipe batches, materials. */
+const table = (index: number) =>
+  within(document.querySelectorAll("table")[index] as HTMLElement)
+/** One link per row, so the links are the row order. */
+const rowsOf = (index: number) =>
+  table(index)
     .getAllByRole("link")
     .map((link) => link.textContent)
 
@@ -384,19 +386,52 @@ describe("Menu forecast", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
     // The backend's A–Z order stands until a header is chosen.
-    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
 
-    fireEvent.click(demand().getByRole("button", { name: "Typical" }))
-    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
-    fireEvent.click(demand().getByRole("button", { name: "Typical" }))
-    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
 
-    fireEvent.click(demand().getByRole("button", { name: "History" }))
-    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
+    fireEvent.click(table(0).getByRole("button", { name: "History" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
 
-    fireEvent.click(demand().getByRole("button", { name: "Product" }))
-    expect(demandRows()).toEqual(["Cookie add-on", "Scone"])
-    fireEvent.click(demand().getByRole("button", { name: "Product" }))
-    expect(demandRows()).toEqual(["Scone", "Cookie add-on"])
+    fireEvent.click(table(0).getByRole("button", { name: "Product" }))
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
+    fireEvent.click(table(0).getByRole("button", { name: "Product" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
+  })
+
+  it("sorts recipe batches by recipe or by batch count", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          recipeRequirements: [
+            ...FORECAST.recipeRequirements,
+            {
+              recipeId: "recipe-2",
+              recipePublicId: "rcp_biscotti",
+              recipeTitle: "Almond biscotti",
+              batches: 5,
+            },
+          ],
+        }}
+      />
+    )
+
+    // The backend's order stands until a header is chosen.
+    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
+
+    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
+    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
+    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
   })
 })
