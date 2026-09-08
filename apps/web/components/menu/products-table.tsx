@@ -42,7 +42,7 @@ import { MenuItem } from "@/components/ui/menu"
 import { EmptyState } from "@/components/ui/page"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import { Spinner } from "@/components/ui/spinner"
-import { useToast } from "@/components/ui/toast"
+import { undoableToast, useToast } from "@/components/ui/toast"
 import { formatDayMonth } from "@/lib/datetime"
 import type { SalesProductRow } from "@/lib/backend/types"
 import { csvCell } from "@/lib/csv"
@@ -255,9 +255,15 @@ export function ProductsTable({
   }
 
   // Archiving is the product page's Active switch, off: the product leaves
-  // the active list but stays in historical sales.
+  // the active list but stays in historical sales. Every save bumps the edit
+  // version, so the rows come back as the server now holds them: an undo
+  // that sent the old version would be refused as stale.
   const setActive = React.useCallback(
-    async (products: SalesProductRow[], isActive: boolean) => {
+    async (
+      products: SalesProductRow[],
+      isActive: boolean
+    ): Promise<SalesProductRow[] | null> => {
+      const saved: SalesProductRow[] = []
       for (const product of products) {
         const result = await saveSalesProduct({
           id: product.publicId,
@@ -266,36 +272,44 @@ export function ProductsTable({
         })
         if ("error" in result) {
           setError(result.error)
-          return false
+          return null
         }
+        saved.push({ ...product, editVersion: result.editVersion, isActive })
       }
-      return true
+      return saved
     },
     []
   )
   // The menu that asked has closed, so the row shows the wait and a toast
-  // says what happened once the list the action answered with agrees. The
-  // busy mark is set before the transition: React holds updates made inside
-  // an async transition until the action has finished.
+  // says what happened once the list the action answered with agrees, and
+  // offers the way back: Undo is this same function on the saved rows with
+  // the opposite flag. The busy mark is set before the transition: React
+  // holds updates made inside an async transition until the action has
+  // finished.
   const [busyId, setBusyId] = React.useState<string | null>(null)
   const archive = React.useCallback(
-    (products: SalesProductRow[], isActive: boolean) => {
+    function archive(
+      products: SalesProductRow[],
+      isActive: boolean
+    ): Promise<boolean> {
       if (products.length === 1) setBusyId(products[0].id)
       return new Promise<boolean>((resolve) =>
         startArchive(async () => {
           try {
-            const ok = await setActive(products, isActive)
-            if (ok)
+            const saved = await setActive(products, isActive)
+            if (saved)
               startArchive(() => {
-                toast.add({
-                  title: `${isActive ? "Restored" : "Archived"} ${
+                undoableToast(
+                  toast,
+                  `${isActive ? "Restored" : "Archived"} ${
                     products.length === 1
                       ? products[0].name
                       : `${products.length} products`
                   }`,
-                })
+                  () => archive(saved, !isActive)
+                )
               })
-            resolve(ok)
+            resolve(saved !== null)
           } finally {
             startArchive(() => setBusyId(null))
           }

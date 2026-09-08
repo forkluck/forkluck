@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -9,9 +10,10 @@ import {
 } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-const { archiveIngredient, refresh } = vi.hoisted(() => ({
+const { archiveIngredient, refresh, toastAdd } = vi.hoisted(() => ({
   archiveIngredient: vi.fn(),
   refresh: vi.fn(),
+  toastAdd: vi.fn((_options: unknown) => "toast-1"),
 }))
 
 vi.mock("next/navigation", () => ({
@@ -42,8 +44,9 @@ vi.mock("@/components/navigation-blocker", () => ({
   }),
 }))
 
-vi.mock("@/components/ui/toast", () => ({
-  useToast: () => ({ add: vi.fn() }),
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  useToast: () => ({ add: toastAdd, update: vi.fn(), close: vi.fn() }),
 }))
 
 // The dialogs are lazy surfaces the header only mounts on demand; the menu is
@@ -97,6 +100,23 @@ describe("archiving an ingredient from its header", () => {
     )
     // The action revalidates, so its answer is the refresh.
     expect(refresh).not.toHaveBeenCalled()
+
+    // The toast offers the way back, through the same write.
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: expect.stringMatching(/^Archived /),
+          actionProps: expect.objectContaining({ children: "Undo" }),
+        })
+      )
+    )
+    const undo = toastAdd.mock.calls[0]![0] as {
+      actionProps: { onClick: () => void }
+    }
+    await act(async () => undo.actionProps.onClick())
+    await waitFor(() =>
+      expect(archiveIngredient).toHaveBeenLastCalledWith("ing-1", false)
+    )
   })
 
   it("restores an archived one and says it is archived", async () => {

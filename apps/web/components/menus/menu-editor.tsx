@@ -256,7 +256,7 @@ export function MenuEditor({
 
   const report = (failure: SaveFailure | null) => {
     if (!failure) {
-      toast.add({ title: "Menu saved", type: "success" })
+      toast.add({ title: "Menu saved" })
       return
     }
     // A validation failure has already named the field it stopped on.

@@ -38,7 +38,7 @@ import {
 import { SaveButton } from "@/components/ui/save-button"
 import { SectionTab, SectionTabs } from "@/components/ui/section-tabs"
 import { SaveStatus, type SaveStatusState } from "@/components/ui/save-status"
-import { useToast } from "@/components/ui/toast"
+import { undoableToast, useToast } from "@/components/ui/toast"
 import { useCommit } from "@/hooks/use-commit"
 import { useEditChrome } from "@/hooks/use-edit-chrome"
 import { savePurchaseUnit as writePurchaseUnit } from "@/lib/ingredients/save-purchase-unit"
@@ -183,24 +183,39 @@ export function IngredientChrome({
     []
   )
   const archived = status === "archived"
-  const toggleArchive = React.useCallback(() => {
-    if (!id) return
-    // Before the transition: React holds updates made inside an async
-    // transition until the action has finished.
-    setSaveState("saving")
-    startArchive(async () => {
-      const result = await archiveIngredient(id, !archived)
-      if ("error" in result) {
-        setSaveState("error")
-        toast.add({ title: result.error, type: "error" })
-        return
-      }
-      startArchive(() => {
-        setSaveState("saved")
-        toast.add({ title: archived ? `Restored ${name}` : `Archived ${name}` })
-      })
-    })
-  }, [archived, id, name, setSaveState, toast])
+  // The toast offers the way back: Undo is this same function with the
+  // opposite flag, through the same pill and the same report.
+  const setArchived = React.useCallback(
+    function setArchived(next: boolean): Promise<void> {
+      if (!id) return Promise.resolve()
+      // Before the transition: React holds updates made inside an async
+      // transition until the action has finished.
+      setSaveState("saving")
+      return new Promise((resolve) =>
+        startArchive(async () => {
+          try {
+            const result = await archiveIngredient(id, next)
+            if ("error" in result) {
+              setSaveState("error")
+              toast.add({ title: result.error, type: "error" })
+              return
+            }
+            startArchive(() => {
+              setSaveState("saved")
+              undoableToast(
+                toast,
+                next ? `Archived ${name}` : `Restored ${name}`,
+                () => setArchived(!next)
+              )
+            })
+          } finally {
+            resolve()
+          }
+        })
+      )
+    },
+    [id, name, setSaveState, toast]
+  )
 
   // The "Not food" checkbox lives on the Nutrition tab, which a supply does
   // not have; this is how a supply becomes an ingredient again.
@@ -324,7 +339,10 @@ export function IngredientChrome({
               <ArrowLeftRight strokeWidth={1.8} aria-hidden="true" />
               {nonEdible ? "Convert to ingredient" : "Convert to supply"}
             </MenuItem>
-            <MenuItem disabled={!id} onClick={() => void toggleArchive()}>
+            <MenuItem
+              disabled={!id}
+              onClick={() => void setArchived(!archived)}
+            >
               {archived ? (
                 <ArchiveRestore strokeWidth={1.8} aria-hidden="true" />
               ) : (

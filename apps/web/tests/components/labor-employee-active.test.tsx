@@ -2,6 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -13,7 +14,7 @@ const { setEmployeeActive, setEmployeeExcludedFromCost, toastAdd } = vi.hoisted(
   () => ({
     setEmployeeActive: vi.fn(),
     setEmployeeExcludedFromCost: vi.fn(),
-    toastAdd: vi.fn(),
+    toastAdd: vi.fn((_options: unknown) => "toast-1"),
   })
 )
 
@@ -26,8 +27,9 @@ vi.mock("@/app/(app)/labor/actions", () => ({
   setEmployeeActive,
   setEmployeeExcludedFromCost,
 }))
-vi.mock("@/components/ui/toast", () => ({
-  useToast: () => ({ add: toastAdd }),
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  useToast: () => ({ add: toastAdd, update: vi.fn(), close: vi.fn() }),
 }))
 vi.mock("@/components/labor/add-employee-dialog", () => ({
   AddEmployeeDialog: () => null,
@@ -117,7 +119,39 @@ describe("archiving an employee", () => {
       employeeId: "employee-1",
       isActive: false,
     })
-    expect(toastAdd).not.toHaveBeenCalled()
+    // Once the write is in, the toast says so and offers the way back.
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Archived Alex Baker",
+          actionProps: expect.objectContaining({ children: "Undo" }),
+        })
+      )
+    )
+  })
+
+  it("puts the row back at once when Undo is pressed, and writes it", async () => {
+    renderWorkspace()
+    archive()
+    await waitFor(() => expect(toastAdd).toHaveBeenCalledTimes(1))
+
+    const undo = toastAdd.mock.calls[0]![0] as {
+      actionProps: { onClick: () => void }
+    }
+    await act(async () => undo.actionProps.onClick())
+
+    expect(screen.getByText("Alex Baker")).not.toBeNull()
+    await waitFor(() =>
+      expect(setEmployeeActive).toHaveBeenLastCalledWith({
+        employeeId: "employee-1",
+        isActive: true,
+      })
+    )
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenLastCalledWith(
+        expect.objectContaining({ title: "Restored Alex Baker" })
+      )
+    )
   })
 
   it("puts the row back and says so when the server refuses", async () => {

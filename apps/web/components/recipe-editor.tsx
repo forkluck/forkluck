@@ -1017,7 +1017,7 @@ export function RecipeEditor({
   const saveOnRequest = async () => {
     const failure = await saveNow()
     if (!failure) {
-      toast.add({ title: "Recipe saved", type: "success" })
+      toast.add({ title: "Recipe saved" })
       return
     }
     toast.add({
