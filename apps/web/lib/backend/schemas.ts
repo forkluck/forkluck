@@ -1472,6 +1472,14 @@ const menuForecastProductSchema = z.strictObject({
   busyQuantity: z.number(),
   /** The quantity the chosen plan expands into batches and materials. */
   totalQuantity: z.number(),
+  seasonalFactor: z.number(),
+  days: z.array(
+    z.strictObject({
+      date: z.string(),
+      typicalQuantity: z.number(),
+      plannedQuantity: z.number(),
+    })
+  ),
   /**
    * The menu price the row is projected at and its share of the menu's money.
    * Null for an unpriced member, and for a product reached only through a
@@ -1499,6 +1507,30 @@ export const menuForecastPayloadSchema = z.strictObject({
     plan: z.enum(["typical", "busy"]),
     seasonalAdjustment: z.boolean(),
     compositionBasis: z.literal("current"),
+    weeks: z.strictObject({
+      recent: z.array(
+        z.strictObject({
+          start: z.string(),
+          end: z.string(),
+          units: z.number(),
+          lastYearUnits: z.number(),
+        })
+      ),
+      horizon: z.array(
+        z.strictObject({
+          start: z.string(),
+          end: z.string(),
+          typicalUnits: z.number(),
+          plannedUnits: z.number(),
+          lastYearUnits: z.number(),
+        })
+      ),
+    }),
+    level: z.strictObject({
+      weeklyUnits: z.number(),
+      seasonalFactor: z.number(),
+      seasonalProducts: z.number().int().nonnegative(),
+    }),
   }),
   coverage: z.strictObject({
     menuItems: z.number().int().nonnegative(),
@@ -1525,17 +1557,27 @@ export const menuForecastPayloadSchema = z.strictObject({
     costedMaterials: z.number().int().nonnegative(),
     uncostedMaterials: z.number().int().nonnegative(),
   }),
-  /**
-   * 28 history days then the horizon. Money on both sides is units at current
-   * menu prices, so the two lines compare quantity only — this is not net
-   * sales. The last history day carries all three values, bridging the lines.
-   */
+  production: z.strictObject({
+    typicalUnits: z.number(),
+    busyUnits: z.number(),
+    plannedUnits: z.number(),
+    recipeBatches: z.number(),
+    productsPlanned: z.number().int().nonnegative(),
+  }),
+  days: z.array(
+    z.strictObject({
+      date: z.string(),
+      typicalUnits: z.number(),
+      plannedUnits: z.number(),
+    })
+  ),
+  /** Menu-member units: 28 history days then the horizon, bridged on the last history day. */
   series: z.array(
     z.strictObject({
       date: z.string(),
-      actualCents: z.number().int().nullable(),
-      typicalCents: z.number().int().nullable(),
-      busyCents: z.number().int().nullable(),
+      actualUnits: z.number().nullable(),
+      typicalUnits: z.number().nullable(),
+      plannedUnits: z.number().nullable(),
     })
   ),
   backtest: z.strictObject({
@@ -1543,9 +1585,9 @@ export const menuForecastPayloadSchema = z.strictObject({
       z.strictObject({
         start: z.string(),
         end: z.string(),
-        typicalCents: z.number().int(),
-        busyCents: z.number().int(),
-        actualCents: z.number().int(),
+        typicalUnits: z.number(),
+        busyUnits: z.number(),
+        actualUnits: z.number(),
       })
     ),
     scoredWeeks: z.number().int().nonnegative(),
@@ -1559,6 +1601,7 @@ export const menuForecastPayloadSchema = z.strictObject({
       recipePublicId: z.string(),
       recipeTitle: z.string(),
       batches: z.number(),
+      days: z.array(z.strictObject({ date: z.string(), batches: z.number() })),
       /** What one batch makes; null when the recipe does not say. */
       yieldAmount: z.number().nullable(),
       yieldUnit: z.string().nullable(),

@@ -15,24 +15,34 @@ import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
 
 afterEach(cleanup)
 
+const DATES = Array.from({ length: 7 }, (_, index) =>
+  new Date(Date.UTC(2026, 3, 27 + index)).toISOString().slice(0, 10)
+)
+const RECENT = Array.from({ length: 8 }, (_, index) => ({
+  start: new Date(Date.UTC(2026, 2, 2 + index * 7)).toISOString().slice(0, 10),
+  end: new Date(Date.UTC(2026, 2, 8 + index * 7)).toISOString().slice(0, 10),
+  units: 7,
+  lastYearUnits: 6,
+}))
+
 const SERIES: MenuForecastData["series"] = [
   {
     date: "2026-04-25",
-    actualCents: 1200,
-    typicalCents: null,
-    busyCents: null,
+    actualUnits: 1200,
+    typicalUnits: null,
+    plannedUnits: null,
   },
   {
     date: "2026-04-26",
-    actualCents: 1400,
-    typicalCents: 1400,
-    busyCents: 1400,
+    actualUnits: 1400,
+    typicalUnits: 1400,
+    plannedUnits: 1400,
   },
   {
     date: "2026-04-27",
-    actualCents: null,
-    typicalCents: 1300,
-    busyCents: 1900,
+    actualUnits: null,
+    typicalUnits: 1300,
+    plannedUnits: 1900,
   },
 ]
 
@@ -49,6 +59,19 @@ const FORECAST: MenuForecastData = {
     plan: "typical",
     seasonalAdjustment: false,
     compositionBasis: "current",
+    weeks: {
+      recent: RECENT,
+      horizon: [
+        {
+          start: DATES[0]!,
+          end: DATES[6]!,
+          typicalUnits: 7,
+          plannedUnits: 7,
+          lastYearUnits: 8,
+        },
+      ],
+    },
+    level: { weeklyUnits: 7, seasonalFactor: 1, seasonalProducts: 0 },
   },
   coverage: {
     menuItems: 2,
@@ -69,36 +92,44 @@ const FORECAST: MenuForecastData = {
     unpricedProducts: 1,
   },
   materialCost: { costCents: 0, costedMaterials: 0, uncostedMaterials: 1 },
+  production: {
+    typicalUnits: 7,
+    busyUnits: 11,
+    plannedUnits: 7,
+    recipeBatches: 2,
+    productsPlanned: 1,
+  },
+  days: DATES.map((date) => ({ date, typicalUnits: 1, plannedUnits: 1 })),
   series: SERIES,
   backtest: {
     weeks: [
       {
         start: "2026-03-30",
         end: "2026-04-05",
-        typicalCents: 9000,
-        busyCents: 13000,
-        actualCents: 9500,
+        typicalUnits: 9000,
+        busyUnits: 13000,
+        actualUnits: 9500,
       },
       {
         start: "2026-04-06",
         end: "2026-04-12",
-        typicalCents: 9000,
-        busyCents: 13000,
-        actualCents: 9500,
+        typicalUnits: 9000,
+        busyUnits: 13000,
+        actualUnits: 9500,
       },
       {
         start: "2026-04-13",
         end: "2026-04-19",
-        typicalCents: 9000,
-        busyCents: 13000,
-        actualCents: 9500,
+        typicalUnits: 9000,
+        busyUnits: 13000,
+        actualUnits: 9500,
       },
       {
         start: "2026-04-20",
         end: "2026-04-26",
-        typicalCents: 9000,
-        busyCents: 13000,
-        actualCents: 9500,
+        typicalUnits: 9000,
+        busyUnits: 13000,
+        actualUnits: 9500,
       },
     ],
     scoredWeeks: 4,
@@ -116,6 +147,12 @@ const FORECAST: MenuForecastData = {
       typicalQuantity: 7,
       busyQuantity: 11,
       totalQuantity: 7,
+      seasonalFactor: 1,
+      days: DATES.map((date) => ({
+        date,
+        typicalQuantity: 1,
+        plannedQuantity: 1,
+      })),
       priceCents: null,
       typicalCents: null,
       busyCents: null,
@@ -130,6 +167,12 @@ const FORECAST: MenuForecastData = {
       typicalQuantity: 0,
       busyQuantity: 0,
       totalQuantity: 0,
+      seasonalFactor: 1,
+      days: DATES.map((date) => ({
+        date,
+        typicalQuantity: 0,
+        plannedQuantity: 0,
+      })),
       priceCents: null,
       typicalCents: null,
       busyCents: null,
@@ -141,6 +184,10 @@ const FORECAST: MenuForecastData = {
       recipePublicId: "rcp_dough",
       recipeTitle: "Cookie dough",
       batches: 2,
+      days: DATES.map((date, index) => ({
+        date,
+        batches: index === 0 ? 2 : 0,
+      })),
       yieldAmount: 24,
       yieldUnit: "each",
     },
@@ -186,6 +233,7 @@ const busy = (): MenuForecastData => ({
   ...FORECAST,
   basis: { ...FORECAST.basis, plan: "busy" },
   revenue: { ...FORECAST.revenue, plannedCents: 13300 },
+  production: { ...FORECAST.production, plannedUnits: 11 },
 })
 
 describe("Menu forecast", () => {
@@ -207,7 +255,7 @@ describe("Menu forecast", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
     expect(screen.getByText("Cookie add-on")).toBeDefined()
-    expect(screen.getByText("Modifier")).toBeDefined()
+    expect(screen.getByText("Included")).toBeDefined()
     expect(screen.getByText("Inactive")).toBeDefined()
     expect(screen.getByText("Cookie dough")).toBeDefined()
     expect(screen.getByText("Wrapper")).toBeDefined()
@@ -415,84 +463,57 @@ describe("Menu forecast", () => {
     expect(screen.getByText("1 × 5 lb")).toBeDefined()
   })
 
-  it("heros the planned revenue with its accuracy and unpriced notes", () => {
-    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
-
-    expect(screen.getByText("Projected sales", { selector: "p" })).toBeDefined()
-    expect(screen.getByText("$91")).toBeDefined()
+  it("leads with production and keeps money in one caption", () => {
+    const { container } = render(
+      <MenuForecast measurementSystem="metric" forecast={FORECAST} />
+    )
+    expect(screen.getByText("To make this week")).toBeDefined()
+    expect(container.querySelector(".text-4xl")?.textContent).toBe("7 items")
+    expect(screen.getByText("across 1 recipe")).toBeDefined()
     expect(
-      screen.getByText("1 product has no price and is left out of the total.")
+      screen.getByText(/volume-weighted error was 12% of actual units/)
     ).toBeDefined()
-    expect(
-      screen.getByText(
-        /within 12% of actual sales\. The busy plan covered 3 of 4 weeks with sales/
-      )
-    ).toBeDefined()
-    // The other plan's figure, never the headline again.
-    expect(screen.getByText("Busy plan $133")).toBeDefined()
-    expect(screen.queryByText(/typical \$91/)).toBeNull()
-    expect(
-      screen.getByText(
-        "No material has a pack size and a price yet, so there is no projected ingredient cost. 1 material has no pack size or price."
-      )
-    ).toBeDefined()
-    expect(
-      screen.getByText(
-        /\$26 of actual sales over the last 2 days, then 1 projected days: \$91 typical, up to \$133 busy\./
-      )
-    ).toBeDefined()
+    expect(screen.getByText("Busy plan: 11 items")).toBeDefined()
+    expect(screen.getAllByTestId("forecast-money-caption")).toHaveLength(1)
+    expect(screen.getByTestId("forecast-money-caption").textContent).toContain(
+      "Projected sales at current menu prices: $91 (1 product unpriced)"
+    )
+    expect(screen.queryByRole("button", { name: "Price" })).toBeNull()
+    expect(screen.queryByRole("button", { name: "Projected sales" })).toBeNull()
     expect(screen.getAllByText(/for the typical plan/).length).toBe(2)
   })
 
   it("plans for busy without moving the busy column", () => {
-    render(<MenuForecast measurementSystem="metric" forecast={busy()} />)
-
-    expect(screen.getByText("$133")).toBeDefined()
-    expect(screen.getByText("Typical plan $91")).toBeDefined()
+    const { container } = render(
+      <MenuForecast measurementSystem="metric" forecast={busy()} />
+    )
+    expect(container.querySelector(".text-4xl")?.textContent).toBe("11 items")
+    expect(screen.getByText("Typical plan: 7 items")).toBeDefined()
     expect(screen.getAllByText(/for the busy plan/).length).toBe(2)
   })
 
-  it("prices each product and shows its share of the projected sales", () => {
-    const priced = (plan: "typical" | "busy") => ({
-      ...(plan === "busy" ? busy() : FORECAST),
-      products: [
-        FORECAST.products[0]!,
-        {
-          ...FORECAST.products[1]!,
-          weeksObserved: 8,
-          priceCents: 450,
-          typicalCents: 3600,
-          busyCents: 5400,
-        },
-        {
-          ...FORECAST.products[1]!,
-          productId: "product-3",
-          productPublicId: "prd_bun",
-          productName: "Bun",
-          weeksObserved: 3,
-        },
-      ],
-    })
-    const { unmount } = render(
-      <MenuForecast measurementSystem="metric" forecast={priced("typical")} />
-    )
-
-    expect(screen.getByText("$4.50")).toBeDefined()
-    expect(screen.getByText("$36")).toBeDefined()
-    // An unpriced member is told so; a modifier's money sits in its base.
-    expect(screen.getByText("No price")).toBeDefined()
-    expect(screen.getByText("Full")).toBeDefined()
-    expect(screen.getByText("3 of 8 weeks")).toBeDefined()
-
-    fireEvent.click(table(0).getByRole("button", { name: "Projected sales" }))
-    fireEvent.click(table(0).getByRole("button", { name: "Projected sales" }))
-    expect(rowsOf(0)[0]).toBe("Scone")
-
-    unmount()
+  it("shows seasonal factors beside product history", () => {
     render(
-      <MenuForecast measurementSystem="metric" forecast={priced("busy")} />
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          products: [
+            {
+              ...FORECAST.products[1]!,
+              weeksObserved: 8,
+              seasonalFactor: 1.06,
+              priceCents: 450,
+              typicalCents: 3600,
+              busyCents: 5400,
+            },
+          ],
+        }}
+      />
     )
-    expect(screen.getByText("$54")).toBeDefined()
+    expect(screen.getByText("Full · seasonal 1.06")).toBeDefined()
+    expect(table(0).queryByText("$4.50")).toBeNull()
+    expect(table(0).queryByText("$36")).toBeNull()
   })
 
   it("prices the shopping list against the sales it serves", () => {
@@ -512,7 +533,7 @@ describe("Menu forecast", () => {
 
     expect(
       screen.getByText(
-        "Projected ingredient cost $20, 22% of projected sales. 1 material has no pack size or price."
+        "Projected sales at current menu prices: $91 (1 product unpriced) · Ingredient cost: $20 (22% of priced projected sales); 1 material needs a pack size or price."
       )
     ).toBeDefined()
   })
@@ -530,6 +551,10 @@ describe("Menu forecast", () => {
               recipePublicId: "rcp_stock",
               recipeTitle: "Stock",
               batches: 1.5,
+              days: DATES.map((date, index) => ({
+                date,
+                batches: index === 0 ? 1.5 : 0,
+              })),
               yieldAmount: 4,
               yieldUnit: "l",
             },
@@ -538,6 +563,10 @@ describe("Menu forecast", () => {
               recipePublicId: "rcp_glaze",
               recipeTitle: "Glaze",
               batches: 3,
+              days: DATES.map((date, index) => ({
+                date,
+                batches: index === 0 ? 3 : 0,
+              })),
               yieldAmount: null,
               yieldUnit: null,
             },
@@ -595,7 +624,7 @@ describe("Menu forecast", () => {
     expect(rowsOf(2)).toEqual(["Sugar", "Flour", "Box"])
   })
 
-  it("replaces the chart when nothing on the Menu is priced", () => {
+  it("keeps production and its chart when nothing on the Menu is priced", () => {
     render(
       <MenuForecast
         measurementSystem="metric"
@@ -606,7 +635,10 @@ describe("Menu forecast", () => {
       />
     )
 
-    expect(screen.getByText(/nothing to project in money/)).toBeDefined()
+    expect(screen.getByText("Menu items by day")).toBeDefined()
+    expect(screen.getByTestId("forecast-money-caption").textContent).toContain(
+      "No menu prices yet"
+    )
   })
 
   it("marks the active pills and keeps the other parameter in each link", () => {
@@ -720,6 +752,10 @@ describe("Menu forecast", () => {
               recipePublicId: "rcp_biscotti",
               recipeTitle: "Almond biscotti",
               batches: 5,
+              days: DATES.map((date, index) => ({
+                date,
+                batches: index === 0 ? 5 : 0,
+              })),
               yieldAmount: null,
               yieldUnit: null,
             },
@@ -746,5 +782,115 @@ describe("Menu forecast", () => {
     expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
     fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
     expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
+  })
+  it("preserves horizon and plan in day-view links and displays the daily plan", () => {
+    render(
+      <MenuForecast measurementSystem="metric" forecast={FORECAST} view="day" />
+    )
+    expect(
+      screen.getByRole("link", { name: "Day" }).getAttribute("aria-current")
+    ).toBe("page")
+    expect(
+      screen.getByRole("link", { name: "Busy" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast?plan=busy&view=day")
+    expect(
+      screen.getByRole("link", { name: "Next 30 days" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast?days=30&view=day")
+    expect(
+      screen.getByRole("link", { name: "Week" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast")
+    expect(table(0).getAllByRole("columnheader")).toHaveLength(10)
+    const cells = within(table(0).getAllByRole("row")[1]!).getAllByRole("cell")
+    const sum = cells
+      .slice(1, 8)
+      .reduce((total, cell) => total + Number(cell.textContent), 0)
+    expect(sum).toBe(Number(cells[8]!.textContent))
+    const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
+      "cell"
+    )
+    expect(
+      recipeCells
+        .slice(1, 8)
+        .reduce((total, cell) => total + Number(cell.textContent), 0)
+    ).toBe(Number(recipeCells[8]!.textContent))
+  })
+
+  it("groups the 30-day schedule by its five basis blocks, including the last two days", () => {
+    const dates = Array.from({ length: 30 }, (_, i) =>
+      new Date(Date.UTC(2026, 3, 27 + i)).toISOString().slice(0, 10)
+    )
+    const horizon = Array.from({ length: 5 }, (_, i) => ({
+      start: dates[i * 7]!,
+      end: dates[Math.min(i * 7 + 6, 29)]!,
+      typicalUnits: i === 4 ? 2 : 7,
+      plannedUnits: i === 4 ? 2 : 7,
+      lastYearUnits: 0,
+    }))
+    const forecast: MenuForecastData = {
+      ...FORECAST,
+      basis: {
+        ...FORECAST.basis,
+        horizonDays: 30,
+        horizonEnd: dates[29]!,
+        plan: "busy",
+        weeks: { ...FORECAST.basis.weeks, horizon },
+      },
+      days: dates.map((date) => ({ date, typicalUnits: 1, plannedUnits: 1 })),
+      products: [
+        {
+          ...FORECAST.products[0]!,
+          totalQuantity: 30,
+          busyQuantity: 30,
+          days: dates.map((date) => ({
+            date,
+            typicalQuantity: 1,
+            plannedQuantity: 1,
+          })),
+        },
+      ],
+      recipeRequirements: [
+        {
+          ...FORECAST.recipeRequirements[0]!,
+          batches: 30,
+          days: dates.map((date) => ({ date, batches: 1 })),
+        },
+      ],
+    }
+    render(
+      <MenuForecast measurementSystem="metric" forecast={forecast} view="day" />
+    )
+    expect(screen.getByText("To make over the next 30 days")).toBeDefined()
+    expect(
+      screen.getByRole("link", { name: "Week" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast?days=30&plan=busy")
+    expect(table(0).getAllByRole("columnheader")).toHaveLength(8)
+    const cells = within(table(0).getAllByRole("row")[1]!).getAllByRole("cell")
+    expect(cells.slice(1, 6).map((cell) => Number(cell.textContent))).toEqual([
+      7, 7, 7, 7, 2,
+    ])
+    expect(cells[6]!.textContent).toBe("30")
+    const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
+      "cell"
+    )
+    expect(
+      recipeCells.slice(1, 6).map((cell) => Number(cell.textContent))
+    ).toEqual([7, 7, 7, 7, 2])
+  })
+
+  it("shows the recent, matching last-year and coming basis side by side", () => {
+    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
+    const basis = within(screen.getByRole("table", { name: "Forecast basis" }))
+    expect(basis.getAllByRole("row")).toHaveLength(10)
+    expect(basis.getByRole("columnheader", { name: "Last year" })).toBeDefined()
+    expect(
+      screen.getByText(
+        "Recent level: about 7 items a week, recent weeks counting more."
+      )
+    ).toBeDefined()
+    expect(
+      screen.getByText(
+        "Last year’s comparison leaves the recent level unchanged."
+      )
+    ).toBeDefined()
   })
 })

@@ -994,74 +994,98 @@ It returns `{menu, items, recipes, ingredients, products, currencyCode}` — the
 picker's sources travel with the worksheet so opening one is a single read.
 
 `menu/<menu_ref>/forecast/` accepts the same owner-scoped public-id or UUID
-forms and returns a non-persisted projection beginning on the workspace-local
-current date. `?days=` is `7` (the default) or `30` and `?plan=` is `typical`
-(the default) or `busy`; anything else is 400
-(`{"error": "Forecast plan must be typical or busy"}`). Its `basis` names the
-56 complete historical days, `historyWeeks: 8`, `horizonDays`, the horizon's
-own first and last date, the active `plan`, `seasonalAdjustment`, workspace
-timezone, and `compositionBasis: "current"`. Each horizon day is projected from
-its own eight matching weekdays, each week back counted at 80% of the one after
-it and samples from before the product existed dropped rather than averaged in
-as zeroes; "existed" is the earliest of the product's creation date, its first
-observed sale, and its first sale in last year's window, so a workspace that
-backfills history onto products created this morning is not read as a shelf of
-products that launched last week. When a product sold in both of last year's windows, its
-projection is scaled by a damped ratio — half the deviation, clamped to
-0.5–2 — of last year's horizon-aligned days to last year's history-aligned
-eight weeks, both shifted back 364 days so the weekdays line up;
-`basis.seasonalAdjustment` says whether any product was scaled, and the
-backtest applies the same rule per replayed week. The factor is 1 for a product
-that did not exist through the whole of last year's history window: its launch
-ramp is not a season. Only the sums are reported:
-`products[]` publishes both `typicalQuantity` and the `busyQuantity` that
-history stayed under about nine weeks in ten (variance pooled across the
-horizon, never per-day peaks summed),
-`totalQuantity` echoes the requested plan, and `weeksObserved` says how many of
-the eight history weeks the product sold in at all. No per-day product row is
-published — a single day's average is a weekday profile, not a dated
-prediction. `revenue` prices menu members only — a bundle member or modifier
-reached through closure is demand whose money already sits in the box or the
-base — using the first linked menu row's price by position when it is above
-zero, else the product's own; zero is unpriced and counted rather than treated
-as free. `revenue.busyCents`, the horizon `series[].busyCents`, and
-`backtest[].busyCents` pool variance across the priced products (at price
-squared) and days rather than summing each product's own busy money, so the
-menu-level busy is the same nine-weeks-in-ten level as a product's
-`busyQuantity`; the horizon's `typicalCents` rows sum to `revenue.typicalCents`. `series` is 28 history days followed by the horizon: history carries
-`actualCents`, the horizon carries `typicalCents`/`busyCents`, and the last
-history day carries all three equal so the projection begins where history
-ends. Series history and backtest actuals are units times the _current_ price,
-not net sales, so both sides share one price basis and the accuracy figure
-measures quantity error only. `backtest` replays the same projection at four
-past weeks it could not have seen, out of the same single ledger read, and
-scores it with a volume-weighted absolute percent error over the weeks that
-sold anything (`errorPercent` is null when none did). Menu membership comes
-only from saved `MenuItem.product` links; recipe rows have no sales and are
-left out, rows with no link at all appear in `unresolved`, the products inside
-an in-menu bundle join the scope and are marked `menuMember: false`, and mapped
-modifier products enter only when the same sale has an in-menu base
-contribution. `recipeRequirements` and `materialRequirements` expand the
-requested plan's Product demand through current composition, with usage and
-purchase-unit quantities kept separate. A recipe row carries the recipe's
-`yieldAmount` and `yieldUnit` (null when unstated) so batches can be read as
-what they make. A material row carries the ingredient's `purchaseSize` and
-`purchaseUnit`, `packs` (the purchase-unit amount over the pack size,
-fractional, null without a pack size), `costCents` (packs at
-`purchase_cost_cents`, the arithmetic product cost uses, null without a pack
-size or a price) and `supplierPack` (the preferred supplier item's `supplier`,
-`rawSize` and `title`, the pack as that supplier prints it; null when none is
-preferred); `materialCost` sums the costed rows as `costCents` and counts
-`costedMaterials` and `uncostedMaterials`. Each `products[]` row also carries
-the `priceCents` it is projected at and its `typicalCents` / `busyCents`, null
-for an unpriced member and for a product reached only through a box or a
-modifier, so the priced rows sum to `revenue`. Missing yields, conversions,
-purchase units, and cyclic paths are structured `unresolved` rows rather than
-zeroes. The response does not subtract inventory, round packs, or write a
-forecast, and its money is projected demand at today's prices, never recorded
-sales.
-Forecasts for different Menus are independent and therefore must not be summed
-without accounting for overlap.
+forms and returns a non-persisted production plan beginning on the
+workspace-local current date. `?days=` is `7` (default) or `30`; `?plan=` is
+`typical` (default) or `busy`. Invalid plans return 400
+(`{"error": "Forecast plan must be typical or busy"}`). The web page also accepts
+`?view=day`; omitting it shows whole-horizon quantities. View is presentation
+state only: both views consume the same payload and dated rows.
+
+`basis` names the 56 complete historical days, `historyWeeks: 8`,
+`horizonDays`, the horizon's first and last date, `plan`, `seasonalAdjustment`,
+workspace timezone, and `compositionBasis: "current"`. Every horizon day uses
+its own eight matching weekdays, each week back counted at 80% of the one
+after it; samples from before the product existed are dropped. Existence is
+the earliest of creation, the first observed sale, and the first sale in last
+year's window, so backfilled history is not mistaken for a launch. A product
+that existed throughout last year's history and sold in both comparison
+windows gets one seasonal factor: half the deviation of the horizon/history
+ratio, clamped to 0.5–2. Both windows shift back 364 days to align weekdays.
+Products without that evidence keep factor 1. The projection and each replay
+share this same rule; the production framing does not change it.
+
+`products[]` carries product identity/name/activity, `menuMember`,
+`weeksObserved`, `typicalQuantity`, pooled `busyQuantity`, `totalQuantity`
+(the selected plan), and `seasonalFactor`. `days[]` on each product contains
+`{date, typicalQuantity, plannedQuantity}` for every horizon day. Planned
+quantities spread that product's chosen horizon total in proportion to its
+typical weekday pattern, conserving thousandths. A positive busy total with
+a zero typical pattern (offsetting sales and returns) is spread evenly.
+These are production allocations, not independently calibrated daily busy
+levels. Per-product day totals reconcile to the product's whole-horizon total.
+
+`production` is `{typicalUnits,busyUnits,plannedUnits,recipeBatches,productsPlanned}`:
+quantities sum the displayed product rows, batches sum the recipe rows, and
+products count positive planned quantities. Top-level `days[]` contains
+`{date,typicalUnits,plannedUnits}` summed over those same product rows. This
+aggregate is a production planning count, including bundle contents and
+mapped modifiers; it is neither as-sold units nor a sales-accounting total.
+The sales ledger still keeps units per product.
+
+`basis.weeks.recent` has eight `{start,end,units,lastYearUnits}` blocks ending
+at `historyEnd`. `basis.weeks.horizon` has consecutive seven-day blocks (the
+last may be shorter) with `{start,end,typicalUnits,plannedUnits,lastYearUnits}`.
+Every last-year block shifts exactly 364 days. These comparisons use menu
+members only, matching the last-year read, which omits the separate modifier
+walk. Empty menus still receive dated zero blocks. `basis.level` is
+`{weeklyUnits,seasonalFactor,seasonalProducts}`: a seven-day projection without
+seasonal scaling, the weighted ratio of scaled to unscaled weekly quantities
+using the selected horizon's factors (1 without volume), and the number of
+scaled menu members. The displayed overall factor is descriptive, not a new
+factor applied to every product.
+
+`series[]` is 28 history days followed by the horizon, in menu-member units:
+`{date,actualUnits,typicalUnits,plannedUnits}`. The last history row carries
+all three equal as a bridge; other history rows have null projections and
+horizon rows have null actuals. Only the busy plan draws a typical-to-planned
+band. The chart remains available for unpriced menus.
+`backtest.weeks[]` contains `{start,end,typicalUnits,busyUnits,actualUnits}`
+for four replayed weeks, using menu members irrespective of price. Its busy
+level pools variance across products and days in units. `errorPercent` is
+volume-weighted absolute error on menu totals, null without positive actual
+volume; `scoredWeeks` counts those weeks and `busyCoveredWeeks` counts coverage
+on the same denominator. None of these comparisons reads net revenue.
+
+`revenue`, `materialCost`, and product `priceCents/typicalCents/busyCents`
+remain available. Revenue prices menu members only, at the first positive
+linked menu-row price by position, otherwise the product price; zero is
+unpriced. Included bundle members/modifiers carry no additional money unless
+they are themselves menu members. Menu busy money still pools variance at
+price squared and is not the sum of individual product busy money. The page
+uses revenue and aggregate material cost in one caption, with missing prices
+explicit. Material shopping rows retain their cost details.
+
+`recipeRequirements` and `materialRequirements` expand the selected product
+plan through current composition once. Recipe rows carry identity, title,
+`batches`, nullable `yieldAmount/yieldUnit`, and `days: [{date,batches}]`.
+Per-day batches use the same component-batch resolver and reconcile to the
+whole recipe row after rounding; recipe day allocation adds no queries.
+Materials remain whole-horizon purchasing requirements, with usage and
+purchase quantities separate. Each material carries `purchaseSize`,
+`purchaseUnit`, fractional `packs`, nullable `costCents`, and nullable
+`supplierPack: {supplier,rawSize,title}` from its preferred supplier.
+`materialCost` sums costed rows and counts costed/uncosted materials. Missing
+yields, conversions, purchase units and cyclic paths remain structured
+`unresolved` entries, never invented zero requirements.
+
+Menu membership comes from saved `MenuItem.product` links. Recipe menu rows
+have no direct sales; unlinked rows appear in `unresolved`. Bundle closure
+adds included products once, and mapped modifiers enter only alongside an
+in-menu base contribution from the same sale. The payload uses the same fixed
+set of reads as before. It neither subtracts inventory nor rounds whole packs,
+nor writes a forecast, sale, import, sync, or undo record. Forecasts for
+multiple menus are independent and cannot be added without allowing for
+overlapping products.
 
 A menu row is a link to one recipe or one product, or a plain named row
 awaiting one; never a composition of its own. Each `items[]` row is

@@ -4,80 +4,79 @@ import {
   accuracySentence,
   chartSummary,
   forecastChartPoints,
-  materialCostSentence,
+  moneyCaption,
 } from "@/components/menus/forecast-series"
 import type { MenuForecast } from "@/lib/backend/types"
 
 const HORIZON_START = "2026-04-27"
-
-/** 28 history days then 30 horizon days, bridged on the last history day. */
 function series(): MenuForecast["series"] {
-  const rows: MenuForecast["series"] = []
-  const start = Date.UTC(2026, 2, 30)
-  for (let index = 0; index < 58; index += 1) {
-    const date = new Date(start + index * 86_400_000).toISOString().slice(0, 10)
+  return Array.from({ length: 58 }, (_, index) => {
+    const date = new Date(Date.UTC(2026, 2, 30 + index))
+      .toISOString()
+      .slice(0, 10)
     const horizon = date >= HORIZON_START
     const bridge = index === 27
-    rows.push({
+    return {
       date,
-      actualCents: horizon ? null : 1000 + index,
-      typicalCents: horizon ? 900 : bridge ? 1027 : null,
-      busyCents: horizon ? 1400 : bridge ? 1027 : null,
-    })
-  }
-  return rows
+      actualUnits: horizon ? null : 1000 + index,
+      typicalUnits: horizon ? 900 : bridge ? 1027 : null,
+      plannedUnits: horizon ? 1400 : bridge ? 1027 : null,
+    }
+  })
 }
-
-/** `count` replayed weeks; only their number matters to the sentence. */
-function week(count: number): MenuForecast["backtest"]["weeks"] {
+function weeks(count: number): MenuForecast["backtest"]["weeks"] {
   return Array.from({ length: count }, (_, index) => ({
-    start: `2026-03-${String(2 + index * 7).padStart(2, "0")}`,
-    end: `2026-03-${String(8 + index * 7).padStart(2, "0")}`,
-    typicalCents: 0,
-    busyCents: 0,
-    actualCents: 0,
+    start: `2026-03-${2 + index * 7}`,
+    end: `2026-03-${8 + index * 7}`,
+    typicalUnits: 0,
+    busyUnits: 0,
+    actualUnits: 0,
   }))
 }
 
 describe("forecastChartPoints", () => {
-  it("bands the horizon and the bridge row only, and names today", () => {
-    const { points, todayLabel } = forecastChartPoints(series(), HORIZON_START)
-
-    expect(points.filter((point) => point.band).length).toBe(31)
+  it("shows the chosen-plan band only on the busy plan and preserves the bridge", () => {
+    const { points, todayLabel } = forecastChartPoints(
+      series(),
+      HORIZON_START,
+      "busy"
+    )
+    expect(points.filter((point) => point.band)).toHaveLength(31)
     expect(points[26]!.band).toBeNull()
     expect(points[27]!.band).toEqual([1027, 1027])
     expect(points[27]!.isHorizon).toBe(false)
     expect(points[28]!.band).toEqual([900, 1400])
     expect(todayLabel).toBe("Apr 27")
+    expect(
+      forecastChartPoints(series(), HORIZON_START, "typical").points.every(
+        (point) => point.band === null
+      )
+    ).toBe(true)
   })
 })
 
 describe("chartSummary", () => {
-  it("adds up history but takes the horizon from the pooled revenue", () => {
-    const rows = series()
-    const summary = chartSummary(
-      rows,
-      {
-        currencyCode: "USD",
-        typicalCents: 27_000,
-        busyCents: 31_000,
-        plannedCents: 27_000,
-        pricedProducts: 2,
-        unpricedProducts: 0,
-      },
-      HORIZON_START
-    )
-
-    // 28 history days of 1000 + index, and the horizon read off revenue rather
-    // than summed from the daily busy values (30 x 1400 would say $420).
-    expect(summary).toBe(
-      "$284 of actual sales over the last 28 days, then 30 projected days: $270 typical, up to $310 busy."
+  it("names menu history separately from the full production plan", () => {
+    expect(
+      chartSummary(
+        series(),
+        {
+          typicalUnits: 27000,
+          busyUnits: 31000,
+          plannedUnits: 27000,
+          recipeBatches: 120,
+          productsPlanned: 2,
+        },
+        HORIZON_START
+      )
+    ).toBe(
+      "Menu items: 28,378 actual units over the last 28 days. Production plan across all product rows for 30 days: 27,000 typical, 31,000 busy, 27,000 planned."
     )
   })
 })
 
 describe("accuracySentence", () => {
-  it("says so when there is nothing to score", () => {
+  it("keeps the unavailable accuracy state", () => {
     expect(
       accuracySentence({
         weeks: [],
@@ -87,35 +86,21 @@ describe("accuracySentence", () => {
       })
     ).toBe("Not enough sales history to check accuracy yet.")
   })
-
-  it("rounds the error and reports busy coverage", () => {
+  it("names the measured error in units without promising each week is within it", () => {
     expect(
       accuracySentence({
-        weeks: week(4),
-        scoredWeeks: 4,
-        errorPercent: 12.4,
-        busyCoveredWeeks: 3,
-      })
-    ).toBe(
-      "Over the last 4 weeks the typical plan landed within 12% of actual sales. The busy plan covered 3 of 4 weeks with sales."
-    )
-  })
-
-  it("names the whole window even when only some weeks sold anything", () => {
-    expect(
-      accuracySentence({
-        weeks: week(4),
+        weeks: weeks(4),
         scoredWeeks: 2,
         errorPercent: 12.4,
         busyCoveredWeeks: 2,
       })
     ).toBe(
-      "Over the last 4 weeks the typical plan landed within 12% of actual sales. The busy plan covered 2 of 2 weeks with sales."
+      "Over the last 4 weeks the typical plan’s volume-weighted error was 12% of actual units. The busy plan covered 2 of 2 weeks with sales."
     )
   })
 })
 
-describe("materialCostSentence", () => {
+describe("moneyCaption", () => {
   const revenue = {
     currencyCode: "USD",
     typicalCents: 9100,
@@ -124,10 +109,9 @@ describe("materialCostSentence", () => {
     pricedProducts: 1,
     unpricedProducts: 0,
   }
-
-  it("says nothing when the forecast reaches no material", () => {
+  it("keeps one sales caption when there are no materials", () => {
     expect(
-      materialCostSentence({
+      moneyCaption({
         revenue,
         materialCost: {
           costCents: 0,
@@ -135,12 +119,11 @@ describe("materialCostSentence", () => {
           uncostedMaterials: 0,
         },
       })
-    ).toBeNull()
+    ).toBe("Projected sales at current menu prices: $91.")
   })
-
-  it("prices the list as a share of the sales it serves", () => {
+  it("adds ingredient cost and its share to the same caption", () => {
     expect(
-      materialCostSentence({
+      moneyCaption({
         revenue,
         materialCost: {
           costCents: 1972,
@@ -148,12 +131,13 @@ describe("materialCostSentence", () => {
           uncostedMaterials: 0,
         },
       })
-    ).toBe("Projected ingredient cost $20, 22% of projected sales.")
+    ).toBe(
+      "Projected sales at current menu prices: $91 · Ingredient cost: $20 (22% of projected sales)."
+    )
   })
-
-  it("keeps the cost and drops the share when nothing is priced for sale", () => {
+  it("reports missing prices and omits a share without priced sales", () => {
     expect(
-      materialCostSentence({
+      moneyCaption({
         revenue: { ...revenue, pricedProducts: 0, plannedCents: 0 },
         materialCost: {
           costCents: 1972,
@@ -162,13 +146,12 @@ describe("materialCostSentence", () => {
         },
       })
     ).toBe(
-      "Projected ingredient cost $20. 2 materials have no pack size or price."
+      "No menu prices yet · Ingredient cost: $20; 2 materials need a pack size or price."
     )
   })
-
-  it("explains an empty total rather than printing a free shopping list", () => {
+  it("does not mistake an uncosted list for free ingredients", () => {
     expect(
-      materialCostSentence({
+      moneyCaption({
         revenue,
         materialCost: {
           costCents: 0,
@@ -177,7 +160,21 @@ describe("materialCostSentence", () => {
         },
       })
     ).toBe(
-      "No material has a pack size and a price yet, so there is no projected ingredient cost. 1 material has no pack size or price."
+      "Projected sales at current menu prices: $91 · Ingredient cost unavailable; 1 material needs a pack size or price."
+    )
+  })
+  it("labels incomplete sales when giving a cost share", () => {
+    expect(
+      moneyCaption({
+        revenue: { ...revenue, unpricedProducts: 2 },
+        materialCost: {
+          costCents: 1972,
+          costedMaterials: 3,
+          uncostedMaterials: 0,
+        },
+      })
+    ).toContain(
+      "$91 (2 products unpriced) · Ingredient cost: $20 (22% of priced projected sales)"
     )
   })
 })

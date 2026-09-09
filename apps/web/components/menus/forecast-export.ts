@@ -22,7 +22,7 @@ const SHOPPING_HEADER = [
   "Cost",
 ]
 
-const PREP_HEADER = ["Recipe", "Batches", "Makes", "Unit"]
+const PREP_HEADER = ["Recipe", "Batches"]
 
 const money = (cents: number | null) =>
   cents === null ? "" : (cents / 100).toFixed(2)
@@ -70,6 +70,7 @@ export function prepListRow(
   return [
     csvCell(row.recipeTitle, { alwaysQuote: true }),
     number(row.batches),
+    ...row.days.map((day) => number(day.batches)),
     made ? number(made.quantity) : "",
     made ? csvCell(unitShort(made.unit) || made.unit) : "",
   ].join(",")
@@ -84,7 +85,12 @@ export function shoppingListCsv(forecast: MenuForecast): string {
 
 export function prepListCsv(forecast: MenuForecast): string {
   return [
-    PREP_HEADER.join(","),
+    [
+      ...PREP_HEADER,
+      ...forecast.days.map((day) => day.date),
+      "Makes",
+      "Unit",
+    ].join(","),
     ...forecast.recipeRequirements.map(prepListRow),
   ].join("\n")
 }

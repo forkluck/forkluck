@@ -16,10 +16,13 @@ export default async function MenuForecastPage({
   searchParams,
 }: {
   params: Promise<{ menuId: string }>
-  searchParams: Promise<{ days?: string; plan?: string }>
+  searchParams: Promise<{ days?: string; plan?: string; view?: string }>
 }) {
   await requireUser()
-  const [{ menuId }, { days, plan }] = await Promise.all([params, searchParams])
+  const [{ menuId }, { days, plan, view }] = await Promise.all([
+    params,
+    searchParams,
+  ])
   const [forecast, settings] = await Promise.all([
     getMenuForecast(
       menuId,
@@ -39,6 +42,7 @@ export default async function MenuForecastPage({
       >
         <MenuForecast
           forecast={forecast}
+          view={view === "day" ? "day" : "week"}
           measurementSystem={settings.measurementSystem}
         />
       </MenuChrome>

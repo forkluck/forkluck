@@ -95,4 +95,29 @@ test("forecasts a saved menu and links each row to its product", async ({
     "href",
     /^\/products\/prd_[a-z0-9]+$/
   )
+  await expect(
+    page.getByText("To make this week", { exact: true })
+  ).toBeVisible()
+  await expect(
+    page.getByRole("table", { name: "Forecast basis" })
+  ).toBeVisible()
+  await expect(page.getByTestId("forecast-money-caption")).toHaveCount(1)
+  await page.getByRole("link", { name: "Day", exact: true }).click()
+  await expect(page).toHaveURL(/\/forecast\?view=day$/)
+  const demand = page.locator("section").filter({
+    has: page.getByRole("heading", { name: "Product demand", exact: true }),
+  })
+  await expect(demand.getByRole("columnheader")).toHaveCount(10)
+  await page.getByRole("link", { name: "Busy", exact: true }).click()
+  await expect(page).toHaveURL(/\/forecast\?plan=busy&view=day$/)
+  await page.getByRole("link", { name: "Next 30 days", exact: true }).click()
+  await expect(page).toHaveURL(/\/forecast\?days=30&plan=busy&view=day$/)
+  await expect(demand.getByRole("columnheader")).toHaveCount(8)
+  await page.reload()
+  await expect(
+    page.getByRole("link", { name: "Day", exact: true })
+  ).toHaveAttribute("aria-current", "page")
+  await page.getByRole("link", { name: "Week", exact: true }).click()
+  await expect(page).toHaveURL(/\/forecast\?days=30&plan=busy$/)
+  await expect(demand.getByRole("columnheader")).toHaveCount(4)
 })

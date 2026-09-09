@@ -45,6 +45,10 @@ const dough: MenuForecast["recipeRequirements"][number] = {
   recipePublicId: "rcp_dough",
   recipeTitle: "Cookie dough",
   batches: 2.346,
+  days: [
+    { date: "2026-04-27", batches: 1.111 },
+    { date: "2026-04-28", batches: 1.235 },
+  ],
   yieldAmount: 24,
   yieldUnit: "each",
 }
@@ -69,9 +73,11 @@ describe("forecast exports", () => {
   })
 
   it("writes a prep row with what the batches make", () => {
-    expect(prepListRow(dough)).toBe('"Cookie dough",2.346,56.304,ea')
+    expect(prepListRow(dough)).toBe(
+      '"Cookie dough",2.346,1.111,1.235,56.304,ea'
+    )
     expect(prepListRow({ ...dough, yieldAmount: null, yieldUnit: null })).toBe(
-      '"Cookie dough",2.346,,'
+      '"Cookie dough",2.346,1.111,1.235,,'
     )
   })
 
@@ -81,11 +87,16 @@ describe("forecast exports", () => {
       basis: { horizonStart: "2026-04-27" },
       materialRequirements: [cream],
       recipeRequirements: [dough],
+      days: dough.days.map(({ date }) => ({ date })),
     } as unknown as MenuForecast
     expect(shoppingListCsv(forecast).split("\n")[0]).toBe(
       "Material,Kind,Needed,Unit,Packs to buy,Pack size,Pack unit,Supplier pack,Cost"
     )
-    expect(prepListCsv(forecast).split("\n")).toHaveLength(2)
+    const prep = prepListCsv(forecast).split("\n")
+    expect(prep).toHaveLength(2)
+    expect(prep[0]).toBe("Recipe,Batches,2026-04-27,2026-04-28,Makes,Unit")
+    const cells = prep[1]!.split(",")
+    expect(Number(cells[2]) + Number(cells[3])).toBeCloseTo(Number(cells[1]), 3)
     expect(exportFileName(forecast, "shopping-list")).toBe(
       "mnu_spring-shopping-list-2026-04-27.csv"
     )

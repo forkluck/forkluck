@@ -199,7 +199,7 @@ deviations over the whole horizon). It is a request parameter, not a stored
 setting or a model choice.
 *Avoid:* "scenario", "confidence interval", "P90 per day".
 
-**Projected revenue** — projected menu-member units at current menu prices. It
+**Projected revenue** — the one caption line of projected menu-member units at current menu prices. It
 is planning money, not net sales: it is never allocated, banked, or compared
 with the ledger's revenue.
 *Avoid:* "forecast sales", "expected revenue" (attribution language).
@@ -208,6 +208,27 @@ with the ledger's revenue.
 from daily consumption in the forecast basis and current composition. It is
 not a sale, import, sync result, or undo target.
 *Avoid:* "forecast fact", "committed demand".
+
+**Production plan** — the chosen quantities to make, with recipe batches and
+whole-horizon materials. The headline sums planned product rows, including
+bundle contents and modifiers; it is a planning count, never a sales total.
+*Avoid:* "units sold", "revenue forecast".
+
+**Day view** — the selected horizon plan distributed by each product's weekday
+pattern, with recipe batches on the same dates. A 30-day view groups those
+dates into the basis's week blocks; the export retains every day.
+*Avoid:* "daily busy level", "daily confidence".
+
+**Basis weeks** — the eight recent blocks and the coming blocks beside their
+matching weeks last year, shifted 52 weeks so weekdays line up. These rows,
+the chart, and the accuracy check use menu members only; no price is needed.
+*Avoid:* "forecast sales", "year-over-year growth".
+
+**Level** — about how many menu items the recent weekday pattern makes in a
+week before the seasonal adjustment, recent weeks counting more. The overall
+seasonal factor describes the weighted change across members; each product
+still follows its own factor.
+*Avoid:* "moving average", "trend line".
 
 ## Interpretation
 

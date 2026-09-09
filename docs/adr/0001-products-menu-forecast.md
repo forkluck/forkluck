@@ -50,3 +50,32 @@ carries projected revenue at current menu prices, a history-plus-horizon
 four past weeks. All of it is still read-time and computed from the one ledger
 read: persistence stays rejected for the same reasons, and the status stays
 accepted.
+
+
+## Amended 2026-09 (production plan)
+
+The menu forecast now leads with quantities to make and recipe batches. Money
+is one caption; the chart and the replayed accuracy are menu-member units and
+remain useful without product prices. Recent weeks, their matching weeks last
+year, and last year's coming weeks are visible beside the plan, with the
+unscaled weekly level and descriptive seasonal factor.
+
+Day rows allocate the selected whole-horizon plan by weekday rhythm, conserving
+the total after rounding. This reverses the earlier decision to hide dates:
+they now serve as a kitchen schedule and are explicitly not independent daily
+busy levels. Zero typical patterns with positive busy demand are distributed
+evenly. Recipe day batches use the same physical resolver as the horizon;
+materials stay on one shopping list. The 30-day schedule groups dates into
+weekly blocks, including its final partial block. CSV exports keep daily batches.
+
+The headline's aggregate is a production count across the product rows,
+including included products; the chart, basis, and accuracy are explicitly
+menu-member comparisons. Neither is a new sales-accounting view. The overall
+basis factor is not applied a second time. No persisted state, additional
+queries, forecast dependencies, or live basis changes are introduced.
+
+Any future basis change remains subject to the separate read-only backtest:
+a 7-day menu WAPE improvement of at least 2 points, median product WAPE no more
+than 0.5 points worse, and no loss at 30 days. A busy candidate must also retain
+coverage and add no more than 2 points of over-production. No production
+results have been accepted by this amendment.

@@ -169,6 +169,26 @@ describe("menu forecast horizon", () => {
       plan: "busy",
       seasonalAdjustment: false,
       compositionBasis: "current",
+      weeks: {
+        recent: [
+          {
+            start: "2026-08-22",
+            end: "2026-08-28",
+            units: 12,
+            lastYearUnits: 10,
+          },
+        ],
+        horizon: [
+          {
+            start: "2026-08-29",
+            end: "2026-09-04",
+            typicalUnits: 12,
+            plannedUnits: 18,
+            lastYearUnits: 10,
+          },
+        ],
+      },
+      level: { weeklyUnits: 12, seasonalFactor: 1, seasonalProducts: 0 },
     },
     coverage: {
       menuItems: 1,
@@ -188,18 +208,26 @@ describe("menu forecast horizon", () => {
       pricedProducts: 1,
       unpricedProducts: 0,
     },
+    production: {
+      typicalUnits: 12,
+      busyUnits: 18,
+      plannedUnits: 18,
+      recipeBatches: 18,
+      productsPlanned: 1,
+    },
+    days: [{ date: "2026-08-29", typicalUnits: 12, plannedUnits: 18 }],
     series: [
       {
         date: "2026-08-28",
-        actualCents: 450,
-        typicalCents: 450,
-        busyCents: 450,
+        actualUnits: 450,
+        typicalUnits: 450,
+        plannedUnits: 450,
       },
       {
         date: "2026-08-29",
-        actualCents: null,
-        typicalCents: 180,
-        busyCents: 270,
+        actualUnits: null,
+        typicalUnits: 180,
+        plannedUnits: 270,
       },
     ],
     backtest: {
@@ -207,9 +235,9 @@ describe("menu forecast horizon", () => {
         {
           start: "2026-08-22",
           end: "2026-08-28",
-          typicalCents: 1200,
-          busyCents: 1800,
-          actualCents: 1100,
+          typicalUnits: 1200,
+          busyUnits: 1800,
+          actualUnits: 1100,
         },
       ],
       scoredWeeks: 1,
@@ -227,6 +255,10 @@ describe("menu forecast horizon", () => {
         typicalQuantity: 12,
         busyQuantity: 18,
         totalQuantity: 18,
+        seasonalFactor: 1,
+        days: [
+          { date: "2026-08-29", typicalQuantity: 12, plannedQuantity: 18 },
+        ],
         priceCents: 450,
         typicalCents: 5400,
         busyCents: 8100,
@@ -239,6 +271,7 @@ describe("menu forecast horizon", () => {
         recipePublicId: "rcp_loaf",
         recipeTitle: "Loaf",
         batches: 18,
+        days: [{ date: "2026-08-29", batches: 18 }],
         yieldAmount: 1,
         yieldUnit: "each",
       },
@@ -261,12 +294,12 @@ describe("menu forecast horizon", () => {
     unresolved: [],
   }
 
-  it("reads both plans, the priced series, and the backtest score", () => {
+  it("reads both plans, the production series, and the backtest score", () => {
     const parsed = menuForecastPayloadSchema.parse(payload)
 
     expect(parsed.basis.plan).toBe("busy")
     expect(parsed.products[0]!.totalQuantity).toBe(18)
-    expect(parsed.series[0]!.busyCents).toBe(450)
+    expect(parsed.series[0]!.plannedUnits).toBe(450)
     expect(parsed.backtest.errorPercent).toBe(9.09)
     expect(parsed.products[0]!.typicalCents).toBe(5400)
     expect(parsed.materialCost.costCents).toBe(1250)
