@@ -36,11 +36,27 @@ needs a Default row. `grams` and `yield` never share a row.
 
 ## Contributing
 
+Use the name a cook would say: `Sugar`, `Parmesan`, `Panko`. Keep words that
+identify a different product, such as `Brown Sugar`, `Unsalted Butter`, or
+`Ground Ginger`. When shortening a name, keep its stable id and retain the
+previous name as a synonym in both `catalog.csv` and `seeds.csv`.
+
 1. Edit `catalog.csv` (or `seeds.csv` and rebuild, below).
 2. Run `python3 data/catalog/scripts/validate.py data/catalog/catalog.csv` from the repository root — CI runs the same check.
 3. Open a pull request and say where a number came from.
 
 Don't know the numbers? Open an issue describing the ingredient and source.
+
+### Kitchen-name invariants
+
+| Concern | Required behavior |
+| --- | --- |
+| Spelling | The short name and former full name resolve to the same catalog id; old recipe text remains accepted. |
+| Ownership | The one-time rename changes only catalog-linked pantry rows still using the old default name, including archived rows. Custom and unlinked names stay as entered. |
+| Precedence | A kitchen's existing short-name ingredient wins its name. A conflicting old-name row is left intact; nothing is merged. Exact pantry names retain precedence over catalog aliases. |
+| Lifecycle | Existing ids, prices, conversions, preparations, nutrition, and recipe/supplier links survive. Changed pantry rows advance their edit version; rerunning the rename changes nothing. |
+| New workspaces | Catalog activation and the starter recipe use the short names. Catalog rebuilds retain them. |
+| Downstream | Search and parsing accept the former names; composition and cup weights keep the same ingredient identity and values. Import/undo and user renames retain their existing behavior. |
 
 ### Rebuilding from USDA
 

@@ -39,7 +39,7 @@ DEMO_INGREDIENT_NAMES = (
     "Cornstarch",
     "Dark Chocolate",
     "Extra Virgin Olive Oil",
-    "Granulated Sugar",
+    "Sugar",
     "Heavy Cream",
     "Kosher Salt",
     "Powdered Sugar",
@@ -103,7 +103,7 @@ RECIPES = [
 12 g Kosher Salt
 340 g Unsalted Butter
 260 g Brown Sugar
-180 g Granulated Sugar
+180 g Sugar
 200 g Whole Eggs
 12 g Vanilla Extract
 420 g Dark Chocolate""",
@@ -148,7 +148,7 @@ RECIPES = [
         "category": None,
         "body": """1200 g Whole Milk
 240 g Whole Eggs
-220 g Granulated Sugar
+220 g Sugar
 90 g Cornstarch
 80 g Unsalted Butter
 12 g Vanilla Extract""",

@@ -1,4 +1,6 @@
+import csv
 import json
+from importlib import import_module
 import tempfile
 from decimal import Decimal
 from pathlib import Path
@@ -6,6 +8,8 @@ from pathlib import Path
 from django.core import management
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
+from django.db import connection
+from django.db.migrations.loader import MigrationLoader
 from django.test import TestCase
 
 from .domains.shared.ingredient_identity import (
@@ -21,10 +25,13 @@ from .models import (
     CatalogIngredientMeasure,
     CatalogPreparationMeasure,
     Ingredient,
+    IngredientConversion,
     Recipe,
+    RecipeItem,
     RecipeLineMatch,
     User,
 )
+from .paths import DATA_DIR
 
 
 class CatalogIdentityModelTests(TestCase):
@@ -422,3 +429,133 @@ class ShippedCatalogTests(TestCase):
             normalized_text="kosher salt", is_active=True
         )
         self.assertEqual(alias.ingredient.key, "kosher-salt")
+
+    def test_kitchen_names_keep_former_spellings_and_seed_sugar(self):
+        from .services import seed_user_workspace
+
+        management.call_command("sync_catalog", verbosity=0)
+        user = User.objects.create_user(email="kitchen-names@example.test")
+        with (DATA_DIR / "catalog" / "seeds.csv").open() as file:
+            seeds = {row["id"]: row for row in csv.DictReader(file)}
+        for key, name, alias in (
+            ("sugar", "Sugar", "granulated sugar"),
+            ("cheddar", "Cheddar", "cheddar cheese"),
+            ("mozzarella", "Mozzarella", "mozzarella cheese"),
+            ("parmesan", "Parmesan", "parmesan cheese"),
+            ("feta", "Feta", "feta cheese"),
+            ("ricotta", "Ricotta", "ricotta cheese"),
+            ("panko", "Panko", "panko breadcrumbs"),
+        ):
+            with self.subTest(name=name):
+                catalog = CatalogIngredient.objects.get(key=key)
+                self.assertEqual(catalog.name, name)
+                self.assertEqual(seeds[key]["name"], name)
+                self.assertIn(alias, seeds[key]["synonyms"].split("|"))
+                self.assertTrue(catalog.aliases.filter(
+                    normalized_text=alias, is_active=True
+                ).exists())
+        seed_user_workspace(user)
+        sugar = Ingredient.objects.get(user=user, catalog_ingredient__key="sugar")
+        self.assertEqual(sugar.name, "Sugar")
+        self.assertEqual(sugar.conversion.weight_amount, 200)
+        self.assertEqual(sugar.conversion.volume_unit, "cup")
+        self.assertEqual(RecipeItem.objects.get(ingredient=sugar).display_name, "Sugar")
+        self.assertEqual(
+            CatalogIngredient.objects.get(key="brown-sugar").name, "Brown Sugar"
+        )
+
+
+class KitchenNameMigrationTests(TestCase):
+    def rename(self):
+        historical_apps = MigrationLoader(None).project_state(
+            [("forkluck", "0056_user_google_subject")]
+        ).apps
+        migration = import_module(
+            f"{__package__}.migrations.0057_fix_kitchen_ingredient_names"
+        )
+        migration.rename_copied_ingredients(historical_apps, connection.schema_editor())
+
+    def test_copied_names_keep_identity_values_and_recipe_text_on_every_rerun(self):
+        originals = []
+        for key, old_name, new_name in (
+            ("sugar", "Granulated Sugar", "Sugar"),
+            ("cheddar", "Cheddar Cheese", "Cheddar"),
+            ("mozzarella", "Mozzarella Cheese", "Mozzarella"),
+            ("parmesan", "Parmesan Cheese", "Parmesan"),
+            ("feta", "Feta Cheese", "Feta"),
+            ("ricotta", "Ricotta Cheese", "Ricotta"),
+            ("panko", "Panko Breadcrumbs", "Panko"),
+        ):
+            catalog = CatalogIngredient.objects.create(key=key, name=old_name)
+            for status in (Ingredient.STATUS_ACTIVE, Ingredient.STATUS_ARCHIVED):
+                user = User.objects.create_user(email=f"{key}-{status}@example.test")
+                row = Ingredient.objects.create(
+                    user=user, catalog_ingredient=catalog, name=old_name.lower(),
+                    status=status, purchase_cost_cents=750, purchase_size=2,
+                    purchase_unit="kg", edit_version=3,
+                )
+                conversion = IngredientConversion.objects.create(
+                    user=user, ingredient=row, average_weight=False,
+                    weight_amount=200, weight_unit="g", volume_amount=1,
+                    volume_unit="cup",
+                )
+                recipe = Recipe.objects.create(user=user, title="Synthetic recipe")
+                item = RecipeItem.objects.create(
+                    recipe=recipe, kind="ingredient", ingredient=row,
+                    display_name=old_name, quantity=50, unit="g",
+                )
+                originals.append((row, new_name, conversion, item, old_name))
+        self.rename()
+        for row, new_name, conversion, item, old_name in originals:
+            with self.subTest(name=new_name, status=row.status):
+                before = row.__dict__.copy()
+                row.refresh_from_db()
+                self.assertEqual(row.name, new_name)
+                self.assertEqual(row.normalized_name, new_name.lower())
+                self.assertEqual(row.edit_version, 4)
+                self.assertGreater(row.updated_at, before["updated_at"])
+                for field in row._meta.concrete_fields:
+                    if field.name not in {"name", "normalized_name", "edit_version", "updated_at"}:
+                        self.assertEqual(getattr(row, field.attname), before[field.attname])
+                conversion.refresh_from_db()
+                self.assertEqual(conversion.ingredient_id, row.id)
+                self.assertEqual(conversion.weight_amount, 200)
+                item.refresh_from_db()
+                self.assertEqual(item.ingredient_id, row.id)
+                self.assertEqual(item.display_name, old_name)
+        snapshot = list(Ingredient.objects.order_by("id").values())
+        self.rename()
+        self.assertEqual(list(Ingredient.objects.order_by("id").values()), snapshot)
+
+    def test_custom_unlinked_and_conflicting_names_are_preserved_per_kitchen(self):
+        catalog = CatalogIngredient.objects.create(key="sugar", name="Granulated Sugar")
+        unrelated = CatalogIngredient.objects.create(key="other-sugar", name="Other sugar")
+        for i, (name, linked) in enumerate((
+            ("House sugar", catalog), ("Granulated Sugar", None),
+            ("Granulated Sugar", unrelated),
+        )):
+            user = User.objects.create_user(email=f"custom-{i}@example.test")
+            Ingredient.objects.create(
+                user=user, name=name, catalog_ingredient=linked, purchase_cost_cents=100,
+            )
+        for status in (Ingredient.STATUS_ACTIVE, Ingredient.STATUS_ARCHIVED):
+            user = User.objects.create_user(email=f"collision-{status}@example.test")
+            Ingredient.objects.create(
+                user=user, name="Granulated Sugar", catalog_ingredient=catalog,
+                purchase_cost_cents=100,
+            )
+            Ingredient.objects.create(
+                user=user, name="Sugar", status=status, purchase_cost_cents=500,
+            )
+        snapshot = list(Ingredient.objects.order_by("id").values())
+        other_user = User.objects.create_user(email="no-collision@example.test")
+        other = Ingredient.objects.create(
+            user=other_user, name="Granulated Sugar", catalog_ingredient=catalog,
+            purchase_cost_cents=100,
+        )
+        self.rename()
+        self.assertEqual(
+            list(Ingredient.objects.exclude(pk=other.pk).order_by("id").values()), snapshot
+        )
+        other.refresh_from_db()
+        self.assertEqual(other.name, "Sugar")

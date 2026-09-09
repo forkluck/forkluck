@@ -84,6 +84,7 @@ RECORDED_ROWS = [
     "0054_feedback_grant",
     "0055_recipe_component_unit",
     "0056_user_google_subject",
+    "0057_fix_kitchen_ingredient_names",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",
