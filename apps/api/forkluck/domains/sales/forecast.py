@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone as datetime_timezone
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from django.db.models import Prefetch
 from django.utils import timezone
@@ -65,9 +66,6 @@ SEASONAL_LAG_DAYS = 364
 SEASONAL_DAMPING = Decimal(2)
 SEASONAL_FLOOR = Decimal("0.5")
 SEASONAL_CEILING = Decimal(2)
-# The whole ledger window again, shifted back a year: the oldest backtest week
-# compares against its own history-aligned days, not today's.
-SEASONAL_LOOKBACK_DAYS = 7 * (HISTORY_WEEKS + BACKTEST_WEEKS) + SEASONAL_LAG_DAYS
 
 
 def _round_quantity(value: Decimal) -> Decimal:
@@ -170,7 +168,9 @@ def _clamped(value: Decimal) -> Decimal:
     return Decimal() if value < 0 else _round_quantity(value)
 
 
-def _weighted_moments(samples: Sequence[Decimal]) -> tuple[Decimal, Decimal]:
+def _weighted_moments(
+    samples: Sequence[Decimal], decay: Decimal = WEEKLY_DECAY
+) -> tuple[Decimal, Decimal]:
     """Recency-weighted mean and variance of samples given newest first.
 
     One sample has no spread to measure, so its variance is zero rather than
@@ -178,7 +178,7 @@ def _weighted_moments(samples: Sequence[Decimal]) -> tuple[Decimal, Decimal]:
     """
     if not samples:
         return Decimal(), Decimal()
-    weights = [WEEKLY_DECAY**index for index in range(len(samples))]
+    weights = [decay**index for index in range(len(samples))]
     total = sum(weights, Decimal())
     mean = sum(
         (weight * sample for weight, sample in zip(weights, samples)), Decimal()
@@ -201,6 +201,7 @@ def project_product(
     horizon_days: int,
     weeks: int = HISTORY_WEEKS,
     last_year: Mapping[date, Decimal] | None = None,
+    decay: Decimal = WEEKLY_DECAY,
 ) -> ProductProjection:
     """Project one product's horizon from its own matching weekdays.
 
@@ -235,7 +236,7 @@ def project_product(
             for sample_day in _history_dates(day, history_end, weeks)
             if exists_from is None or sample_day >= exists_from
         ]
-        mean, variance = _weighted_moments(samples)
+        mean, variance = _weighted_moments(samples, decay)
         mean *= seasonal_factor
         variance *= seasonal_factor * seasonal_factor
         if mean < 0:
@@ -885,30 +886,38 @@ def _backtest(
     }
 
 
-def menu_forecast_payload(
+@dataclass(frozen=True)
+class ForecastInputs:
+    products: Mapping[str, SalesProduct]
+    scoped_product_ids: set[str]
+    menu_prices: Mapping[str, int]
+    unresolved: list[JsonObject]
+    menu_item_count: int
+    linked_menu_item_count: int
+    daily: Mapping[str, Mapping[date, Decimal]]
+    last_year: Mapping[str, Mapping[date, Decimal]]
+    exists_from: Mapping[str, date]
+    ledger_start: date
+    history_end: date
+    zone: ZoneInfo
+
+
+def load_forecast_inputs(
     user: User,
     menu: Menu,
     *,
-    today: date | None = None,
-    horizon_days: int = 7,
-    plan: str = "typical",
-) -> JsonObject:
-    """Build the selected menu's non-persisted demand forecast over a horizon.
-
-    Every horizon day is projected from its own matching weekdays, recent
-    weeks counting more; only the sum is reported, because a single day's
-    average is a weekday profile dressed up as a date.  ``today`` is an
-    explicit test seam.
-    """
+    today: date | None,
+    horizon_days: int,
+    ledger_weeks: int = LEDGER_WEEKS,
+) -> ForecastInputs:
+    """Read the owner-scoped inputs once for live planning or offline replay."""
     if menu.user_id != user.pk:
         raise ValueError("Menu does not belong to this workspace")
-    if plan not in ("typical", "busy"):
-        raise ValueError("Forecast plan must be typical or busy")
     zone = workspace_zone(user)
     today = today or timezone.now().astimezone(zone).date()
     history_start = today - timedelta(days=7 * HISTORY_WEEKS)
     history_end = today - timedelta(days=1)
-    ledger_start = today - timedelta(days=7 * LEDGER_WEEKS)
+    ledger_start = today - timedelta(days=7 * ledger_weeks)
     scoped_products, unresolved, menu_item_count, linked_menu_item_count, menu_prices = (
         _menu_scope(menu)
     )
@@ -932,7 +941,7 @@ def menu_forecast_payload(
     # backtest weeks compare against, read once like the ledger window itself.
     last_year, last_year_first_seen = _forecast_history(
         user,
-        start=today - timedelta(days=SEASONAL_LOOKBACK_DAYS),
+        start=today - timedelta(days=7 * ledger_weeks + SEASONAL_LAG_DAYS),
         end=today - timedelta(days=SEASONAL_LAG_DAYS - horizon_days + 1),
         scoped_product_ids=consumption_ids,
         index=index,
@@ -963,6 +972,53 @@ def menu_forecast_payload(
         )
         for product_id, product in products.items()
     }
+    return ForecastInputs(
+        products=products,
+        scoped_product_ids=scoped_product_ids,
+        menu_prices=menu_prices,
+        unresolved=unresolved,
+        menu_item_count=menu_item_count,
+        linked_menu_item_count=linked_menu_item_count,
+        daily=daily,
+        last_year=last_year,
+        exists_from=exists_from,
+        ledger_start=ledger_start,
+        history_end=history_end,
+        zone=zone,
+    )
+
+
+def menu_forecast_payload(
+    user: User,
+    menu: Menu,
+    *,
+    today: date | None = None,
+    horizon_days: int = 7,
+    plan: str = "typical",
+) -> JsonObject:
+    """Build the selected menu's non-persisted demand forecast over a horizon.
+
+    Every horizon day is projected from its own matching weekdays, recent
+    weeks counting more; only the sum is reported, because a single day's
+    average is a weekday profile dressed up as a date.  ``today`` is an
+    explicit test seam.
+    """
+    if menu.user_id != user.pk:
+        raise ValueError("Menu does not belong to this workspace")
+    if plan not in ("typical", "busy"):
+        raise ValueError("Forecast plan must be typical or busy")
+    inputs = load_forecast_inputs(user, menu, today=today, horizon_days=horizon_days)
+    zone = inputs.zone
+    today = inputs.history_end + timedelta(days=1)
+    history_start = today - timedelta(days=7 * HISTORY_WEEKS)
+    history_end = today - timedelta(days=1)
+    products = inputs.products
+    scoped_product_ids = inputs.scoped_product_ids
+    menu_prices = inputs.menu_prices
+    unresolved = list(inputs.unresolved)
+    menu_item_count = inputs.menu_item_count
+    linked_menu_item_count = inputs.linked_menu_item_count
+    daily, last_year, exists_from = inputs.daily, inputs.last_year, inputs.exists_from
     projections = {
         product_id: project_product(
             daily.get(product_id, {}),
