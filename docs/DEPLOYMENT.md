@@ -516,3 +516,25 @@ environment files, use PostgreSQL, terminate TLS, disable the demo account, and
 expose the Django endpoints through the same origin as Next.js. Leave the three
 `STRIPE_*` variables unset and billing stays off entirely — no trial, no
 lockout, no webhook route.
+
+### Compare menu forecasts without writing data
+
+After deploying the backtest command, run it on the server with the backend
+service environment: `cd /opt/forkluck/current/backend`, then
+`set -a; . /etc/forkluck/backend.env; set +a`, then
+`sudo -E -u forkluck /opt/forkluck/shared/venv/bin/python manage.py backtest_menu_forecast <menu-public-id> --weeks 26 --horizon 7`.
+Repeat with `--horizon 30`, then optionally `--stretch --per-product` at both
+horizons. `--as-of YYYY-MM-DD` fixes the kitchen-local cutoff; `--email` can
+require a particular owner. This privileged operator command resolves the
+menu's owner and all subsequent reads stay in that workspace. It writes no
+rows and changes no forecast settings. The table scores production units,
+including expanded products, while the page's replay scores menu members;
+it is not a sales-accounting unit total. All candidates use the same completed,
+nonzero origins with eight weeks of observed menu history; shorter datasets
+trim the scored count. The long modifier-history walk can use substantial
+memory even though query count stays fixed. A marked row is only the lowest
+aggregate error: replace the live basis only after the 7-day result improves
+menu WAPE by at least 2 points, median product WAPE rises by at most 0.5,
+and the candidate does not lose at 30 days. Busy candidates must also preserve
+coverage and add no more than 2 points of signed over-production. Record any
+accepted change in the forecast ADR; ties keep the current basis.

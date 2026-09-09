@@ -62,3 +62,13 @@ than only adding a happy-path endpoint test.
 | Lifecycle | Create, update, merge, import/undo and deletion continue through existing membership, ledger and composition reads. No new persisted relation or unresolved state exists. Day requirements use the existing batch/UOM resolver; material requirements and unresolved paths are unchanged. | Existing ownership, bundle/modifier, UOM/yield, refund, undo, and query-count tests. |
 | Downstream | Price changes affect the money caption and existing money fields only. Unpriced products still receive production rows, charts and accuracy. Cost gaps remain visible; shopping requirements stay whole-horizon. | Unpriced member tests, component UI tests, strict Python/TypeScript envelope parity. |
 | Presentation | The headline is items and batches; one caption summarizes revenue and ingredient cost. Product tables have no price/sales columns. Week/day views use the same plan; 30-day schedules group the same daily rows into basis blocks. | Component tests for headline, caption, history factor, URLs, schedule grouping and export. |
+
+## Offline forecast comparison
+
+| Boundary | Invariant | Check |
+| --- | --- | --- |
+| Syntax and ownership | The operator command accepts a menu public id or UUID, optionally restricted by owner email. Unknown, malformed, and owner-mismatched references fail. The shared loader refuses a foreign menu before reading. | `test_forecast_backtest` command and loader tests. |
+| Live parity | The `current` candidate is `project_product` itself. Loader extraction preserves live query order/count and defaults; candidate parameters never change the live basis. | Existing forecast query pins; live/replay parity and default decay tests. |
+| Comparable origins | Every candidate scores identical completed, nonzero menu origins with eight weeks of supported history. Future observations cannot enter training, and overlapping horizons cannot leak not-yet-completed residuals. | Short history, 30-day completion, and conformal replay tests. |
+| Decision and states | Aggregate unit WAPE is diagnostic, with median product WAPE guarding cancellation; zero-net-actual products have no WAPE. Busy coverage and signed over-production use the same origins. A one-horizon result cannot authorize promotion. | Score, empty-history, and threshold tests. |
+| Lifecycle | Evaluation is pure after the one shared input load. Create, edit, merge, import/undo, and delete continue to affect the canonical read model; no new persisted relation or review state exists. | Command rejects all SQL writes in tests; existing ledger and forecast suites. |
