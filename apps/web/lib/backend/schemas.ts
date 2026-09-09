@@ -1579,6 +1579,15 @@ export const menuForecastPayloadSchema = z.strictObject({
       packs: z.number().nullable(),
       /** Packs at the pack price; null without a pack size or a price. */
       costCents: z.number().int().nullable(),
+      /** The pack as the preferred supplier prints it, which is what the
+       * kitchen orders by; null when no supplier item is preferred. */
+      supplierPack: z
+        .strictObject({
+          supplier: z.string(),
+          rawSize: z.string(),
+          title: z.string(),
+        })
+        .nullable(),
     })
   ),
   unresolved: z.array(

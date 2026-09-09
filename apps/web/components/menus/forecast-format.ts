@@ -97,8 +97,49 @@ export function packsToBuy(packs: number | null) {
   return packs === null ? null : Math.max(1, Math.ceil(packs - 1e-9))
 }
 
-export function packsLabel(packs: number) {
-  return packs === 1 ? "1 pack" : `${amount(packs)} packs`
+const PLURAL_SHORTS: Record<string, string> = {
+  each: "ea",
+  dozen: "dz",
+  pcs: "pcs",
+  box: "boxes",
+  bunch: "bunches",
+}
+
+/** "3 cases", "2 bags", "88 ea": a count in the unit's own word. */
+export function countLabel(quantity: number, unit: string) {
+  const short = unitShort(unit) || unit
+  if (quantity === 1) return `1 ${short}`
+  const plural =
+    PLURAL_SHORTS[unit] ?? (short.endsWith("s") ? short : `${short}s`)
+  return `${amount(quantity)} ${plural}`
+}
+
+/**
+ * The pack as the kitchen orders it: the preferred supplier's own words
+ * ("24 X 1 LB") when there is one, else the size the ingredient was saved
+ * with, as saved. A 4 lb bag is a 4 lb bag on a metric shopping list too.
+ */
+export function packLabel(row: MaterialRow) {
+  if (row.supplierPack)
+    return row.supplierPack.rawSize || row.supplierPack.title
+  if (row.purchaseSize === null || !row.purchaseUnit) return null
+  return `${amount(row.purchaseSize)} ${unitShort(row.purchaseUnit) || row.purchaseUnit}`
+}
+
+/**
+ * What to order. A material bought by the case or the bag is so many of
+ * them; anything else is so many of its pack: "2 × 24 X 1 LB", "3 × 4 qt".
+ */
+export function buyLabel(row: MaterialRow, packs: number) {
+  if (
+    !row.supplierPack &&
+    row.purchaseSize === 1 &&
+    row.purchaseUnit &&
+    isCountUnit(row.purchaseUnit)
+  ) {
+    return countLabel(packs, row.purchaseUnit)
+  }
+  return `${amount(packs)} × ${packLabel(row) ?? "pack"}`
 }
 
 /** What the batches make, in the recipe's yield unit; null without a yield. */

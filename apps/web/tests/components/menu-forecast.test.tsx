@@ -157,6 +157,7 @@ const FORECAST: MenuForecastData = {
       purchaseUnit: null,
       packs: null,
       costCents: null,
+      supplierPack: null,
     },
   ],
   unresolved: [
@@ -276,6 +277,7 @@ describe("Menu forecast", () => {
               purchaseUnit: "kg",
               packs: 0.2469,
               costCents: 1200,
+              supplierPack: null,
             },
             {
               ingredientId: "ingredient-2",
@@ -288,6 +290,7 @@ describe("Menu forecast", () => {
               purchaseUnit: "each",
               packs: 0.208,
               costCents: null,
+              supplierPack: null,
             },
             {
               ingredientId: "ingredient-3",
@@ -303,6 +306,7 @@ describe("Menu forecast", () => {
               purchaseUnit: "each",
               packs: 1.623,
               costCents: 972,
+              supplierPack: null,
             },
           ],
         }}
@@ -314,7 +318,8 @@ describe("Menu forecast", () => {
     // way. A fifth of a pack is one pack to buy, at the pack's price.
     expect(screen.getByText("1.23 kg")).toBeDefined()
     expect(screen.getByText("5 kg")).toBeDefined()
-    expect(screen.getAllByText("1 pack").length).toBe(2)
+    expect(screen.getByText("1 × 5 kg")).toBeDefined()
+    expect(screen.getByText("1 × 12 ea")).toBeDefined()
     expect(screen.getByText("$12")).toBeDefined()
     // The recipe side is one unit, so it earns no second line.
     expect(screen.queryByText("981 g")).toBeNull()
@@ -327,8 +332,60 @@ describe("Menu forecast", () => {
     // Two recipes measuring yolk two ways: both shown, under the whole count.
     expect(screen.getByText("49 ea")).toBeDefined()
     expect(screen.getByText("from 27 ea, 369 g")).toBeDefined()
-    expect(screen.getByText("2 packs")).toBeDefined()
+    expect(screen.getByText("2 × 30 ea")).toBeDefined()
     expect(screen.getByText("$10")).toBeDefined()
+  })
+
+  it("orders in the supplier's own pack, or by the case when that is the unit", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          materialRequirements: [
+            {
+              ...FORECAST.materialRequirements[0]!,
+              ingredientName: "Flour",
+              kind: "ingredient",
+              usage: [{ quantity: 17000, unit: "g" }],
+              purchase: [{ quantity: 37.5, unit: "lb" }],
+              purchaseSize: 24,
+              purchaseUnit: "lb",
+              packs: 1.5625,
+              costCents: 4800,
+              supplierPack: {
+                supplier: "Baldor",
+                rawSize: "24 X 1 LB",
+                title: "Flour, all purpose",
+              },
+            },
+            {
+              ...FORECAST.materialRequirements[0]!,
+              ingredientId: "ingredient-9",
+              ingredientPublicId: "ing_avocado",
+              ingredientName: "Avocado",
+              kind: "ingredient",
+              usage: [{ quantity: 55, unit: "each" }],
+              purchase: [{ quantity: 2.3, unit: "case" }],
+              purchaseSize: 1,
+              purchaseUnit: "case",
+              packs: 2.3,
+              costCents: 9000,
+              supplierPack: null,
+            },
+          ],
+        }}
+      />
+    )
+
+    // The pack in the supplier's words, not the 10.9 kg it converts to.
+    expect(screen.getByText("2 × 24 X 1 LB")).toBeDefined()
+    expect(screen.getByText("24 X 1 LB")).toBeDefined()
+    expect(screen.getByText(/· Baldor/)).toBeDefined()
+    expect(screen.queryByText(/10\.9 kg/)).toBeNull()
+    // Bought by the case: three cases, and the pack column says so too.
+    expect(screen.getByText("3 cases")).toBeDefined()
+    expect(screen.getByText("1 case")).toBeDefined()
   })
 
   it("restates weights in a US kitchen's ounces and pounds", () => {
@@ -342,10 +399,11 @@ describe("Menu forecast", () => {
               ...FORECAST.materialRequirements[0],
               usage: [{ quantity: 300, unit: "g" }],
               purchase: [{ quantity: 1234.5, unit: "g" }],
-              purchaseSize: 2268,
-              purchaseUnit: "g",
+              purchaseSize: 5,
+              purchaseUnit: "lb",
               packs: 0.544,
               costCents: 800,
+              supplierPack: null,
             },
           ],
         }}
@@ -354,6 +412,7 @@ describe("Menu forecast", () => {
 
     expect(screen.getByText("2.72 lb")).toBeDefined()
     expect(screen.getByText("5 lb")).toBeDefined()
+    expect(screen.getByText("1 × 5 lb")).toBeDefined()
   })
 
   it("heros the planned revenue with its accuracy and unpriced notes", () => {
@@ -382,7 +441,7 @@ describe("Menu forecast", () => {
         /\$26 of actual sales over the last 2 days, then 1 projected days: \$91 typical, up to \$133 busy\./
       )
     ).toBeDefined()
-    expect(screen.getAllByText("Typical plan").length).toBe(2)
+    expect(screen.getAllByText(/for the typical plan/).length).toBe(2)
   })
 
   it("plans for busy without moving the busy column", () => {
@@ -390,7 +449,7 @@ describe("Menu forecast", () => {
 
     expect(screen.getByText("$133")).toBeDefined()
     expect(screen.getByText("Typical plan $91")).toBeDefined()
-    expect(screen.getAllByText("Busy plan").length).toBe(2)
+    expect(screen.getAllByText(/for the busy plan/).length).toBe(2)
   })
 
   it("prices each product and shows its share of the projected sales", () => {
@@ -511,6 +570,7 @@ describe("Menu forecast", () => {
       purchaseUnit: "each",
       packs,
       costCents,
+      supplierPack: null,
     })
     render(
       <MenuForecast

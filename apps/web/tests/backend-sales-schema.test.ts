@@ -255,6 +255,7 @@ describe("menu forecast horizon", () => {
         purchaseUnit: "kg",
         packs: 1.8,
         costCents: 1250,
+        supplierPack: null,
       },
     ],
     unresolved: [],

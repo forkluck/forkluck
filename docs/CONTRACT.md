@@ -1047,9 +1047,11 @@ purchase-unit quantities kept separate. A recipe row carries the recipe's
 `yieldAmount` and `yieldUnit` (null when unstated) so batches can be read as
 what they make. A material row carries the ingredient's `purchaseSize` and
 `purchaseUnit`, `packs` (the purchase-unit amount over the pack size,
-fractional, null without a pack size) and `costCents` (packs at
+fractional, null without a pack size), `costCents` (packs at
 `purchase_cost_cents`, the arithmetic product cost uses, null without a pack
-size or a price); `materialCost` sums the costed rows as `costCents` and counts
+size or a price) and `supplierPack` (the preferred supplier item's `supplier`,
+`rawSize` and `title`, the pack as that supplier prints it; null when none is
+preferred); `materialCost` sums the costed rows as `costCents` and counts
 `costedMaterials` and `uncostedMaterials`. Each `products[]` row also carries
 the `priceCents` it is projected at and its `typicalCents` / `busyCents`, null
 for an unpriced member and for a product reached only through a box or a

@@ -20,6 +20,7 @@ const cream: MenuForecast["materialRequirements"][number] = {
   purchaseUnit: "qt",
   packs: 4.8,
   costCents: 6250,
+  supplierPack: null,
 }
 
 const yolk: MenuForecast["materialRequirements"][number] = {
@@ -36,6 +37,7 @@ const yolk: MenuForecast["materialRequirements"][number] = {
   purchaseUnit: null,
   packs: null,
   costCents: null,
+  supplierPack: null,
 }
 
 const dough: MenuForecast["recipeRequirements"][number] = {
@@ -50,13 +52,19 @@ const dough: MenuForecast["recipeRequirements"][number] = {
 describe("forecast exports", () => {
   it("writes a shopping row with whole packs and the pack price as a decimal", () => {
     expect(shoppingListRow(cream)).toBe(
-      '"Heavy cream, 40%",ingredient,19.2,qt,5,4,qt,62.50'
+      '"Heavy cream, 40%",ingredient,19.2,qt,5,4,qt,,62.50'
     )
+    expect(
+      shoppingListRow({
+        ...cream,
+        supplierPack: { supplier: "Baldor", rawSize: "4 QT", title: "Cream" },
+      })
+    ).toBe('"Heavy cream, 40%",ingredient,19.2,qt,5,4,qt,"Baldor: 4 QT",62.50')
   })
 
   it("falls back to the recipe side, units and all, when nothing can be bought yet", () => {
     expect(shoppingListRow(yolk)).toBe(
-      '"Egg yolk",ingredient,27 ea; 369.457 g,,,,,'
+      '"Egg yolk",ingredient,27 ea; 369.457 g,,,,,,'
     )
   })
 
@@ -75,7 +83,7 @@ describe("forecast exports", () => {
       recipeRequirements: [dough],
     } as unknown as MenuForecast
     expect(shoppingListCsv(forecast).split("\n")[0]).toBe(
-      "Material,Kind,Needed,Unit,Packs to buy,Pack size,Pack unit,Cost"
+      "Material,Kind,Needed,Unit,Packs to buy,Pack size,Pack unit,Supplier pack,Cost"
     )
     expect(prepListCsv(forecast).split("\n")).toHaveLength(2)
     expect(exportFileName(forecast, "shopping-list")).toBe(
