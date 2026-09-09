@@ -1473,6 +1473,31 @@ const menuForecastProductSchema = z.strictObject({
   /** The quantity the chosen plan expands into batches and materials. */
   totalQuantity: z.number(),
   seasonalFactor: z.number(),
+  basis: z.strictObject({
+    recentQuantity: z.number(),
+    seasonalAdjustment: z.number(),
+    busyAllowance: z.number(),
+    lastYearComparable: z.boolean(),
+    recentWeeks: z.array(
+      z.strictObject({
+        start: z.string(),
+        end: z.string(),
+        quantity: z.number(),
+      })
+    ),
+    lastYearWeeks: z.array(
+      z.strictObject({
+        start: z.string(),
+        end: z.string(),
+        quantity: z.number(),
+      })
+    ),
+    lastYearPeriod: z.strictObject({
+      start: z.string(),
+      end: z.string(),
+      quantity: z.number(),
+    }),
+  }),
   days: z.array(
     z.strictObject({
       date: z.string(),

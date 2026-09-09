@@ -79,3 +79,24 @@ a 7-day menu WAPE improvement of at least 2 points, median product WAPE no more
 than 0.5 points worse, and no loss at 30 days. A busy candidate must also retain
 coverage and add no more than 2 points of over-production. No production
 results have been accepted by this amendment.
+
+
+## Amended 2026-09-09 (chef explanations)
+
+The page title is Production forecast and navigation remains Forecast. The
+combined items/batches headline and menu-wide comparison grid are removed.
+Expected demand stays per product; prep quantities use physical recipe outputs
+with recipe equivalents secondary. Missing yields explicitly fall back to
+batches. Existing API totals and dated CSV batch columns remain compatible.
+
+Why this quantity? opens the exact product decomposition: the same projection
+without seasonal scaling, its signed seasonal difference, and the separate
+Busy allowance. Dated recorded history is a second disclosure, with limited
+history and absent last-year comparisons stated plainly. The full horizon is
+explicit in day view as well. This is a forecast before stock/prepared-food
+deductions, not a net instruction to cook. The chart and method follow the tables.
+
+No forecast engine, persisted relation, ledger scope or query is added. The
+reference-code analysis in [Forecast reference review](../FORECAST_REFERENCE_REVIEW.md)
+records what ETS, Theta, AutoARIMA and MLForecast can contribute, and why fitting
+an engine is separate from proving a replacement on held-out kitchen history.

@@ -256,6 +256,23 @@ describe("menu forecast horizon", () => {
         busyQuantity: 18,
         totalQuantity: 18,
         seasonalFactor: 1,
+        basis: {
+          recentQuantity: 12,
+          seasonalAdjustment: 0,
+          busyAllowance: 6,
+          lastYearComparable: false,
+          recentWeeks: [
+            { start: "2026-08-22", end: "2026-08-28", quantity: 12 },
+          ],
+          lastYearWeeks: [
+            { start: "2025-08-23", end: "2025-08-29", quantity: 0 },
+          ],
+          lastYearPeriod: {
+            start: "2025-08-30",
+            end: "2025-09-05",
+            quantity: 0,
+          },
+        },
         days: [
           { date: "2026-08-29", typicalQuantity: 12, plannedQuantity: 18 },
         ],

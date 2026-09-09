@@ -994,7 +994,7 @@ It returns `{menu, items, recipes, ingredients, products, currencyCode}` — the
 picker's sources travel with the worksheet so opening one is a single read.
 
 `menu/<menu_ref>/forecast/` accepts the same owner-scoped public-id or UUID
-forms and returns a non-persisted production plan beginning on the
+forms and returns a non-persisted production forecast beginning on the
 workspace-local current date. `?days=` is `7` (default) or `30`; `?plan=` is
 `typical` (default) or `busy`. Invalid plans return 400
 (`{"error": "Forecast plan must be typical or busy"}`). The web page also accepts
@@ -1024,13 +1024,38 @@ a zero typical pattern (offsetting sales and returns) is spread evenly.
 These are production allocations, not independently calibrated daily busy
 levels. Per-product day totals reconcile to the product's whole-horizon total.
 
+Every product also carries `basis`, from that product's already-loaded
+consumption history, including in-scope bundle contents and mapped modifiers:
+
+- `recentQuantity`: the full selected horizon projected without seasonal scaling.
+- `seasonalAdjustment`: signed difference between `typicalQuantity` and
+  `recentQuantity`; these serialized thousandths add back to expected demand.
+- `busyAllowance`: `busyQuantity - typicalQuantity`, separate from the expected
+  demand explanation. These values do not depend on which plan is selected.
+- `lastYearComparable`: whether the same existence/positive-window guard used
+  by the engine supports the comparison. A supported but flat comparison can
+  have a zero adjustment. Unavailable history has no seasonal adjustment.
+- `recentWeeks` and `lastYearWeeks`: eight `{start,end,quantity}` rows each,
+  ending yesterday and 364 days before yesterday respectively. Quantities are
+  recorded consumption (including returns), never forecast values. Missing
+  records yield zero recorded units, not evidence of zero demand.
+- `lastYearPeriod`: `{start,end,quantity}` for the selected 7/30-day period
+  shifted back 364 days. It is historical consumption, not a prediction.
+
+The web page is titled **Production forecast** under the existing **Forecast**
+nav. Product explanations expand under **Why this quantity?**, with explicitly
+dated **View sales history** tables. They describe the full selected horizon
+in both views; Busy allowance is shown only for the Busy plan. Short/no recent
+history and missing comparable last-year history are explicit.
+
 `production` is `{typicalUnits,busyUnits,plannedUnits,recipeBatches,productsPlanned}`:
 quantities sum the displayed product rows, batches sum the recipe rows, and
 products count positive planned quantities. Top-level `days[]` contains
 `{date,typicalUnits,plannedUnits}` summed over those same product rows. This
 aggregate is a production planning count, including bundle contents and
 mapped modifiers; it is neither as-sold units nor a sales-accounting total.
-The sales ledger still keeps units per product.
+The sales ledger still keeps units per product. These compatibility aggregates
+are not shown as a combined items/batches headline.
 
 `basis.weeks.recent` has eight `{start,end,units,lastYearUnits}` blocks ending
 at `historyEnd`. `basis.weeks.horizon` has consecutive seven-day blocks (the
@@ -1041,8 +1066,9 @@ walk. Empty menus still receive dated zero blocks. `basis.level` is
 `{weeklyUnits,seasonalFactor,seasonalProducts}`: a seven-day projection without
 seasonal scaling, the weighted ratio of scaled to unscaled weekly quantities
 using the selected horizon's factors (1 without volume), and the number of
-scaled menu members. The displayed overall factor is descriptive, not a new
-factor applied to every product.
+scaled menu members. The overall factor is descriptive, not a new factor
+applied to every product.
+These compatibility fields no longer form a menu-wide basis table in the UI.
 
 `series[]` is 28 history days followed by the horizon, in menu-member units:
 `{date,actualUnits,typicalUnits,plannedUnits}`. The last history row carries
@@ -1070,6 +1096,13 @@ plan through current composition once. Recipe rows carry identity, title,
 `batches`, nullable `yieldAmount/yieldUnit`, and `days: [{date,batches}]`.
 Per-day batches use the same component-batch resolver and reconcile to the
 whole recipe row after rounding; recipe day allocation adds no queries.
+The UI leads with **Prep quantities** in physical yield units (including dated
+columns), then shows the recipe equivalent beside the recipe. Without a yield
+it explicitly falls back to batches. Required count outputs round up to whole
+pieces; physical measurements follow the workspace's measurement system.
+CSV prep exports retain explicitly labelled daily batch columns. The page
+requires the chef to account for stock and food already prepared; it does not
+claim these are net quantities to make.
 Materials remain whole-horizon purchasing requirements, with usage and
 purchase quantities separate. Each material carries `purchaseSize`,
 `purchaseUnit`, fractional `packs`, nullable `costCents`, and nullable

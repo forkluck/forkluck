@@ -209,9 +209,11 @@ from daily consumption in the forecast basis and current composition. It is
 not a sale, import, sync result, or undo target.
 *Avoid:* "forecast fact", "committed demand".
 
-**Production plan** — the chosen quantities to make, with recipe batches and
-whole-horizon materials. The headline sums planned product rows, including
-bundle contents and modifiers; it is a planning count, never a sales total.
+**Production forecast** — expected demand by product and the recipe output it
+requires, before subtracting stock or food already prepared. Navigation stays
+Forecast. Prep quantities lead with litres, kilograms or pieces; recipe
+multiples are secondary, with batches as an explicit fallback for missing yield.
+Whole-horizon materials remain a shopping requirement.
 *Avoid:* "units sold", "revenue forecast".
 
 **Day view** — the selected horizon plan distributed by each product's weekday
@@ -219,9 +221,14 @@ pattern, with recipe batches on the same dates. A 30-day view groups those
 dates into the basis's week blocks; the export retains every day.
 *Avoid:* "daily busy level", "daily confidence".
 
-**Basis weeks** — the eight recent blocks and the coming blocks beside their
-matching weeks last year, shifted 52 weeks so weekdays line up. These rows,
-the chart, and the accuracy check use menu members only; no price is needed.
+**Why this quantity?** — one product's recent demand estimate, signed seasonal
+change, resulting expected demand, and separate Busy allowance when selected.
+View sales history expands that product's eight recent weeks, the eight weeks
+preceding last year's matching period, and that period itself, all explicitly
+dated. These are recorded consumption quantities, never predictions. Missing
+records are not proof of zero demand. Included products retain the same scope
+as their forecast rows. Menu-level basis weeks remain API compatibility fields;
+the chart and accuracy use menu members only, without requiring prices.
 *Avoid:* "forecast sales", "year-over-year growth".
 
 **Level** — about how many menu items the recent weekday pattern makes in a
