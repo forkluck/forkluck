@@ -8,6 +8,15 @@ import {
   sortRows,
   useSortState,
 } from "@/components/menu/product-cells"
+import {
+  amount,
+  makes,
+  measure,
+  needed,
+  packsLabel,
+  packsToBuy,
+  usageNote,
+} from "@/components/menus/forecast-format"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -25,27 +34,24 @@ import type {
   MenuForecastPlan,
 } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
+import { formatCents, formatWholeCents } from "@/lib/money"
 import { productHref } from "@/lib/product-href"
-import { unitShort } from "@/lib/unit-registry"
-import {
-  displayWeight,
-  toGrams,
-  WEIGHT_UNITS,
-  type WeightUnit,
-} from "@/lib/units"
+import { formatPackSize } from "@/lib/unit-registry"
 import { cn } from "@/lib/utils"
 
 /**
- * The forecast page's tables. Product demand and Recipe batches sort on a
- * header click, the click-to-toggle the Products tables use, so a kitchen can
- * put its biggest sellers and its largest batches at the top. Ingredients and
- * supplies is not sortable; ingredients are listed before supplies.
+ * The forecast page's tables. Every one sorts on a header click, the
+ * click-to-toggle the Products tables use, so a kitchen can put its biggest
+ * sellers, its largest batches and its dearest materials at the top.
  */
 
 type ProductRow = MenuForecastData["products"][number]
-type ProductSortKey = "product" | "typical" | "busy" | "history"
+type ProductSortKey =
+  "product" | "typical" | "busy" | "price" | "sales" | "history"
 type RecipeRow = MenuForecastData["recipeRequirements"][number]
 type RecipeSortKey = "recipe" | "batches"
+type MaterialRow = MenuForecastData["materialRequirements"][number]
+type MaterialSortKey = "material" | "buy" | "cost"
 
 /**
  * Whole units. A projection is good to a tenth or so of its total, never to a
@@ -62,11 +68,16 @@ function units(quantity: number) {
   return wholeUnitFormat.format(quantity)
 }
 
+/** Only thin history is worth a word; a full eight weeks is the norm. */
 function historyLabel(weeksObserved: number) {
+  if (weeksObserved === 8) return "Full"
   return weeksObserved
     ? `${weeksObserved} of 8 weeks`
     : "No sales in the last 8 weeks"
 }
+
+/** A blank cell that still reads as a value, never as a missing render. */
+const blank = <span className="text-faint">–</span>
 
 /** Rows arrive A–Z from the backend and stay that way until a header is clicked. */
 export function ProductForecastTable({
@@ -75,15 +86,36 @@ export function ProductForecastTable({
   forecast: MenuForecastData
 }) {
   const busy = forecast.basis.plan === "busy"
+  const currencyCode = forecast.revenue.currencyCode
+  const planCents = (row: ProductRow) =>
+    busy ? row.busyCents : row.typicalCents
   const { sort, toggle, directionFor } = useSortState<ProductSortKey>()
   const rows = sortRows<ProductRow, ProductSortKey>(forecast.products, sort, {
     product: (row) => row.productName,
     typical: (row) => row.typicalQuantity,
     busy: (row) => row.busyQuantity,
+    price: (row) => row.priceCents ?? -1,
+    sales: (row) => planCents(row) ?? -1,
     history: (row) => row.weeksObserved,
   })
+  const header = (
+    key: ProductSortKey,
+    label: string,
+    className?: string,
+    align: "left" | "right" = "left"
+  ) => (
+    <TableHead className={className} aria-sort={ariaSort(directionFor(key))}>
+      <SortHeader
+        align={align}
+        direction={directionFor(key)}
+        onClick={() => toggle(key)}
+      >
+        {label}
+      </SortHeader>
+    </TableHead>
+  )
   return (
-    <section>
+    <section className="break-inside-avoid">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-foreground">
@@ -102,99 +134,95 @@ export function ProductForecastTable({
         <Table>
           <TableHeader>
             <TableHeaderRow>
-              <TableHead
-                className="min-w-48"
-                aria-sort={ariaSort(directionFor("product"))}
-              >
-                <SortHeader
-                  direction={directionFor("product")}
-                  onClick={() => toggle("product")}
-                >
-                  Product
-                </SortHeader>
-              </TableHead>
-              <TableHead
-                className={cn("min-w-24", !busy && "text-foreground")}
-                aria-sort={ariaSort(directionFor("typical"))}
-              >
-                <SortHeader
-                  align="right"
-                  direction={directionFor("typical")}
-                  onClick={() => toggle("typical")}
-                >
-                  Typical
-                </SortHeader>
-              </TableHead>
-              <TableHead
-                className={cn("min-w-24", busy && "text-foreground")}
-                aria-sort={ariaSort(directionFor("busy"))}
-              >
-                <SortHeader
-                  align="right"
-                  direction={directionFor("busy")}
-                  onClick={() => toggle("busy")}
-                >
-                  Busy
-                </SortHeader>
-              </TableHead>
-              <TableHead
-                className="min-w-32"
-                aria-sort={ariaSort(directionFor("history"))}
-              >
-                <SortHeader
-                  direction={directionFor("history")}
-                  onClick={() => toggle("history")}
-                >
-                  History
-                </SortHeader>
-              </TableHead>
+              {header("product", "Product", "min-w-48")}
+              {header(
+                "typical",
+                "Typical",
+                cn("min-w-24", !busy && "text-foreground"),
+                "right"
+              )}
+              {header(
+                "busy",
+                "Busy",
+                cn("min-w-24", busy && "text-foreground"),
+                "right"
+              )}
+              {header("price", "Price", "min-w-24", "right")}
+              {header("sales", "Projected sales", "min-w-32", "right")}
+              {header("history", "History", "min-w-32")}
             </TableHeaderRow>
           </TableHeader>
           <TableBody>
             {rows.length ? (
-              rows.map((product) => (
-                <TableRow key={product.productId}>
-                  <TableCell>
-                    <Link
-                      href={productHref({
-                        publicId: product.productPublicId,
-                      })}
-                      className="font-medium text-foreground hover:underline"
-                    >
-                      {product.productName}
-                    </Link>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
+              rows.map((product) => {
+                const cents = planCents(product)
+                return (
+                  <TableRow key={product.productId}>
+                    <TableCell>
+                      <Link
+                        href={productHref({
+                          publicId: product.productPublicId,
+                        })}
+                        className="font-medium text-foreground hover:underline"
+                      >
+                        {product.productName}
+                      </Link>
                       {!product.menuMember ? (
-                        <Badge variant="secondary">Modifier</Badge>
+                        <Badge variant="secondary" className="ml-2">
+                          Modifier
+                        </Badge>
                       ) : null}
                       {!product.isActive ? (
-                        <Badge variant="secondary">Inactive</Badge>
+                        <Badge variant="secondary" className="ml-2">
+                          Inactive
+                        </Badge>
                       ) : null}
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      "text-right tabular-nums",
-                      !busy && "font-medium"
-                    )}
-                  >
-                    {units(product.typicalQuantity)}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      "text-right tabular-nums",
-                      busy && "font-medium"
-                    )}
-                  >
-                    {units(product.busyQuantity)}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {historyLabel(product.weeksObserved)}
-                  </TableCell>
-                </TableRow>
-              ))
+                    </TableCell>
+                    <TableCell
+                      className={cn(
+                        "text-right tabular-nums",
+                        !busy && "font-medium"
+                      )}
+                    >
+                      {units(product.typicalQuantity)}
+                    </TableCell>
+                    <TableCell
+                      className={cn(
+                        "text-right tabular-nums",
+                        busy && "font-medium"
+                      )}
+                    >
+                      {units(product.busyQuantity)}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {product.priceCents !== null ? (
+                        formatCents(product.priceCents, currencyCode)
+                      ) : product.menuMember ? (
+                        <Badge variant="warning">No price</Badge>
+                      ) : (
+                        blank
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {cents !== null
+                        ? formatWholeCents(cents, currencyCode)
+                        : blank}
+                    </TableCell>
+                    <TableCell
+                      className={cn(
+                        "text-sm",
+                        product.weeksObserved === 8
+                          ? "text-faint"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {historyLabel(product.weeksObserved)}
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             ) : (
-              <TableEmpty colSpan={4}>
+              <TableEmpty colSpan={6}>
                 Link Products to this Menu to forecast demand.
               </TableEmpty>
             )}
@@ -205,63 +233,31 @@ export function ProductForecastTable({
   )
 }
 
-/**
- * Three digits a kitchen can act on: 981 g, 12.3 kg, 1.23 kg. Past a hundred a
- * fraction is noise on a forecast that is only good to a tenth or so of its
- * total, and the backend's thousandths never reach the screen.
- */
-const amountFormats = [0, 1, 2].map(
-  (digits) => new Intl.NumberFormat("en-US", { maximumFractionDigits: digits })
-)
-
-function amount(value: number) {
-  return amountFormats[value >= 100 ? 0 : value >= 10 ? 1 : 2].format(value)
-}
-
-/**
- * A weight in the kitchen's own system, stepping up to the larger unit once
- * it gets there: 1,234 g reads 1.23 kg, and a thousand millilitres a litre.
- * Cups, cases and pieces are shown as they stand.
- */
-function measure(quantity: number, unit: string, system: MeasurementSystem) {
-  if (WEIGHT_UNITS.includes(unit as WeightUnit)) {
-    const display = displayWeight(toGrams(quantity, unit as WeightUnit), system)
-    return `${amount(display.amount)} ${display.unit}`
-  }
-  if (unit === "ml" || unit === "l") {
-    const millilitres = unit === "l" ? quantity * 1000 : quantity
-    const litres = millilitres >= 1000
-    return `${amount(litres ? millilitres / 1000 : millilitres)} ${unitShort(litres ? "l" : "ml")}`
-  }
-  return `${amount(quantity)} ${unitShort(unit) || unit}`
-}
-
-function quantities(
-  rows: Array<{ quantity: number; unit: string }>,
-  system: MeasurementSystem
-) {
-  if (!rows.length) return "—"
-  return rows.map((row) => measure(row.quantity, row.unit, system)).join(", ")
-}
-
 function planBadge(plan: MenuForecastPlan) {
   return plan === "busy" ? "Busy plan" : "Typical plan"
 }
 
-export function Requirements({
+/** What the batches make, so 422 batches of a one-piece recipe reads as 422 pieces. */
+function Makes({ row, system }: { row: RecipeRow; system: MeasurementSystem }) {
+  const made = makes(row)
+  if (!made) return <span className="text-faint">No yield</span>
+  return (
+    <>
+      {measure(made.quantity, made.unit, system)}
+      <div className="text-xs text-faint">
+        {measure(row.yieldAmount!, made.unit, system)} per batch
+      </div>
+    </>
+  )
+}
+
+export function RecipeBatchesTable({
   forecast,
   measurementSystem,
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
 }) {
-  const ingredients = forecast.materialRequirements.filter(
-    (row) => row.kind === "ingredient"
-  )
-  const supplies = forecast.materialRequirements.filter(
-    (row) => row.kind === "supply"
-  )
-  const badge = planBadge(forecast.basis.plan)
   // The backend lists recipes in id order, which means nothing to a cook, so
   // the table opens A to Z; a header click takes it from there.
   const { sort, toggle, directionFor } = useSortState<RecipeSortKey>({
@@ -274,81 +270,154 @@ export function Requirements({
     { recipe: (row) => row.recipeTitle, batches: (row) => row.batches }
   )
   return (
-    <div className="grid gap-6 xl:grid-cols-2">
-      <section>
-        <div className="mb-3 flex flex-wrap items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            Recipe batches
-          </h2>
-          <Badge variant="secondary">{badge}</Badge>
-        </div>
-        <TableFrame className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableHeaderRow>
-                <TableHead aria-sort={ariaSort(directionFor("recipe"))}>
-                  <SortHeader
-                    direction={directionFor("recipe")}
-                    onClick={() => toggle("recipe")}
-                  >
-                    Recipe
-                  </SortHeader>
-                </TableHead>
-                <TableHead aria-sort={ariaSort(directionFor("batches"))}>
-                  <SortHeader
-                    align="right"
-                    direction={directionFor("batches")}
-                    onClick={() => toggle("batches")}
-                  >
-                    Batches
-                  </SortHeader>
-                </TableHead>
-              </TableHeaderRow>
-            </TableHeader>
-            <TableBody>
-              {recipes.length ? (
-                recipes.map((row) => (
-                  <TableRow key={row.recipeId}>
-                    <TableCell>
-                      <Link
-                        href={`/recipes/${encodeURIComponent(row.recipePublicId)}`}
-                        className="font-medium text-foreground hover:underline"
-                      >
-                        {row.recipeTitle}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {amount(row.batches)}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableEmpty colSpan={2}>No recipe demand.</TableEmpty>
-              )}
-            </TableBody>
-          </Table>
-        </TableFrame>
-      </section>
+    <section className="break-inside-avoid">
+      <div className="mb-3 flex flex-wrap items-baseline gap-2">
+        <h2 className="text-lg font-semibold text-foreground">
+          Recipe batches
+        </h2>
+        <Badge variant="secondary">{planBadge(forecast.basis.plan)}</Badge>
+      </div>
+      <TableFrame className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableHeaderRow>
+              <TableHead aria-sort={ariaSort(directionFor("recipe"))}>
+                <SortHeader
+                  direction={directionFor("recipe")}
+                  onClick={() => toggle("recipe")}
+                >
+                  Recipe
+                </SortHeader>
+              </TableHead>
+              <TableHead
+                className="min-w-24"
+                aria-sort={ariaSort(directionFor("batches"))}
+              >
+                <SortHeader
+                  align="right"
+                  direction={directionFor("batches")}
+                  onClick={() => toggle("batches")}
+                >
+                  Batches
+                </SortHeader>
+              </TableHead>
+              <TableHead className="min-w-32 text-right">Makes</TableHead>
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {recipes.length ? (
+              recipes.map((row) => (
+                <TableRow key={row.recipeId}>
+                  <TableCell>
+                    <Link
+                      href={`/recipes/${encodeURIComponent(row.recipePublicId)}`}
+                      className="font-medium text-foreground hover:underline"
+                    >
+                      {row.recipeTitle}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-right font-medium tabular-nums">
+                    {amount(row.batches)}
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    <Makes row={row} system={measurementSystem} />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableEmpty colSpan={3}>No recipe demand.</TableEmpty>
+            )}
+          </TableBody>
+        </Table>
+      </TableFrame>
+    </section>
+  )
+}
 
-      <section>
-        <div className="mb-3 flex flex-wrap items-baseline gap-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            Ingredients and supplies
-          </h2>
-          <Badge variant="secondary">{badge}</Badge>
-        </div>
-        <TableFrame className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableHeaderRow>
-                <TableHead>Material</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Purchase units</TableHead>
-              </TableHeaderRow>
-            </TableHeader>
-            <TableBody>
-              {[...ingredients, ...supplies].length ? (
-                [...ingredients, ...supplies].map((row) => (
+/** Whole packs, or the reason there is no count yet. */
+function Buy({ row }: { row: MaterialRow }) {
+  const packs = packsToBuy(row.packs)
+  if (packs === null) {
+    return (
+      <span className="text-faint">
+        {row.purchaseSize === null || !row.purchaseUnit ? "Set pack size" : "–"}
+      </span>
+    )
+  }
+  return (
+    <span
+      title={row.packs === packs ? undefined : `${amount(row.packs!)} packs`}
+    >
+      {packsLabel(packs)}
+    </span>
+  )
+}
+
+export function MaterialsTable({
+  forecast,
+  measurementSystem,
+}: {
+  forecast: MenuForecastData
+  measurementSystem: MeasurementSystem
+}) {
+  const currencyCode = forecast.revenue.currencyCode
+  const { sort, toggle, directionFor } = useSortState<MaterialSortKey>({
+    key: "material",
+    direction: "asc",
+  })
+  // Ingredients before supplies whatever the sort: the shopping list is food
+  // first, and a sort by cost orders each list, never shuffles them together.
+  const ordered = (kind: MaterialRow["kind"]) =>
+    sortRows<MaterialRow, MaterialSortKey>(
+      forecast.materialRequirements.filter((row) => row.kind === kind),
+      sort,
+      {
+        material: (row) => row.ingredientName,
+        buy: (row) => row.packs ?? -1,
+        cost: (row) => row.costCents ?? -1,
+      }
+    )
+  const rows = [...ordered("ingredient"), ...ordered("supply")]
+  const header = (
+    key: MaterialSortKey,
+    label: string,
+    className?: string,
+    align: "left" | "right" = "left"
+  ) => (
+    <TableHead className={className} aria-sort={ariaSort(directionFor(key))}>
+      <SortHeader
+        align={align}
+        direction={directionFor(key)}
+        onClick={() => toggle(key)}
+      >
+        {label}
+      </SortHeader>
+    </TableHead>
+  )
+  return (
+    <section className="break-inside-avoid">
+      <div className="mb-3 flex flex-wrap items-baseline gap-2">
+        <h2 className="text-lg font-semibold text-foreground">
+          Ingredients and supplies
+        </h2>
+        <Badge variant="secondary">{planBadge(forecast.basis.plan)}</Badge>
+      </div>
+      <TableFrame className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableHeaderRow>
+              {header("material", "Material", "min-w-48")}
+              <TableHead className="min-w-28 text-right">Needed</TableHead>
+              {header("buy", "Buy", "min-w-28", "right")}
+              <TableHead className="min-w-24 text-right">Pack</TableHead>
+              {header("cost", "Cost", "min-w-24", "right")}
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length ? (
+              rows.map((row) => {
+                const note = usageNote(row, measurementSystem)
+                return (
                   <TableRow key={row.ingredientId}>
                     <TableCell>
                       <Link
@@ -362,22 +431,62 @@ export function Requirements({
                           Supply
                         </Badge>
                       ) : null}
+                      {note ? (
+                        <div className="mt-0.5 text-xs text-faint">{note}</div>
+                      ) : null}
                     </TableCell>
-                    <TableCell className="tabular-nums">
-                      {quantities(row.usage, measurementSystem)}
+                    <TableCell className="text-right tabular-nums">
+                      {needed(row, measurementSystem)}
                     </TableCell>
-                    <TableCell className="tabular-nums">
-                      {quantities(row.purchase, measurementSystem)}
+                    <TableCell className="text-right font-medium tabular-nums">
+                      <Buy row={row} />
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground tabular-nums">
+                      {formatPackSize(
+                        row.purchaseSize,
+                        row.purchaseUnit,
+                        measurementSystem
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {row.costCents !== null ? (
+                        formatWholeCents(row.costCents, currencyCode)
+                      ) : row.packs !== null ? (
+                        <span className="text-faint">No price</span>
+                      ) : (
+                        blank
+                      )}
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableEmpty colSpan={3}>No material demand.</TableEmpty>
-              )}
-            </TableBody>
-          </Table>
-        </TableFrame>
-      </section>
-    </div>
+                )
+              })
+            ) : (
+              <TableEmpty colSpan={5}>No material demand.</TableEmpty>
+            )}
+          </TableBody>
+        </Table>
+      </TableFrame>
+    </section>
+  )
+}
+
+export function Requirements({
+  forecast,
+  measurementSystem,
+}: {
+  forecast: MenuForecastData
+  measurementSystem: MeasurementSystem
+}) {
+  return (
+    <>
+      <RecipeBatchesTable
+        forecast={forecast}
+        measurementSystem={measurementSystem}
+      />
+      <MaterialsTable
+        forecast={forecast}
+        measurementSystem={measurementSystem}
+      />
+    </>
   )
 }

@@ -639,11 +639,20 @@ def _product_material_demand(
             "recipePublicId": recipe.public_id,
             "recipeTitle": recipe.title,
             "batches": _json_quantity(quantity),
+            # What one batch makes, so a batch count can be read as pieces or
+            # kilograms; null when the recipe does not say.
+            "yieldAmount": (
+                float(recipe.yield_amount)
+                if recipe.yield_amount is not None and recipe.yield_amount > 0
+                else None
+            ),
+            "yieldUnit": recipe.yield_unit or None,
         }
         for recipe_id, quantity in sorted(recipes.items())
         if (recipe := recipe_models.get(recipe_id)) is not None
     ]
     ingredient_rows: dict[str, JsonObject] = {}
+    purchase_totals: defaultdict[str, Decimal] = defaultdict(Decimal)
     for (ingredient_id, kind_and_unit), quantity in sorted(material_amounts.items()):
         kind, unit = kind_and_unit.split(":", 1)
         ingredient = ingredients.get(ingredient_id)
@@ -658,10 +667,66 @@ def _product_material_demand(
                 "kind": "supply" if ingredient.non_edible else "ingredient",
                 "usage": [],
                 "purchase": [],
+                **_pack_basis(ingredient),
+                "packs": None,
+                "costCents": None,
             },
         )
         row[kind].append({"quantity": _json_quantity(quantity), "unit": unit})
+        if kind == "purchase":
+            purchase_totals[ingredient_id] += quantity
+    for ingredient_id, purchased in purchase_totals.items():
+        ingredient = ingredients[ingredient_id]
+        packs = _packs(purchased, ingredient)
+        if packs is None:
+            continue
+        row = ingredient_rows[ingredient_id]
+        row["packs"] = _json_quantity(packs)
+        row["costCents"] = _pack_cost(packs, ingredient)
     return recipe_rows, list(ingredient_rows.values()), unresolved
+
+
+def _pack_basis(ingredient: Ingredient) -> JsonObject:
+    size = ingredient.purchase_size
+    return {
+        "purchaseSize": float(size) if size is not None and size > 0 else None,
+        "purchaseUnit": ingredient.purchase_unit or None,
+    }
+
+
+def _packs(purchased: Decimal, ingredient: Ingredient) -> Decimal | None:
+    """Fractional packs: the purchase-unit amount over the pack size.
+
+    The purchase amount is already gross of trim (``purchase_quantity`` divides
+    by the yield), and it is in the ingredient's own purchase unit, so one
+    division is the whole sum.  Rounding up to whole packs is the screen's
+    decision, not the contract's.
+    """
+    size = ingredient.purchase_size
+    if size is None or size <= 0 or purchased <= 0:
+        return None
+    return purchased / Decimal(str(size))
+
+
+def _pack_cost(packs: Decimal, ingredient: Ingredient) -> int | None:
+    """Packs at the pack price, the same arithmetic ``cost_walker`` charges."""
+    if ingredient.purchase_cost_cents <= 0:
+        return None
+    return int(
+        (packs * Decimal(ingredient.purchase_cost_cents)).quantize(
+            _WHOLE_CENTS, rounding=ROUND_HALF_UP
+        )
+    )
+
+
+def _material_cost(material_rows: Sequence[JsonObject]) -> JsonObject:
+    """The shopping list's total, and how many rows could not join it."""
+    costed = [row for row in material_rows if row["costCents"] is not None]
+    return {
+        "costCents": sum(row["costCents"] for row in costed),
+        "costedMaterials": len(costed),
+        "uncostedMaterials": len(material_rows) - len(costed),
+    }
 
 
 def _menu_revenue(
@@ -915,6 +980,7 @@ def menu_forecast_payload(
         total = projection.busy_total if plan == "busy" else projection.typical_total
         total_quantities[product_id] = total
         with_history += bool(projection.weeks_observed)
+        price = priced.get(product_id)
         product_rows.append(
             {
                 "productId": product_id,
@@ -926,6 +992,14 @@ def menu_forecast_payload(
                 "typicalQuantity": _json_quantity(projection.typical_total),
                 "busyQuantity": _json_quantity(projection.busy_total),
                 "totalQuantity": _json_quantity(total),
+                # The menu price this row is projected at, and its share of
+                # the menu's money; null for an unpriced member or a product
+                # reached only through a box or a modifier.
+                "priceCents": price,
+                "typicalCents": (
+                    _money(projection.typical_total, price) if price else None
+                ),
+                "busyCents": _money(projection.busy_total, price) if price else None,
             }
         )
     recipe_requirements, material_requirements, material_unresolved = _product_material_demand(
@@ -972,6 +1046,7 @@ def menu_forecast_payload(
             member_count=len(scoped_product_ids),
             plan=plan,
         ),
+        "materialCost": _material_cost(material_requirements),
         "series": _series(
             daily,
             projections,

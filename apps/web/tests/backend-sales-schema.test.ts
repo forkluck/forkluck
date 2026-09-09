@@ -227,10 +227,36 @@ describe("menu forecast horizon", () => {
         typicalQuantity: 12,
         busyQuantity: 18,
         totalQuantity: 18,
+        priceCents: 450,
+        typicalCents: 5400,
+        busyCents: 8100,
       },
     ],
-    recipeRequirements: [],
-    materialRequirements: [],
+    materialCost: { costCents: 1250, costedMaterials: 1, uncostedMaterials: 1 },
+    recipeRequirements: [
+      {
+        recipeId: "recipe-1",
+        recipePublicId: "rcp_loaf",
+        recipeTitle: "Loaf",
+        batches: 18,
+        yieldAmount: 1,
+        yieldUnit: "each",
+      },
+    ],
+    materialRequirements: [
+      {
+        ingredientId: "ingredient-1",
+        ingredientPublicId: "ing_flour",
+        ingredientName: "Flour",
+        kind: "ingredient",
+        usage: [{ quantity: 9000, unit: "g" }],
+        purchase: [{ quantity: 9, unit: "kg" }],
+        purchaseSize: 5,
+        purchaseUnit: "kg",
+        packs: 1.8,
+        costCents: 1250,
+      },
+    ],
     unresolved: [],
   }
 
@@ -241,6 +267,10 @@ describe("menu forecast horizon", () => {
     expect(parsed.products[0]!.totalQuantity).toBe(18)
     expect(parsed.series[0]!.busyCents).toBe(450)
     expect(parsed.backtest.errorPercent).toBe(9.09)
+    expect(parsed.products[0]!.typicalCents).toBe(5400)
+    expect(parsed.materialCost.costCents).toBe(1250)
+    expect(parsed.materialRequirements[0]!.packs).toBe(1.8)
+    expect(parsed.recipeRequirements[0]!.yieldUnit).toBe("each")
   })
 
   it("rejects the four-week basis key", () => {

@@ -1290,3 +1290,181 @@ class MenuForecastTests(TestCase):
             msg="Menu forecast query count must not grow with recipe graph depth",
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
+
+    def ingredient(
+        self,
+        name: str,
+        *,
+        cost: int = 0,
+        size=1000,
+        unit: str | None = "g",
+        yield_percent: str = "100",
+        supply: bool = False,
+    ) -> Ingredient:
+        return Ingredient.objects.create(
+            user=self.user,
+            name=name,
+            normalized_name=name.casefold(),
+            purchase_cost_cents=cost,
+            purchase_size=size,
+            purchase_unit=unit,
+            yield_percent=Decimal(yield_percent),
+            non_edible=supply,
+        )
+
+    def four_mondays_of(self, product: SalesProduct, quantity: str = "4") -> None:
+        variant = self.variant(product)
+        for sold_on in (date(2026, 3, 30), date(2026, 4, 6), date(2026, 4, 13), date(2026, 4, 20)):
+            self.line(variant, sold_on, quantity=quantity)
+
+    def test_materials_carry_packs_and_cost_at_the_pack_price(self):
+        loaf = self.product("Loaf")
+        menu = self.menu(loaf)
+        self.four_mondays_of(loaf)
+        flour = self.ingredient("Flour", cost=300, size=1, unit="kg")
+        cream = self.ingredient("Cream", cost=800, size=2, unit="kg")
+        salt = self.ingredient("Salt", cost=0, size=500)
+        bag = self.ingredient("Bag", size=None, unit=None, supply=True)
+        for position, (ingredient, grams) in enumerate(
+            ((flour, "250"), (cream, "100"), (salt, "50"), (bag, "1"))
+        ):
+            SalesProductComponent.objects.create(
+                product=loaf,
+                ingredient=ingredient,
+                quantity=Decimal(grams),
+                unit="g",
+                position=position,
+            )
+
+        payload = menu_forecast_payload(self.user, menu, today=self.today)
+        rows = {row["ingredientName"]: row for row in payload["materialRequirements"]}
+
+        # A kilo of flour is exactly one pack; 400 g of cream is a fifth of a
+        # two-kilo pack, charged at a fifth of its price.
+        self.assertEqual(rows["Flour"]["purchase"], [{"quantity": 1.0, "unit": "kg"}])
+        self.assertEqual(rows["Flour"]["purchaseSize"], 1.0)
+        self.assertEqual(rows["Flour"]["purchaseUnit"], "kg")
+        self.assertEqual(rows["Flour"]["packs"], 1.0)
+        self.assertEqual(rows["Flour"]["costCents"], 300)
+        self.assertEqual(rows["Cream"]["packs"], 0.2)
+        self.assertEqual(rows["Cream"]["costCents"], 160)
+        # A pack size without a price still counts packs; no pack size counts
+        # nothing, and neither joins the total.
+        self.assertEqual(rows["Salt"]["packs"], 0.4)
+        self.assertIsNone(rows["Salt"]["costCents"])
+        self.assertIsNone(rows["Bag"]["purchaseSize"])
+        self.assertIsNone(rows["Bag"]["purchaseUnit"])
+        self.assertIsNone(rows["Bag"]["packs"])
+        self.assertIsNone(rows["Bag"]["costCents"])
+        self.assertEqual(
+            payload["materialCost"],
+            {"costCents": 460, "costedMaterials": 2, "uncostedMaterials": 2},
+        )
+
+    def test_trim_loss_makes_the_pack_count_gross(self):
+        loaf = self.product("Loaf")
+        menu = self.menu(loaf)
+        self.four_mondays_of(loaf)
+        onion = self.ingredient("Onion", cost=300, size=1, unit="kg", yield_percent="50")
+        SalesProductComponent.objects.create(
+            product=loaf, ingredient=onion, quantity=Decimal("250"), unit="g"
+        )
+
+        row = menu_forecast_payload(self.user, menu, today=self.today)["materialRequirements"][0]
+
+        # A kilo of usable onion at half yield is two kilos bought.
+        self.assertEqual(row["usage"], [{"quantity": 1000.0, "unit": "g"}])
+        self.assertEqual(row["purchase"], [{"quantity": 2.0, "unit": "kg"}])
+        self.assertEqual(row["packs"], 2.0)
+        self.assertEqual(row["costCents"], 600)
+
+    def test_the_busy_plan_charges_the_busy_quantity(self):
+        loaf = self.product("Loaf")
+        menu = self.menu(loaf)
+        variant = self.variant(loaf)
+        self.line(variant, date(2026, 4, 13), quantity="2")
+        self.line(variant, date(2026, 4, 20), quantity="6")
+        flour = self.ingredient("Busy flour", cost=200)
+        SalesProductComponent.objects.create(
+            product=loaf, ingredient=flour, quantity=Decimal("10"), unit="g"
+        )
+
+        typical = menu_forecast_payload(self.user, menu, today=self.today)
+        busy = menu_forecast_payload(self.user, menu, today=self.today, plan="busy")
+
+        # 42.22 g and 67.66 g of a kilo pack at $2: 8 cents typical, 14 busy.
+        self.assertEqual(typical["materialRequirements"][0]["packs"], 0.042)
+        self.assertEqual(typical["materialCost"]["costCents"], 8)
+        self.assertEqual(busy["materialRequirements"][0]["packs"], 0.068)
+        self.assertEqual(busy["materialCost"]["costCents"], 14)
+
+    def test_recipe_rows_say_what_a_batch_makes(self):
+        rolls = self.product("Roll")
+        dough = self.product("Dough tub")
+        menu = self.menu(rolls, dough)
+        self.four_mondays_of(rolls)
+        self.four_mondays_of(dough, quantity="1")
+        flour = self.ingredient("Roll flour")
+        roll_recipe = Recipe.objects.create(
+            user=self.user, title="Rolls", yield_amount=12, yield_unit="pcs"
+        )
+        unsized = Recipe.objects.create(user=self.user, title="Dough")
+        for recipe in (roll_recipe, unsized):
+            RecipeItem.objects.create(
+                recipe=recipe,
+                kind=RecipeItem.INGREDIENT,
+                position=0,
+                ingredient=flour,
+                quantity=Decimal("500"),
+                unit="g",
+            )
+        SalesProductComponent.objects.create(product=rolls, recipe=roll_recipe, quantity=Decimal("0.25"))
+        SalesProductComponent.objects.create(product=dough, recipe=unsized, quantity=Decimal("1"))
+
+        rows = {
+            row["recipeTitle"]: row
+            for row in menu_forecast_payload(self.user, menu, today=self.today)["recipeRequirements"]
+        }
+
+        self.assertEqual(rows["Rolls"]["batches"], 1.0)
+        self.assertEqual(rows["Rolls"]["yieldAmount"], 12.0)
+        self.assertEqual(rows["Rolls"]["yieldUnit"], "pcs")
+        self.assertEqual(rows["Dough"]["batches"], 1.0)
+        self.assertIsNone(rows["Dough"]["yieldAmount"])
+        self.assertIsNone(rows["Dough"]["yieldUnit"])
+
+    def test_product_rows_carry_their_price_and_their_share_of_the_money(self):
+        latte = self.product("Latte")
+        water = self.product("Water")
+        scone = self.product("Scone")
+        espresso = self.product("Espresso")
+        box = self.product("Box")
+        SalesProductComponent.objects.create(
+            product=box, component_product=espresso, quantity=1
+        )
+        SalesProduct.objects.filter(id=water.id).update(sell_price_cents=300)
+        SalesProduct.objects.filter(id=espresso.id).update(sell_price_cents=900)
+        menu = self.menu(latte, water, scone, box)
+        MenuItem.objects.filter(menu=menu, product=latte).update(sell_price_cents=500)
+        self.line(self.variant(latte), date(2026, 4, 20), quantity="2")
+        self.line(self.variant(water), date(2026, 4, 20), quantity="1")
+        self.line(self.variant(box, key="forecast:box"), date(2026, 4, 20), quantity="3")
+
+        payload = menu_forecast_payload(self.user, menu, today=self.today)
+
+        # The rows add up to the menu's money: two lattes at the menu's price,
+        # one water at the product's; the unpriced scone and the espressos
+        # inside the boxes carry no money of their own.
+        self.assertEqual(self.product_row(payload, latte)["priceCents"], 500)
+        self.assertEqual(self.product_row(payload, latte)["typicalCents"], 1000)
+        self.assertEqual(self.product_row(payload, latte)["busyCents"], 1000)
+        self.assertEqual(self.product_row(payload, water)["priceCents"], 300)
+        self.assertEqual(self.product_row(payload, water)["typicalCents"], 300)
+        self.assertIsNone(self.product_row(payload, scone)["priceCents"])
+        self.assertIsNone(self.product_row(payload, scone)["typicalCents"])
+        self.assertIsNone(self.product_row(payload, espresso)["priceCents"])
+        self.assertIsNone(self.product_row(payload, box)["priceCents"])
+        self.assertEqual(
+            sum(row["typicalCents"] or 0 for row in payload["products"]),
+            payload["revenue"]["typicalCents"],
+        )

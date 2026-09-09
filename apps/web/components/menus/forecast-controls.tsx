@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 
 import { LoadingRegion } from "@/components/ui/loading-region"
+import { Toolbar, ToolbarSpacer } from "@/components/ui/page"
 import { TabPill, TabPills } from "@/components/ui/tab-pills"
 import type { MenuForecastPlan } from "@/lib/backend/types"
 
@@ -20,20 +21,27 @@ export function forecastHref(
 }
 
 /**
- * The horizon and plan pills, and the forecast they switch. A pill changes
- * only the search params, which the router answers with no loading screen of
- * its own, so the pills swap at the click and the forecast below dims behind
- * a spinner until the new numbers arrive.
+ * The screen's toolbar: horizon pills and the dates they chose, the plan
+ * pills, then the actions at the far end, on the same 8px rhythm and 16px
+ * drop every other toolbar keeps. A pill changes only the search params,
+ * which the router answers with no loading screen of its own, so the pills
+ * swap at the click and the forecast below dims behind a spinner until the
+ * new numbers arrive. The whole row stays off the printed page.
  */
 export function ForecastControls({
   base,
   days,
   plan,
+  horizon,
+  actions,
   children,
 }: {
   base: string
   days: 7 | 30
   plan: MenuForecastPlan
+  /** "Sep 8 to Sep 14, 2026": the days the pills chose. */
+  horizon: string
+  actions?: React.ReactNode
   children: React.ReactNode
 }) {
   const [horizonPending, setHorizonPending] = React.useState(false)
@@ -41,26 +49,30 @@ export function ForecastControls({
   const pending = horizonPending || planPending
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <TabPills
-          aria-label="Forecast horizon"
-          className="w-fit"
-          onPendingChange={setHorizonPending}
-        >
-          <TabPill
-            active={days === 7}
-            render={<Link href={forecastHref(base, { days: 7, plan })} />}
+      <Toolbar className="print:hidden">
+        <div className="flex flex-wrap items-center gap-2 md:contents">
+          <TabPills
+            aria-label="Forecast horizon"
+            className="w-fit"
+            onPendingChange={setHorizonPending}
           >
-            Next 7 days
-          </TabPill>
-          <TabPill
-            active={days === 30}
-            render={<Link href={forecastHref(base, { days: 30, plan })} />}
-          >
-            Next 30 days
-          </TabPill>
-        </TabPills>
-        <div className="flex items-center gap-2">
+            <TabPill
+              active={days === 7}
+              render={<Link href={forecastHref(base, { days: 7, plan })} />}
+            >
+              Next 7 days
+            </TabPill>
+            <TabPill
+              active={days === 30}
+              render={<Link href={forecastHref(base, { days: 30, plan })} />}
+            >
+              Next 30 days
+            </TabPill>
+          </TabPills>
+          <span className="text-sm text-muted-foreground">{horizon}</span>
+        </div>
+        <ToolbarSpacer />
+        <div className="flex flex-wrap items-center gap-2 md:contents">
           <span className="text-sm text-muted-foreground">Plan for</span>
           <TabPills
             aria-label="Plan"
@@ -84,8 +96,9 @@ export function ForecastControls({
               Busy
             </TabPill>
           </TabPills>
+          {actions}
         </div>
-      </div>
+      </Toolbar>
       <LoadingRegion
         pending={pending}
         label="Loading forecast"

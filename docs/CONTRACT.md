@@ -977,10 +977,21 @@ an in-menu bundle join the scope and are marked `menuMember: false`, and mapped
 modifier products enter only when the same sale has an in-menu base
 contribution. `recipeRequirements` and `materialRequirements` expand the
 requested plan's Product demand through current composition, with usage and
-purchase-unit quantities kept separate. Missing yields, conversions, purchase
-units, and cyclic paths are structured `unresolved` rows rather than zeroes.
-The response does not subtract inventory, round packs, or write a forecast, and
-its money is projected demand at today's prices, never recorded sales.
+purchase-unit quantities kept separate. A recipe row carries the recipe's
+`yieldAmount` and `yieldUnit` (null when unstated) so batches can be read as
+what they make. A material row carries the ingredient's `purchaseSize` and
+`purchaseUnit`, `packs` (the purchase-unit amount over the pack size,
+fractional, null without a pack size) and `costCents` (packs at
+`purchase_cost_cents`, the arithmetic product cost uses, null without a pack
+size or a price); `materialCost` sums the costed rows as `costCents` and counts
+`costedMaterials` and `uncostedMaterials`. Each `products[]` row also carries
+the `priceCents` it is projected at and its `typicalCents` / `busyCents`, null
+for an unpriced member and for a product reached only through a box or a
+modifier, so the priced rows sum to `revenue`. Missing yields, conversions,
+purchase units, and cyclic paths are structured `unresolved` rows rather than
+zeroes. The response does not subtract inventory, round packs, or write a
+forecast, and its money is projected demand at today's prices, never recorded
+sales.
 Forecasts for different Menus are independent and therefore must not be summed
 without accounting for overlap.
 
