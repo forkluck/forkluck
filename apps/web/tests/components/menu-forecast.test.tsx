@@ -68,6 +68,7 @@ const FORECAST: MenuForecastData = {
     pricedProducts: 1,
     unpricedProducts: 1,
   },
+  materialCost: { costCents: 0, costedMaterials: 0, uncostedMaterials: 1 },
   series: SERIES,
   backtest: {
     weeks: [
@@ -115,6 +116,9 @@ const FORECAST: MenuForecastData = {
       typicalQuantity: 7,
       busyQuantity: 11,
       totalQuantity: 7,
+      priceCents: null,
+      typicalCents: null,
+      busyCents: null,
     },
     {
       productId: "product-2",
@@ -126,6 +130,9 @@ const FORECAST: MenuForecastData = {
       typicalQuantity: 0,
       busyQuantity: 0,
       totalQuantity: 0,
+      priceCents: null,
+      typicalCents: null,
+      busyCents: null,
     },
   ],
   recipeRequirements: [
@@ -134,6 +141,8 @@ const FORECAST: MenuForecastData = {
       recipePublicId: "rcp_dough",
       recipeTitle: "Cookie dough",
       batches: 2,
+      yieldAmount: 24,
+      yieldUnit: "each",
     },
   ],
   materialRequirements: [
@@ -144,6 +153,10 @@ const FORECAST: MenuForecastData = {
       kind: "supply",
       usage: [{ quantity: 7, unit: "each" }],
       purchase: [],
+      purchaseSize: null,
+      purchaseUnit: null,
+      packs: null,
+      costCents: null,
     },
   ],
   unresolved: [
@@ -180,10 +193,13 @@ describe("Menu forecast", () => {
 
     expect(screen.getByText("Current composition")).toBeDefined()
     expect(screen.queryByText("Seasonal")).toBeNull()
+    expect(screen.getByText("Apr 27 to May 3, 2026")).toBeDefined()
+    expect(screen.getByText("How this is calculated")).toBeDefined()
     expect(
       screen.getByText(/Summing forecasts from multiple Menus can double-count/)
     ).toBeDefined()
     expect(screen.getByText(/1 Menu row is not linked/)).toBeDefined()
+    expect(screen.getByRole("button", { name: "Actions" })).toBeDefined()
   })
 
   it("shows modifier, inactive, recipe, supply, and unresolved states", () => {
@@ -195,6 +211,7 @@ describe("Menu forecast", () => {
     expect(screen.getByText("Cookie dough")).toBeDefined()
     expect(screen.getByText("Wrapper")).toBeDefined()
     expect(screen.getByText("Supply")).toBeDefined()
+    expect(screen.getByText("Set pack size")).toBeDefined()
     expect(screen.getByText("missing-purchase-unit")).toBeDefined()
   })
 
@@ -241,7 +258,7 @@ describe("Menu forecast", () => {
     expect(screen.getByText("3")).toBeDefined()
   })
 
-  it("prints materials in three digits and steps a thousand grams up to kilograms", () => {
+  it("prints materials in three digits, whole counts, and whole packs at the pack price", () => {
     render(
       <MenuForecast
         measurementSystem="metric"
@@ -255,6 +272,10 @@ describe("Menu forecast", () => {
               ...FORECAST.materialRequirements[0],
               usage: [{ quantity: 980.615, unit: "g" }],
               purchase: [{ quantity: 1234.5, unit: "g" }],
+              purchaseSize: 5,
+              purchaseUnit: "kg",
+              packs: 0.2469,
+              costCents: 1200,
             },
             {
               ingredientId: "ingredient-2",
@@ -263,6 +284,25 @@ describe("Menu forecast", () => {
               kind: "ingredient",
               usage: [{ quantity: 1500, unit: "ml" }],
               purchase: [{ quantity: 2.5, unit: "each" }],
+              purchaseSize: 12,
+              purchaseUnit: "each",
+              packs: 0.208,
+              costCents: null,
+            },
+            {
+              ingredientId: "ingredient-3",
+              ingredientPublicId: "ing_yolk",
+              ingredientName: "Egg yolk",
+              kind: "ingredient",
+              usage: [
+                { quantity: 27, unit: "each" },
+                { quantity: 369, unit: "g" },
+              ],
+              purchase: [{ quantity: 48.7, unit: "each" }],
+              purchaseSize: 30,
+              purchaseUnit: "each",
+              packs: 1.623,
+              costCents: 972,
             },
           ],
         }}
@@ -270,10 +310,25 @@ describe("Menu forecast", () => {
     )
 
     expect(screen.getByText("2.35")).toBeDefined()
-    expect(screen.getByText("981 g")).toBeDefined()
+    // A thousand grams steps up to kilograms, and the pack is read the same
+    // way. A fifth of a pack is one pack to buy, at the pack's price.
     expect(screen.getByText("1.23 kg")).toBeDefined()
-    expect(screen.getByText("1.5 L")).toBeDefined()
-    expect(screen.getByText("2.5 ea")).toBeDefined()
+    expect(screen.getByText("5 kg")).toBeDefined()
+    expect(screen.getAllByText("1 pack").length).toBe(2)
+    expect(screen.getByText("$12")).toBeDefined()
+    // The recipe side is one unit, so it earns no second line.
+    expect(screen.queryByText("981 g")).toBeNull()
+    expect(screen.queryByText(/from 981 g/)).toBeNull()
+    // Nobody buys two and a half eggs; a pack without a price says so.
+    expect(screen.getByText("3 ea")).toBeDefined()
+    expect(screen.getByText("12 ea")).toBeDefined()
+    expect(table(2).getByText("No price")).toBeDefined()
+    expect(screen.queryByText("1.5 L")).toBeNull()
+    // Two recipes measuring yolk two ways: both shown, under the whole count.
+    expect(screen.getByText("49 ea")).toBeDefined()
+    expect(screen.getByText("from 27 ea, 369 g")).toBeDefined()
+    expect(screen.getByText("2 packs")).toBeDefined()
+    expect(screen.getByText("$10")).toBeDefined()
   })
 
   it("restates weights in a US kitchen's ounces and pounds", () => {
@@ -287,27 +342,39 @@ describe("Menu forecast", () => {
               ...FORECAST.materialRequirements[0],
               usage: [{ quantity: 300, unit: "g" }],
               purchase: [{ quantity: 1234.5, unit: "g" }],
+              purchaseSize: 2268,
+              purchaseUnit: "g",
+              packs: 0.544,
+              costCents: 800,
             },
           ],
         }}
       />
     )
 
-    expect(screen.getByText("10.6 oz")).toBeDefined()
     expect(screen.getByText("2.72 lb")).toBeDefined()
+    expect(screen.getByText("5 lb")).toBeDefined()
   })
 
   it("heros the planned revenue with its accuracy and unpriced notes", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
-    expect(screen.getByText("Projected sales")).toBeDefined()
+    expect(screen.getByText("Projected sales", { selector: "p" })).toBeDefined()
     expect(screen.getByText("$91")).toBeDefined()
     expect(
       screen.getByText("1 product has no price and is left out of the total.")
     ).toBeDefined()
     expect(
       screen.getByText(
-        /within 12% of actual sales; busy covered 3 of 4 weeks with sales/
+        /within 12% of actual sales\. The busy plan covered 3 of 4 weeks with sales/
+      )
+    ).toBeDefined()
+    // The other plan's figure, never the headline again.
+    expect(screen.getByText("Busy plan $133")).toBeDefined()
+    expect(screen.queryByText(/typical \$91/)).toBeNull()
+    expect(
+      screen.getByText(
+        "No material has a pack size and a price yet, so there is no projected ingredient cost. 1 material has no pack size or price."
       )
     ).toBeDefined()
     expect(
@@ -322,7 +389,150 @@ describe("Menu forecast", () => {
     render(<MenuForecast measurementSystem="metric" forecast={busy()} />)
 
     expect(screen.getByText("$133")).toBeDefined()
+    expect(screen.getByText("Typical plan $91")).toBeDefined()
     expect(screen.getAllByText("Busy plan").length).toBe(2)
+  })
+
+  it("prices each product and shows its share of the projected sales", () => {
+    const priced = (plan: "typical" | "busy") => ({
+      ...(plan === "busy" ? busy() : FORECAST),
+      products: [
+        FORECAST.products[0]!,
+        {
+          ...FORECAST.products[1]!,
+          weeksObserved: 8,
+          priceCents: 450,
+          typicalCents: 3600,
+          busyCents: 5400,
+        },
+        {
+          ...FORECAST.products[1]!,
+          productId: "product-3",
+          productPublicId: "prd_bun",
+          productName: "Bun",
+          weeksObserved: 3,
+        },
+      ],
+    })
+    const { unmount } = render(
+      <MenuForecast measurementSystem="metric" forecast={priced("typical")} />
+    )
+
+    expect(screen.getByText("$4.50")).toBeDefined()
+    expect(screen.getByText("$36")).toBeDefined()
+    // An unpriced member is told so; a modifier's money sits in its base.
+    expect(screen.getByText("No price")).toBeDefined()
+    expect(screen.getByText("Full")).toBeDefined()
+    expect(screen.getByText("3 of 8 weeks")).toBeDefined()
+
+    fireEvent.click(table(0).getByRole("button", { name: "Projected sales" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Projected sales" }))
+    expect(rowsOf(0)[0]).toBe("Scone")
+
+    unmount()
+    render(
+      <MenuForecast measurementSystem="metric" forecast={priced("busy")} />
+    )
+    expect(screen.getByText("$54")).toBeDefined()
+  })
+
+  it("prices the shopping list against the sales it serves", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          materialCost: {
+            costCents: 1972,
+            costedMaterials: 2,
+            uncostedMaterials: 1,
+          },
+        }}
+      />
+    )
+
+    expect(
+      screen.getByText(
+        "Projected ingredient cost $20, 22% of projected sales. 1 material has no pack size or price."
+      )
+    ).toBeDefined()
+  })
+
+  it("says what the batches make, and when a recipe has no yield", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          recipeRequirements: [
+            { ...FORECAST.recipeRequirements[0]!, batches: 2.346 },
+            {
+              recipeId: "recipe-2",
+              recipePublicId: "rcp_stock",
+              recipeTitle: "Stock",
+              batches: 1.5,
+              yieldAmount: 4,
+              yieldUnit: "l",
+            },
+            {
+              recipeId: "recipe-3",
+              recipePublicId: "rcp_glaze",
+              recipeTitle: "Glaze",
+              batches: 3,
+              yieldAmount: null,
+              yieldUnit: null,
+            },
+          ],
+        }}
+      />
+    )
+
+    // 2.35 batches of two dozen is 57 whole cookies; six litres of stock.
+    expect(screen.getByText("57 ea")).toBeDefined()
+    expect(screen.getByText("24 ea per batch")).toBeDefined()
+    expect(screen.getByText("6 L")).toBeDefined()
+    expect(screen.getByText("No yield")).toBeDefined()
+  })
+
+  it("sorts materials within their kind, ingredients first", () => {
+    const material = (
+      name: string,
+      kind: "ingredient" | "supply",
+      packs: number | null,
+      costCents: number | null
+    ) => ({
+      ...FORECAST.materialRequirements[0]!,
+      ingredientId: name,
+      ingredientPublicId: `ing_${name}`,
+      ingredientName: name,
+      kind,
+      purchase: [{ quantity: 1, unit: "each" }],
+      purchaseSize: 1,
+      purchaseUnit: "each",
+      packs,
+      costCents,
+    })
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          materialRequirements: [
+            material("Box", "supply", 9, 900),
+            material("Sugar", "ingredient", 2, 200),
+            material("Flour", "ingredient", 5, 500),
+          ],
+        }}
+      />
+    )
+
+    expect(rowsOf(2)).toEqual(["Flour", "Sugar", "Box"])
+    fireEvent.click(table(2).getByRole("button", { name: "Cost" }))
+    fireEvent.click(table(2).getByRole("button", { name: "Cost" }))
+    // Dearest first, and the supply stays at the bottom however dear it is.
+    expect(rowsOf(2)).toEqual(["Flour", "Sugar", "Box"])
+    fireEvent.click(table(2).getByRole("button", { name: "Cost" }))
+    expect(rowsOf(2)).toEqual(["Sugar", "Flour", "Box"])
   })
 
   it("replaces the chart when nothing on the Menu is priced", () => {
@@ -450,6 +660,8 @@ describe("Menu forecast", () => {
               recipePublicId: "rcp_biscotti",
               recipeTitle: "Almond biscotti",
               batches: 5,
+              yieldAmount: null,
+              yieldUnit: null,
             },
           ],
         }}

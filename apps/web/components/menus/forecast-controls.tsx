@@ -20,20 +20,26 @@ export function forecastHref(
 }
 
 /**
- * The horizon and plan pills, and the forecast they switch. A pill changes
- * only the search params, which the router answers with no loading screen of
- * its own, so the pills swap at the click and the forecast below dims behind
- * a spinner until the new numbers arrive.
+ * The horizon and plan pills, the dates they cover, the page's actions, and
+ * the forecast they switch. A pill changes only the search params, which the
+ * router answers with no loading screen of its own, so the pills swap at the
+ * click and the forecast below dims behind a spinner until the new numbers
+ * arrive. The whole row stays off the printed page.
  */
 export function ForecastControls({
   base,
   days,
   plan,
+  horizon,
+  actions,
   children,
 }: {
   base: string
   days: 7 | 30
   plan: MenuForecastPlan
+  /** "Sep 8 to Sep 14, 2026": the days the pills chose. */
+  horizon: string
+  actions?: React.ReactNode
   children: React.ReactNode
 }) {
   const [horizonPending, setHorizonPending] = React.useState(false)
@@ -41,49 +47,55 @@ export function ForecastControls({
   const pending = horizonPending || planPending
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <TabPills
-          aria-label="Forecast horizon"
-          className="w-fit"
-          onPendingChange={setHorizonPending}
-        >
-          <TabPill
-            active={days === 7}
-            render={<Link href={forecastHref(base, { days: 7, plan })} />}
-          >
-            Next 7 days
-          </TabPill>
-          <TabPill
-            active={days === 30}
-            render={<Link href={forecastHref(base, { days: 30, plan })} />}
-          >
-            Next 30 days
-          </TabPill>
-        </TabPills>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Plan for</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+        <div className="flex flex-wrap items-center gap-3">
           <TabPills
-            aria-label="Plan"
+            aria-label="Forecast horizon"
             className="w-fit"
-            onPendingChange={setPlanPending}
+            onPendingChange={setHorizonPending}
           >
             <TabPill
-              active={plan === "typical"}
-              render={
-                <Link href={forecastHref(base, { days, plan: "typical" })} />
-              }
+              active={days === 7}
+              render={<Link href={forecastHref(base, { days: 7, plan })} />}
             >
-              Typical
+              Next 7 days
             </TabPill>
             <TabPill
-              active={plan === "busy"}
-              render={
-                <Link href={forecastHref(base, { days, plan: "busy" })} />
-              }
+              active={days === 30}
+              render={<Link href={forecastHref(base, { days: 30, plan })} />}
             >
-              Busy
+              Next 30 days
             </TabPill>
           </TabPills>
+          <span className="text-sm text-muted-foreground">{horizon}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Plan for</span>
+            <TabPills
+              aria-label="Plan"
+              className="w-fit"
+              onPendingChange={setPlanPending}
+            >
+              <TabPill
+                active={plan === "typical"}
+                render={
+                  <Link href={forecastHref(base, { days, plan: "typical" })} />
+                }
+              >
+                Typical
+              </TabPill>
+              <TabPill
+                active={plan === "busy"}
+                render={
+                  <Link href={forecastHref(base, { days, plan: "busy" })} />
+                }
+              >
+                Busy
+              </TabPill>
+            </TabPills>
+          </div>
+          {actions}
         </div>
       </div>
       <LoadingRegion

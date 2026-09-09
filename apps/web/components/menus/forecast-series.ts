@@ -56,7 +56,34 @@ export function accuracySentence(backtest: MenuForecast["backtest"]): string {
     return "Not enough sales history to check accuracy yet."
   // The window is every replayed week; scoredWeeks only counts the ones that
   // sold anything, so it names the coverage denominator, never the window.
-  return `Over the last ${backtest.weeks.length} weeks the typical forecast was within ${Math.round(backtest.errorPercent)}% of actual sales; busy covered ${backtest.busyCoveredWeeks} of ${backtest.scoredWeeks} weeks with sales.`
+  return `Over the last ${backtest.weeks.length} weeks the typical plan landed within ${Math.round(backtest.errorPercent)}% of actual sales. The busy plan covered ${backtest.busyCoveredWeeks} of ${backtest.scoredWeeks} weeks with sales.`
+}
+
+/**
+ * The shopping list's total against the sales it serves. Cost needs only a
+ * pack size and a price, so it is reported even when nothing is priced for
+ * sale; the share is left out when there is no sales figure to share.
+ */
+export function materialCostSentence(
+  forecast: Pick<MenuForecast, "materialCost" | "revenue">
+): string | null {
+  const { materialCost, revenue } = forecast
+  const total = materialCost.costedMaterials + materialCost.uncostedMaterials
+  if (total === 0) return null
+  const uncosted =
+    materialCost.uncostedMaterials === 0
+      ? ""
+      : materialCost.uncostedMaterials === 1
+        ? " 1 material has no pack size or price."
+        : ` ${materialCost.uncostedMaterials} materials have no pack size or price.`
+  if (materialCost.costedMaterials === 0)
+    return `No material has a pack size and a price yet, so there is no projected ingredient cost.${uncosted}`
+  const cost = formatWholeCents(materialCost.costCents, revenue.currencyCode)
+  const share =
+    revenue.pricedProducts > 0 && revenue.plannedCents > 0
+      ? `, ${Math.round((materialCost.costCents / revenue.plannedCents) * 100)}% of projected sales.`
+      : "."
+  return `Projected ingredient cost ${cost}${share}${uncosted}`
 }
 
 /** What a screen reader gets in place of the chart.

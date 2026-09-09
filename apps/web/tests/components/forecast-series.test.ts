@@ -4,6 +4,7 @@ import {
   accuracySentence,
   chartSummary,
   forecastChartPoints,
+  materialCostSentence,
 } from "@/components/menus/forecast-series"
 import type { MenuForecast } from "@/lib/backend/types"
 
@@ -96,7 +97,7 @@ describe("accuracySentence", () => {
         busyCoveredWeeks: 3,
       })
     ).toBe(
-      "Over the last 4 weeks the typical forecast was within 12% of actual sales; busy covered 3 of 4 weeks with sales."
+      "Over the last 4 weeks the typical plan landed within 12% of actual sales. The busy plan covered 3 of 4 weeks with sales."
     )
   })
 
@@ -109,7 +110,74 @@ describe("accuracySentence", () => {
         busyCoveredWeeks: 2,
       })
     ).toBe(
-      "Over the last 4 weeks the typical forecast was within 12% of actual sales; busy covered 2 of 2 weeks with sales."
+      "Over the last 4 weeks the typical plan landed within 12% of actual sales. The busy plan covered 2 of 2 weeks with sales."
+    )
+  })
+})
+
+describe("materialCostSentence", () => {
+  const revenue = {
+    currencyCode: "USD",
+    typicalCents: 9100,
+    busyCents: 13300,
+    plannedCents: 9100,
+    pricedProducts: 1,
+    unpricedProducts: 0,
+  }
+
+  it("says nothing when the forecast reaches no material", () => {
+    expect(
+      materialCostSentence({
+        revenue,
+        materialCost: {
+          costCents: 0,
+          costedMaterials: 0,
+          uncostedMaterials: 0,
+        },
+      })
+    ).toBeNull()
+  })
+
+  it("prices the list as a share of the sales it serves", () => {
+    expect(
+      materialCostSentence({
+        revenue,
+        materialCost: {
+          costCents: 1972,
+          costedMaterials: 3,
+          uncostedMaterials: 0,
+        },
+      })
+    ).toBe("Projected ingredient cost $20, 22% of projected sales.")
+  })
+
+  it("keeps the cost and drops the share when nothing is priced for sale", () => {
+    expect(
+      materialCostSentence({
+        revenue: { ...revenue, pricedProducts: 0, plannedCents: 0 },
+        materialCost: {
+          costCents: 1972,
+          costedMaterials: 3,
+          uncostedMaterials: 2,
+        },
+      })
+    ).toBe(
+      "Projected ingredient cost $20. 2 materials have no pack size or price."
+    )
+  })
+
+  it("explains an empty total rather than printing a free shopping list", () => {
+    expect(
+      materialCostSentence({
+        revenue,
+        materialCost: {
+          costCents: 0,
+          costedMaterials: 0,
+          uncostedMaterials: 1,
+        },
+      })
+    ).toBe(
+      "No material has a pack size and a price yet, so there is no projected ingredient cost. 1 material has no pack size or price."
     )
   })
 })

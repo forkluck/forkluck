@@ -1469,6 +1469,14 @@ const menuForecastProductSchema = z.strictObject({
   busyQuantity: z.number(),
   /** The quantity the chosen plan expands into batches and materials. */
   totalQuantity: z.number(),
+  /**
+   * The menu price the row is projected at and its share of the menu's money.
+   * Null for an unpriced member, and for a product reached only through a
+   * box or a modifier, whose money already sits in the base.
+   */
+  priceCents: z.number().int().nullable(),
+  typicalCents: z.number().int().nullable(),
+  busyCents: z.number().int().nullable(),
 })
 
 export const menuForecastPayloadSchema = z.strictObject({
@@ -1507,6 +1515,13 @@ export const menuForecastPayloadSchema = z.strictObject({
     pricedProducts: z.number().int().nonnegative(),
     unpricedProducts: z.number().int().nonnegative(),
   }),
+  /** The shopping list priced at pack prices; rows with no pack size or no
+   * price are counted rather than read as free. */
+  materialCost: z.strictObject({
+    costCents: z.number().int().nonnegative(),
+    costedMaterials: z.number().int().nonnegative(),
+    uncostedMaterials: z.number().int().nonnegative(),
+  }),
   /**
    * 28 history days then the horizon. Money on both sides is units at current
    * menu prices, so the two lines compare quantity only — this is not net
@@ -1541,6 +1556,9 @@ export const menuForecastPayloadSchema = z.strictObject({
       recipePublicId: z.string(),
       recipeTitle: z.string(),
       batches: z.number(),
+      /** What one batch makes; null when the recipe does not say. */
+      yieldAmount: z.number().nullable(),
+      yieldUnit: z.string().nullable(),
     })
   ),
   materialRequirements: z.array(
@@ -1551,6 +1569,13 @@ export const menuForecastPayloadSchema = z.strictObject({
       kind: z.enum(["ingredient", "supply"]),
       usage: z.array(forecastQuantitySchema),
       purchase: z.array(forecastQuantitySchema),
+      /** The pack the ingredient is bought in, and how many of them this
+       * demand takes, fractional: rounding up is the screen's decision. */
+      purchaseSize: z.number().nullable(),
+      purchaseUnit: z.string().nullable(),
+      packs: z.number().nullable(),
+      /** Packs at the pack price; null without a pack size or a price. */
+      costCents: z.number().int().nullable(),
     })
   ),
   unresolved: z.array(

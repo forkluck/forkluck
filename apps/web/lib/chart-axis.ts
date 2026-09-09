@@ -11,7 +11,8 @@ export function formatAxisCents(cents: number, currencyCode: string): string {
         style: "currency",
         currency: currencyCode,
         notation: "compact",
-        maximumFractionDigits: 0,
+        // One decimal, or $1,800 rounds to "$2K" on the same axis as "$900".
+        maximumFractionDigits: 1,
       })
     } catch (error) {
       // An unrecognised code is data, not a bug — do not take the chart down.
