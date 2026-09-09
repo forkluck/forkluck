@@ -136,58 +136,53 @@ export function MenuForecast({
   const base = `/menu/${encodeURIComponent(forecast.menu.publicId)}/forecast`
   const { horizonDays, plan, horizonStart, horizonEnd } = forecast.basis
   return (
-    <div className="flex flex-col gap-6">
-      <ForecastControls
-        base={base}
-        days={horizonDays}
-        plan={plan}
-        horizon={horizonLabel(horizonStart, horizonEnd)}
-        actions={<ForecastActions forecast={forecast} />}
-      >
+    <ForecastControls
+      base={base}
+      days={horizonDays}
+      plan={plan}
+      horizon={horizonLabel(horizonStart, horizonEnd)}
+      actions={<ForecastActions forecast={forecast} />}
+    >
+      {/* The basis is the hero's caption, so it hangs 12px under the card
+          rather than a full section apart from it. */}
+      <div className="flex flex-col gap-3">
         <ProjectedSales forecast={forecast} />
         <ForecastBasis forecast={forecast} />
+      </div>
 
-        {forecast.coverage.unresolvedMenuItems > 0 ? (
-          <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
-            {forecast.coverage.unresolvedMenuItems} Menu{" "}
-            {forecast.coverage.unresolvedMenuItems === 1
-              ? "row is"
-              : "rows are"}{" "}
-            not linked and cannot be forecast.
-          </div>
-        ) : null}
+      {forecast.coverage.unresolvedMenuItems > 0 ? (
+        <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
+          {forecast.coverage.unresolvedMenuItems} Menu{" "}
+          {forecast.coverage.unresolvedMenuItems === 1 ? "row is" : "rows are"}{" "}
+          not linked and cannot be forecast.
+        </div>
+      ) : null}
 
-        <ProductForecastTable forecast={forecast} />
-        <Requirements
-          forecast={forecast}
-          measurementSystem={measurementSystem}
-        />
+      <ProductForecastTable forecast={forecast} />
+      <Requirements forecast={forecast} measurementSystem={measurementSystem} />
 
-        {forecast.unresolved.length ? (
-          <section className="rounded-xl border border-border bg-card p-4">
-            <h2 className="text-md font-semibold text-foreground">
-              Unresolved demand paths
-            </h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              These quantities need a yield, conversion, purchase unit, or
-              Product link before they can be completed.
-            </p>
-            <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-              {forecast.unresolved.map((row, index) => (
-                <li
-                  key={`${row.code}:${row.path?.join(":") ?? row.menuItemId ?? index}`}
-                >
-                  <span className="font-medium text-foreground">
-                    {row.code}
-                  </span>
-                  {row.menuItemName ? ` · ${row.menuItemName}` : ""}
-                  {row.detail ? ` · ${row.detail}` : ""}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-      </ForecastControls>
-    </div>
+      {forecast.unresolved.length ? (
+        <section className="rounded-xl border border-border bg-card p-4">
+          <h2 className="text-md font-semibold text-foreground">
+            Unresolved demand paths
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            These quantities need a yield, conversion, purchase unit, or Product
+            link before they can be completed.
+          </p>
+          <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+            {forecast.unresolved.map((row, index) => (
+              <li
+                key={`${row.code}:${row.path?.join(":") ?? row.menuItemId ?? index}`}
+              >
+                <span className="font-medium text-foreground">{row.code}</span>
+                {row.menuItemName ? ` · ${row.menuItemName}` : ""}
+                {row.detail ? ` · ${row.detail}` : ""}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </ForecastControls>
   )
 }
