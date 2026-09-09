@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 
 import * as React from "react"
-import { cleanup, render, screen } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react"
 import { afterEach, describe, expect, it } from "vitest"
 
 import { MenuForecast } from "@/components/menus/menu-forecast"
@@ -152,6 +158,15 @@ const FORECAST: MenuForecastData = {
     },
   ],
 }
+
+/** The tables in page order: Product demand, Recipe batches, materials. */
+const table = (index: number) =>
+  within(document.querySelectorAll("table")[index] as HTMLElement)
+/** One link per row, so the links are the row order. */
+const rowsOf = (index: number) =>
+  table(index)
+    .getAllByRole("link")
+    .map((link) => link.textContent)
 
 const busy = (): MenuForecastData => ({
   ...FORECAST,
@@ -365,5 +380,99 @@ describe("Menu forecast", () => {
     expect(
       screen.getByRole("link", { name: "Busy" }).getAttribute("aria-current")
     ).toBeNull()
+  })
+
+  it("sorts product demand by a clicked header and flips it on a second click", () => {
+    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
+
+    // The backend's A–Z order stands until a header is chosen.
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
+
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
+
+    fireEvent.click(table(0).getByRole("button", { name: "History" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
+
+    fireEvent.click(table(0).getByRole("button", { name: "Product" }))
+    expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
+    fireEvent.click(table(0).getByRole("button", { name: "Product" }))
+    expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
+  })
+
+  it("keeps tied rows in their incoming order when sorting descending", () => {
+    const zero = (name: string, id: string) => ({
+      ...FORECAST.products[0]!,
+      productId: id,
+      productPublicId: `prd_${id}`,
+      productName: name,
+      typicalQuantity: 0,
+      busyQuantity: 0,
+      weeksObserved: 0,
+    })
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          products: [
+            ...FORECAST.products,
+            zero("Bun", "bun"),
+            zero("Tart", "tart"),
+          ],
+        }}
+      />
+    )
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    // Descending by demand, and the zero-demand tail stays in its incoming
+    // order rather than coming out backwards.
+    expect(rowsOf(0).slice(-2)).toEqual(["Bun", "Tart"])
+    expect(
+      table(0)
+        .getByRole("columnheader", { name: "Typical" })
+        .getAttribute("aria-sort")
+    ).toBe("descending")
+  })
+
+  it("sorts recipe batches by recipe or by batch count", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          recipeRequirements: [
+            ...FORECAST.recipeRequirements,
+            {
+              recipeId: "recipe-2",
+              recipePublicId: "rcp_biscotti",
+              recipeTitle: "Almond biscotti",
+              batches: 5,
+            },
+          ],
+        }}
+      />
+    )
+
+    // The backend lists recipes in id order, which means nothing to a cook,
+    // so the table opens A to Z.
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+    expect(
+      table(1)
+        .getByRole("columnheader", { name: "Recipe" })
+        .getAttribute("aria-sort")
+    ).toBe("ascending")
+
+    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
+    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
+    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
   })
 })

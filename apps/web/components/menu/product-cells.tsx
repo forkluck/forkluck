@@ -43,7 +43,12 @@ export function useSortState<K extends string>(
   return { sort, toggle, directionFor }
 }
 
-/** Sorts a copy; strings compare naturally so `BK-2` lands before `BK-10`. */
+/**
+ * Sorts a copy; strings compare naturally so `BK-2` lands before `BK-10`.
+ * Rows that tie keep their incoming order in either direction: a descending
+ * sort swaps the operands rather than reversing the result, so a block of
+ * equal values does not come out backwards.
+ */
 export function sortRows<T, K extends string>(
   rows: T[],
   sort: SortState<K> | null,
@@ -51,13 +56,26 @@ export function sortRows<T, K extends string>(
 ): T[] {
   if (!sort) return rows
   const read = accessors[sort.key]
-  const sorted = [...rows].sort((left, right) => {
-    const a = read(left)
-    const b = read(right)
-    if (typeof a === "number" && typeof b === "number") return a - b
-    return String(a).localeCompare(String(b), undefined, { numeric: true })
-  })
-  return sort.direction === "desc" ? sorted.reverse() : sorted
+  const compare = (a: string | number, b: string | number) =>
+    typeof a === "number" && typeof b === "number"
+      ? a - b
+      : String(a).localeCompare(String(b), undefined, { numeric: true })
+  return [...rows].sort((left, right) =>
+    sort.direction === "desc"
+      ? compare(read(right), read(left))
+      : compare(read(left), read(right))
+  )
+}
+
+/** What a sortable `<th>` tells assistive technology. */
+export function ariaSort(
+  direction: SortDirection | null
+): "ascending" | "descending" | "none" {
+  return direction === "asc"
+    ? "ascending"
+    : direction === "desc"
+      ? "descending"
+      : "none"
 }
 
 /**
