@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.db.models.functions import Lower
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
@@ -47,7 +47,7 @@ from .serializers import user_json
 logger = logging.getLogger(__name__)
 
 
-def mark_signed_in(response: JsonResponse) -> JsonResponse:
+def mark_signed_in(response: HttpResponse) -> HttpResponse:
     """Tell forkluck.com a session exists so its header can say Log out.
 
     Readable by script and shared with the marketing host on purpose; it
@@ -326,9 +326,6 @@ def change_password(request: HttpRequest) -> JsonResponse:
 
     try:
         body = read_json(request)
-        current_password = text_value(
-            body.get("currentPassword"), "Current password", max_length=1024
-        )
         new_password = text_value(
             body.get("newPassword"), "New password", max_length=1024
         )
@@ -360,8 +357,17 @@ def change_password(request: HttpRequest) -> JsonResponse:
 
     with transaction.atomic():
         user = User.objects.select_for_update().get(pk=request.user.pk)
-        if not user.check_password(current_password):
-            return error("Current password is incorrect")
+        if user.has_usable_password():
+            if not body.get("currentPassword"):
+                return error("Current password is required")
+            try:
+                current_password = text_value(
+                    body.get("currentPassword"), "Current password", max_length=1024
+                )
+            except ValueError as exc:
+                return error(str(exc))
+            if not user.check_password(current_password):
+                return error("Current password is incorrect")
 
         reset("change-password:user", str(user.pk))
         if user.check_password(new_password):

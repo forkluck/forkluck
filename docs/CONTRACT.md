@@ -143,7 +143,7 @@ visible prefix text remains unchanged.
 | Downstream | Corrected quantities and unit prices reach matching, review and import together with their reader-supplied rectangles; line amounts and identities never move |
 | Highlight ownership | New reads split a verified misplaced prefix only at an unambiguous pixel gap; quantities, amounts and item identities are unchanged by the pixel pass, and the two highlights share a boundary without overlap |
 
-`internal_user` in `http/auth.py` guards every internal view: a missing or wrong
+`internal_user` in `http/auth.py` guards user-scoped internal views: a missing or wrong
 secret returns **404** (the route denies its own existence), a valid secret
 without an authenticated session returns **401**. `apps/web/lib/backend/client.ts` is the
 only client — it forwards the incoming cookie header, attaches the secret
@@ -173,20 +173,81 @@ authorize the other service's data API.
 | `auth/change-password`          | `change-password`        |
 | `auth/login`                    | `login`                  |
 | `auth/logout`                   | `logout`                 |
+| `auth/google/start`             | —                        |
+| `auth/google/callback`          | —                        |
 | `integrations/square/connect`   | —                        |
 | `integrations/square/callback`  | —                        |
 | `integrations/shopify/connect`  | —                        |
 | `integrations/shopify/callback` | —                        |
 | `billing/stripe-webhook`        | `stripe-webhook`         |
 
+### Google sign-in
+
+`GET /api/auth/google/start?next=<local-path>` starts a document redirect to
+Google using `openid email profile`, online access, an account selector,
+PKCE S256 and an OIDC nonce. It is limited to 30 attempts per client IP per
+15 minutes. Its redirect sets `Referrer-Policy: no-referrer`.
+`GET /api/auth/google/callback?state=...&code=...` is limited to 60 attempts
+per IP per 15 minutes. Both routes reject POST (405) and disable caching.
+
+The session's single `google_sign_in` slot holds the state nonce, OIDC nonce,
+PKCE verifier and validated continuation. Signed state has a dedicated salt
+and a 600-second lifetime. The callback pops the slot before checking state
+or logging in, including on cancellation, failure and throttling. Starting
+again replaces the previous flow. The code is exchanged once over Django's
+TLS connection to Google with a 10-second timeout. ID tokens are only decoded
+from that response, never accepted from a browser. Issuer, exact client
+audience, future expiry, nonce, subject, email and boolean `email_verified`
+are checked. TLS back-channel authentication replaces signature verification
+as permitted by [OIDC Core 3.1.3.7](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation).
+
+Failures redirect to `/login?error=<code>` and retain the session's known
+`next`. A callback query's `next` never overrides that value.
+
+| Error code | Meaning |
+| --- | --- |
+| `google-not-configured` | The optional client pair is absent |
+| `google-cancelled` | Google returned `access_denied`; shown as a status line |
+| `google-state` | State is missing, invalid, expired, mismatched or already consumed |
+| `google-failed` | Other provider error, absent code, exchange/token/claim failure or forbidden demo account |
+| `google-unverified-email` | Google did not confirm the address |
+| `google-inactive` | The resolved account is inactive |
+| `google-rate-limited` | The route's IP budget was exhausted |
+
+`GET /internal/v1/auth-methods/` returns `{google: boolean}`. This is a
+`system_get` read: the internal secret is required (missing/wrong is 404),
+but no user session is required, because login and signup need the flag.
+It returns only feature availability, never credentials or user data.
+Both client settings must be populated to enable the feature. A partial pair
+refuses Django startup in every environment.
+
+| Google sign-in invariant | Required behavior |
+| --- | --- |
+| Continuation syntax | Python `safe_next` and TypeScript `safeAuthNext` preserve local paths, queries, fragments and `/api/auth/` continuations; reject nonstrings, more than 8192 UTF-16 code units, `//`, backslash, space, ASCII controls and DEL |
+| Identity precedence | Match unique `google_subject` first; drifted Google email does not change the account address or select a different email-matched user |
+| Email ownership | Otherwise link an exact normalized email match; keep its name and password. A different existing subject is retained and logged; the verified email still signs in |
+| New account | Create one verified user with an unusable password and a pending owner notification; seed one workspace and claim waiting invitations atomically |
+| Existing verification | Unverified accounts become verified and claim invitations; inactive accounts cannot sign in or acquire a link |
+| Races | Unique email/subject conflicts roll back the losing transaction and resolve the winning account; no duplicate workspace is seeded |
+| Activation | Login follows state consumption. Switching accounts flushes the previous session. Success sets the signed-in indicator, sends the first owner alert once and schedules newsletter sync after commit |
+| Failure lifecycle | Invalid callbacks create no account or authenticated session; cancellation, error and replay cannot reuse a retired slot |
+| Password lifecycle | Google-only accounts may set a validated first password without `currentPassword`; after that the locked row requires the current password. Reset codes and other sessions are invalidated by password changes as before |
+| Browser memory | `fl.last-sign-in-method` stores only `google` or `password`; read after mount, tolerate blocked storage, and show the caption on login only. Failed password attempts do not overwrite it |
+| Persisted identity lifecycle | The nullable unique subject belongs to the user row and is read only for sign-in. Name/password updates preserve it; account deletion removes it. There is no account merge, user import/undo or settings relink path |
+| Downstream behavior | Existing workspace ownership, billing, pricing, health and invitation access use the resolved user as before; no new unresolved/review state is introduced |
+
+### Passwords and sessions
+
 Every route that opens a session (`auth/register`, `auth/verify-email`,
-`auth/login`) also sets `forkluck_signed_in=1` — a script-readable, no-identity
-cookie on the parent domain that lets forkluck.com show Log out instead of
+`auth/login`, `auth/google/callback`) also sets `forkluck_signed_in=1` — a
+script-readable, no-identity cookie on the parent domain that lets forkluck.com show Log out instead of
 Sign in; `auth/logout` deletes it.
 
-`auth/change-password` requires an authenticated session, CSRF, the current
-password, and a new password accepted by Django's configured validators. The
-new password must differ from the current one. A successful change preserves
+`auth/change-password` requires an authenticated session and CSRF. A password
+account also requires `currentPassword` (missing is 400, "Current password is
+required"). A Google-only account without a usable password omits it; any
+supplied current value is ignored. Both modes validate the new password.
+The new password must differ from the current one. A successful change preserves
 the requesting session, invalidates other sessions through Django's password
 hash, and retires unused password-reset codes. Wrong-current-password attempts
 are limited per account and client address for 15 minutes; the demo account
@@ -233,8 +294,8 @@ message when exhausted. Issuing a code retires the address's previous unused
 codes for that purpose; a code whose email fails to send is removed rather
 than left usable.
 
-`emailVerifiedAt` means that a signup or password-reset code was consumed. A
-development registration may grant a session without setting it; production
+`email_verified_at` means that Google verified the address or a signup or
+password-reset code was consumed. A development registration may grant a session without setting it; production
 requires verification before granting a new session. Verifying an address for
 the first time also claims the guest links waiting on it: each becomes a share
 row carrying the role it was invited with, and the link is deleted.
@@ -258,6 +319,7 @@ Read endpoints (GET) unless noted.
 
 ```
 session/
+auth-methods/
 primo/conversations/
 primo/conversations/<uuid:conversation_id>/
 newsletter/
@@ -330,13 +392,14 @@ actions/<slug:action_name>/     POST only
 ### System routes (`/internal/v1/system/`)
 
 A system route is authorized by the internal secret alone: no session, no URL
-token. It is what the Next process calls as itself — today only the Drive
-watcher, which runs on a timer in `instrumentation.ts`, polls the Google Drive
-Changes feed once for the whole service account, and has no browser request
-behind it. A system route never reads `request.user`; the workspace is named
-in the body. Without the secret they answer 404 like every other internal
-route. `apps/web/lib/backend/client.ts` calls them with `djangoSystemGet` and
-`djangoSystemAction`, which send the secret and no cookie.
+token. The Drive watcher uses this category to poll the Google Drive Changes
+feed once for the whole service account, with no browser request behind it.
+`auth-methods/` also uses the system guard to answer signed-out auth pages.
+A system route never reads `request.user`; workspace operations name the
+workspace in the body. Without the secret they answer 404 like every other
+internal route. The watcher uses `djangoSystemGet` and `djangoSystemAction`,
+which send the secret and no cookie; auth pages use `djangoGetParsed` to
+validate the small feature flag response.
 
 `GET system/drive-watch/` answers `{pageToken, polledAt, lastError, folders}`.
 The first three are the shared Changes cursor, reading `{"", null, ""}` before
@@ -526,7 +589,10 @@ Django's owner/kitchen scoping and not-found responses remain authoritative.
 Provider and tool failures return generic messages; request logs contain only
 request id, model, duration, finish reason, and whether the deadline elapsed.
 
-`session/` returns `{user, billing, kitchens}`, where `billing` is
+`session/` returns `{user, billing, kitchens}`. The user serializer is
+`{id, name, email, hasPassword}` on both public and internal auth responses;
+`hasPassword` is a boolean reporting whether the account has a usable password.
+`google_subject` stays private to Django. `billing` is
 `{status, trialDaysLeft, locked, plan, entitlements, recipeCount}` — a constant
 shape, never null. `status` is
 `"disabled"` when billing is switched off (self-hosted), for the demo

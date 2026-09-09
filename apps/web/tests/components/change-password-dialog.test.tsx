@@ -11,6 +11,11 @@ import {
 
 const changePassword = vi.hoisted(() => vi.fn())
 const toastAdd = vi.hoisted(() => vi.fn())
+const refresh = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
+
+vi.mock("@/hooks/use-refresh", () => ({
+  useRefresh: () => ({ refresh, pending: false }),
+}))
 
 vi.mock("@/lib/auth-client", () => ({
   authClient: { changePassword },
@@ -31,7 +36,7 @@ function type(label: string, value: string) {
 }
 
 function open(onOpenChange = vi.fn()) {
-  render(<ChangePasswordDialog open onOpenChange={onOpenChange} />)
+  render(<ChangePasswordDialog open hasPassword onOpenChange={onOpenChange} />)
   return onOpenChange
 }
 
@@ -42,6 +47,41 @@ function fillValid() {
 }
 
 describe("ChangePasswordDialog", () => {
+  it("sets a first password without sending currentPassword and waits for the session", async () => {
+    let finishRefresh!: () => void
+    refresh.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finishRefresh = resolve
+        })
+    )
+    changePassword.mockResolvedValue({})
+    const onOpenChange = vi.fn()
+    render(
+      <ChangePasswordDialog
+        open
+        hasPassword={false}
+        onOpenChange={onOpenChange}
+      />
+    )
+    expect(screen.getByText("Set a password")).toBeTruthy()
+    expect(screen.queryByLabelText("Current password")).toBeNull()
+    type("New password", "new-password-5678")
+    type("Confirm new password", "new-password-5678")
+    fireEvent.click(screen.getByRole("button", { name: "Set password" }))
+    await waitFor(() =>
+      expect(changePassword).toHaveBeenCalledWith({
+        newPassword: "new-password-5678",
+      })
+    )
+    await waitFor(() => expect(refresh).toHaveBeenCalled())
+    expect(onOpenChange).not.toHaveBeenCalled()
+    expect(toastAdd).not.toHaveBeenCalled()
+    finishRefresh()
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false))
+    expect(toastAdd).toHaveBeenCalledWith({ title: "Password set." })
+  })
+
   it("validates all three fields before sending credentials", () => {
     open()
     fireEvent.click(screen.getByRole("button", { name: "Change password" }))

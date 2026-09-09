@@ -47,6 +47,7 @@ import {
 } from "@/lib/backend/client"
 import {
   activityPayloadSchema,
+  authMethodsSchema,
   connectorSyncRunPayloadSchema,
   connectorSyncRunsPayloadSchema,
   driveFilesPayloadSchema,
@@ -111,6 +112,10 @@ import {
   resolveUnpaidBreakPerHours,
   type BusinessSettings,
 } from "@/lib/business-settings"
+
+export async function getAuthMethods() {
+  return djangoGetParsed("/internal/v1/auth-methods/", authMethodsSchema)
+}
 
 /**
  * The signed-in session, or null when the backend rejects the cookie.

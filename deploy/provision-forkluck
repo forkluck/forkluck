@@ -92,6 +92,8 @@ ensure_backend_env FORKLUCK_TOKEN_ENCRYPTION_KEY "$(openssl rand -hex 32)"
 ensure_backend_env FORKLUCK_CONNECTOR_SERVICE_URL ""
 ensure_backend_env FORKLUCK_CONNECTOR_CLIENT_ID ""
 ensure_backend_env FORKLUCK_CONNECTOR_CLIENT_SECRET ""
+ensure_backend_env GOOGLE_SIGN_IN_CLIENT_ID ""
+ensure_backend_env GOOGLE_SIGN_IN_CLIENT_SECRET ""
 ensure_backend_env SQUARE_APPLICATION_ID ""
 ensure_backend_env SQUARE_APPLICATION_SECRET ""
 ensure_backend_env SQUARE_ENVIRONMENT production

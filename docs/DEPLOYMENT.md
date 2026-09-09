@@ -280,6 +280,51 @@ release. Its verified-empty physical table was dropped in the following
 release, completing the repository's required two-release destructive-change
 sequence.
 
+## Google sign-in
+
+Google sign-in is optional. Set both values in `/etc/forkluck/backend.env` on
+chefclaw, or leave both empty:
+
+```env
+GOOGLE_SIGN_IN_CLIENT_ID=
+GOOGLE_SIGN_IN_CLIENT_SECRET=
+```
+
+A partial pair refuses startup in every environment. With both empty, login
+and signup hide the Google button and the start route reports that sign-in is
+unavailable. The client secret stays in Django; the Drive picker's public
+client remains unchanged. The redirect URI must exactly equal
+`FORKLUCK_APP_ORIGIN` + `/api/auth/google/callback`, including scheme, hostname,
+port and path, with no trailing slash after `callback`.
+
+In the existing Google Cloud project used by the Drive picker:
+
+1. Open Google Auth Platform. Configure the audience as External and the app
+   name as Forkluck. Set the support email, authorized domain `forkluck.com`,
+   and the public homepage, privacy policy and terms links. Request only
+   `openid`, `email`, and `profile` for sign-in and publish the app to production.
+2. Under Clients, create a dedicated **Web application** named **Forkluck
+   sign-in**. Use JavaScript origin `https://app.forkluck.com` and authorized
+   redirect URI `https://app.forkluck.com/api/auth/google/callback`.
+3. Create a second Web application client for development, with origin
+   `http://localhost:3000` and redirect URI
+   `http://localhost:3000/api/auth/google/callback`.
+4. Put the production pair in `/etc/forkluck/backend.env` and restart the
+   `forkluck-django.service` after the code release. Put the development pair in
+   `apps/api/.env`. Keep both secrets out of Git and the frontend environment.
+
+See Google's [OpenID Connect setup guide](https://developers.google.com/identity/openid-connect/openid-connect#settingupopenauth).
+
+For local verification, run `pnpm dev` and the Django development server,
+open `/login?next=/recipes`, and continue with Google. Confirm the return to
+Recipes, the last-method caption on the next login visit, cancellation copy,
+and **Set a password** in Settings for a new Google-only account. Set a
+password and confirm password sign-in uses the same account. Also check a
+Google address that already has a password account: its workspace and name
+must stay intact. Automated acceptance tests use synthetic OAuth settings and
+inspect the links without contacting Google; real consent requires the dev
+client pair.
+
 ## Google Drive receipts folder
 
 Importing receipts straight from a Drive folder is optional and configured in

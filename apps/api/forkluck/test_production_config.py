@@ -72,6 +72,31 @@ class ProductionConfigGuardTests(SimpleTestCase):
             with self.subTest(url=url), self.assertRaisesMessage(ImproperlyConfigured, "Mail bridge requires"):
                 reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_MAIL_BRIDGE_URL": url, "FORKLUCK_MAIL_BRIDGE_API_KEY": key})
 
+    def test_google_sign_in_pair_is_all_or_none_in_every_environment(self):
+        for environment in ("development", "production", "staging"):
+            for client_id, secret in (("client", ""), ("", "secret")):
+                with self.subTest(environment=environment, client_id=client_id):
+                    with self.assertRaisesMessage(ImproperlyConfigured, "Google sign-in requires both"):
+                        reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_ENVIRONMENT": environment,
+                            "GOOGLE_SIGN_IN_CLIENT_ID": client_id, "GOOGLE_SIGN_IN_CLIENT_SECRET": secret})
+            configured = reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_ENVIRONMENT": environment,
+                "GOOGLE_SIGN_IN_CLIENT_ID": "client", "GOOGLE_SIGN_IN_CLIENT_SECRET": "secret"})
+            self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_ID, "client")
+            self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_SECRET, "secret")
+
+    def test_test_runner_clears_even_partial_google_configuration(self):
+        with mock.patch.dict(os.environ, {**GOOD_ENVIRONMENT, "GOOGLE_SIGN_IN_CLIENT_ID": "client"}, clear=True):
+            with mock.patch.object(sys, "argv", ["manage.py", "test"]):
+                sys.modules.pop("config.settings", None)
+                try:
+                    configured = importlib.import_module("config.settings")
+                    self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_ID, "")
+                    self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_SECRET, "")
+                    self.assertNotIn("GOOGLE_SIGN_IN_CLIENT_ID", os.environ)
+                    self.assertNotIn("GOOGLE_SIGN_IN_CLIENT_SECRET", os.environ)
+                finally:
+                    sys.modules.pop("config.settings", None)
+
     def test_fully_configured_production_boots(self):
         settings_module = reload_settings(GOOD_ENVIRONMENT)
 
@@ -341,6 +366,11 @@ class ReleasePackagingTests(SimpleTestCase):
             provision,
         )
         self.assertIn('ensure_backend_env ACS_CONNECTION_STRING ""', provision)
+
+    def test_provisioning_declares_optional_google_sign_in(self):
+        provision = (REPO_ROOT / "deploy" / "provision-forkluck").read_text(encoding="utf-8")
+        for key in ("GOOGLE_SIGN_IN_CLIENT_ID", "GOOGLE_SIGN_IN_CLIENT_SECRET"):
+            self.assertIn(f'ensure_backend_env {key} ""', provision)
 
     def test_provisioning_declares_the_complete_stripe_identity(self):
         provision = (

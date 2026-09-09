@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .integrations import connector_oauth, pos_oauth
-from .domains.accounts import billing, feedback
+from .domains.accounts import billing, feedback, google
 from .domains.accounts import views as account_views
 
 
@@ -31,6 +31,8 @@ urlpatterns = [
     ),
     path("auth/login", account_views.sign_in, name="login"),
     path("auth/logout", account_views.sign_out, name="logout"),
+    path("auth/google/start", google.google_start),
+    path("auth/google/callback", google.google_callback),
     path("integrations/square/connect", pos_oauth.square_connect),
     path("integrations/square/callback", pos_oauth.square_callback),
     path("integrations/shopify/connect", pos_oauth.shopify_connect),

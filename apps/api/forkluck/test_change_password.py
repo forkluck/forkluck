@@ -47,6 +47,40 @@ class ChangePasswordTests(TestCase):
             **overrides,
         }
 
+    def make_google_only(self):
+        self.user.set_unusable_password()
+        self.user.google_subject = "google-only"
+        self.user.save(update_fields=["password", "google_subject"])
+        self.client.force_login(self.user)
+
+    def test_first_password_needs_no_current_password(self):
+        self.make_google_only()
+        result = self.post({"newPassword": self.new_password})
+        self.assertEqual(result.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(self.new_password))
+        session = self.client.get("/api/auth/session")
+        self.assertEqual(session.status_code, 200)
+        self.assertTrue(session.json()["user"]["hasPassword"])
+
+    def test_first_password_ignores_supplied_current(self):
+        self.make_google_only()
+        result = self.post(self.valid_body(currentPassword={"ignored": True}))
+        self.assertEqual(result.status_code, 200)
+
+    def test_first_password_still_validates_strength(self):
+        self.make_google_only()
+        self.assertEqual(self.post({"newPassword": "password"}).status_code, 400)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.has_usable_password())
+
+    def test_existing_password_requires_current_including_after_first_password(self):
+        self.make_google_only()
+        self.assertEqual(self.post({"newPassword": self.new_password}).status_code, 200)
+        result = self.post({"newPassword": self.current_password})
+        self.assertEqual(result.status_code, 400)
+        self.assertEqual(result.json()["error"], "Current password is required")
+
     def test_requires_both_session_and_csrf(self):
         signed_out = Client(enforce_csrf_checks=True)
         token_response = signed_out.get("/api/auth/csrf")

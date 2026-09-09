@@ -83,6 +83,7 @@ RECORDED_ROWS = [
     "0053_primo_attachments_feedback",
     "0054_feedback_grant",
     "0055_recipe_component_unit",
+    "0056_user_google_subject",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",

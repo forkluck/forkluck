@@ -37,11 +37,14 @@ const trendComparisonSchema = z.enum([
 /* session/                                                                    */
 /* -------------------------------------------------------------------------- */
 
+export const authMethodsSchema = z.strictObject({ google: z.boolean() })
+
 export const sessionPayloadSchema = z.strictObject({
   user: z.strictObject({
     id: z.string(),
     name: z.string(),
     email: z.string(),
+    hasPassword: z.boolean(),
   }),
   // `status` stays a plain string: Stripe adds statuses, and this schema pins
   // the shape of the payload rather than its values.

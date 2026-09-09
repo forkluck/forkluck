@@ -263,7 +263,11 @@ export function SettingsScreen({
             <RowBody
               icon={KeyRound}
               title="Password"
-              note="Change the password you use to sign in."
+              note={
+                user.hasPassword
+                  ? "Change the password you use to sign in."
+                  : "Set a password so you can also sign in without Google."
+              }
             />
           </button>
           <button
@@ -460,6 +464,7 @@ export function SettingsScreen({
       />
       <ChangePasswordDialog
         key={`password-${password.nonce}`}
+        hasPassword={user.hasPassword}
         open={password.open}
         onOpenChange={password.onOpenChange}
       />

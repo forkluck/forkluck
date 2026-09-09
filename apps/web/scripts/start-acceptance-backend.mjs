@@ -35,6 +35,8 @@ const environment = {
   FORKLUCK_APP_ORIGIN: `http://127.0.0.1:${process.env.FORKLUCK_ACCEPTANCE_NEXT_PORT ?? "3100"}`,
   FORKLUCK_ENVIRONMENT: "test",
   FORKLUCK_INTERNAL_SECRET: "synthetic-acceptance-internal-secret",
+  GOOGLE_SIGN_IN_CLIENT_ID: "synthetic-google-client",
+  GOOGLE_SIGN_IN_CLIENT_SECRET: "synthetic-google-secret",
 }
 
 let cleaned = false

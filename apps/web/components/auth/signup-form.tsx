@@ -4,6 +4,9 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+import { AuthMethodsSeparator } from "@/components/auth/auth-methods-separator"
+import { GoogleButton } from "@/components/auth/google-button"
+import { writeLastSignInMethod } from "@/components/auth/last-sign-in-method"
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import {
@@ -17,7 +20,13 @@ import { VerifyCodeForm } from "@/components/auth/verify-code-form"
 import { authClient } from "@/lib/auth-client"
 import { useRefresh } from "@/hooks/use-refresh"
 
-export function SignupForm({ next = "/" }: { next?: string }) {
+export function SignupForm({
+  next = "/",
+  googleEnabled = false,
+}: {
+  next?: string
+  googleEnabled?: boolean
+}) {
   const router = useRouter()
   const { refresh } = useRefresh()
   const [name, setName] = React.useState("")
@@ -54,6 +63,7 @@ export function SignupForm({ next = "/" }: { next?: string }) {
       setPending(false)
       return
     }
+    writeLastSignInMethod("password")
     if (next.startsWith("/api/")) {
       window.location.assign(next)
       return
@@ -116,6 +126,13 @@ export function SignupForm({ next = "/" }: { next?: string }) {
       <Button type="submit" size="lg" pending={pending} className="mt-6">
         Create account
       </Button>
+
+      {googleEnabled ? (
+        <>
+          <AuthMethodsSeparator />
+          <GoogleButton next={next} />
+        </>
+      ) : null}
 
       <p className={authSwitchClassName}>
         Already have an account?{" "}

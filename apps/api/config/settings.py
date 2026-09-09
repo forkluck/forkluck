@@ -274,6 +274,20 @@ if sys.argv[1:2] == ["test"]:
     os.environ["FORKLUCK_TOKEN_ENCRYPTION_KEY"] = "aa" * 32
     os.environ.pop("FORKLUCK_TOKEN_ENCRYPTION_KEY_ID", None)
     os.environ.pop("FORKLUCK_TOKEN_ENCRYPTION_KEYS", None)
+    os.environ.pop("GOOGLE_SIGN_IN_CLIENT_ID", None)
+    os.environ.pop("GOOGLE_SIGN_IN_CLIENT_SECRET", None)
+
+# Optional, dedicated confidential client; independent of the Drive picker.
+GOOGLE_SIGN_IN_CLIENT_ID = os.getenv("GOOGLE_SIGN_IN_CLIENT_ID", "")
+GOOGLE_SIGN_IN_CLIENT_SECRET = os.getenv("GOOGLE_SIGN_IN_CLIENT_SECRET", "")
+if bool(GOOGLE_SIGN_IN_CLIENT_ID) != bool(GOOGLE_SIGN_IN_CLIENT_SECRET):
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        "Google sign-in requires both GOOGLE_SIGN_IN_CLIENT_ID and "
+        "GOOGLE_SIGN_IN_CLIENT_SECRET."
+    )
+
 if FORKLUCK_MAIL_BRIDGE_URL or FORKLUCK_MAIL_BRIDGE_API_KEY:
     from django.core.exceptions import ImproperlyConfigured
 

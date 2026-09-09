@@ -26,6 +26,11 @@ vi.mock("next/navigation", () => {
   return { useRouter: () => router }
 })
 
+import {
+  readLastSignInMethod,
+  writeLastSignInMethod,
+} from "@/components/auth/last-sign-in-method"
+import { authNoticeCode } from "@/components/auth/auth-notice"
 import { LoginForm } from "@/components/auth/login-form"
 import { SignupForm } from "@/components/auth/signup-form"
 import { VerifyCodeForm } from "@/components/auth/verify-code-form"
@@ -33,6 +38,7 @@ import { ForgotPasswordForm } from "@/components/auth/forgot-password-form"
 
 afterEach(() => {
   cleanup()
+  window.localStorage.clear()
   vi.clearAllMocks()
 })
 
@@ -76,6 +82,7 @@ describe("login return-to", () => {
     await vi.waitFor(() =>
       expect(push).toHaveBeenCalledWith("/recipes/abc/recipe")
     )
+    expect(readLastSignInMethod()).toBe("password")
   })
 
   it("carries the path across the verification step", async () => {
@@ -95,6 +102,7 @@ describe("login return-to", () => {
     await vi.waitFor(() =>
       expect(push).toHaveBeenCalledWith("/recipes/abc/recipe")
     )
+    expect(readLastSignInMethod()).toBe("password")
   })
 })
 
@@ -117,6 +125,7 @@ describe("signup Create account", () => {
     await vi.waitFor(() =>
       expect(push).toHaveBeenCalledWith("/recipes/abc/recipe")
     )
+    expect(readLastSignInMethod()).toBe("password")
   })
 
   it("stays enabled while empty and guards before calling the action", () => {
@@ -212,5 +221,61 @@ describe("forgot-password Reset password", () => {
     resetPassword.mockResolvedValue({})
     fireEvent.click(button)
     expect(resetPassword).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe("Google auth methods", () => {
+  it.each([
+    ["google-cancelled", "status", "Google sign-in was cancelled."],
+    [
+      "google-failed",
+      "alert",
+      "Google sign-in didn't complete. Try again or use your password.",
+    ],
+  ])("shows the %s notice", (code, role, message) => {
+    render(<LoginForm googleEnabled errorCode={authNoticeCode(code)} />)
+    expect(screen.getByRole(role).textContent).toBe(message)
+    expect(
+      screen.getByRole("link", { name: "Continue with Google" })
+    ).toBeTruthy()
+  })
+
+  it("ignores unknown, inherited and repeated error codes", () => {
+    for (const code of [
+      undefined,
+      "unknown",
+      "__proto__",
+      ["google-failed", "google-state"],
+    ]) {
+      expect(authNoticeCode(code)).toBeUndefined()
+    }
+  })
+
+  it.each([LoginForm, SignupForm])("hides Google when disabled", (Form) => {
+    render(<Form googleEnabled={false} />)
+    expect(
+      screen.queryByRole("link", { name: "Continue with Google" })
+    ).toBeNull()
+    expect(screen.queryByText("or")).toBeNull()
+  })
+
+  it("shows browser memory only on login", () => {
+    writeLastSignInMethod("google")
+    const { unmount } = render(<LoginForm googleEnabled />)
+    expect(screen.getByText("You signed in with Google last time")).toBeTruthy()
+    unmount()
+    render(<SignupForm googleEnabled />)
+    expect(screen.queryByText("You signed in with Google last time")).toBeNull()
+  })
+
+  it("does not change browser memory when password sign-in fails", async () => {
+    writeLastSignInMethod("google")
+    render(<LoginForm googleEnabled />)
+    type("Email", "cook@example.com")
+    type("Password", "wrong-password")
+    signInEmail.mockResolvedValue({ error: { message: "Incorrect password" } })
+    fireEvent.click(screen.getByRole("button", { name: "Sign in" }))
+    await screen.findByRole("alert")
+    expect(readLastSignInMethod()).toBe("google")
   })
 })
