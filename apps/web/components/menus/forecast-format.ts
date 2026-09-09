@@ -1,4 +1,5 @@
 import type { MenuForecast } from "@/lib/backend/types"
+import { formatCalendarDayMonth } from "@/lib/datetime"
 import type { MeasurementSystem } from "@/lib/business-settings"
 import { unitDefinition, unitShort } from "@/lib/unit-registry"
 import {
@@ -146,4 +147,27 @@ export function buyLabel(row: MaterialRow, packs: number) {
 export function makes(row: RecipeRow): Quantity | null {
   if (row.yieldAmount === null || !row.yieldUnit) return null
   return { quantity: row.batches * row.yieldAmount, unit: row.yieldUnit }
+}
+
+/** Whole product units, retaining a visible trace of occasional demand. */
+export function units(quantity: number) {
+  if (quantity > 0 && quantity < 0.5) return "<1"
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(
+    quantity
+  )
+}
+
+/** The 30-day schedule groups days into the same dated blocks as the basis. */
+export function planColumns(forecast: MenuForecast) {
+  return forecast.basis.horizonDays === 7
+    ? forecast.days.map(({ date }) => ({
+        start: date,
+        end: date,
+        label: formatCalendarDayMonth(date),
+      }))
+    : forecast.basis.weeks.horizon.map(({ start, end }) => ({
+        start,
+        end,
+        label: `${formatCalendarDayMonth(start)}–${formatCalendarDayMonth(end)}`,
+      }))
 }

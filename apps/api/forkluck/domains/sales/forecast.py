@@ -14,7 +14,7 @@ from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone as datetime_timezone
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -74,6 +74,30 @@ def _round_quantity(value: Decimal) -> Decimal:
 
 def _json_quantity(value: Decimal | float | int) -> float:
     return float(_round_quantity(Decimal(str(value))))
+
+
+def _spread_plan(quantities: Mapping[date, Decimal], total: Decimal) -> dict[date, Decimal]:
+    """Spread a chosen total, conserving thousandths after rounding.
+
+    A zero typical with a positive busy total can arise from offsetting sales
+    and returns. With no weekday profile to follow, spread that total evenly.
+    These are allocations of a plan, never independent daily busy estimates.
+    """
+    if not quantities:
+        return {}
+    weight = sum(quantities.values(), Decimal())
+    shares = {
+        day: total * quantity / weight if weight else total / len(quantities)
+        for day, quantity in quantities.items()
+    }
+    rounded = {
+        day: value.quantize(_QUANTITY_PLACES, rounding=ROUND_DOWN)
+        for day, value in shares.items()
+    }
+    remainder = int((_round_quantity(total) - sum(rounded.values())) / _QUANTITY_PLACES)
+    for day in sorted(shares, key=lambda day: shares[day] - rounded[day], reverse=True)[:remainder]:
+        rounded[day] += _QUANTITY_PLACES
+    return rounded
 
 
 def _workspace_window(start: date, end: date, zone) -> tuple[datetime, datetime]:
@@ -464,6 +488,7 @@ def _add_material(
 def _product_material_demand(
     user: User,
     forecasts: dict[str, Decimal],
+    daily_plans: Mapping[str, Mapping[date, Decimal]] | None = None,
 ) -> tuple[list[JsonObject], list[JsonObject], list[JsonObject]]:
     """Expand final product quantities through current product composition."""
     if not any(forecasts.values()):
@@ -482,6 +507,9 @@ def _product_material_demand(
     )
     recipe_models = {str(recipe.id): recipe for recipe in roots if recipe is not None}
     recipes: defaultdict[str, Decimal] = defaultdict(Decimal)
+    recipe_days: defaultdict[str, defaultdict[date, Decimal]] = defaultdict(
+        lambda: defaultdict(Decimal)
+    )
     material_amounts: defaultdict[tuple[str, str], Decimal] = defaultdict(Decimal)
     unresolved: list[JsonObject] = []
 
@@ -518,6 +546,8 @@ def _product_material_demand(
                 continue
             component_quantity = product_quantity * Decimal(str(batches))
             recipes[recipe_key] += component_quantity
+            for day, quantity in (daily_plans or {}).get(str(component.product_id), {}).items():
+                recipe_days[recipe_key][day] += quantity * Decimal(str(batches))
 
             sources: dict[int, Ingredient] = {}
 
@@ -642,6 +672,10 @@ def _product_material_demand(
             "recipePublicId": recipe.public_id,
             "recipeTitle": recipe.title,
             "batches": _json_quantity(quantity),
+            "days": [
+                {"date": day.isoformat(), "batches": _json_quantity(amount)}
+                for day, amount in _spread_plan(recipe_days[recipe_id], _round_quantity(quantity)).items()
+            ],
             # What one batch makes, so a batch count can be read as pieces or
             # kilograms; null when the recipe does not say.
             "yieldAmount": (
@@ -772,51 +806,92 @@ def _menu_revenue(
 def _series(
     daily: Mapping[str, Mapping[date, Decimal]],
     projections: Mapping[str, ProductProjection],
-    menu_prices: Mapping[str, int],
+    member_ids: set[str],
+    daily_plans: Mapping[str, Mapping[date, Decimal]],
     *,
     history_end: date,
     horizon_start: date,
     horizon_days: int,
 ) -> list[JsonObject]:
-    """Recent history then the horizon, both in money at today's prices.
-
-    History is actual units times the current price, not net sales, so the two
-    halves of the line differ only by quantity.  The last history day carries
-    all three values so the projection starts where history ends.
-    """
+    """Menu-member units, with the last history row bridging the two lines."""
     rows: list[JsonObject] = []
     for offset in range(SERIES_HISTORY_DAYS - 1, -1, -1):
         day = history_end - timedelta(days=offset)
-        actual = sum(
-            _money(daily.get(product_id, {}).get(day, Decimal()), price)
-            for product_id, price in menu_prices.items()
-        )
-        bridge = offset == 0
-        rows.append(
-            {
-                "date": day.isoformat(),
-                "actualCents": actual,
-                "typicalCents": actual if bridge else None,
-                "busyCents": actual if bridge else None,
-            }
-        )
+        actual = _json_quantity(sum(
+            (daily.get(pid, {}).get(day, Decimal()) for pid in member_ids), Decimal()
+        ))
+        rows.append({
+            "date": day.isoformat(), "actualUnits": actual,
+            "typicalUnits": actual if offset == 0 else None,
+            "plannedUnits": actual if offset == 0 else None,
+        })
     for offset in range(horizon_days):
         day = horizon_start + timedelta(days=offset)
-        typical, busy = _priced(projections, menu_prices, [day])
-        rows.append(
-            {
-                "date": day.isoformat(),
-                "actualCents": None,
-                "typicalCents": typical,
-                "busyCents": busy,
-            }
-        )
+        rows.append({
+            "date": day.isoformat(), "actualUnits": None,
+            "typicalUnits": _json_quantity(sum(
+                (projections[pid].days[day].typical for pid in member_ids), Decimal()
+            )),
+            "plannedUnits": _json_quantity(sum(
+                (daily_plans[pid][day] for pid in member_ids), Decimal()
+            )),
+        })
     return rows
+
+
+def _basis_weeks(
+    daily, last_year, projections, daily_plans, member_ids, exists_from,
+    *, today: date, horizon_days: int,
+) -> tuple[JsonObject, JsonObject]:
+    """Expose aligned menu-member history and the weekly level, in memory."""
+    def units(source, start, end):
+        return _json_quantity(sum(
+            (_window_total(source.get(pid, {}), start, end) for pid in member_ids), Decimal()
+        ))
+
+    lag = timedelta(days=SEASONAL_LAG_DAYS)
+    recent = []
+    for back in range(HISTORY_WEEKS, 0, -1):
+        start = today - timedelta(days=7 * back)
+        end = start + timedelta(days=6)
+        recent.append({
+            "start": start.isoformat(), "end": end.isoformat(),
+            "units": units(daily, start, end),
+            "lastYearUnits": units(last_year, start - lag, end - lag),
+        })
+    typical_days = {
+        pid: {day: entry.typical for day, entry in projection.days.items()}
+        for pid, projection in projections.items()
+    }
+    horizon = []
+    for offset in range(0, horizon_days, 7):
+        start = today + timedelta(days=offset)
+        end = today + timedelta(days=min(offset + 6, horizon_days - 1))
+        horizon.append({
+            "start": start.isoformat(), "end": end.isoformat(),
+            "typicalUnits": units(typical_days, start, end),
+            "plannedUnits": units(daily_plans, start, end),
+            "lastYearUnits": units(last_year, start - lag, end - lag),
+        })
+    weekly = {
+        pid: project_product(
+            daily.get(pid, {}), exists_from=exists_from.get(pid),
+            history_end=today - timedelta(days=1), horizon_start=today,
+            horizon_days=7, last_year=None,
+        ).typical_total for pid in member_ids
+    }
+    unscaled = sum(weekly.values(), Decimal())
+    scaled = sum((value * projections[pid].seasonal_factor for pid, value in weekly.items()), Decimal())
+    return {"recent": recent, "horizon": horizon}, {
+        "weeklyUnits": _json_quantity(unscaled),
+        "seasonalFactor": _json_quantity(scaled / unscaled if unscaled else Decimal(1)),
+        "seasonalProducts": sum(projections[pid].seasonal_factor != 1 for pid in member_ids),
+    }
 
 
 def _backtest(
     daily: Mapping[str, Mapping[date, Decimal]],
-    menu_prices: Mapping[str, int],
+    member_ids: set[str],
     *,
     today: date,
     exists_from: Mapping[str, date],
@@ -830,15 +905,15 @@ def _backtest(
     the screen shows.
     """
     weeks: list[JsonObject] = []
-    error = 0
-    volume = 0
+    error = Decimal()
+    volume = Decimal()
     scored = 0
     covered = 0
     for back in range(BACKTEST_WEEKS, 0, -1):
         as_of = today - timedelta(days=7 * back)
-        actual = 0
+        actual = Decimal()
         projections: dict[str, ProductProjection] = {}
-        for product_id, price in menu_prices.items():
+        for product_id in member_ids:
             product_daily = daily.get(product_id, {})
             projections[product_id] = project_product(
                 product_daily,
@@ -849,19 +924,19 @@ def _backtest(
                 last_year=last_year.get(product_id),
             )
             actual += sum(
-                _money(
-                    product_daily.get(as_of + timedelta(days=offset), Decimal()), price
-                )
+                product_daily.get(as_of + timedelta(days=offset), Decimal())
                 for offset in range(7)
             )
-        typical, busy = _priced(projections, menu_prices)
+        typical = sum((p.typical_total for p in projections.values()), Decimal())
+        variance = sum((day.variance for p in projections.values() for day in p.days.values()), Decimal())
+        busy = _clamped(typical + BUSY_Z * variance.sqrt())
         weeks.append(
             {
                 "start": as_of.isoformat(),
                 "end": (as_of + timedelta(days=6)).isoformat(),
-                "typicalCents": typical,
-                "busyCents": busy,
-                "actualCents": actual,
+                "typicalUnits": _json_quantity(typical),
+                "busyUnits": _json_quantity(busy),
+                "actualUnits": _json_quantity(actual),
             }
         )
         if actual <= 0:
@@ -999,8 +1074,9 @@ def menu_forecast_payload(
     """Build the selected menu's non-persisted demand forecast over a horizon.
 
     Every horizon day is projected from its own matching weekdays, recent
-    weeks counting more; only the sum is reported, because a single day's
-    average is a weekday profile dressed up as a date.  ``today`` is an
+    weeks counting more. Day rows allocate the chosen production total by
+    that weekday profile, so a cook can schedule the plan without treating
+    each date as an independently calibrated busy forecast. ``today`` is an
     explicit test seam.
     """
     if menu.user_id != user.pk:
@@ -1043,6 +1119,7 @@ def menu_forecast_payload(
     }
     product_rows: list[JsonObject] = []
     total_quantities: dict[str, Decimal] = {}
+    daily_plans: dict[str, dict[date, Decimal]] = {}
     with_history = 0
     for product_id, product in sorted(
         products.items(), key=lambda row: row[1].name.casefold()
@@ -1050,6 +1127,9 @@ def menu_forecast_payload(
         projection = projections[product_id]
         total = projection.busy_total if plan == "busy" else projection.typical_total
         total_quantities[product_id] = total
+        daily_plans[product_id] = _spread_plan(
+            {day: entry.typical for day, entry in projection.days.items()}, total
+        )
         with_history += bool(projection.weeks_observed)
         price = priced.get(product_id)
         product_rows.append(
@@ -1063,6 +1143,12 @@ def menu_forecast_payload(
                 "typicalQuantity": _json_quantity(projection.typical_total),
                 "busyQuantity": _json_quantity(projection.busy_total),
                 "totalQuantity": _json_quantity(total),
+                "seasonalFactor": _json_quantity(projection.seasonal_factor),
+                "days": [
+                    {"date": day.isoformat(), "typicalQuantity": _json_quantity(entry.typical),
+                     "plannedQuantity": _json_quantity(daily_plans[product_id][day])}
+                    for day, entry in projection.days.items()
+                ],
                 # The menu price this row is projected at, and its share of
                 # the menu's money; null for an unpriced member or a product
                 # reached only through a box or a modifier.
@@ -1074,9 +1160,13 @@ def menu_forecast_payload(
             }
         )
     recipe_requirements, material_requirements, material_unresolved = _product_material_demand(
-        user, total_quantities
+        user, total_quantities, daily_plans
     )
     unresolved.extend(material_unresolved)
+    basis_weeks, level = _basis_weeks(
+        daily, last_year, projections, daily_plans, scoped_product_ids, exists_from,
+        today=today, horizon_days=horizon_days,
+    )
     return {
         "menu": {
             "id": str(menu.id),
@@ -1097,6 +1187,8 @@ def menu_forecast_payload(
                 for projection in projections.values()
             ),
             "compositionBasis": "current",
+            "weeks": basis_weeks,
+            "level": level,
         },
         "coverage": {
             "menuItems": menu_item_count,
@@ -1118,17 +1210,31 @@ def menu_forecast_payload(
             plan=plan,
         ),
         "materialCost": _material_cost(material_requirements),
+        "production": {
+            "typicalUnits": _json_quantity(sum((p.typical_total for p in projections.values()), Decimal())),
+            "busyUnits": _json_quantity(sum((p.busy_total for p in projections.values()), Decimal())),
+            "plannedUnits": _json_quantity(sum(total_quantities.values(), Decimal())),
+            "recipeBatches": _json_quantity(sum((Decimal(str(row["batches"])) for row in recipe_requirements), Decimal())),
+            "productsPlanned": sum(quantity > 0 for quantity in total_quantities.values()),
+        },
+        "days": [
+            {"date": day.isoformat(),
+             "typicalUnits": _json_quantity(sum((p.days[day].typical for p in projections.values()), Decimal())),
+             "plannedUnits": _json_quantity(sum((days[day] for days in daily_plans.values()), Decimal()))}
+            for day in (today + timedelta(days=offset) for offset in range(horizon_days))
+        ],
         "series": _series(
             daily,
             projections,
-            priced,
+            scoped_product_ids,
+            daily_plans,
             history_end=history_end,
             horizon_start=today,
             horizon_days=horizon_days,
         ),
         "backtest": _backtest(
             daily,
-            priced,
+            scoped_product_ids,
             today=today,
             exists_from=exists_from,
             last_year=last_year,

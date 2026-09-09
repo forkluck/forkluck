@@ -10,6 +10,8 @@ import {
 } from "@/components/menu/product-cells"
 import {
   amount,
+  units,
+  planColumns,
   buyLabel,
   isCountUnit,
   makes,
@@ -19,6 +21,7 @@ import {
   packsToBuy,
   usageNote,
 } from "@/components/menus/forecast-format"
+import type { ForecastView } from "@/components/menus/forecast-controls"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -36,7 +39,7 @@ import type {
   MenuForecastPlan,
 } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
-import { formatCents, formatWholeCents } from "@/lib/money"
+import { formatWholeCents } from "@/lib/money"
 import { productHref } from "@/lib/product-href"
 import { cn } from "@/lib/utils"
 
@@ -47,27 +50,11 @@ import { cn } from "@/lib/utils"
  */
 
 type ProductRow = MenuForecastData["products"][number]
-type ProductSortKey =
-  "product" | "typical" | "busy" | "price" | "sales" | "history"
+type ProductSortKey = "product" | "typical" | "busy" | "history"
 type RecipeRow = MenuForecastData["recipeRequirements"][number]
 type RecipeSortKey = "recipe" | "batches"
 type MaterialRow = MenuForecastData["materialRequirements"][number]
 type MaterialSortKey = "material" | "buy" | "cost"
-
-/**
- * Whole units. A projection is good to a tenth or so of its total, never to a
- * thousandth of a cookie, and the kitchen bakes 13, not 12.965. Demand that
- * rounds to nothing but is not nothing prints as "<1", so a product that
- * sells some weeks does not read as one that never sells.
- */
-const wholeUnitFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
-})
-
-function units(quantity: number) {
-  if (quantity > 0 && quantity < 0.5) return "<1"
-  return wholeUnitFormat.format(quantity)
-}
 
 /** Only thin history is worth a word; a full eight weeks is the norm. */
 function historyLabel(weeksObserved: number) {
@@ -83,29 +70,29 @@ const blank = <span className="text-faint">–</span>
 /** Rows arrive A–Z from the backend and stay that way until a header is clicked. */
 export function ProductForecastTable({
   forecast,
+  view = "week",
 }: {
   forecast: MenuForecastData
+  view?: ForecastView
 }) {
   const busy = forecast.basis.plan === "busy"
-  const currencyCode = forecast.revenue.currencyCode
-  const planCents = (row: ProductRow) =>
-    busy ? row.busyCents : row.typicalCents
+  const columns = view === "day" ? planColumns(forecast) : []
   const { sort, toggle, directionFor } = useSortState<ProductSortKey>()
   const rows = sortRows<ProductRow, ProductSortKey>(forecast.products, sort, {
     product: (row) => row.productName,
     typical: (row) => row.typicalQuantity,
     busy: (row) => row.busyQuantity,
-    price: (row) => row.priceCents ?? -1,
-    sales: (row) => planCents(row) ?? -1,
     history: (row) => row.weeksObserved,
   })
   const header = (
     key: ProductSortKey,
     label: string,
-    className?: string,
     align: "left" | "right" = "left"
   ) => (
-    <TableHead className={className} aria-sort={ariaSort(directionFor(key))}>
+    <TableHead
+      className={align === "right" ? "min-w-24" : "min-w-32"}
+      aria-sort={ariaSort(directionFor(key))}
+    >
       <SortHeader
         align={align}
         direction={directionFor(key)}
@@ -119,102 +106,123 @@ export function ProductForecastTable({
     <section className="break-inside-avoid">
       <SectionHeader
         title="Product demand"
-        subtitle="Weekday-matched from the last eight weeks, summed over the horizon."
+        subtitle={
+          view === "day"
+            ? `The ${planWord(forecast.basis.plan)} plan, spread by weekday rhythm${forecast.basis.horizonDays === 30 ? " and grouped by week" : ""}.`
+            : "Weekday-matched from the last eight weeks, summed over the horizon."
+        }
         badge={`${forecast.coverage.productsWithHistory} of ${forecast.coverage.products} with history`}
       />
       <TableFrame className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableHeaderRow>
-              {header("product", "Product", "min-w-48")}
-              {header(
-                "typical",
-                "Typical",
-                cn("min-w-24", !busy && "text-foreground"),
-                "right"
+              {header("product", "Product")}
+              {view === "day" ? (
+                <>
+                  {columns.map((column) => (
+                    <TableHead
+                      key={column.start}
+                      className="min-w-24 text-right"
+                    >
+                      {column.label}
+                    </TableHead>
+                  ))}
+                  {header(busy ? "busy" : "typical", "Total", "right")}
+                </>
+              ) : (
+                <>
+                  {header("typical", "Typical", "right")}
+                  {header("busy", "Busy", "right")}
+                </>
               )}
-              {header(
-                "busy",
-                "Busy",
-                cn("min-w-24", busy && "text-foreground"),
-                "right"
-              )}
-              {header("price", "Price", "min-w-24", "right")}
-              {header("sales", "Projected sales", "min-w-32", "right")}
-              {header("history", "History", "min-w-32")}
+              {header("history", "History")}
             </TableHeaderRow>
           </TableHeader>
           <TableBody>
             {rows.length ? (
-              rows.map((product) => {
-                const cents = planCents(product)
-                return (
-                  <TableRow key={product.productId}>
-                    <TableCell>
-                      <Link
-                        href={productHref({
-                          publicId: product.productPublicId,
-                        })}
-                        className="font-medium text-foreground hover:underline"
+              rows.map((product) => (
+                <TableRow key={product.productId}>
+                  <TableCell>
+                    <Link
+                      href={productHref({ publicId: product.productPublicId })}
+                      className="font-medium text-foreground hover:underline"
+                    >
+                      {product.productName}
+                    </Link>
+                    {!product.menuMember ? (
+                      <Badge variant="secondary" className="ml-2">
+                        Included
+                      </Badge>
+                    ) : null}
+                    {!product.isActive ? (
+                      <Badge variant="secondary" className="ml-2">
+                        Inactive
+                      </Badge>
+                    ) : null}
+                  </TableCell>
+                  {view === "day" ? (
+                    <>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.start}
+                          className="text-right tabular-nums"
+                        >
+                          {units(
+                            product.days
+                              .filter(
+                                (day) =>
+                                  day.date >= column.start &&
+                                  day.date <= column.end
+                              )
+                              .reduce(
+                                (sum, day) => sum + day.plannedQuantity,
+                                0
+                              )
+                          )}
+                        </TableCell>
+                      ))}
+                      <TableCell className="text-right font-medium tabular-nums">
+                        {units(product.totalQuantity)}
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell
+                        className={cn(
+                          "text-right tabular-nums",
+                          !busy && "font-medium"
+                        )}
                       >
-                        {product.productName}
-                      </Link>
-                      {!product.menuMember ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Modifier
-                        </Badge>
-                      ) : null}
-                      {!product.isActive ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Inactive
-                        </Badge>
-                      ) : null}
-                    </TableCell>
-                    <TableCell
-                      className={cn(
-                        "text-right tabular-nums",
-                        !busy && "font-medium"
-                      )}
-                    >
-                      {units(product.typicalQuantity)}
-                    </TableCell>
-                    <TableCell
-                      className={cn(
-                        "text-right tabular-nums",
-                        busy && "font-medium"
-                      )}
-                    >
-                      {units(product.busyQuantity)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {product.priceCents !== null ? (
-                        formatCents(product.priceCents, currencyCode)
-                      ) : product.menuMember ? (
-                        <Badge variant="warning">No price</Badge>
-                      ) : (
-                        blank
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {cents !== null
-                        ? formatWholeCents(cents, currencyCode)
-                        : blank}
-                    </TableCell>
-                    <TableCell
-                      className={cn(
-                        "text-sm",
-                        product.weeksObserved === 8
-                          ? "text-faint"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {historyLabel(product.weeksObserved)}
-                    </TableCell>
-                  </TableRow>
-                )
-              })
+                        {units(product.typicalQuantity)}
+                      </TableCell>
+                      <TableCell
+                        className={cn(
+                          "text-right tabular-nums",
+                          busy && "font-medium"
+                        )}
+                      >
+                        {units(product.busyQuantity)}
+                      </TableCell>
+                    </>
+                  )}
+                  <TableCell
+                    className={cn(
+                      "text-sm",
+                      product.weeksObserved === 8
+                        ? "text-faint"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {historyLabel(product.weeksObserved)}
+                    {product.seasonalFactor !== 1
+                      ? ` · seasonal ${product.seasonalFactor.toFixed(2)}`
+                      : ""}
+                  </TableCell>
+                </TableRow>
+              ))
             ) : (
-              <TableEmpty colSpan={6}>
+              <TableEmpty colSpan={view === "day" ? columns.length + 3 : 4}>
                 Link Products to this Menu to forecast demand.
               </TableEmpty>
             )}
@@ -274,10 +282,13 @@ function Makes({ row, system }: { row: RecipeRow; system: MeasurementSystem }) {
 export function RecipeBatchesTable({
   forecast,
   measurementSystem,
+  view = "week",
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
+  view?: ForecastView
 }) {
+  const columns = view === "day" ? planColumns(forecast) : []
   // The backend lists recipes in id order, which means nothing to a cook, so
   // the table opens A to Z; a header click takes it from there.
   const { sort, toggle, directionFor } = useSortState<RecipeSortKey>({
@@ -308,6 +319,11 @@ export function RecipeBatchesTable({
                   Recipe
                 </SortHeader>
               </TableHead>
+              {columns.map((column) => (
+                <TableHead key={column.start} className="min-w-24 text-right">
+                  {column.label}
+                </TableHead>
+              ))}
               <TableHead
                 className="min-w-24"
                 aria-sort={ariaSort(directionFor("batches"))}
@@ -335,6 +351,21 @@ export function RecipeBatchesTable({
                       {row.recipeTitle}
                     </Link>
                   </TableCell>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.start}
+                      className="text-right tabular-nums"
+                    >
+                      {amount(
+                        row.days
+                          .filter(
+                            (day) =>
+                              day.date >= column.start && day.date <= column.end
+                          )
+                          .reduce((sum, day) => sum + day.batches, 0)
+                      )}
+                    </TableCell>
+                  ))}
                   <TableCell className="text-right font-medium tabular-nums">
                     {amount(row.batches)}
                   </TableCell>
@@ -344,7 +375,9 @@ export function RecipeBatchesTable({
                 </TableRow>
               ))
             ) : (
-              <TableEmpty colSpan={3}>No recipe demand.</TableEmpty>
+              <TableEmpty colSpan={3 + columns.length}>
+                No recipe demand.
+              </TableEmpty>
             )}
           </TableBody>
         </Table>
@@ -493,14 +526,17 @@ export function MaterialsTable({
 export function Requirements({
   forecast,
   measurementSystem,
+  view = "week",
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
+  view?: ForecastView
 }) {
   return (
     <>
       <RecipeBatchesTable
         forecast={forecast}
+        view={view}
         measurementSystem={measurementSystem}
       />
       <MaterialsTable

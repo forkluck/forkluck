@@ -14,7 +14,7 @@ from ...models import Menu
 
 class Command(BaseCommand):
     help = (
-        "Compare menu forecasting bases in units, unlike the payload's priced backtest. "
+        "Compare menu forecasting bases in production units across a longer replay than the page. "
         "Reads only. The modifier walk uses a fixed set of queries but a potentially "
         "large in-memory pass over the requested ledger window."
     )

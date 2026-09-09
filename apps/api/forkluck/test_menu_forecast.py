@@ -8,6 +8,7 @@ from django.test import RequestFactory, TestCase
 
 from .domains.sales.forecast import (
     _seasonal_factor,
+    _spread_plan,
     menu_forecast_payload,
     project_product,
 )
@@ -719,11 +720,11 @@ class MenuForecastTests(TestCase):
         self.assertLess(revenue["busyCents"], own_busy)
         self.assertEqual(
             sum(
-                row["typicalCents"]
+                row["typicalUnits"]
                 for row in payload["series"]
-                if row["actualCents"] is None
+                if row["actualUnits"] is None
             ),
-            revenue["typicalCents"],
+            payload["production"]["typicalUnits"],
         )
 
     def test_only_menu_members_are_priced_and_a_zero_price_is_unpriced(self):
@@ -764,14 +765,14 @@ class MenuForecastTests(TestCase):
 
         self.assertEqual(len(series), 35)
         self.assertEqual(series[0]["date"], "2026-03-30")
-        self.assertIsNone(series[26]["typicalCents"])
+        self.assertIsNone(series[26]["typicalUnits"])
         self.assertEqual(bridge["date"], "2026-04-26")
         self.assertEqual(
-            (bridge["actualCents"], bridge["typicalCents"], bridge["busyCents"]),
-            (600, 600, 600),
+            (bridge["actualUnits"], bridge["typicalUnits"], bridge["plannedUnits"]),
+            (3, 3, 3),
         )
         self.assertEqual(series[28]["date"], "2026-04-27")
-        self.assertIsNone(series[28]["actualCents"])
+        self.assertIsNone(series[28]["actualUnits"])
 
     def test_backtest_replays_the_live_projection_at_four_past_weeks(self):
         toast = self.product("Toast")
@@ -798,10 +799,10 @@ class MenuForecastTests(TestCase):
         self.assertEqual(backtest["weeks"][0]["start"], "2026-03-30")
         self.assertEqual(backtest["weeks"][2]["start"], "2026-04-13")
         self.assertEqual(replay.typical_total, Decimal("4.000"))
-        self.assertEqual(backtest["weeks"][2]["typicalCents"], 2000)
+        self.assertEqual(backtest["weeks"][2]["typicalUnits"], 4)
         # The oldest week predates the first sale, so it forecast nothing
-        # against 2000 of actual: 2000 missed out of 8000 sold.
-        self.assertEqual(backtest["weeks"][0]["typicalCents"], 0)
+        # against 4 actual units: 4 missed out of 16 consumed.
+        self.assertEqual(backtest["weeks"][0]["typicalUnits"], 0)
         self.assertEqual(backtest["scoredWeeks"], 4)
         self.assertEqual(backtest["errorPercent"], 25.0)
         self.assertEqual(backtest["busyCoveredWeeks"], 3)
@@ -963,7 +964,7 @@ class MenuForecastTests(TestCase):
         self.assertEqual(replay.seasonal_factor, Decimal("1.5"))
         self.assertEqual(payload["backtest"]["weeks"][2]["start"], "2026-04-13")
         self.assertEqual(replay.typical_total, Decimal("2.595"))
-        self.assertEqual(payload["backtest"]["weeks"][2]["typicalCents"], 1298)
+        self.assertEqual(payload["backtest"]["weeks"][2]["typicalUnits"], 2.595)
         # Today's own windows saw nothing last year, so the live flag stays down
         # while the replay was still scaled.
         self.assertFalse(payload["basis"]["seasonalAdjustment"])
@@ -1510,3 +1511,95 @@ class MenuForecastTests(TestCase):
             sum(row["typicalCents"] or 0 for row in payload["products"]),
             payload["revenue"]["typicalCents"],
         )
+
+    def test_day_plans_and_recipe_batches_conserve_both_horizons_and_plans(self):
+        products = [self.product("Bread"), self.product("Roll")]
+        menu = self.menu(*products)
+        recipe = Recipe.objects.create(user=self.user, title="Dough", yield_amount=3, yield_unit="kg")
+        for i, product in enumerate(products):
+            SalesProductComponent.objects.create(
+                product=product, recipe=recipe, quantity=Decimal("0.333"), unit="",
+            )
+            variant = self.variant(product)
+            for back in range(1, 85):
+                self.line(variant, self.today - timedelta(days=back), quantity=str((back + i) % 9))
+        for horizon in (7, 30):
+            for plan in ("typical", "busy"):
+                with self.subTest(horizon=horizon, plan=plan):
+                    payload = menu_forecast_payload(self.user, menu, today=self.today, horizon_days=horizon, plan=plan)
+                    self.assertEqual(len(payload["days"]), horizon)
+                    for row in payload["products"]:
+                        self.assertEqual(len(row["days"]), horizon)
+                        self.assertAlmostEqual(sum(day["plannedQuantity"] for day in row["days"]), row["totalQuantity"], places=3)
+                        self.assertAlmostEqual(sum(day["typicalQuantity"] for day in row["days"]), row["typicalQuantity"], places=3)
+                    for row in payload["recipeRequirements"]:
+                        self.assertEqual(len(row["days"]), horizon)
+                        self.assertAlmostEqual(sum(day["batches"] for day in row["days"]), row["batches"], places=3)
+                    production = payload["production"]
+                    for key, product_key in (("typicalUnits", "typicalQuantity"), ("busyUnits", "busyQuantity"), ("plannedUnits", "totalQuantity")):
+                        self.assertAlmostEqual(production[key], sum(row[product_key] for row in payload["products"]), places=3)
+                    self.assertAlmostEqual(production["recipeBatches"], sum(row["batches"] for row in payload["recipeRequirements"]), places=3)
+                    self.assertEqual(production["productsPlanned"], 2)
+                    self.assertAlmostEqual(sum(day["plannedUnits"] for day in payload["days"]), production["plannedUnits"], places=3)
+                    for index, day in enumerate(payload["days"]):
+                        self.assertAlmostEqual(day["plannedUnits"], sum(row["days"][index]["plannedQuantity"] for row in payload["products"]), places=3)
+                    self.assertAlmostEqual(sum(week["plannedUnits"] for week in payload["basis"]["weeks"]["horizon"]), production["plannedUnits"], places=3)
+
+    def test_basis_blocks_align_last_year_and_weekly_level_is_unscaled(self):
+        product = self.product("Bread")
+        menu = self.menu(product)
+        variant = self.variant(product)
+        self.sold_mondays(variant)
+        self.sold_last_year(variant, self.LAST_YEAR_HISTORY_START, self.LAST_YEAR_HORIZON_START)
+        payload = menu_forecast_payload(self.user, menu, today=self.today, horizon_days=30)
+        basis = payload["basis"]
+        self.assertEqual(len(basis["weeks"]["recent"]), 8)
+        self.assertEqual(len(basis["weeks"]["horizon"]), 5)
+        self.assertEqual(basis["weeks"]["recent"][0]["start"], basis["historyStart"])
+        self.assertEqual(basis["weeks"]["recent"][-1]["end"], basis["historyEnd"])
+        self.assertEqual(basis["weeks"]["horizon"][-1]["end"], basis["horizonEnd"])
+        self.assertEqual(basis["weeks"]["recent"][0]["lastYearUnits"], 7)
+        self.assertEqual(basis["weeks"]["horizon"][0]["lastYearUnits"], 14)
+        self.assertEqual(basis["weeks"]["horizon"][-1]["lastYearUnits"], 0)
+        expected = project_product(
+            {day: Decimal(4) for day in (date(2026, 3, 30), date(2026, 4, 6), date(2026, 4, 13), date(2026, 4, 20))},
+            exists_from=self.LAST_YEAR_HISTORY_START,
+            history_end=self.today - timedelta(days=1), horizon_start=self.today,
+            horizon_days=7, last_year=None,
+        )
+        self.assertEqual(basis["level"]["weeklyUnits"], float(expected.typical_total))
+        self.assertEqual(basis["level"]["seasonalFactor"], payload["products"][0]["seasonalFactor"])
+
+    def test_unpriced_menu_members_still_have_a_chart_basis_and_accuracy(self):
+        member, extra = self.product("Box"), self.product("Inside")
+        SalesProductComponent.objects.create(product=member, component_product=extra, quantity=Decimal(2))
+        menu = self.menu(member)
+        variant = self.variant(member)
+        for back in range(1, 85):
+            self.line(variant, self.today - timedelta(days=back), quantity="1")
+        payload = menu_forecast_payload(self.user, menu, today=self.today, plan="busy")
+        self.assertEqual(payload["revenue"]["pricedProducts"], 0)
+        self.assertEqual(payload["production"]["plannedUnits"], 21)
+        self.assertEqual(payload["basis"]["level"]["weeklyUnits"], 7)
+        self.assertEqual(payload["basis"]["weeks"]["recent"][0]["units"], 7)
+        self.assertEqual(sum(row["plannedUnits"] for row in payload["series"] if row["actualUnits"] is None), 7)
+        self.assertEqual(payload["backtest"]["errorPercent"], 0)
+        self.assertEqual(payload["backtest"]["scoredWeeks"], 4)
+
+    def test_empty_menu_has_dated_zero_basis_and_plan_rows(self):
+        for horizon in (7, 30):
+            payload = menu_forecast_payload(self.user, self.menu(), today=self.today, horizon_days=horizon)
+            self.assertEqual(len(payload["basis"]["weeks"]["recent"]), 8)
+            self.assertEqual(len(payload["days"]), horizon)
+            self.assertEqual(payload["production"]["plannedUnits"], 0)
+            self.assertEqual(payload["basis"]["level"]["seasonalFactor"], 1)
+            self.assertIsNone(payload["backtest"]["errorPercent"])
+
+    def test_plan_distribution_handles_small_and_zero_profiles(self):
+        days = {self.today + timedelta(days=i): Decimal(1) for i in range(30)}
+        for total in (Decimal("0.001"), Decimal("0.017"), Decimal("2.333")):
+            spread = _spread_plan(days, total)
+            self.assertEqual(sum(spread.values()), total)
+            self.assertTrue(all(value >= 0 for value in spread.values()))
+        zero = _spread_plan({day: Decimal() for day in days}, Decimal("1.001"))
+        self.assertEqual(sum(zero.values()), Decimal("1.001"))

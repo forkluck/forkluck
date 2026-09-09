@@ -20,23 +20,20 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { MenuForecast } from "@/lib/backend/types"
-import { formatAxisCents } from "@/lib/chart-axis"
-import { formatCents } from "@/lib/money"
+import { units } from "@/components/menus/forecast-format"
 
 const chartConfig = {
-  actualCents: { label: "Actual", color: "var(--foreground)" },
-  typicalCents: { label: "Typical", color: "var(--brand)" },
-  band: { label: "Typical to busy", color: "var(--brand-fill)" },
+  actualUnits: { label: "Actual", color: "var(--foreground)" },
+  typicalUnits: { label: "Typical", color: "var(--brand)" },
+  band: { label: "Typical to planned", color: "var(--brand-fill)" },
 } satisfies ChartConfig
 
 function ForecastTooltip({
   active,
   payload,
-  currencyCode,
 }: {
   active?: boolean
   payload?: Array<{ payload: ForecastChartPoint }>
-  currencyCode: string
 }) {
   const point = payload?.[0]?.payload
   if (!active || !point) return null
@@ -44,9 +41,9 @@ function ForecastTooltip({
     <div className="rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs leading-4 shadow-xl">
       <div className="font-medium">{point.tooltipLabel}</div>
       <div className="mt-0.5 text-muted-foreground tabular-nums">
-        {point.isHorizon && point.band
-          ? `Typical ${formatCents(point.band[0], currencyCode)} · Busy ${formatCents(point.band[1], currencyCode)}`
-          : `Actual ${formatCents(point.actualCents ?? 0, currencyCode)}`}
+        {point.isHorizon
+          ? `Typical ${units(point.typicalUnits ?? 0)} units${point.band ? ` · Planned ${units(point.band[1])} units` : ""}`
+          : `Actual ${units(point.actualUnits ?? 0)} units`}
       </div>
     </div>
   )
@@ -68,22 +65,22 @@ function LegendKey({
 }
 
 /**
- * Sales so far against what the plan projects: one solid line meeting one
- * dashed line at today, with the typical-to-busy band behind it. Money on both
- * sides is units at current menu prices, so the eye compares quantity only.
+ * Menu-member units against the chosen plan: one solid line meeting one
+ * dashed line at today. The busy plan is distributed by weekday rhythm;
+ * the band shows that allocation rather than separate daily busy estimates.
  */
 export function MenuForecastChart({
   series,
   horizonStart,
-  currencyCode,
   summary,
+  plan,
 }: {
   series: MenuForecast["series"]
   horizonStart: string
-  currencyCode: string
   summary: string
+  plan: MenuForecast["basis"]["plan"]
 }) {
-  const { points, todayLabel } = forecastChartPoints(series, horizonStart)
+  const { points, todayLabel } = forecastChartPoints(series, horizonStart, plan)
 
   return (
     <div className="min-w-0">
@@ -94,9 +91,11 @@ export function MenuForecastChart({
         <LegendKey swatch="h-0 w-4 border-t-2 border-dashed border-brand">
           Typical
         </LegendKey>
-        <LegendKey swatch="h-2.5 w-4 rounded-sm bg-brand-fill">
-          Typical to busy
-        </LegendKey>
+        {plan === "busy" ? (
+          <LegendKey swatch="h-2.5 w-4 rounded-sm bg-brand-fill">
+            Typical to planned
+          </LegendKey>
+        ) : null}
       </div>
 
       <ChartContainer
@@ -115,9 +114,8 @@ export function MenuForecastChart({
             tickLine={false}
             axisLine={false}
             tick={{ className: "fill-faint text-2xs" }}
-            tickFormatter={(value: number) =>
-              formatAxisCents(value, currencyCode)
-            }
+            tickFormatter={units}
+            allowDecimals={false}
           />
           <XAxis
             dataKey="label"
@@ -130,7 +128,7 @@ export function MenuForecastChart({
           />
           <ChartTooltip
             cursor={{ stroke: "var(--border)" }}
-            content={<ForecastTooltip currencyCode={currencyCode} />}
+            content={<ForecastTooltip />}
           />
           <ReferenceLine
             x={todayLabel}
@@ -148,15 +146,15 @@ export function MenuForecastChart({
             isAnimationActive={false}
           />
           <Line
-            dataKey="actualCents"
-            stroke="var(--color-actualCents)"
+            dataKey="actualUnits"
+            stroke="var(--color-actualUnits)"
             strokeWidth={2}
             dot={false}
             isAnimationActive={false}
           />
           <Line
-            dataKey="typicalCents"
-            stroke="var(--color-typicalCents)"
+            dataKey="typicalUnits"
+            stroke="var(--color-typicalUnits)"
             strokeWidth={2}
             strokeDasharray="4 3"
             dot={false}

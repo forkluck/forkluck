@@ -528,7 +528,7 @@ horizons. `--as-of YYYY-MM-DD` fixes the kitchen-local cutoff; `--email` can
 require a particular owner. This privileged operator command resolves the
 menu's owner and all subsequent reads stay in that workspace. It writes no
 rows and changes no forecast settings. The table scores production units,
-including expanded products, rather than the page's currently priced replay;
+including expanded products, while the page's replay scores menu members;
 it is not a sales-accounting unit total. All candidates use the same completed,
 nonzero origins with eight weeks of observed menu history; shorter datasets
 trim the scored count. The long modifier-history walk can use substantial

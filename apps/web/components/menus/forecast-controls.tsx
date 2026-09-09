@@ -8,14 +8,21 @@ import { Toolbar, ToolbarSpacer } from "@/components/ui/page"
 import { TabPill, TabPills } from "@/components/ui/tab-pills"
 import type { MenuForecastPlan } from "@/lib/backend/types"
 
+export type ForecastView = "week" | "day"
+
 /** The defaults stay out of the URL so the canonical forecast link is bare. */
 export function forecastHref(
   base: string,
-  { days, plan }: { days: 7 | 30; plan: MenuForecastPlan }
+  {
+    days,
+    plan,
+    view = "week",
+  }: { days: 7 | 30; plan: MenuForecastPlan; view?: ForecastView }
 ) {
   const query = new URLSearchParams()
   if (days === 30) query.set("days", "30")
   if (plan === "busy") query.set("plan", "busy")
+  if (view === "day") query.set("view", "day")
   const search = query.toString()
   return search ? `${base}?${search}` : base
 }
@@ -33,6 +40,7 @@ export function ForecastControls({
   days,
   plan,
   horizon,
+  view = "week",
   actions,
   children,
 }: {
@@ -41,12 +49,14 @@ export function ForecastControls({
   plan: MenuForecastPlan
   /** "Sep 8 to Sep 14, 2026": the days the pills chose. */
   horizon: string
+  view?: ForecastView
   actions?: React.ReactNode
   children: React.ReactNode
 }) {
   const [horizonPending, setHorizonPending] = React.useState(false)
   const [planPending, setPlanPending] = React.useState(false)
-  const pending = horizonPending || planPending
+  const [viewPending, setViewPending] = React.useState(false)
+  const pending = horizonPending || planPending || viewPending
   return (
     <>
       <Toolbar className="print:hidden">
@@ -58,13 +68,17 @@ export function ForecastControls({
           >
             <TabPill
               active={days === 7}
-              render={<Link href={forecastHref(base, { days: 7, plan })} />}
+              render={
+                <Link href={forecastHref(base, { days: 7, plan, view })} />
+              }
             >
               Next 7 days
             </TabPill>
             <TabPill
               active={days === 30}
-              render={<Link href={forecastHref(base, { days: 30, plan })} />}
+              render={
+                <Link href={forecastHref(base, { days: 30, plan, view })} />
+              }
             >
               Next 30 days
             </TabPill>
@@ -82,7 +96,9 @@ export function ForecastControls({
             <TabPill
               active={plan === "typical"}
               render={
-                <Link href={forecastHref(base, { days, plan: "typical" })} />
+                <Link
+                  href={forecastHref(base, { days, plan: "typical", view })}
+                />
               }
             >
               Typical
@@ -90,10 +106,32 @@ export function ForecastControls({
             <TabPill
               active={plan === "busy"}
               render={
-                <Link href={forecastHref(base, { days, plan: "busy" })} />
+                <Link href={forecastHref(base, { days, plan: "busy", view })} />
               }
             >
               Busy
+            </TabPill>
+          </TabPills>
+          <TabPills
+            aria-label="Forecast view"
+            className="w-fit"
+            onPendingChange={setViewPending}
+          >
+            <TabPill
+              active={view === "week"}
+              render={
+                <Link href={forecastHref(base, { days, plan, view: "week" })} />
+              }
+            >
+              Week
+            </TabPill>
+            <TabPill
+              active={view === "day"}
+              render={
+                <Link href={forecastHref(base, { days, plan, view: "day" })} />
+              }
+            >
+              Day
             </TabPill>
           </TabPills>
           {actions}
