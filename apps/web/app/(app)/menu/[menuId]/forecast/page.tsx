@@ -8,7 +8,7 @@ import { requireUser } from "@/lib/auth-session"
 import { getBusinessSettings, getMenuForecast } from "@/lib/backend/queries"
 
 export const metadata: Metadata = {
-  title: "Menu forecast",
+  title: "Production forecast",
 }
 
 export default async function MenuForecastPage({

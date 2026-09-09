@@ -1,6 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import { Fragment, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { ProductForecastBasis } from "@/components/menus/forecast-basis"
 
 import {
   ariaSort,
@@ -13,7 +16,6 @@ import {
   units,
   planColumns,
   buyLabel,
-  isCountUnit,
   makes,
   measure,
   needed,
@@ -42,6 +44,7 @@ import type { MeasurementSystem } from "@/lib/business-settings"
 import { formatWholeCents } from "@/lib/money"
 import { productHref } from "@/lib/product-href"
 import { cn } from "@/lib/utils"
+import { unitShort } from "@/lib/unit-registry"
 
 /**
  * The forecast page's tables. Every one sorts on a header click, the
@@ -58,10 +61,8 @@ type MaterialSortKey = "material" | "buy" | "cost"
 
 /** Only thin history is worth a word; a full eight weeks is the norm. */
 function historyLabel(weeksObserved: number) {
-  if (weeksObserved === 8) return "Full"
-  return weeksObserved
-    ? `${weeksObserved} of 8 weeks`
-    : "No sales in the last 8 weeks"
+  if (weeksObserved === 8) return "8 weeks recorded"
+  return weeksObserved ? `${weeksObserved} of 8 weeks` : "No recent records"
 }
 
 /** A blank cell that still reads as a value, never as a missing render. */
@@ -75,6 +76,7 @@ export function ProductForecastTable({
   forecast: MenuForecastData
   view?: ForecastView
 }) {
+  const [expandedProduct, setExpandedProduct] = useState<string | null>(null)
   const busy = forecast.basis.plan === "busy"
   const columns = view === "day" ? planColumns(forecast) : []
   const { sort, toggle, directionFor } = useSortState<ProductSortKey>()
@@ -105,11 +107,11 @@ export function ProductForecastTable({
   return (
     <section className="break-inside-avoid">
       <SectionHeader
-        title="Product demand"
+        title="Expected demand"
         subtitle={
           view === "day"
             ? `The ${planWord(forecast.basis.plan)} plan, spread by weekday rhythm${forecast.basis.horizonDays === 30 ? " and grouped by week" : ""}.`
-            : "Weekday-matched from the last eight weeks, summed over the horizon."
+            : "Quantities by product for the selected dates. Open a row’s explanation to see why."
         }
         badge={`${forecast.coverage.productsWithHistory} of ${forecast.coverage.products} with history`}
       />
@@ -132,7 +134,7 @@ export function ProductForecastTable({
                 </>
               ) : (
                 <>
-                  {header("typical", "Typical", "right")}
+                  {header("typical", "Expected", "right")}
                   {header("busy", "Busy", "right")}
                 </>
               )}
@@ -142,84 +144,115 @@ export function ProductForecastTable({
           <TableBody>
             {rows.length ? (
               rows.map((product) => (
-                <TableRow key={product.productId}>
-                  <TableCell>
-                    <Link
-                      href={productHref({ publicId: product.productPublicId })}
-                      className="font-medium text-foreground hover:underline"
-                    >
-                      {product.productName}
-                    </Link>
-                    {!product.menuMember ? (
-                      <Badge variant="secondary" className="ml-2">
-                        Included
-                      </Badge>
-                    ) : null}
-                    {!product.isActive ? (
-                      <Badge variant="secondary" className="ml-2">
-                        Inactive
-                      </Badge>
-                    ) : null}
-                  </TableCell>
-                  {view === "day" ? (
-                    <>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.start}
-                          className="text-right tabular-nums"
-                        >
-                          {units(
-                            product.days
-                              .filter(
-                                (day) =>
-                                  day.date >= column.start &&
-                                  day.date <= column.end
-                              )
-                              .reduce(
-                                (sum, day) => sum + day.plannedQuantity,
-                                0
-                              )
-                          )}
+                <Fragment key={product.productId}>
+                  <TableRow>
+                    <TableCell>
+                      <Link
+                        href={productHref({
+                          publicId: product.productPublicId,
+                        })}
+                        className="font-medium text-foreground hover:underline"
+                      >
+                        {product.productName}
+                      </Link>
+                      {!product.menuMember ? (
+                        <Badge variant="secondary" className="ml-2">
+                          Included
+                        </Badge>
+                      ) : null}
+                      {!product.isActive ? (
+                        <Badge variant="secondary" className="ml-2">
+                          Inactive
+                        </Badge>
+                      ) : null}
+                    </TableCell>
+                    {view === "day" ? (
+                      <>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.start}
+                            className="text-right tabular-nums"
+                          >
+                            {units(
+                              product.days
+                                .filter(
+                                  (day) =>
+                                    day.date >= column.start &&
+                                    day.date <= column.end
+                                )
+                                .reduce(
+                                  (sum, day) => sum + day.plannedQuantity,
+                                  0
+                                )
+                            )}
+                          </TableCell>
+                        ))}
+                        <TableCell className="text-right font-medium tabular-nums">
+                          {units(product.totalQuantity)}
                         </TableCell>
-                      ))}
-                      <TableCell className="text-right font-medium tabular-nums">
-                        {units(product.totalQuantity)}
-                      </TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell
-                        className={cn(
-                          "text-right tabular-nums",
-                          !busy && "font-medium"
-                        )}
-                      >
-                        {units(product.typicalQuantity)}
-                      </TableCell>
-                      <TableCell
-                        className={cn(
-                          "text-right tabular-nums",
-                          busy && "font-medium"
-                        )}
-                      >
-                        {units(product.busyQuantity)}
-                      </TableCell>
-                    </>
-                  )}
-                  <TableCell
-                    className={cn(
-                      "text-sm",
-                      product.weeksObserved === 8
-                        ? "text-faint"
-                        : "text-muted-foreground"
+                      </>
+                    ) : (
+                      <>
+                        <TableCell
+                          className={cn(
+                            "text-right tabular-nums",
+                            !busy && "font-medium"
+                          )}
+                        >
+                          {units(product.typicalQuantity)}
+                        </TableCell>
+                        <TableCell
+                          className={cn(
+                            "text-right tabular-nums",
+                            busy && "font-medium"
+                          )}
+                        >
+                          {units(product.busyQuantity)}
+                        </TableCell>
+                      </>
                     )}
-                  >
-                    {historyLabel(product.weeksObserved)}
-                    {product.seasonalFactor !== 1
-                      ? ` · seasonal ${product.seasonalFactor.toFixed(2)}`
-                      : ""}
-                  </TableCell>
-                </TableRow>
+                    <TableCell
+                      className={cn(
+                        "text-sm",
+                        product.weeksObserved === 8
+                          ? "text-faint"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {historyLabel(product.weeksObserved)}
+                      <div className="mt-1 print:hidden">
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          aria-label={`Why this quantity for ${product.productName}`}
+                          aria-expanded={expandedProduct === product.productId}
+                          onClick={() =>
+                            setExpandedProduct(
+                              expandedProduct === product.productId
+                                ? null
+                                : product.productId
+                            )
+                          }
+                        >
+                          Why this quantity?
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  {expandedProduct === product.productId ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={view === "day" ? columns.length + 3 : 4}
+                        className="bg-muted/30 whitespace-normal"
+                      >
+                        <ProductForecastBasis
+                          product={product}
+                          forecast={forecast}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                </Fragment>
               ))
             ) : (
               <TableEmpty colSpan={view === "day" ? columns.length + 3 : 4}>
@@ -261,21 +294,21 @@ function SectionHeader({
   )
 }
 
-/** What the batches make, so 422 batches of a one-piece recipe reads as 422 pieces. */
-function Makes({ row, system }: { row: RecipeRow; system: MeasurementSystem }) {
-  const made = makes(row)
-  if (!made) return <span className="text-faint">No yield</span>
-  // A recipe that makes one piece a batch has nothing to add under the count.
-  const onePiece = row.yieldAmount === 1 && isCountUnit(made.unit)
-  return (
-    <>
-      {measure(made.quantity, made.unit, system)}
-      {onePiece ? null : (
-        <div className="text-xs text-faint">
-          {measure(row.yieldAmount!, made.unit, system)} per batch
-        </div>
-      )}
-    </>
+/** Outputs use the saved recipe yield; an unknown yield stays in batches. */
+function Makes({
+  row,
+  system,
+  batches = row.batches,
+}: {
+  row: RecipeRow
+  system: MeasurementSystem
+  batches?: number
+}) {
+  const made = makes({ ...row, batches })
+  return made ? (
+    <>{measure(made.quantity, made.unit, system)}</>
+  ) : (
+    <>{amount(batches)} batches</>
   )
 }
 
@@ -303,8 +336,8 @@ export function RecipeBatchesTable({
   return (
     <section className="break-inside-avoid">
       <SectionHeader
-        title="Recipe batches"
-        subtitle={`Batches to make for the ${planWord(forecast.basis.plan)} plan, and what they yield.`}
+        title="Prep quantities"
+        subtitle="Required recipe output for the selected demand. Check what is already prepared before making more."
         badge={`${recipes.length} ${recipes.length === 1 ? "recipe" : "recipes"}`}
       />
       <TableFrame className="overflow-x-auto">
@@ -324,6 +357,9 @@ export function RecipeBatchesTable({
                   {column.label}
                 </TableHead>
               ))}
+              <TableHead className="min-w-32 text-right">
+                Required output
+              </TableHead>
               <TableHead
                 className="min-w-24"
                 aria-sort={ariaSort(directionFor("batches"))}
@@ -333,10 +369,9 @@ export function RecipeBatchesTable({
                   direction={directionFor("batches")}
                   onClick={() => toggle("batches")}
                 >
-                  Batches
+                  Recipe equivalent
                 </SortHeader>
               </TableHead>
-              <TableHead className="min-w-32 text-right">Makes</TableHead>
             </TableHeaderRow>
           </TableHeader>
           <TableBody>
@@ -350,27 +385,37 @@ export function RecipeBatchesTable({
                     >
                       {row.recipeTitle}
                     </Link>
+                    {row.yieldAmount === null || !row.yieldUnit ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Yield not recorded; shown in batches.
+                      </p>
+                    ) : null}
                   </TableCell>
                   {columns.map((column) => (
                     <TableCell
                       key={column.start}
                       className="text-right tabular-nums"
                     >
-                      {amount(
-                        row.days
+                      <Makes
+                        row={row}
+                        system={measurementSystem}
+                        batches={row.days
                           .filter(
                             (day) =>
                               day.date >= column.start && day.date <= column.end
                           )
-                          .reduce((sum, day) => sum + day.batches, 0)
-                      )}
+                          .reduce((sum, day) => sum + day.batches, 0)}
+                      />
                     </TableCell>
                   ))}
                   <TableCell className="text-right font-medium tabular-nums">
-                    {amount(row.batches)}
+                    <Makes row={row} system={measurementSystem} />
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    <Makes row={row} system={measurementSystem} />
+                    {amount(row.batches)}{" "}
+                    {row.yieldAmount !== null && row.yieldUnit
+                      ? `× ${amount(row.yieldAmount)} ${unitShort(row.yieldUnit) || row.yieldUnit}`
+                      : "batches"}
                   </TableCell>
                 </TableRow>
               ))

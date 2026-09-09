@@ -1,106 +1,149 @@
-import { ListCard, ListHeader } from "@/components/overview/analytics-cards"
-import { units } from "@/components/menus/forecast-format"
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableHeaderRow,
+  TableRow,
+} from "@/components/ui/table"
 import type { MenuForecast } from "@/lib/backend/types"
-import { formatCalendarDayMonth } from "@/lib/datetime"
+import { formatCalendarDate } from "@/lib/datetime"
 
-const columns =
-  "grid grid-cols-[minmax(10rem,1fr)_repeat(3,minmax(5rem,0.6fr))] items-center gap-4"
+type Product = MenuForecast["products"][number]
+type Week = Product["basis"]["recentWeeks"][number]
+const quantity = new Intl.NumberFormat("en-US", { maximumFractionDigits: 3 })
+const dates = (row: { start: string; end: string }) =>
+  `${formatCalendarDate(row.start)}–${formatCalendarDate(row.end)}`
 
-export function BasisPanel({ forecast }: { forecast: MenuForecast }) {
-  const { weeks, level } = forecast.basis
-  const range = (start: string, end: string) =>
-    `${formatCalendarDayMonth(start)}–${formatCalendarDayMonth(end)}`
+function RecordedSales({ title, weeks }: { title: string; weeks: Week[] }) {
   return (
-    <ListCard title="The basis for this plan">
-      <div className="px-5 pb-4 text-sm leading-relaxed text-muted-foreground">
-        <p>
-          Recent level: about {units(level.weeklyUnits)} items a week, recent
-          weeks counting more.
-        </p>
-        <p>
-          {level.seasonalProducts
-            ? `Last year’s matching weeks adjust ${level.seasonalProducts} ${level.seasonalProducts === 1 ? "product" : "products"} by about ${level.seasonalFactor.toFixed(2)} overall.`
-            : "Last year’s comparison leaves the recent level unchanged."}
+    <div>
+      <h4 className="mb-2 text-sm font-medium">{title}</h4>
+      <Table aria-label={title}>
+        <TableHeader>
+          <TableHeaderRow>
+            <TableHead>Dates</TableHead>
+            <TableHead className="text-right">Recorded units</TableHead>
+          </TableHeaderRow>
+        </TableHeader>
+        <TableBody>
+          {weeks.map((week) => (
+            <TableRow key={week.start}>
+              <TableCell>{dates(week)}</TableCell>
+              <TableCell className="text-right tabular-nums">
+                {quantity.format(week.quantity)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+export function ProductForecastBasis({
+  product,
+  forecast,
+}: {
+  product: Product
+  forecast: MenuForecast
+}) {
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const { basis } = product
+  const busy = forecast.basis.plan === "busy"
+  const adjustment = basis.seasonalAdjustment
+  return (
+    <section
+      aria-label={`Why this quantity for ${product.productName}`}
+      className="space-y-4 py-2 text-sm"
+    >
+      <div>
+        <h3 className="font-medium">
+          {product.productName} ·{" "}
+          {dates({
+            start: forecast.basis.horizonStart,
+            end: forecast.basis.horizonEnd,
+          })}
+        </h3>
+        <p className="mt-1 text-muted-foreground">
+          These figures cover the full selected period. Recent matching weekdays
+          count more.
         </p>
       </div>
-      <div
-        className="overflow-x-auto pb-3"
-        role="table"
-        aria-label="Forecast basis"
+      <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <dt className="text-muted-foreground">Recent demand suggests</dt>
+          <dd className="mt-1 font-medium tabular-nums">
+            {quantity.format(basis.recentQuantity)} units
+          </dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Seasonal change</dt>
+          <dd className="mt-1 font-medium tabular-nums">
+            {adjustment > 0 ? "+" : ""}
+            {quantity.format(adjustment)} units
+          </dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Expected demand</dt>
+          <dd className="mt-1 font-medium tabular-nums">
+            {quantity.format(product.typicalQuantity)} units
+          </dd>
+        </div>
+        {busy ? (
+          <div>
+            <dt className="text-muted-foreground">Busy allowance</dt>
+            <dd className="mt-1 font-medium tabular-nums">
+              +{quantity.format(basis.busyAllowance)} units ·{" "}
+              {quantity.format(product.totalQuantity)} in total
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+      {product.weeksObserved < 8 ? (
+        <p className="text-muted-foreground">
+          {product.weeksObserved
+            ? `Limited history: records in ${product.weeksObserved} of the last 8 weeks.`
+            : "No recent sales records. Zero is not evidence that there will be no demand."}
+        </p>
+      ) : null}
+      <p className="text-muted-foreground">
+        {basis.lastYearComparable
+          ? "The seasonal change uses last year’s matching period compared with the eight weeks before it. Only part of that change is applied, with limits on large changes."
+          : "Not enough comparable last-year history; no seasonal change is applied."}
+      </p>
+      <Button
+        variant="ghost"
+        size="xs"
+        aria-expanded={historyOpen}
+        onClick={() => setHistoryOpen(!historyOpen)}
       >
-        <div className="min-w-[540px]">
-          <ListHeader className={columns} role="row">
-            <span role="columnheader">Week</span>
-            <span role="columnheader" className="text-right">
-              This year
-            </span>
-            <span role="columnheader" className="text-right">
-              Last year
-            </span>
-            <span role="columnheader" className="text-right">
-              Planned
-            </span>
-          </ListHeader>
-          <div className="px-5" role="rowgroup">
-            {weeks.recent.map((week) => (
-              <div
-                key={week.start}
-                role="row"
-                className={`${columns} min-h-11 border-b border-muted text-sm`}
-              >
-                <span role="rowheader">{range(week.start, week.end)}</span>
-                <span role="cell" className="text-right tabular-nums">
-                  {units(week.units)}
-                </span>
-                <span
-                  role="cell"
-                  className="text-right text-muted-foreground tabular-nums"
-                >
-                  {units(week.lastYearUnits)}
-                </span>
-                <span role="cell" className="text-right text-faint">
-                  —
-                </span>
-              </div>
-            ))}
-            {weeks.horizon.map((week) => (
-              <div
-                key={week.start}
-                role="row"
-                className={`${columns} min-h-11 border-b border-muted text-sm last:border-0`}
-              >
-                <span role="rowheader" className="font-medium">
-                  {range(week.start, week.end)}{" "}
-                  <span className="text-xs text-muted-foreground">coming</span>
-                </span>
-                <span
-                  role="cell"
-                  className="text-right text-muted-foreground tabular-nums"
-                >
-                  {units(week.typicalUnits)}
-                </span>
-                <span
-                  role="cell"
-                  className="text-right text-muted-foreground tabular-nums"
-                >
-                  {units(week.lastYearUnits)}
-                </span>
-                <span
-                  role="cell"
-                  className="text-right font-medium tabular-nums"
-                >
-                  {units(week.plannedUnits)}
-                </span>
-              </div>
-            ))}
+        {historyOpen ? "Hide sales history" : "View sales history"}
+      </Button>
+      {historyOpen ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <RecordedSales title="Recent sales" weeks={basis.recentWeeks} />
+          <div className="space-y-4">
+            <RecordedSales
+              title="Last year: preceding eight weeks"
+              weeks={basis.lastYearWeeks}
+            />
+            <RecordedSales
+              title="Same period last year"
+              weeks={[basis.lastYearPeriod]}
+            />
+            <p className="text-xs text-muted-foreground">
+              Dates shift back 52 weeks so weekdays match. These are recorded
+              units, not estimates; missing records do not prove zero demand.
+            </p>
           </div>
         </div>
-      </div>
-      <p className="px-5 pb-4 text-xs text-faint">
-        Menu-member items per dated block. Coming rows show typical and planned
-        quantities; the final block may be shorter than a week. Last year is
-        shifted 52 weeks so weekdays match.
-      </p>
-    </ListCard>
+      ) : null}
+    </section>
   )
 }

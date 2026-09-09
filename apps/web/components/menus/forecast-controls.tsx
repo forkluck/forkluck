@@ -139,7 +139,7 @@ export function ForecastControls({
       </Toolbar>
       <LoadingRegion pending={pending} label="Loading forecast">
         {/* The region wraps its children in a column of its own, so the
-            section rhythm has to sit inside it: 32px between the hero block
+            section rhythm has to sit inside it: 32px between the introduction
             and each table, the gap a screen of several blocks keeps. */}
         <div className="flex flex-col gap-8">{children}</div>
       </LoadingRegion>

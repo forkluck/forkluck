@@ -25,6 +25,26 @@ const RECENT = Array.from({ length: 8 }, (_, index) => ({
   lastYearUnits: 6,
 }))
 
+const productBasis = (recentQuantity: number, busyAllowance = 0) => ({
+  recentQuantity,
+  seasonalAdjustment: 0,
+  busyAllowance,
+  lastYearComparable: false,
+  recentWeeks: RECENT.map(({ start, end, units }) => ({
+    start,
+    end,
+    quantity: units,
+  })),
+  lastYearWeeks: RECENT.map(({ start, end, lastYearUnits }) => ({
+    start: new Date(Date.parse(start) - 364 * 86400000)
+      .toISOString()
+      .slice(0, 10),
+    end: new Date(Date.parse(end) - 364 * 86400000).toISOString().slice(0, 10),
+    quantity: lastYearUnits,
+  })),
+  lastYearPeriod: { start: "2025-04-28", end: "2025-05-04", quantity: 8 },
+})
+
 const SERIES: MenuForecastData["series"] = [
   {
     date: "2026-04-25",
@@ -148,6 +168,7 @@ const FORECAST: MenuForecastData = {
       busyQuantity: 11,
       totalQuantity: 7,
       seasonalFactor: 1,
+      basis: productBasis(7, 4),
       days: DATES.map((date) => ({
         date,
         typicalQuantity: 1,
@@ -168,6 +189,7 @@ const FORECAST: MenuForecastData = {
       busyQuantity: 0,
       totalQuantity: 0,
       seasonalFactor: 1,
+      basis: productBasis(0),
       days: DATES.map((date) => ({
         date,
         typicalQuantity: 0,
@@ -220,7 +242,7 @@ const FORECAST: MenuForecastData = {
   ],
 }
 
-/** The tables in page order: Product demand, Recipe batches, materials. */
+/** The tables in page order: Expected demand, Prep quantities, materials. */
 const table = (index: number) =>
   within(document.querySelectorAll("table")[index] as HTMLElement)
 /** One link per row, so the links are the row order. */
@@ -240,13 +262,11 @@ describe("Menu forecast", () => {
   it("renders the independent-menu warning and current-composition basis", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
-    expect(screen.getByText("Current composition")).toBeDefined()
+    expect(screen.getByText(/current recipes and yields/)).toBeDefined()
     expect(screen.queryByText("Seasonal")).toBeNull()
     expect(screen.getByText("Apr 27 to May 3, 2026")).toBeDefined()
-    expect(screen.getByText("How this is calculated")).toBeDefined()
-    expect(
-      screen.getByText(/Summing forecasts from multiple Menus can double-count/)
-    ).toBeDefined()
+    expect(screen.getByText("How the forecast works")).toBeDefined()
+    expect(screen.getByText(/Adding forecasts from overlapping/)).toBeDefined()
     expect(screen.getByText(/1 Menu row is not linked/)).toBeDefined()
     expect(screen.getByRole("button", { name: "Actions" })).toBeDefined()
   })
@@ -267,10 +287,10 @@ describe("Menu forecast", () => {
   it("reports both plans and how much history stands behind them", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
-    expect(screen.getByRole("columnheader", { name: "Typical" })).toBeDefined()
+    expect(screen.getByRole("columnheader", { name: "Expected" })).toBeDefined()
     expect(screen.getByRole("columnheader", { name: "Busy" })).toBeDefined()
     expect(screen.getByText("2 of 8 weeks")).toBeDefined()
-    expect(screen.getByText("No sales in the last 8 weeks")).toBeDefined()
+    expect(screen.getByText("No recent records")).toBeDefined()
   })
 
   it("prints product demand in whole units", () => {
@@ -361,7 +381,7 @@ describe("Menu forecast", () => {
       />
     )
 
-    expect(screen.getByText("2.35")).toBeDefined()
+    expect(screen.getByText("2.35 × 24 ea")).toBeDefined()
     // A thousand grams steps up to kilograms, and the pack is read the same
     // way. A fifth of a pack is one pack to buy, at the pack's price.
     expect(screen.getByText("1.23 kg")).toBeDefined()
@@ -467,32 +487,39 @@ describe("Menu forecast", () => {
     const { container } = render(
       <MenuForecast measurementSystem="metric" forecast={FORECAST} />
     )
-    expect(screen.getByText("To make this week")).toBeDefined()
-    expect(container.querySelector(".text-4xl")?.textContent).toBe("7 items")
-    expect(screen.getByText("across 1 recipe")).toBeDefined()
+    expect(
+      screen.getByRole("heading", { name: "Production forecast" })
+    ).toBeDefined()
+    expect(
+      screen.getByRole("heading", { name: "Expected demand" })
+    ).toBeDefined()
+    expect(
+      screen.getByRole("heading", { name: "Prep quantities" })
+    ).toBeDefined()
+    expect(container.querySelector(".text-4xl")).toBeNull()
+    expect(screen.queryByText("across 1 recipe")).toBeNull()
     expect(
       screen.getByText(/volume-weighted error was 12% of actual units/)
     ).toBeDefined()
-    expect(screen.getByText("Busy plan: 11 items")).toBeDefined()
     expect(screen.getAllByTestId("forecast-money-caption")).toHaveLength(1)
     expect(screen.getByTestId("forecast-money-caption").textContent).toContain(
       "Projected sales at current menu prices: $91 (1 product unpriced)"
     )
     expect(screen.queryByRole("button", { name: "Price" })).toBeNull()
     expect(screen.queryByRole("button", { name: "Projected sales" })).toBeNull()
-    expect(screen.getAllByText(/for the typical plan/).length).toBe(2)
+    expect(screen.getAllByText(/for the typical plan/).length).toBe(1)
   })
 
   it("plans for busy without moving the busy column", () => {
     const { container } = render(
       <MenuForecast measurementSystem="metric" forecast={busy()} />
     )
-    expect(container.querySelector(".text-4xl")?.textContent).toBe("11 items")
-    expect(screen.getByText("Typical plan: 7 items")).toBeDefined()
-    expect(screen.getAllByText(/for the busy plan/).length).toBe(2)
+    expect(container.querySelector(".text-4xl")).toBeNull()
+    expect(table(0).getByRole("columnheader", { name: "Busy" })).toBeDefined()
+    expect(screen.getAllByText(/for the busy plan/).length).toBe(1)
   })
 
-  it("shows seasonal factors beside product history", () => {
+  it("explains a seasonal increase in product units without mixing prices into demand", () => {
     render(
       <MenuForecast
         measurementSystem="metric"
@@ -503,6 +530,13 @@ describe("Menu forecast", () => {
               ...FORECAST.products[1]!,
               weeksObserved: 8,
               seasonalFactor: 1.06,
+              typicalQuantity: 106,
+              totalQuantity: 106,
+              basis: {
+                ...productBasis(100),
+                seasonalAdjustment: 6,
+                lastYearComparable: true,
+              },
               priceCents: 450,
               typicalCents: 3600,
               busyCents: 5400,
@@ -511,7 +545,17 @@ describe("Menu forecast", () => {
         }}
       />
     )
-    expect(screen.getByText("Full · seasonal 1.06")).toBeDefined()
+    fireEvent.click(
+      screen.getByRole("button", { name: "Why this quantity for Scone" })
+    )
+    const basis = within(
+      screen.getByRole("region", { name: "Why this quantity for Scone" })
+    )
+    expect(basis.getByText("100 units")).toBeDefined()
+    expect(basis.getByText("+6 units")).toBeDefined()
+    expect(basis.getByText("106 units")).toBeDefined()
+    expect(basis.queryByText("Busy allowance")).toBeNull()
+    expect(basis.getByText(/last year’s matching period/)).toBeDefined()
     expect(table(0).queryByText("$4.50")).toBeNull()
     expect(table(0).queryByText("$36")).toBeNull()
   })
@@ -577,10 +621,78 @@ describe("Menu forecast", () => {
 
     // 2.35 batches of two dozen is 57 whole cookies; six litres of stock.
     expect(screen.getByText("57 ea")).toBeDefined()
-    expect(screen.getByText("24 ea per batch")).toBeDefined()
+    expect(screen.getByText("2.35 × 24 ea")).toBeDefined()
     expect(screen.getByText("6 L")).toBeDefined()
-    expect(screen.getByText("No yield")).toBeDefined()
+    expect(
+      screen.getByText("Yield not recorded; shown in batches.")
+    ).toBeDefined()
   })
+
+  it.each([
+    {
+      yieldAmount: 500,
+      yieldUnit: "g",
+      batches: 0.5,
+      system: "metric" as const,
+      output: "250 g",
+      equivalent: "0.5 × 500 g",
+    },
+    {
+      yieldAmount: 500,
+      yieldUnit: "g",
+      batches: 0.5,
+      system: "us" as const,
+      output: "8.82 oz",
+      equivalent: "0.5 × 500 g",
+    },
+    {
+      yieldAmount: 0.5,
+      yieldUnit: "each",
+      batches: 3,
+      system: "metric" as const,
+      output: "2 ea",
+      equivalent: "3 × 0.5 ea",
+    },
+    {
+      yieldAmount: null,
+      yieldUnit: null,
+      batches: 3,
+      system: "metric" as const,
+      output: "3 batches",
+      equivalent: "3 batches",
+    },
+  ])(
+    "shows physical output and the saved yield separately: $output / $equivalent",
+    ({ yieldAmount, yieldUnit, batches, system, output, equivalent }) => {
+      render(
+        <MenuForecast
+          measurementSystem={system}
+          view="day"
+          forecast={{
+            ...FORECAST,
+            recipeRequirements: [
+              {
+                ...FORECAST.recipeRequirements[0]!,
+                yieldAmount,
+                yieldUnit,
+                batches,
+                days: DATES.map((date, index) => ({
+                  date,
+                  batches: index === 0 ? batches : 0,
+                })),
+              },
+            ],
+          }}
+        />
+      )
+      const cells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
+        "cell"
+      )
+      expect(cells[1]!.textContent).toBe(output)
+      expect(cells[8]!.textContent).toBe(output)
+      expect(cells[9]!.textContent).toBe(equivalent)
+    }
+  )
 
   it("sorts materials within their kind, ingredients first", () => {
     const material = (
@@ -635,7 +747,7 @@ describe("Menu forecast", () => {
       />
     )
 
-    expect(screen.getByText("Menu items by day")).toBeDefined()
+    expect(screen.getByText("Menu demand by day")).toBeDefined()
     expect(screen.getByTestId("forecast-money-caption").textContent).toContain(
       "No menu prices yet"
     )
@@ -690,9 +802,9 @@ describe("Menu forecast", () => {
     // The backend's A–Z order stands until a header is chosen.
     expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
 
-    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Expected" }))
     expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
-    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Expected" }))
     expect(rowsOf(0)).toEqual(["Cookie add-on", "Scone"])
 
     fireEvent.click(table(0).getByRole("button", { name: "History" }))
@@ -727,14 +839,14 @@ describe("Menu forecast", () => {
         }}
       />
     )
-    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
-    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Expected" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Expected" }))
     // Descending by demand, and the zero-demand tail stays in its incoming
     // order rather than coming out backwards.
     expect(rowsOf(0).slice(-2)).toEqual(["Bun", "Tart"])
     expect(
       table(0)
-        .getByRole("columnheader", { name: "Typical" })
+        .getByRole("columnheader", { name: "Expected" })
         .getAttribute("aria-sort")
     ).toBe("descending")
   })
@@ -773,9 +885,9 @@ describe("Menu forecast", () => {
         .getAttribute("aria-sort")
     ).toBe("ascending")
 
-    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe equivalent" }))
     expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
-    fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
+    fireEvent.click(table(1).getByRole("button", { name: "Recipe equivalent" }))
     expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
 
     fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
@@ -808,11 +920,17 @@ describe("Menu forecast", () => {
     const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
       "cell"
     )
-    expect(
-      recipeCells
-        .slice(1, 8)
-        .reduce((total, cell) => total + Number(cell.textContent), 0)
-    ).toBe(Number(recipeCells[8]!.textContent))
+    expect(recipeCells.slice(1, 8).map((cell) => cell.textContent)).toEqual([
+      "48 ea",
+      "0 ea",
+      "0 ea",
+      "0 ea",
+      "0 ea",
+      "0 ea",
+      "0 ea",
+    ])
+    expect(recipeCells[8]!.textContent).toBe("48 ea")
+    expect(recipeCells[9]!.textContent).toBe("2 × 24 ea")
   })
 
   it("groups the 30-day schedule by its five basis blocks, including the last two days", () => {
@@ -859,7 +977,9 @@ describe("Menu forecast", () => {
     render(
       <MenuForecast measurementSystem="metric" forecast={forecast} view="day" />
     )
-    expect(screen.getByText("To make over the next 30 days")).toBeDefined()
+    expect(
+      screen.getByRole("heading", { name: "Production forecast" })
+    ).toBeDefined()
     expect(
       screen.getByRole("link", { name: "Week" }).getAttribute("href")
     ).toBe("/menu/mnu_spring/forecast?days=30&plan=busy")
@@ -872,25 +992,76 @@ describe("Menu forecast", () => {
     const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
       "cell"
     )
-    expect(
-      recipeCells.slice(1, 6).map((cell) => Number(cell.textContent))
-    ).toEqual([7, 7, 7, 7, 2])
+    expect(recipeCells.slice(1, 6).map((cell) => cell.textContent)).toEqual([
+      "168 ea",
+      "168 ea",
+      "168 ea",
+      "168 ea",
+      "48 ea",
+    ])
+    expect(recipeCells[6]!.textContent).toBe("720 ea")
   })
 
-  it("shows the recent, matching last-year and coming basis side by side", () => {
+  it("keeps dated recorded history inside the selected product explanation", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
-    const basis = within(screen.getByRole("table", { name: "Forecast basis" }))
-    expect(basis.getAllByRole("row")).toHaveLength(10)
-    expect(basis.getByRole("columnheader", { name: "Last year" })).toBeDefined()
+    expect(screen.queryByRole("table", { name: "Forecast basis" })).toBeNull()
+    expect(screen.queryByRole("table", { name: "Recent sales" })).toBeNull()
+    const trigger = screen.getByRole("button", {
+      name: "Why this quantity for Cookie add-on",
+    })
+    fireEvent.click(trigger)
+    expect(trigger.getAttribute("aria-expanded")).toBe("true")
+    const basis = within(
+      screen.getByRole("region", {
+        name: "Why this quantity for Cookie add-on",
+      })
+    )
+    expect(basis.getByText(/Limited history: records in 2/)).toBeDefined()
     expect(
-      screen.getByText(
-        "Recent level: about 7 items a week, recent weeks counting more."
-      )
+      basis.getByText(/Not enough comparable last-year history/)
+    ).toBeDefined()
+    fireEvent.click(basis.getByRole("button", { name: "View sales history" }))
+    const recent = within(basis.getByRole("table", { name: "Recent sales" }))
+    expect(recent.getAllByRole("row")).toHaveLength(9)
+    expect(recent.getByText("Mar 2, 2026–Mar 8, 2026")).toBeDefined()
+    expect(basis.getByText("Mar 3, 2025–Mar 9, 2025")).toBeDefined()
+    expect(basis.getByText("Apr 28, 2025–May 4, 2025")).toBeDefined()
+    fireEvent.click(
+      screen.getByRole("button", { name: "Why this quantity for Scone" })
+    )
+    expect(
+      screen.queryByRole("region", {
+        name: "Why this quantity for Cookie add-on",
+      })
+    ).toBeNull()
+    expect(
+      screen.getByText(/No recent sales records. Zero is not evidence/)
+    ).toBeDefined()
+  })
+
+  it("separates the busy allowance from expected demand for the whole selected period", () => {
+    const forecast = busy()
+    forecast.products = [{ ...FORECAST.products[0]!, totalQuantity: 11 }]
+    render(
+      <MenuForecast measurementSystem="metric" forecast={forecast} view="day" />
+    )
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Why this quantity for Cookie add-on",
+      })
+    )
+    const basis = within(
+      screen.getByRole("region", {
+        name: "Why this quantity for Cookie add-on",
+      })
+    )
+    expect(basis.getByText("Busy allowance")).toBeDefined()
+    expect(basis.getByText("+4 units · 11 in total")).toBeDefined()
+    expect(
+      basis.getByText(/These figures cover the full selected period/)
     ).toBeDefined()
     expect(
-      screen.getByText(
-        "Last year’s comparison leaves the recent level unchanged."
-      )
+      basis.getByText("Cookie add-on · Apr 27, 2026–May 3, 2026")
     ).toBeDefined()
   })
 })

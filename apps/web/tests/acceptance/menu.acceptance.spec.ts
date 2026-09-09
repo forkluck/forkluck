@@ -89,23 +89,42 @@ test("forecasts a saved menu and links each row to its product", async ({
   await page.getByRole("link", { name: "Forecast", exact: true }).click()
   await expect(page).toHaveURL(/\/menu\/mnu_[a-z0-9]+\/forecast$/)
   await expect(
-    page.getByRole("heading", { level: 2, name: "Product demand" })
+    page.getByRole("heading", { level: 2, name: "Expected demand" })
   ).toBeVisible()
   await expect(page.getByRole("link", { name: product })).toHaveAttribute(
     "href",
     /^\/products\/prd_[a-z0-9]+$/
   )
   await expect(
-    page.getByText("To make this week", { exact: true })
+    page.getByRole("heading", { name: "Production forecast", exact: true })
+  ).toBeVisible()
+  await page
+    .getByRole("button", { name: `Why this quantity for ${product}` })
+    .click()
+  const explanation = page.getByRole("region", {
+    name: `Why this quantity for ${product}`,
+  })
+  await expect(
+    explanation.getByText("Recent demand suggests", { exact: true })
+  ).toBeVisible()
+  await explanation.getByRole("button", { name: "View sales history" }).click()
+  await expect(
+    explanation.getByRole("table", { name: "Recent sales", exact: true })
   ).toBeVisible()
   await expect(
-    page.getByRole("table", { name: "Forecast basis" })
+    explanation.getByRole("table", {
+      name: "Same period last year",
+      exact: true,
+    })
   ).toBeVisible()
+  await page
+    .getByRole("button", { name: `Why this quantity for ${product}` })
+    .click()
   await expect(page.getByTestId("forecast-money-caption")).toHaveCount(1)
   await page.getByRole("link", { name: "Day", exact: true }).click()
   await expect(page).toHaveURL(/\/forecast\?view=day$/)
   const demand = page.locator("section").filter({
-    has: page.getByRole("heading", { name: "Product demand", exact: true }),
+    has: page.getByRole("heading", { name: "Expected demand", exact: true }),
   })
   await expect(demand.getByRole("columnheader")).toHaveCount(10)
   await page.getByRole("link", { name: "Busy", exact: true }).click()

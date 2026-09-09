@@ -7,6 +7,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.test import RequestFactory, TestCase
 
 from .domains.sales.forecast import (
+    _product_basis,
     _seasonal_factor,
     _spread_plan,
     menu_forecast_payload,
@@ -207,6 +208,12 @@ class MenuForecastTests(TestCase):
         self.assertFalse(espresso_row["menuMember"], "the menu names the box, not its contents")
         self.assertEqual(sprinkles_row["totalQuantity"], 4.0)
         self.assertFalse(sprinkles_row["menuMember"])
+        # Explanations follow the exact included-demand scope, so modifiers
+        # attached to another menu cannot appear in this product's history.
+        for row, recorded in ((espresso_row, 2), (cookie_row, 6), (sprinkles_row, 4)):
+            self.assertEqual(sum(w["quantity"] for w in row["basis"]["recentWeeks"]), recorded)
+            self.assertEqual(row["basis"]["recentQuantity"], row["typicalQuantity"])
+            self.assertFalse(row["basis"]["lastYearComparable"])
 
     def test_a_menu_of_the_box_needs_the_same_materials_as_a_menu_of_its_contents(self):
         """Whichever way the merchant lists it, the kitchen makes the same things."""
@@ -1530,6 +1537,8 @@ class MenuForecastTests(TestCase):
                     self.assertEqual(len(payload["days"]), horizon)
                     for row in payload["products"]:
                         self.assertEqual(len(row["days"]), horizon)
+                        self.assertAlmostEqual(row["basis"]["recentQuantity"] + row["basis"]["seasonalAdjustment"], row["typicalQuantity"], places=3)
+                        self.assertAlmostEqual(row["typicalQuantity"] + row["basis"]["busyAllowance"], row["busyQuantity"], places=3)
                         self.assertAlmostEqual(sum(day["plannedQuantity"] for day in row["days"]), row["totalQuantity"], places=3)
                         self.assertAlmostEqual(sum(day["typicalQuantity"] for day in row["days"]), row["typicalQuantity"], places=3)
                     for row in payload["recipeRequirements"]:
@@ -1544,6 +1553,57 @@ class MenuForecastTests(TestCase):
                     for index, day in enumerate(payload["days"]):
                         self.assertAlmostEqual(day["plannedUnits"], sum(row["days"][index]["plannedQuantity"] for row in payload["products"]), places=3)
                     self.assertAlmostEqual(sum(week["plannedUnits"] for week in payload["basis"]["weeks"]["horizon"]), production["plannedUnits"], places=3)
+
+    def test_product_explanations_preserve_values_and_separate_recorded_history(self):
+        history_end = self.today - timedelta(days=1)
+        history_start = self.today - timedelta(days=56)
+        last_start = history_start - timedelta(days=364)
+        last_horizon = self.today - timedelta(days=364)
+        daily = self.days(history_start, 56, "4")
+        # A return stays visible in recorded history, while projection clamping
+        # happens in the forecasting engine, not in the explanation.
+        daily[history_start] = Decimal("-2")
+        for horizon in (7, 30):
+            for last_quantity, factor in (("1", "1"), ("2", "1.5"), ("5", "2"), ("0.25", "0.625"), ("0", "1")):
+                with self.subTest(horizon=horizon, last_quantity=last_quantity):
+                    last_year = {
+                        **self.days(last_start, 56, "1"),
+                        **self.days(last_horizon, horizon, last_quantity),
+                    }
+                    args = dict(exists_from=last_start, history_end=history_end, horizon_start=self.today, horizon_days=horizon)
+                    projection = project_product(daily, last_year=last_year, **args)
+                    basis = _product_basis(daily, last_year, projection, exists_from=last_start, today=self.today, horizon_days=horizon)
+                    self.assertEqual(projection.seasonal_factor, Decimal(factor))
+                    self.assertEqual(Decimal(str(basis["recentQuantity"])) + Decimal(str(basis["seasonalAdjustment"])), projection.typical_total)
+                    self.assertEqual(Decimal(str(basis["busyAllowance"])) + projection.typical_total, projection.busy_total)
+                    self.assertEqual(basis["lastYearComparable"], last_quantity != "0")
+                    self.assertEqual(basis["recentWeeks"][0], {"start": "2026-03-02", "end": "2026-03-08", "quantity": 22})
+                    self.assertEqual(basis["recentWeeks"][-1], {"start": "2026-04-20", "end": "2026-04-26", "quantity": 28})
+                    self.assertEqual(sum(w["quantity"] for w in basis["recentWeeks"]), 218)
+                    self.assertEqual(basis["lastYearWeeks"][0], {"start": "2025-03-03", "end": "2025-03-09", "quantity": 7})
+                    self.assertEqual(basis["lastYearPeriod"], {"start": "2025-04-28", "end": (last_horizon + timedelta(days=horizon - 1)).isoformat(), "quantity": float(Decimal(last_quantity) * horizon)})
+                    # The unscaled explanation is independent of the last-year
+                    # factor and is the same projection used by live/backtest.
+                    self.assertEqual(basis["recentQuantity"], float(project_product(daily, **args).typical_total))
+
+    def test_explanations_do_not_invent_comparable_history_for_new_or_unsold_products(self):
+        new = self.product("New")
+        unsold = self.product("Unsold")
+        menu = self.menu(new, unsold)
+        self.line(self.variant(new), self.today - timedelta(days=7), quantity="3")
+        for horizon in (7, 30):
+            for plan in ("typical", "busy"):
+                payload = menu_forecast_payload(self.user, menu, today=self.today, horizon_days=horizon, plan=plan)
+                for product in (new, unsold):
+                    row = self.product_row(payload, product)
+                    basis = row["basis"]
+                    self.assertFalse(basis["lastYearComparable"])
+                    self.assertEqual(basis["seasonalAdjustment"], 0)
+                    self.assertEqual(basis["lastYearPeriod"]["quantity"], 0)
+                    self.assertEqual(basis["recentQuantity"], row["typicalQuantity"])
+                    self.assertEqual(len(basis["recentWeeks"]), 8)
+                    self.assertEqual(len(basis["lastYearWeeks"]), 8)
+                    self.assertEqual(sum(w["quantity"] for w in basis["recentWeeks"]), 3 if product == new else 0)
 
     def test_basis_blocks_align_last_year_and_weekly_level_is_unscaled(self):
         product = self.product("Bread")

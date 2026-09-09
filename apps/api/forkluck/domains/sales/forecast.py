@@ -131,6 +131,36 @@ def _window_total(
     )
 
 
+def _seasonal_ratio(
+    daily: Mapping[date, Decimal],
+    *,
+    exists_from: date | None,
+    history_end: date,
+    horizon_start: date,
+    horizon_days: int,
+    weeks: int = HISTORY_WEEKS,
+) -> Decimal | None:
+    """Compare daily rates in last year's aligned windows, when supported.
+
+    Shift 364 days to preserve weekdays. A product must predate the entire
+    reference window and have positive units in both windows; its launch or
+    absent history must not be presented as a seasonal signal.
+    """
+    lag = timedelta(days=SEASONAL_LAG_DAYS)
+    horizon_first = horizon_start - lag
+    horizon_last = horizon_first + timedelta(days=horizon_days - 1)
+    history_last = history_end - lag
+    history_days = 7 * weeks
+    history_first = history_last - timedelta(days=history_days - 1)
+    if exists_from is not None and exists_from > history_first:
+        return None
+    horizon_total = _window_total(daily, horizon_first, horizon_last)
+    history_total = _window_total(daily, history_first, history_last)
+    if horizon_total <= 0 or history_total <= 0:
+        return None
+    return (horizon_total / horizon_days) / (history_total / history_days)
+
+
 def _seasonal_factor(
     daily: Mapping[date, Decimal],
     *,
@@ -140,34 +170,13 @@ def _seasonal_factor(
     horizon_days: int,
     weeks: int = HISTORY_WEEKS,
 ) -> Decimal:
-    """How much busier last year's horizon ran than last year's history.
-
-    Both windows shift back 364 days rather than a calendar year because 364 is
-    52 whole weeks: a Monday stays a Monday, so the ratio compares like
-    weekdays instead of sliding a weekend into a weekday's place.
-
-    A product that launched inside last year's history window has a mostly
-    empty denominator, and its launch ramp would read as seasonality: the whole
-    window has to predate the product or there is no comparison to make.
-
-    The ratio is damped to half its deviation from 1 and clamped to
-    [0.5, 2]: one good week last year is a hint about this year, not a rule,
-    and a single anniversary rush must not double the kitchen's order.  With no
-    sales in either window there is no evidence, so the factor is exactly 1.
-    """
-    lag = timedelta(days=SEASONAL_LAG_DAYS)
-    horizon_first = horizon_start - lag
-    horizon_last = horizon_first + timedelta(days=horizon_days - 1)
-    history_last = history_end - lag
-    history_days = 7 * weeks
-    history_first = history_last - timedelta(days=history_days - 1)
-    if exists_from is not None and exists_from > history_first:
+    """Apply half of last year's relative change, limited to [0.5, 2]."""
+    factor = _seasonal_ratio(
+        daily, exists_from=exists_from, history_end=history_end,
+        horizon_start=horizon_start, horizon_days=horizon_days, weeks=weeks,
+    )
+    if factor is None:
         return _NO_SEASONAL
-    horizon_total = _window_total(daily, horizon_first, horizon_last)
-    history_total = _window_total(daily, history_first, history_last)
-    if horizon_total <= 0 or history_total <= 0:
-        return _NO_SEASONAL
-    factor = (horizon_total / horizon_days) / (history_total / history_days)
     damped = _NO_SEASONAL + (factor - _NO_SEASONAL) / SEASONAL_DAMPING
     return min(max(damped, SEASONAL_FLOOR), SEASONAL_CEILING)
 
@@ -839,6 +848,51 @@ def _series(
     return rows
 
 
+def _product_basis(
+    daily: Mapping[date, Decimal],
+    last_year: Mapping[date, Decimal] | None,
+    projection: ProductProjection,
+    *,
+    exists_from: date | None,
+    today: date,
+    horizon_days: int,
+) -> JsonObject:
+    """Explain one product using the same pure projection and loaded history."""
+    history_end = today - timedelta(days=1)
+    recent = project_product(
+        daily, exists_from=exists_from, history_end=history_end,
+        horizon_start=today, horizon_days=horizon_days, last_year=None,
+    ).typical_total
+    last_year = last_year or {}
+    lag = timedelta(days=SEASONAL_LAG_DAYS)
+
+    def recorded_weeks(source, end):
+        return [
+            {"start": (start := end - timedelta(days=7 * back - 1)).isoformat(),
+             "end": (finish := start + timedelta(days=6)).isoformat(),
+             "quantity": _json_quantity(_window_total(source, start, finish))}
+            for back in range(HISTORY_WEEKS, 0, -1)
+        ]
+
+    last_year_start = today - lag
+    last_year_end = last_year_start + timedelta(days=horizon_days - 1)
+    return {
+        "recentQuantity": _json_quantity(recent),
+        "seasonalAdjustment": _json_quantity(projection.typical_total - recent),
+        "busyAllowance": _json_quantity(projection.busy_total - projection.typical_total),
+        "lastYearComparable": _seasonal_ratio(
+            last_year, exists_from=exists_from, history_end=history_end,
+            horizon_start=today, horizon_days=horizon_days,
+        ) is not None,
+        "recentWeeks": recorded_weeks(daily, history_end),
+        "lastYearWeeks": recorded_weeks(last_year, history_end - lag),
+        "lastYearPeriod": {
+            "start": last_year_start.isoformat(), "end": last_year_end.isoformat(),
+            "quantity": _json_quantity(_window_total(last_year, last_year_start, last_year_end)),
+        },
+    }
+
+
 def _basis_weeks(
     daily, last_year, projections, daily_plans, member_ids, exists_from,
     *, today: date, horizon_days: int,
@@ -1144,6 +1198,10 @@ def menu_forecast_payload(
                 "busyQuantity": _json_quantity(projection.busy_total),
                 "totalQuantity": _json_quantity(total),
                 "seasonalFactor": _json_quantity(projection.seasonal_factor),
+                "basis": _product_basis(
+                    daily.get(product_id, {}), last_year.get(product_id), projection,
+                    exists_from=exists_from[product_id], today=today, horizon_days=horizon_days,
+                ),
                 "days": [
                     {"date": day.isoformat(), "typicalQuantity": _json_quantity(entry.typical),
                      "plannedQuantity": _json_quantity(daily_plans[product_id][day])}

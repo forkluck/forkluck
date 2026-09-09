@@ -18,125 +18,48 @@ import {
   CardLabel,
   CardNote,
 } from "@/components/overview/analytics-cards"
-import { Badge } from "@/components/ui/badge"
 import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
 import { parseDateKey } from "@/lib/date-presets"
 import { formatDayMonth, formatFullDate } from "@/lib/datetime"
-import { amount, units } from "@/components/menus/forecast-format"
-import { BasisPanel } from "@/components/menus/forecast-basis"
 
 /** "Sep 8 to Sep 14, 2026": the year once, at the end. */
 function horizonLabel(start: string, end: string) {
   return `${formatDayMonth(parseDateKey(start), "UTC")} to ${formatFullDate(parseDateKey(end), "UTC")}`
 }
 
-function ProductionPlan({ forecast }: { forecast: MenuForecastData }) {
-  const { production, basis } = forecast
-  const busy = basis.plan === "busy"
+/** Method and scope stay beneath the operational tables. */
+function ForecastBasis() {
   return (
-    <AnalyticsCard className="px-4 py-5 sm:px-6">
-      <div className="flex flex-wrap items-end gap-x-12 gap-y-5">
-        <div>
-          <CardLabel>
-            {basis.horizonDays === 7
-              ? "To make this week"
-              : "To make over the next 30 days"}
-          </CardLabel>
-          <p className="mt-2 text-4xl leading-none font-semibold tracking-[-0.03em] tabular-nums">
-            {units(production.plannedUnits)}{" "}
-            <span className="text-lg font-normal text-muted-foreground">
-              items
-            </span>
-          </p>
-          <CardNote className="mt-2">
-            {production.productsPlanned} products to plan
-          </CardNote>
-        </div>
-        <div>
-          <CardLabel>Recipe batches</CardLabel>
-          <p className="mt-2 text-3xl leading-none font-semibold tabular-nums">
-            {amount(production.recipeBatches)}
-          </p>
-          <CardNote className="mt-2">
-            across {forecast.recipeRequirements.length}{" "}
-            {forecast.recipeRequirements.length === 1 ? "recipe" : "recipes"}
-          </CardNote>
-        </div>
-      </div>
-      <CardNote className="mt-5">
-        {busy ? "Typical" : "Busy"} plan:{" "}
-        {units(busy ? production.typicalUnits : production.busyUnits)} items
-      </CardNote>
-      <CardNote className="mt-1">
-        {accuracySentence(forecast.backtest)}
-      </CardNote>
-      <div className="mt-6">
-        <CardLabel className="mb-2">Menu items by day</CardLabel>
-        <MenuForecastChart
-          series={forecast.series}
-          horizonStart={basis.horizonStart}
-          plan={basis.plan}
-          summary={chartSummary(
-            forecast.series,
-            production,
-            basis.horizonStart
-          )}
-        />
-      </div>
-    </AnalyticsCard>
-  )
-}
-
-/**
- * One line on where the numbers come from, with the method a click away.
- * The dates the forecast covers sit beside the pills that chose them.
- */
-function ForecastBasis({ forecast }: { forecast: MenuForecastData }) {
-  return (
-    <div className="text-sm text-muted-foreground">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <details className="text-sm text-muted-foreground">
+      <summary className="w-fit cursor-pointer rounded-lg underline decoration-border underline-offset-4">
+        How the forecast works
+      </summary>
+      <div className="mt-3 max-w-3xl space-y-2 leading-relaxed">
         <p>
-          Each day is projected from the same weekday over the last 8 weeks,
-          recent weeks counting more. The chosen total follows that rhythm in
-          the day view.
+          Each product uses its matching weekdays from the last eight weeks,
+          with recent weeks counting more. Where last year has comparable
+          records, part of its seasonal change adjusts expected demand. Open
+          “Why this quantity?” beside a product to see its calculation and dated
+          sales history.
         </p>
-        <div className="flex flex-wrap gap-1.5">
-          <Badge variant="secondary">Current composition</Badge>
-          {forecast.basis.seasonalAdjustment ? (
-            <Badge variant="secondary">Seasonal</Badge>
-          ) : null}
-        </div>
+        <p>
+          Busy adds an allowance for variation over the selected period. Day
+          quantities distribute that allowance by weekday pattern; they are not
+          separate daily risk estimates.
+        </p>
+        <p>
+          Prep quantities use each product’s current recipes and yields. They do
+          not subtract stock or food already prepared. Included products cover
+          bundle contents and mapped modifiers; the chart and accuracy describe
+          menu members only.
+        </p>
+        <p>
+          Each menu is forecast independently. Adding forecasts from overlapping
+          menus can count the same product twice.
+        </p>
       </div>
-      <details className="group mt-2 text-xs print:hidden">
-        <summary className="w-fit cursor-pointer list-none rounded-md border border-transparent underline decoration-border underline-offset-4 outline-none hover:text-foreground focus-visible:border-foreground [&::-webkit-details-marker]:hidden">
-          How this is calculated
-        </summary>
-        <div className="mt-2 max-w-3xl space-y-1.5 leading-[1.55]">
-          <p>
-            Busy is the level history stayed under about nine weeks in ten,
-            pooled over the whole horizon rather than summed from daily peaks. A
-            product that sold in both matching windows last year is scaled by
-            half the difference between those windows, marked Seasonal above.
-            Day quantities divide the chosen total by its weekday pattern; they
-            are a production schedule, not separate daily busy estimates. If the
-            typical pattern is zero, a positive plan is divided evenly.
-          </p>
-          <p>
-            Recipe batches and materials expand the chosen plan through the
-            current composition of each Product. The production total includes
-            bundle contents and mapped modifiers; the chart, basis and accuracy
-            describe menu members only. A material is bought in the pack its
-            preferred supplier sells, at that pack price. Nothing here subtracts
-            what is already in stock.
-          </p>
-          <p>
-            Each Menu receives a full independent forecast. Summing forecasts
-            from multiple Menus can double-count the same Product demand.
-          </p>
-        </div>
-      </details>
-    </div>
+    </details>
   )
 }
 
@@ -160,20 +83,15 @@ export function MenuForecast({
       horizon={horizonLabel(horizonStart, horizonEnd)}
       actions={<ForecastActions forecast={forecast} />}
     >
-      {/* The basis is the hero's caption, so it hangs 12px under the card
-          rather than a full section apart from it. */}
-      <div className="flex flex-col gap-3">
-        <ProductionPlan forecast={forecast} />
-        <p
-          className="text-xs text-muted-foreground"
-          data-testid="forecast-money-caption"
-        >
-          {moneyCaption(forecast)}
+      <header>
+        <h2 className="text-xl font-semibold tracking-tight">
+          Production forecast
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Expected demand and the preparation it requires, before subtracting
+          stock or food already prepared.
         </p>
-      </div>
-
-      <BasisPanel forecast={forecast} />
-      <ForecastBasis forecast={forecast} />
+      </header>
 
       {forecast.coverage.unresolvedMenuItems > 0 ? (
         <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
@@ -212,6 +130,29 @@ export function MenuForecast({
           </ul>
         </section>
       ) : null}
+      <p
+        className="text-xs text-muted-foreground"
+        data-testid="forecast-money-caption"
+      >
+        {moneyCaption(forecast)}
+      </p>
+      <AnalyticsCard className="p-4 sm:p-6">
+        <CardLabel className="mb-3">Menu demand by day</CardLabel>
+        <MenuForecastChart
+          series={forecast.series}
+          horizonStart={horizonStart}
+          plan={plan}
+          summary={chartSummary(
+            forecast.series,
+            forecast.production,
+            horizonStart
+          )}
+        />
+        <CardNote className="mt-3">
+          {accuracySentence(forecast.backtest)}
+        </CardNote>
+      </AnalyticsCard>
+      <ForecastBasis />
     </ForecastControls>
   )
 }
