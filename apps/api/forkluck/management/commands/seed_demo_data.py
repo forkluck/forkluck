@@ -92,7 +92,7 @@ class Command(BaseCommand):
                         [
                             ("Water", 4, "cup"),
                             ("Lemon juice", 1, "cup"),
-                            ("Granulated sugar", 0.75, "cup"),
+                            ("Sugar", 0.75, "cup"),
                         ]
                     )
                 ]

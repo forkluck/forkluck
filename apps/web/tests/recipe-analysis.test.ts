@@ -12,6 +12,17 @@ import {
 } from "../lib/recipe"
 
 describe("recipe analysis", () => {
+  it.each(["sugar", "granulated sugar", "white sugar", "caster sugar"])(
+    "keeps %s on the Sugar profile with the same composition",
+    (name) => {
+      const profile = findIngredientProfile(name)
+      expect(profile).toMatchObject({ key: "granulated-sugar", name: "Sugar" })
+      const analysis = analyzeRecipe([{ id: "sugar", name, grams: 100 }])
+      expect(analysis.knownMassG).toBe(100)
+      expect(analysis.per100g.sugars).toBe(100)
+    }
+  )
+
   it("conserves mass and reports 100% water plus dry matter for the sample recipe", () => {
     const analysis = analyzeRecipe(SAMPLE_RECIPE.ingredients)
 

@@ -138,8 +138,8 @@ export const INGREDIENT_PROFILES: IngredientProfile[] = [
   },
   {
     key: "granulated-sugar",
-    name: "Granulated sugar",
-    aliases: ["sugar", "white sugar", "caster sugar", "cane sugar"],
+    name: "Sugar",
+    aliases: ["granulated sugar", "white sugar", "caster sugar", "cane sugar"],
     role: "sweetener",
     water: 0,
     solids: solids({ sugars: 100 }),

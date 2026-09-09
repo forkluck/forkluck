@@ -28,7 +28,7 @@ SAMPLE_ITEMS = [
     (240, "ml", "Buttermilk", "room temperature"),
     (2, "tsp", "Vanilla Extract", ""),
     (170, "g", "Butter", "softened"),
-    (280, "g", "Granulated Sugar", ""),
+    (280, "g", "Sugar", ""),
 ]
 
 SAMPLE_METHOD = [

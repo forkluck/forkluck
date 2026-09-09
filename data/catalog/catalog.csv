@@ -309,16 +309,16 @@ unsalted-butter,,,,,,,14.2,1 tbsp,,no,usda:173430
 unsalted-butter,,,,,,,113,,1 stick,no,usda:173430
 cream-cheese,Cream Cheese,,milk,,,,232,1 cup,,no,usda:173418
 cream-cheese,,,,,,,14.5,1 tbsp,,no,usda:173418
-cheddar,Cheddar Cheese,cheddar,milk,,,,28,,1 slice,no,usda:173414
+cheddar,Cheddar,cheddar cheese,milk,,,,28,,1 slice,no,usda:173414
 cheddar,,,,,diced,,132,1 cup,,no,usda:173414
 cheddar,,,,,melted,,244,1 cup,,no,usda:173414
 cheddar,,,,,shredded,,113,1 cup,,no,usda:173414
-mozzarella,Mozzarella Cheese,fresh mozzarella,milk,,,,170,,6 slice,no,usda:170845
+mozzarella,Mozzarella,fresh mozzarella|mozzarella cheese,milk,,,,170,,6 slice,no,usda:170845
 mozzarella,,,,,shredded,,112,1 cup,,no,usda:170845
-parmesan,Parmesan Cheese,parmigiano reggiano|grated parmesan,milk,,,,100,1 cup,,no,usda:171247
+parmesan,Parmesan,parmigiano reggiano|grated parmesan|parmesan cheese,milk,,,,100,1 cup,,no,usda:171247
 parmesan,,,,,,,5,1 tbsp,,no,usda:171247
-feta,Feta Cheese,,milk,,,,150,1 cup,,no,usda:173420
-ricotta,Ricotta Cheese,,milk,,,,124,0.5 cup,,no,usda:170851
+feta,Feta,feta cheese,milk,,,,150,1 cup,,no,usda:173420
+ricotta,Ricotta,ricotta cheese,milk,,,,124,0.5 cup,,no,usda:170851
 swiss-cheese,Swiss Cheese,,milk,,,,28,,1 slice,no,usda:171251
 swiss-cheese,,,,,diced,,132,1 cup,,no,usda:171251
 swiss-cheese,,,,,melted,,244,1 cup,,no,usda:171251
@@ -364,10 +364,10 @@ polenta,Polenta,cornmeal|grits,,,,,157,1 cup,,no,usda:168929
 pasta-dry,Dry Pasta,dried pasta|penne|macaroni,wheat|gluten_cereals,,,,100,1 cup,,yes,
 egg-noodles,Egg Noodles,egg noodles,egg|wheat|gluten_cereals,,,,38,1 cup,,no,usda:169731
 breadcrumbs,Breadcrumbs,dried breadcrumbs,wheat|gluten_cereals,milk|soy|sesame,,,108,1 cup,,no,usda:174928
-panko,Panko Breadcrumbs,japanese breadcrumbs,wheat|gluten_cereals,milk|soy|sesame,,,120,1 cup,,no,usda:172806
+panko,Panko,japanese breadcrumbs|panko breadcrumbs,wheat|gluten_cereals,milk|soy|sesame,,,120,1 cup,,no,usda:172806
 tortilla-corn,Corn Tortilla,corn tortillas,,,,,24,,1 each,no,usda:175036
 tortilla-flour,Flour Tortilla,flour tortillas,wheat|gluten_cereals,milk|soy,,,49,,1 each,no,usda:167535
-sugar,Granulated Sugar,white sugar|caster sugar|granulated sugar,,,,,200,1 cup,,no,usda:169655
+sugar,Sugar,white sugar|caster sugar|granulated sugar,,,,,200,1 cup,,no,usda:169655
 sugar,,,,,,,4.2,1 tsp,,no,usda:169655
 brown-sugar,Brown Sugar,light brown sugar|dark brown sugar,,,,,220,1 cup,,yes,usda:168833
 brown-sugar,,,,,packed,,220,1 cup,,no,usda:168833
