@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 
+import { writeLastSignInMethod } from "@/components/auth/last-sign-in-method"
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import {
@@ -48,6 +49,7 @@ export function VerifyCodeForm({
       setPending(false)
       return
     }
+    writeLastSignInMethod("password")
     if (next.startsWith("/api/")) {
       window.location.assign(next)
       return

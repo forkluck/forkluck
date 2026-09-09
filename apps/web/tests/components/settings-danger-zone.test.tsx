@@ -66,7 +66,12 @@ afterEach(() => {
 function settings() {
   render(
     <SettingsScreen
-      user={{ id: "usr-1", name: "Ana Reyes", email: "ana@example.com" }}
+      user={{
+        id: "usr-1",
+        name: "Ana Reyes",
+        email: "ana@example.com",
+        hasPassword: true,
+      }}
       billing={{
         status: "disabled",
         trialDaysLeft: null,

@@ -27,12 +27,14 @@ from ...models import (
     SalesLineModifier,
     SalesProduct,
     SalesProductComponent,
+    SupplierItem,
     User,
 )
 from ..shared.physical_expansion import (
     issue_json as _issue_json,
     purchase_quantity,
 )
+from ..shared.supplier_import import supplier_display_name
 from ..shared.workspace_currency import workspace_currency_code
 from ..shared.workspace_timezone import workspace_zone
 from .bundles import BundleIndex
@@ -670,6 +672,7 @@ def _product_material_demand(
                 **_pack_basis(ingredient),
                 "packs": None,
                 "costCents": None,
+                "supplierPack": None,
             },
         )
         row[kind].append({"quantity": _json_quantity(quantity), "unit": unit})
@@ -683,6 +686,18 @@ def _product_material_demand(
         row = ingredient_rows[ingredient_id]
         row["packs"] = _json_quantity(packs)
         row["costCents"] = _pack_cost(packs, ingredient)
+    # The pack as the preferred supplier prints it: "24 X 1 LB" is what the
+    # kitchen orders by, not the 10.9 kg it converts to.  One read for every
+    # material on the list.
+    if ingredient_rows:
+        for item in SupplierItem.objects.filter(
+            ingredient_id__in=list(ingredient_rows), is_preferred=True
+        ):
+            ingredient_rows[str(item.ingredient_id)]["supplierPack"] = {
+                "supplier": supplier_display_name(item.supplier),
+                "rawSize": item.raw_size,
+                "title": item.title,
+            }
     return recipe_rows, list(ingredient_rows.values()), unresolved
 
 

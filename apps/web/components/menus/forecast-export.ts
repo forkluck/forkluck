@@ -18,6 +18,7 @@ const SHOPPING_HEADER = [
   "Packs to buy",
   "Pack size",
   "Pack unit",
+  "Supplier pack",
   "Cost",
 ]
 
@@ -52,6 +53,11 @@ export function shoppingListRow(
     number(row.purchaseSize),
     row.purchaseUnit
       ? csvCell(unitShort(row.purchaseUnit) || row.purchaseUnit)
+      : "",
+    row.supplierPack
+      ? csvCell(`${row.supplierPack.supplier}: ${row.supplierPack.rawSize}`, {
+          alwaysQuote: true,
+        })
       : "",
     money(row.costCents),
   ].join(",")

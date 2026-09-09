@@ -10,10 +10,12 @@ import {
 } from "@/components/menu/product-cells"
 import {
   amount,
+  buyLabel,
+  isCountUnit,
   makes,
   measure,
   needed,
-  packsLabel,
+  packLabel,
   packsToBuy,
   usageNote,
 } from "@/components/menus/forecast-format"
@@ -36,7 +38,6 @@ import type {
 import type { MeasurementSystem } from "@/lib/business-settings"
 import { formatCents, formatWholeCents } from "@/lib/money"
 import { productHref } from "@/lib/product-href"
-import { formatPackSize } from "@/lib/unit-registry"
 import { cn } from "@/lib/utils"
 
 /**
@@ -116,20 +117,11 @@ export function ProductForecastTable({
   )
   return (
     <section className="break-inside-avoid">
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">
-            Product demand
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Weekday-matched from the last eight weeks, summed over the horizon.
-          </p>
-        </div>
-        <Badge variant="secondary">
-          {forecast.coverage.productsWithHistory} of{" "}
-          {forecast.coverage.products} with history
-        </Badge>
-      </div>
+      <SectionHeader
+        title="Product demand"
+        subtitle="Weekday-matched from the last eight weeks, summed over the horizon."
+        badge={`${forecast.coverage.productsWithHistory} of ${forecast.coverage.products} with history`}
+      />
       <TableFrame className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -233,20 +225,48 @@ export function ProductForecastTable({
   )
 }
 
-function planBadge(plan: MenuForecastPlan) {
-  return plan === "busy" ? "Busy plan" : "Typical plan"
+function planWord(plan: MenuForecastPlan) {
+  return plan === "busy" ? "busy" : "typical"
+}
+
+/**
+ * A section's title, its one-line subtitle and the count at the right, the
+ * same shape over each of the page's tables so the eye reads three alike.
+ */
+function SectionHeader({
+  title,
+  subtitle,
+  badge,
+}: {
+  title: string
+  subtitle: string
+  badge: string
+}) {
+  return (
+    <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+      <div>
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+      </div>
+      <Badge variant="secondary">{badge}</Badge>
+    </div>
+  )
 }
 
 /** What the batches make, so 422 batches of a one-piece recipe reads as 422 pieces. */
 function Makes({ row, system }: { row: RecipeRow; system: MeasurementSystem }) {
   const made = makes(row)
   if (!made) return <span className="text-faint">No yield</span>
+  // A recipe that makes one piece a batch has nothing to add under the count.
+  const onePiece = row.yieldAmount === 1 && isCountUnit(made.unit)
   return (
     <>
       {measure(made.quantity, made.unit, system)}
-      <div className="text-xs text-faint">
-        {measure(row.yieldAmount!, made.unit, system)} per batch
-      </div>
+      {onePiece ? null : (
+        <div className="text-xs text-faint">
+          {measure(row.yieldAmount!, made.unit, system)} per batch
+        </div>
+      )}
     </>
   )
 }
@@ -271,12 +291,11 @@ export function RecipeBatchesTable({
   )
   return (
     <section className="break-inside-avoid">
-      <div className="mb-3 flex flex-wrap items-baseline gap-2">
-        <h2 className="text-lg font-semibold text-foreground">
-          Recipe batches
-        </h2>
-        <Badge variant="secondary">{planBadge(forecast.basis.plan)}</Badge>
-      </div>
+      <SectionHeader
+        title="Recipe batches"
+        subtitle={`Batches to make for the ${planWord(forecast.basis.plan)} plan, and what they yield.`}
+        badge={`${recipes.length} ${recipes.length === 1 ? "recipe" : "recipes"}`}
+      />
       <TableFrame className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -348,7 +367,7 @@ function Buy({ row }: { row: MaterialRow }) {
     <span
       title={row.packs === packs ? undefined : `${amount(row.packs!)} packs`}
     >
-      {packsLabel(packs)}
+      {buyLabel(row, packs)}
     </span>
   )
 }
@@ -396,12 +415,11 @@ export function MaterialsTable({
   )
   return (
     <section className="break-inside-avoid">
-      <div className="mb-3 flex flex-wrap items-baseline gap-2">
-        <h2 className="text-lg font-semibold text-foreground">
-          Ingredients and supplies
-        </h2>
-        <Badge variant="secondary">{planBadge(forecast.basis.plan)}</Badge>
-      </div>
+      <SectionHeader
+        title="Ingredients and supplies"
+        subtitle={`What to buy for the ${planWord(forecast.basis.plan)} plan, in the packs the kitchen orders.`}
+        badge={`${rows.length} ${rows.length === 1 ? "material" : "materials"}`}
+      />
       <TableFrame className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -442,11 +460,13 @@ export function MaterialsTable({
                       <Buy row={row} />
                     </TableCell>
                     <TableCell className="text-right text-muted-foreground tabular-nums">
-                      {formatPackSize(
-                        row.purchaseSize,
-                        row.purchaseUnit,
-                        measurementSystem
-                      )}
+                      {packLabel(row) ?? blank}
+                      {row.supplierPack ? (
+                        <span className="text-faint">
+                          {" "}
+                          · {row.supplierPack.supplier}
+                        </span>
+                      ) : null}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
                       {row.costCents !== null ? (

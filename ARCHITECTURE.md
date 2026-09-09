@@ -35,9 +35,12 @@ server block; nothing in this repository renders it.
 | `/api/invoices/`, `/api/primo/`                     | Browser → Next.js  | Django session checked by the route; each route applies its own input and origin boundary |
 | `/internal/v1/`                                     | The Next.js server | Session cookie **and** `X-Forkluck-Internal-Secret`                                       |
 
-`internal_user` in `apps/api/forkluck/http/auth.py` guards every internal view.
-A missing or wrong secret answers **404** — the route denies its own existence
-— and a valid secret without a session answers **401**.
+`internal_user` in `apps/api/forkluck/http/auth.py` guards user-scoped internal
+views. The explicit `system_get`/`system_post` category requires only the
+internal secret; `auth-methods/` uses it so signed-out pages can discover
+Google sign-in availability. A missing or wrong secret answers **404** — the
+route denies its own existence. A user-scoped view with a valid secret but no
+session answers **401**.
 
 `apps/web/lib/backend/client.ts` is the only code that speaks to `/internal/v1/`. It
 forwards the incoming cookie header, attaches the secret, revives the

@@ -269,6 +269,10 @@ class BundleBackfillMigrationTests(TransactionTestCase):
     def test_attributed_net_per_member_product_does_not_move(self) -> None:
         before = self._member_totals()
         self._apply()
+        # The assertion below deliberately uses today's read models, so finish
+        # schema migrations before those models select newly added columns.
+        executor = MigrationExecutor(connection)
+        executor.migrate(executor.loader.graph.leaf_nodes())
         from .domains.sales.bundles import BundleIndex
         from .domains.sales.core import _variant_contributions
         from .models import SalesLine, User

@@ -4,6 +4,13 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+import { AuthMethodsSeparator } from "@/components/auth/auth-methods-separator"
+import { GoogleButton } from "@/components/auth/google-button"
+import { authNotice, type AuthNoticeCode } from "@/components/auth/auth-notice"
+import {
+  useLastSignInMethod,
+  writeLastSignInMethod,
+} from "@/components/auth/last-sign-in-method"
 import { Button } from "@/components/ui/button"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import {
@@ -17,7 +24,17 @@ import { authClient } from "@/lib/auth-client"
 import { useRefresh } from "@/hooks/use-refresh"
 
 /** `next` is where signing in lands, so a recipe invite reaches its recipe. */
-export function LoginForm({ next = "/" }: { next?: string }) {
+export function LoginForm({
+  next = "/",
+  googleEnabled = false,
+  errorCode,
+}: {
+  next?: string
+  googleEnabled?: boolean
+  errorCode?: AuthNoticeCode
+}) {
+  const lastMethod = useLastSignInMethod()
+  const notice = errorCode ? authNotice[errorCode] : undefined
   const router = useRouter()
   const { refresh } = useRefresh()
   const [email, setEmail] = React.useState("")
@@ -52,6 +69,7 @@ export function LoginForm({ next = "/" }: { next?: string }) {
       return
     }
     // OAuth is a Django document redirect, not a React page navigation.
+    writeLastSignInMethod("password")
     if (next.startsWith("/api/")) {
       window.location.assign(next)
       return
@@ -67,6 +85,15 @@ export function LoginForm({ next = "/" }: { next?: string }) {
   return (
     <form onSubmit={submit} className="flex flex-col">
       <h1 className={authHeadingClassName}>Welcome back</h1>
+
+      {notice ? (
+        <p
+          role={notice.role}
+          className="mt-4 text-md leading-5 text-muted-foreground"
+        >
+          {notice.message}
+        </p>
+      ) : null}
 
       <div className="mt-8 flex flex-col gap-5">
         <LabeledInput
@@ -111,6 +138,18 @@ export function LoginForm({ next = "/" }: { next?: string }) {
       <Button type="submit" size="lg" pending={pending} className="mt-6">
         Sign in
       </Button>
+
+      {googleEnabled ? (
+        <>
+          <AuthMethodsSeparator />
+          <GoogleButton next={next} />
+          {lastMethod === "google" ? (
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              You signed in with Google last time
+            </p>
+          ) : null}
+        </>
+      ) : null}
 
       <p className={authSwitchClassName}>
         Don&apos;t have an account?{" "}

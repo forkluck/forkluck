@@ -258,6 +258,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
 # reordering both change routing behaviour and both must be visible.
 EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("session/", None),
+    ("auth-methods/", None),
     ("primo/conversations/", None),
     ("primo/conversations/<uuid:conversation_id>/", None),
     ("newsletter/", None),
@@ -342,6 +343,8 @@ EXPECTED_PUBLIC_ROUTES: list[tuple[str, str | None]] = [
     ("auth/change-password", "change-password"),
     ("auth/login", "login"),
     ("auth/logout", "logout"),
+    ("auth/google/start", None),
+    ("auth/google/callback", None),
     ("integrations/square/connect", None),
     ("integrations/square/callback", None),
     ("integrations/shopify/connect", None),
@@ -721,7 +724,7 @@ class SerializerContractTests(ShapeAssertions, TestCase):
     # --- account -----------------------------------------------------------
 
     def test_user_json(self):
-        self.assertShape(accounts.user_json(self.user), ["email", "id", "name"])
+        self.assertShape(accounts.user_json(self.user), ["email", "hasPassword", "id", "name"])
 
     def test_billing_json(self):
         self.assertShape(

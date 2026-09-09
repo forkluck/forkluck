@@ -2,6 +2,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from .domains.accounts import google
 from .domains.accounts import views as account_views
 from .domains.ingredients import views as ingredient_views
 from .domains.invoices import drive_system
@@ -71,6 +72,7 @@ def system_get_post(view):
 
 urlpatterns = [
     path("session/", internal_get(account_views.internal_session)),
+    path("auth-methods/", system_get(google.auth_methods)),
     path("primo/conversations/", internal_get(primo_views.conversation_list)),
     path(
         "primo/conversations/<uuid:conversation_id>/",

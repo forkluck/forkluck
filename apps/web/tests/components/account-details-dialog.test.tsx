@@ -11,7 +11,12 @@ vi.mock("next/navigation", () => ({
 
 import { AccountDetailsDialog } from "@/components/settings/account-details-dialog"
 
-const USER = { id: "usr-1", name: "Ana Reyes", email: "ana@example.com" }
+const USER = {
+  hasPassword: true,
+  id: "usr-1",
+  name: "Ana Reyes",
+  email: "ana@example.com",
+}
 
 afterEach(() => {
   cleanup()

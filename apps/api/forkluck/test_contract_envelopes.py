@@ -22,6 +22,7 @@ from django.db import transaction
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
+from .domains.accounts import google
 from .domains.accounts import views as account_views
 from .domains.ingredients import actions as ingredient_actions
 from .domains.ingredients import views as ingredient_views
@@ -202,6 +203,7 @@ def zod_paths(
 # checked through the root that embeds them; the assertion below fails if a new
 # export appears in neither list.
 SCHEMA_PAYLOADS = {
+    "authMethodsSchema": lambda case: internal_payload(google.auth_methods, case.user),
     "sessionPayloadSchema": lambda case: internal_payload(
         account_views.internal_session, case.user
     ),

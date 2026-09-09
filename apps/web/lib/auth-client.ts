@@ -1,5 +1,7 @@
+import type { SessionUser } from "@/lib/auth-session"
+
 type AuthResult = {
-  data?: { user: { id: string; name: string; email: string } }
+  data?: { user: SessionUser }
   /** Set when the account exists but the email still needs its code. */
   pendingVerification?: boolean
   error?: { message: string }
@@ -20,7 +22,7 @@ async function authRequest(
 ): Promise<AuthResult> {
   let response: Response
   let payload: {
-    user?: { id: string; name: string; email: string }
+    user?: SessionUser
     pendingVerification?: boolean
     needsVerification?: boolean
     error?: string
@@ -95,7 +97,7 @@ export const authClient = {
     authRequest("/api/auth/request-password-reset", input),
   resetPassword: (input: { email: string; code: string; password: string }) =>
     authRequest("/api/auth/reset-password", input),
-  changePassword: (input: { currentPassword: string; newPassword: string }) =>
+  changePassword: (input: { currentPassword?: string; newPassword: string }) =>
     authRequest("/api/auth/change-password", input),
   signOut: () => authRequest("/api/auth/logout"),
 }

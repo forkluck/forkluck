@@ -112,9 +112,9 @@ function ForecastBasis({ forecast }: { forecast: MenuForecastData }) {
           </p>
           <p>
             Recipe batches and materials expand the chosen plan through the
-            current composition of each Product. Packs are the pack size of the
-            material at its purchase price. Nothing here subtracts what is
-            already in stock.
+            current composition of each Product. A material is bought in the
+            pack its preferred supplier sells, at that pack price. Nothing here
+            subtracts what is already in stock.
           </p>
           <p>
             Each Menu receives a full independent forecast. Summing forecasts

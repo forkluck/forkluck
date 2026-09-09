@@ -20,6 +20,7 @@ from .models import (
     Recipe,
     RecipeItem,
     SalesProductVariant,
+    SupplierItem,
     SalesImport,
     SalesLine,
     SalesLineModifier,
@@ -1193,7 +1194,7 @@ class MenuForecastTests(TestCase):
         )
 
         with self.assertNumQueries(
-            17,
+            18,
             msg=(
                 "Menu forecast must prefetch ledger interpretation, the bundle "
                 "graph and current composition independently of row counts"
@@ -1219,7 +1220,7 @@ class MenuForecastTests(TestCase):
                 position=index,
             )
         with self.assertNumQueries(
-            17,
+            18,
             msg="Menu forecast query count must not grow with ledger or component rows",
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
@@ -1254,7 +1255,7 @@ class MenuForecastTests(TestCase):
         SalesProductComponent.objects.create(product=product, recipe=root, quantity=1)
 
         with self.assertNumQueries(
-            22,
+            23,
             msg="Menu forecast pins the recipe graph to a constant number of reads",
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
@@ -1286,7 +1287,7 @@ class MenuForecastTests(TestCase):
         )
 
         with self.assertNumQueries(
-            22,
+            23,
             msg="Menu forecast query count must not grow with recipe graph depth",
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
@@ -1356,9 +1357,50 @@ class MenuForecastTests(TestCase):
         self.assertIsNone(rows["Bag"]["purchaseUnit"])
         self.assertIsNone(rows["Bag"]["packs"])
         self.assertIsNone(rows["Bag"]["costCents"])
+        self.assertIsNone(rows["Flour"]["supplierPack"])
         self.assertEqual(
             payload["materialCost"],
             {"costCents": 460, "costedMaterials": 2, "uncostedMaterials": 2},
+        )
+
+    def test_the_preferred_supplier_names_the_pack_the_kitchen_orders(self):
+        loaf = self.product("Loaf")
+        menu = self.menu(loaf)
+        self.four_mondays_of(loaf)
+        flour = self.ingredient("Flour", cost=300, size=24, unit="lb")
+        SupplierItem.objects.create(
+            user=self.user,
+            ingredient=flour,
+            supplier="baldor",
+            external_id="fl-24",
+            title="Flour, all purpose",
+            raw_size="24 X 1 LB",
+            pack_price_cents=300,
+            pack_amount=Decimal("24"),
+            pack_unit="lb",
+            is_preferred=False,
+        )
+        SupplierItem.objects.create(
+            user=self.user,
+            ingredient=flour,
+            supplier="chefs warehouse",
+            external_id="cw-50",
+            title="Flour, bread",
+            raw_size="50 LB",
+            pack_price_cents=600,
+            pack_amount=Decimal("50"),
+            pack_unit="lb",
+            is_preferred=True,
+        )
+        SalesProductComponent.objects.create(
+            product=loaf, ingredient=flour, quantity=Decimal("250"), unit="g"
+        )
+
+        row = menu_forecast_payload(self.user, menu, today=self.today)["materialRequirements"][0]
+
+        self.assertEqual(
+            row["supplierPack"],
+            {"supplier": "Chefs Warehouse", "rawSize": "50 LB", "title": "Flour, bread"},
         )
 
     def test_trim_loss_makes_the_pack_count_gross(self):

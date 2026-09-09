@@ -213,6 +213,7 @@ class SystemRouteTests(InternalApiTestCase):
     """
 
     SYSTEM_ROUTES = [
+        ("/internal/v1/auth-methods/", "GET", {}),
         (
             "/internal/v1/system/invoice-ai-usage/", "POST",
             {"userId": ANY_UUID, "operation": "reserve", "pages": 1, "attempts": 2},

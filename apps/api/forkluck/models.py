@@ -123,12 +123,13 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=150)
-    # When set, the address was confirmed with an emailed signup or password-
-    # reset code. Development registration may grant a session without proof.
+    # When set, the address was confirmed by Google or an emailed signup or
+    # password-reset code. Development registration can grant a session without proof.
     email_verified_at = models.DateTimeField(null=True, blank=True)
-    # Set only by public registration when verification is required. Existing
-    # users and accounts created by admins never generate an owner alert.
+    # New registrations (password or Google) notify on first verified sign-in.
+    # Existing users and accounts created by admins never generate an owner alert.
     first_sign_in_notification_pending = models.BooleanField(default=False)
+    google_subject = models.CharField(max_length=255, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]

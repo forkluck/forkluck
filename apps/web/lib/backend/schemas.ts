@@ -37,11 +37,14 @@ const trendComparisonSchema = z.enum([
 /* session/                                                                    */
 /* -------------------------------------------------------------------------- */
 
+export const authMethodsSchema = z.strictObject({ google: z.boolean() })
+
 export const sessionPayloadSchema = z.strictObject({
   user: z.strictObject({
     id: z.string(),
     name: z.string(),
     email: z.string(),
+    hasPassword: z.boolean(),
   }),
   // `status` stays a plain string: Stripe adds statuses, and this schema pins
   // the shape of the payload rather than its values.
@@ -1576,6 +1579,15 @@ export const menuForecastPayloadSchema = z.strictObject({
       packs: z.number().nullable(),
       /** Packs at the pack price; null without a pack size or a price. */
       costCents: z.number().int().nullable(),
+      /** The pack as the preferred supplier prints it, which is what the
+       * kitchen orders by; null when no supplier item is preferred. */
+      supplierPack: z
+        .strictObject({
+          supplier: z.string(),
+          rawSize: z.string(),
+          title: z.string(),
+        })
+        .nullable(),
     })
   ),
   unresolved: z.array(

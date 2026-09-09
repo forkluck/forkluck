@@ -20,6 +20,7 @@ import {
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { useToast } from "@/components/ui/toast"
 import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
+import { useRefresh } from "@/hooks/use-refresh"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
 import { authClient } from "@/lib/auth-client"
@@ -32,11 +33,14 @@ const CONFIRM_FIELD = "change-password-confirm"
 export function ChangePasswordDialog({
   open,
   onOpenChange,
+  hasPassword,
 }: {
   open: boolean
+  hasPassword: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const toast = useToast()
+  const { refresh, pending: refreshing } = useRefresh()
   const [currentPassword, setCurrentPassword] = React.useState("")
   const [newPassword, setNewPassword] = React.useState("")
   const [confirmation, setConfirmation] = React.useState("")
@@ -48,7 +52,7 @@ export function ChangePasswordDialog({
     snapshot: JSON.stringify([currentPassword, newPassword, confirmation]),
     saved: false,
     validate: (): FormErrors => {
-      if (!currentPassword)
+      if (hasPassword && !currentPassword)
         return { [CURRENT_FIELD]: "Enter your current password." }
       if (newPassword.length < 8)
         return { [NEW_FIELD]: "Use at least 8 characters." }
@@ -58,7 +62,7 @@ export function ChangePasswordDialog({
     },
     save: async () => {
       const result = await authClient.changePassword({
-        currentPassword,
+        ...(hasPassword ? { currentPassword } : {}),
         newPassword,
       })
       return result.error ? toSaveFailure(result.error.message) : null
@@ -67,10 +71,11 @@ export function ChangePasswordDialog({
   const { confirm, dialog } = useDirtyDialog()
 
   const submit = () =>
-    void form.submit().then((done) => {
+    void form.submit().then(async (done) => {
       if (!done) return
-      toast.add({ title: "Password changed." })
+      await refresh()
       onOpenChange(false)
+      toast.add({ title: hasPassword ? "Password changed." : "Password set." })
     })
 
   const dismiss = () => confirm(form.dirty, () => onOpenChange(false))
@@ -84,7 +89,9 @@ export function ChangePasswordDialog({
     >
       <DialogContent onKeyDown={dialogSaveShortcut(submit)}>
         <DialogHeader>
-          <DialogTitle>Change password</DialogTitle>
+          <DialogTitle>
+            {hasPassword ? "Change password" : "Set a password"}
+          </DialogTitle>
         </DialogHeader>
         <form
           onSubmit={(event) => {
@@ -93,31 +100,36 @@ export function ChangePasswordDialog({
           }}
         >
           <FieldGroup className="gap-4">
-            <Field>
-              <LabeledInput
-                label="Current password"
-                id={CURRENT_FIELD}
-                type={currentVisible ? "text" : "password"}
-                autoComplete="current-password"
-                autoFocus
-                value={currentPassword}
-                aria-invalid={Boolean(form.errors[CURRENT_FIELD]) || undefined}
-                onChange={(event) => setCurrentPassword(event.target.value)}
-                trailing={
-                  <PasswordToggle
-                    visible={currentVisible}
-                    onToggle={() => setCurrentVisible((visible) => !visible)}
-                  />
-                }
-              />
-              {form.errors[CURRENT_FIELD] ? (
-                <FieldError>{form.errors[CURRENT_FIELD]}</FieldError>
-              ) : null}
-            </Field>
+            {hasPassword ? (
+              <Field>
+                <LabeledInput
+                  label="Current password"
+                  id={CURRENT_FIELD}
+                  type={currentVisible ? "text" : "password"}
+                  autoComplete="current-password"
+                  autoFocus
+                  value={currentPassword}
+                  aria-invalid={
+                    Boolean(form.errors[CURRENT_FIELD]) || undefined
+                  }
+                  onChange={(event) => setCurrentPassword(event.target.value)}
+                  trailing={
+                    <PasswordToggle
+                      visible={currentVisible}
+                      onToggle={() => setCurrentVisible((visible) => !visible)}
+                    />
+                  }
+                />
+                {form.errors[CURRENT_FIELD] ? (
+                  <FieldError>{form.errors[CURRENT_FIELD]}</FieldError>
+                ) : null}
+              </Field>
+            ) : null}
             <Field>
               <LabeledInput
                 label="New password"
                 id={NEW_FIELD}
+                autoFocus={!hasPassword}
                 type={newVisible ? "text" : "password"}
                 autoComplete="new-password"
                 minLength={8}
@@ -167,8 +179,8 @@ export function ChangePasswordDialog({
             <Button type="button" variant="outline" onClick={dismiss}>
               Cancel
             </Button>
-            <Button type="submit" pending={form.pending}>
-              Change password
+            <Button type="submit" pending={form.pending || refreshing}>
+              {hasPassword ? "Change password" : "Set password"}
             </Button>
           </DialogFooter>
         </form>
