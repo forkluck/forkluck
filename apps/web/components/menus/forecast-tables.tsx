@@ -3,6 +3,7 @@
 import Link from "next/link"
 
 import {
+  ariaSort,
   SortHeader,
   sortRows,
   useSortState,
@@ -38,7 +39,7 @@ import { cn } from "@/lib/utils"
  * The forecast page's tables. Product demand and Recipe batches sort on a
  * header click, the click-to-toggle the Products tables use, so a kitchen can
  * put its biggest sellers and its largest batches at the top. Ingredients and
- * supplies keeps the backend's order: ingredients first, then supplies.
+ * supplies is not sortable; ingredients are listed before supplies.
  */
 
 type ProductRow = MenuForecastData["products"][number]
@@ -101,7 +102,10 @@ export function ProductForecastTable({
         <Table>
           <TableHeader>
             <TableHeaderRow>
-              <TableHead className="min-w-48">
+              <TableHead
+                className="min-w-48"
+                aria-sort={ariaSort(directionFor("product"))}
+              >
                 <SortHeader
                   direction={directionFor("product")}
                   onClick={() => toggle("product")}
@@ -109,7 +113,10 @@ export function ProductForecastTable({
                   Product
                 </SortHeader>
               </TableHead>
-              <TableHead className={cn("min-w-24", !busy && "text-foreground")}>
+              <TableHead
+                className={cn("min-w-24", !busy && "text-foreground")}
+                aria-sort={ariaSort(directionFor("typical"))}
+              >
                 <SortHeader
                   align="right"
                   direction={directionFor("typical")}
@@ -118,7 +125,10 @@ export function ProductForecastTable({
                   Typical
                 </SortHeader>
               </TableHead>
-              <TableHead className={cn("min-w-24", busy && "text-foreground")}>
+              <TableHead
+                className={cn("min-w-24", busy && "text-foreground")}
+                aria-sort={ariaSort(directionFor("busy"))}
+              >
                 <SortHeader
                   align="right"
                   direction={directionFor("busy")}
@@ -127,7 +137,10 @@ export function ProductForecastTable({
                   Busy
                 </SortHeader>
               </TableHead>
-              <TableHead className="min-w-32">
+              <TableHead
+                className="min-w-32"
+                aria-sort={ariaSort(directionFor("history"))}
+              >
                 <SortHeader
                   direction={directionFor("history")}
                   onClick={() => toggle("history")}
@@ -249,7 +262,12 @@ export function Requirements({
     (row) => row.kind === "supply"
   )
   const badge = planBadge(forecast.basis.plan)
-  const { sort, toggle, directionFor } = useSortState<RecipeSortKey>()
+  // The backend lists recipes in id order, which means nothing to a cook, so
+  // the table opens A to Z; a header click takes it from there.
+  const { sort, toggle, directionFor } = useSortState<RecipeSortKey>({
+    key: "recipe",
+    direction: "asc",
+  })
   const recipes = sortRows<RecipeRow, RecipeSortKey>(
     forecast.recipeRequirements,
     sort,
@@ -268,7 +286,7 @@ export function Requirements({
           <Table>
             <TableHeader>
               <TableHeaderRow>
-                <TableHead>
+                <TableHead aria-sort={ariaSort(directionFor("recipe"))}>
                   <SortHeader
                     direction={directionFor("recipe")}
                     onClick={() => toggle("recipe")}
@@ -276,7 +294,7 @@ export function Requirements({
                     Recipe
                   </SortHeader>
                 </TableHead>
-                <TableHead>
+                <TableHead aria-sort={ariaSort(directionFor("batches"))}>
                   <SortHeader
                     align="right"
                     direction={directionFor("batches")}

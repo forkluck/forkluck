@@ -402,6 +402,41 @@ describe("Menu forecast", () => {
     expect(rowsOf(0)).toEqual(["Scone", "Cookie add-on"])
   })
 
+  it("keeps tied rows in their incoming order when sorting descending", () => {
+    const zero = (name: string, id: string) => ({
+      ...FORECAST.products[0]!,
+      productId: id,
+      productPublicId: `prd_${id}`,
+      productName: name,
+      typicalQuantity: 0,
+      busyQuantity: 0,
+      weeksObserved: 0,
+    })
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={{
+          ...FORECAST,
+          products: [
+            ...FORECAST.products,
+            zero("Bun", "bun"),
+            zero("Tart", "tart"),
+          ],
+        }}
+      />
+    )
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    fireEvent.click(table(0).getByRole("button", { name: "Typical" }))
+    // Descending by demand, and the zero-demand tail stays in its incoming
+    // order rather than coming out backwards.
+    expect(rowsOf(0).slice(-2)).toEqual(["Bun", "Tart"])
+    expect(
+      table(0)
+        .getByRole("columnheader", { name: "Typical" })
+        .getAttribute("aria-sort")
+    ).toBe("descending")
+  })
+
   it("sorts recipe batches by recipe or by batch count", () => {
     render(
       <MenuForecast
@@ -421,8 +456,14 @@ describe("Menu forecast", () => {
       />
     )
 
-    // The backend's order stands until a header is chosen.
-    expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
+    // The backend lists recipes in id order, which means nothing to a cook,
+    // so the table opens A to Z.
+    expect(rowsOf(1)).toEqual(["Almond biscotti", "Cookie dough"])
+    expect(
+      table(1)
+        .getByRole("columnheader", { name: "Recipe" })
+        .getAttribute("aria-sort")
+    ).toBe("ascending")
 
     fireEvent.click(table(1).getByRole("button", { name: "Batches" }))
     expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
