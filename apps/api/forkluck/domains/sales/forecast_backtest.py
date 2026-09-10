@@ -4,6 +4,11 @@ The menu aggregate is a diagnostic count of planned product units, including
 expanded products, not a sales-accounting total. Product WAPE guards against
 opposite product errors cancelling in that aggregate. All methods share the
 same completed origins and the same eight-week minimum history.
+
+``current`` is the live rule end to end: ``project_product`` for typical, and
+a busy margin sized from the origins before each one, exactly as the page
+sizes its own.  ``spread-busy`` is the same typical with the spread rule the
+page falls back to, so the two busy rules can be read side by side.
 """
 
 from __future__ import annotations
@@ -12,11 +17,11 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
 from datetime import date, timedelta
 from decimal import Decimal
-from math import ceil
 from statistics import median
 
 from .forecast import (
     BUSY_Z,
+    CALIBRATION_MIN_ORIGINS,
     HISTORY_WEEKS,
     SEASONAL_LAG_DAYS,
     DayProjection,
@@ -25,6 +30,7 @@ from .forecast import (
     _clamped,
     _history_dates,
     _window_total,
+    empirical_margin,
     project_product,
 )
 
@@ -141,15 +147,12 @@ CANDIDATES: dict[str, Callable[..., ProductProjection]] = {
     "current+trend": _current_trend,
 }
 STRETCH_CANDIDATES = {
-    # Menu-total calibration is applied after summing the product projections.
-    "current+conformal": project_product,
+    # The page's fallback busy rule on its own, for reading beside current.
+    "spread-busy": project_product,
     "current+occasional": _current_occasional,
 }
-
-
-def empirical_margin(residuals: list[Decimal]) -> Decimal:
-    """Nearest-rank empirical 90th percentile, with no negative busy margin."""
-    return max(Decimal(), sorted(residuals)[ceil(Decimal("0.9") * len(residuals)) - 1])
+# Candidates whose busy is the summed spread rule rather than the live margin.
+SPREAD_BUSY = {"spread-busy"}
 
 
 @dataclass(frozen=True)
@@ -248,13 +251,14 @@ def rolling_origins(
             }
             typical = sum((p.typical_total for p in projections.values()), Decimal())
             busy = sum((p.busy_total for p in projections.values()), Decimal())
-            if name == "current+conformal":
-                # A prior 30-day origin may still be in flight. Its actual
+            if name not in SPREAD_BUSY:
+                # The live rule: a margin sized from the origins before this
+                # one.  A prior 30-day origin may still be in flight, and its
                 # outcome must not calibrate a forecast made before it ended.
                 residuals = [
                     row.actual - row.typical for row in replays[name] if row.end < as_of
                 ]
-                if len(residuals) >= 4:
+                if len(residuals) >= CALIBRATION_MIN_ORIGINS:
                     busy = typical + empirical_margin(residuals)
             replays[name].append(Replay(as_of, end, typical, busy, total_actual))
             for pid, projection in projections.items():
@@ -265,15 +269,31 @@ def rolling_origins(
     }
 
 
-def qualifies(candidate: Score, current: Score, *, busy: bool = False) -> bool:
-    """The single-horizon gate; promotion also requires the other horizon."""
+def busy_only(candidate: Score, current: Score) -> bool:
+    """A candidate that changes nothing but the busy level."""
+    return all(
+        row.typical == base.typical
+        for row, base in zip(candidate.replays, current.replays, strict=True)
+    )
+
+
+def qualifies(candidate: Score, current: Score) -> bool:
+    """The single-horizon gate; promotion also requires the other horizon.
+
+    A demand candidate has to cut the menu error by two points without
+    losing the mix.  A busy-only candidate cannot move the error at all, so
+    it is judged on what busy is for: keep the coverage and bake less for it.
+    """
     if not current.origins or tuple(r.start for r in candidate.replays) != tuple(r.start for r in current.replays):
         return False
+    if busy_only(candidate, current):
+        return (
+            candidate.busy_coverage >= current.busy_coverage
+            and candidate.busy_over <= current.busy_over - 2
+        )
     return (
         current.wape - candidate.wape >= 2
         and candidate.median_product_wape <= current.median_product_wape + Decimal("0.5")
-        and (not busy or (
-            candidate.busy_coverage >= current.busy_coverage
-            and candidate.busy_over <= current.busy_over + 2
-        ))
+        and candidate.busy_coverage >= current.busy_coverage
+        and candidate.busy_over <= current.busy_over + 2
     )

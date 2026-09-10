@@ -56,12 +56,18 @@ class ForecastBacktestTests(forecast_tests.MenuForecastTests):
         product = self.product("Bread")
         variant = self.variant(product)
         menu = self.menu(product)
-        for back in range(1, 141):
-            self.line(variant, self.today - timedelta(days=back), quantity=str(back % 7 + 1))
+        # A three-day cycle against the weekday basis leaves misses to size
+        # the busy margin from, so busy is checked calibrated, not degenerate.
+        for back in range(1, 201):
+            self.line(variant, self.today - timedelta(days=back), quantity=str(4 + back % 3))
         inputs = load_forecast_inputs(self.user, menu, today=self.today, horizon_days=7, ledger_weeks=34)
-        scores = rolling_origins(inputs, today=self.today, weeks=1, horizon=7, candidates=CANDIDATES)
-        row = scores["current"].replays[0]
+        # Thirteen origins: the last one has the same twelve earlier origins
+        # behind it that the page reads when it stands on that date.
+        scores = rolling_origins(inputs, today=self.today, weeks=13, horizon=7, candidates=CANDIDATES)
+        row = scores["current"].replays[-1]
+        self.assertEqual(scores["current"].origins, 13)
         payload = menu_forecast_payload(self.user, menu, today=row.start)
+        self.assertEqual(payload["basis"]["busyBasis"], "history")
         self.assertEqual(row.typical, sum(Decimal(str(p["typicalQuantity"])) for p in payload["products"]))
         self.assertEqual(row.busy, sum(Decimal(str(p["busyQuantity"])) for p in payload["products"]))
 
@@ -121,18 +127,19 @@ class ForecastBacktestTests(forecast_tests.MenuForecastTests):
                 projected = CANDIDATES["current+trend"](daily, **kwargs)
                 self.assertAlmostEqual(projected.typical_total, base.typical_total * Decimal(factor), delta=Decimal("0.007"))
 
-    def test_conformal_uses_only_completed_earlier_origins(self):
+    def test_current_busy_uses_only_completed_earlier_origins(self):
         inputs = self.inputs(weeks=34, value=lambda back: Decimal(300 - back))
         for horizon in (7, 30):
             with self.subTest(horizon=horizon):
                 scores = rolling_origins(inputs, today=self.today, weeks=26, horizon=horizon, candidates={**CANDIDATES, **STRETCH_CANDIDATES})
+                spread = scores["spread-busy"].replays
                 current = scores["current"].replays
-                conformal = scores["current+conformal"].replays
-                for index, row in enumerate(conformal):
-                    residuals = [prior.actual - prior.typical for prior in conformal[:index] if prior.end < row.start]
-                    expected = row.typical + empirical_margin(residuals) if len(residuals) >= 4 else current[index].busy
+                for index, row in enumerate(current):
+                    residuals = [prior.actual - prior.typical for prior in current[:index] if prior.end < row.start]
+                    expected = row.typical + empirical_margin(residuals) if len(residuals) >= 4 else spread[index].busy
                     self.assertEqual(row.busy, expected)
-                self.assertTrue(any(row.busy != base.busy for row, base in zip(conformal, current)))
+                    self.assertEqual(row.typical, spread[index].typical)
+                self.assertTrue(any(row.busy != base.busy for row, base in zip(current, spread)))
         self.assertEqual(empirical_margin([Decimal(n) for n in range(1, 11)]), 9)
         self.assertEqual(empirical_margin([Decimal(-3)] * 4), 0)
 
@@ -155,9 +162,13 @@ class ForecastBacktestTests(forecast_tests.MenuForecastTests):
         self.assertTrue(qualifies(score(108, "10.5"), current))
         self.assertFalse(qualifies(score(109, 10), current))
         self.assertFalse(qualifies(score(108, "10.6"), current))
-        self.assertFalse(qualifies(score(108, 10, 99), current, busy=True))
-        self.assertFalse(qualifies(score(108, 10, 113), current, busy=True))
-        self.assertTrue(qualifies(score(108, 10, 112), current, busy=True))
+        self.assertFalse(qualifies(score(108, 10, 99), current))
+        self.assertFalse(qualifies(score(108, 10, 113), current))
+        self.assertTrue(qualifies(score(108, 10, 112), current))
+        # A busy-only candidate is judged on coverage kept and over-production cut.
+        self.assertTrue(qualifies(score(110, 10, 108), current))
+        self.assertFalse(qualifies(score(110, 10, 109), current))
+        self.assertFalse(qualifies(score(110, 10, 99), current))
         self.assertFalse(qualifies(current, current))
 
     def test_loader_rejects_foreign_owner_before_reading(self):

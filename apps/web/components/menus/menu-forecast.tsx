@@ -29,7 +29,7 @@ function horizonLabel(start: string, end: string) {
 }
 
 /** Method and scope stay beneath the operational tables. */
-function ForecastBasis() {
+function ForecastBasis({ busyBasis }: { busyBasis: "history" | "spread" }) {
   return (
     <details className="text-sm text-muted-foreground">
       <summary className="w-fit cursor-pointer rounded-lg underline decoration-border underline-offset-4">
@@ -44,9 +44,11 @@ function ForecastBasis() {
           sales history.
         </p>
         <p>
-          Busy adds an allowance for variation over the selected period. Day
-          quantities distribute that allowance by weekday pattern; they are not
-          separate daily risk estimates.
+          {busyBasis === "history"
+            ? "Busy adds an allowance sized from this forecast’s own past misses: over the last twelve weeks, actual demand stayed under it about nine times in ten. Products with more variation carry more of it."
+            : "Busy adds an allowance for variation over the selected period, from the spread of recent weeks. Once twelve weeks of history are recorded, it is sized from this forecast’s own past misses instead."}{" "}
+          Day quantities distribute that allowance by weekday pattern; they are
+          not separate daily risk estimates.
         </p>
         <p>
           Prep quantities use each product’s current recipes and yields. They do
@@ -152,7 +154,7 @@ export function MenuForecast({
           {accuracySentence(forecast.backtest)}
         </CardNote>
       </AnalyticsCard>
-      <ForecastBasis />
+      <ForecastBasis busyBasis={forecast.basis.busyBasis} />
     </ForecastControls>
   )
 }

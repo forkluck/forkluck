@@ -79,6 +79,7 @@ const FORECAST: MenuForecastData = {
     plan: "typical",
     seasonalAdjustment: false,
     compositionBasis: "current",
+    busyBasis: "history",
     weeks: {
       recent: RECENT,
       horizon: [
