@@ -1,7 +1,7 @@
 import { ForecastActions } from "@/components/menus/forecast-actions"
 import {
   ForecastControls,
-  type ForecastView,
+  type ForecastRange,
 } from "@/components/menus/forecast-controls"
 import {
   accuracySentence,
@@ -13,6 +13,7 @@ import {
   ProductForecastTable,
   Requirements,
 } from "@/components/menus/forecast-tables"
+import { DemandByWeek } from "@/components/menus/forecast-weeks"
 import {
   AnalyticsCard,
   CardLabel,
@@ -20,16 +21,9 @@ import {
 } from "@/components/overview/analytics-cards"
 import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
-import { parseDateKey } from "@/lib/date-presets"
-import { formatDayMonth, formatFullDate } from "@/lib/datetime"
-
-/** "Sep 8 to Sep 14, 2026": the year once, at the end. */
-function horizonLabel(start: string, end: string) {
-  return `${formatDayMonth(parseDateKey(start), "UTC")} to ${formatFullDate(parseDateKey(end), "UTC")}`
-}
 
 /** Method and scope stay beneath the operational tables. */
-function ForecastBasis() {
+function ForecastBasis({ busyBasis }: { busyBasis: "history" | "spread" }) {
   return (
     <details className="text-sm text-muted-foreground">
       <summary className="w-fit cursor-pointer rounded-lg underline decoration-border underline-offset-4">
@@ -44,9 +38,11 @@ function ForecastBasis() {
           sales history.
         </p>
         <p>
-          Busy adds an allowance for variation over the selected period. Day
-          quantities distribute that allowance by weekday pattern; they are not
-          separate daily risk estimates.
+          {busyBasis === "history"
+            ? "Busy adds an allowance sized from this forecast’s own past misses: over the last twelve weeks, actual demand stayed under it about nine times in ten. Products with more variation carry more of it."
+            : "Busy adds an allowance for variation over the selected period, from the spread of recent weeks. Once twelve weeks of history are recorded, it is sized from this forecast’s own past misses instead."}{" "}
+          Day quantities distribute that allowance by weekday pattern; they are
+          not separate daily risk estimates.
         </p>
         <p>
           Prep quantities use each product’s current recipes and yields. They do
@@ -66,21 +62,22 @@ function ForecastBasis() {
 export function MenuForecast({
   forecast,
   measurementSystem,
-  view = "week",
+  selectedRange = null,
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
-  view?: ForecastView
+  /** The dates in the URL, or null on the default week. */
+  selectedRange?: ForecastRange | null
 }) {
   const base = `/menu/${encodeURIComponent(forecast.menu.publicId)}/forecast`
-  const { horizonDays, plan, horizonStart, horizonEnd } = forecast.basis
+  const { plan, horizonStart, horizonEnd, timezone } = forecast.basis
   return (
     <ForecastControls
       base={base}
-      days={horizonDays}
+      range={{ start: horizonStart, end: horizonEnd }}
+      selectedRange={selectedRange}
+      timeZone={timezone}
       plan={plan}
-      view={view}
-      horizon={horizonLabel(horizonStart, horizonEnd)}
       actions={<ForecastActions forecast={forecast} />}
     >
       <header>
@@ -101,12 +98,9 @@ export function MenuForecast({
         </div>
       ) : null}
 
-      <ProductForecastTable forecast={forecast} view={view} />
-      <Requirements
-        forecast={forecast}
-        measurementSystem={measurementSystem}
-        view={view}
-      />
+      <DemandByWeek forecast={forecast} />
+      <ProductForecastTable forecast={forecast} />
+      <Requirements forecast={forecast} measurementSystem={measurementSystem} />
 
       {forecast.unresolved.length ? (
         <section className="rounded-xl border border-border bg-card p-4">
@@ -152,7 +146,7 @@ export function MenuForecast({
           {accuracySentence(forecast.backtest)}
         </CardNote>
       </AnalyticsCard>
-      <ForecastBasis />
+      <ForecastBasis busyBasis={forecast.basis.busyBasis} />
     </ForecastControls>
   )
 }

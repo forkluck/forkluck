@@ -169,6 +169,7 @@ describe("menu forecast horizon", () => {
       plan: "busy",
       seasonalAdjustment: false,
       compositionBasis: "current",
+      busyBasis: "history",
       weeks: {
         recent: [
           {

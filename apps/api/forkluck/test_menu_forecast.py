@@ -2,14 +2,25 @@ from __future__ import annotations
 
 import json
 from datetime import date, datetime, timedelta, timezone
+
+from django.utils import timezone as django_timezone
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.test import RequestFactory, TestCase
 
+from .domains.shared.workspace_timezone import workspace_zone
 from .domains.sales.forecast import (
+    BACKTEST_WEEKS,
+    CALIBRATION_WEEKS,
+    MAX_HORIZON_DAYS,
     _product_basis,
+    _replays,
+    _round_quantity,
     _seasonal_factor,
     _spread_plan,
+    busy_margin,
+    forecast_horizon,
+    load_forecast_inputs,
     menu_forecast_payload,
     project_product,
 )
@@ -680,7 +691,7 @@ class MenuForecastTests(TestCase):
         )
         self.assertLess(projection.busy_total, daily_peaks)
 
-    def test_menu_busy_money_pools_variance_across_products(self):
+    def test_menu_busy_money_is_the_product_rows_busy_priced(self):
         latte = self.product("Latte")
         scone = self.product("Scone")
         menu = self.menu(latte, scone)
@@ -705,8 +716,7 @@ class MenuForecastTests(TestCase):
         revenue = payload["revenue"]
 
         typical = 0
-        variance = Decimal()
-        own_busy = 0
+        busy = 0
         for variant, price in ((latte_variant, 500), (scone_variant, 300)):
             projection = project_product(
                 {day: Decimal(qty) for day, qty in history[variant].items()},
@@ -715,24 +725,197 @@ class MenuForecastTests(TestCase):
                 horizon_start=self.today,
                 horizon_days=7,
             )
-            for entry in projection.days.values():
-                typical += self.cents(entry.typical * price)
-                variance += Decimal(price) ** 2 * entry.variance
-            own_busy += self.cents(projection.busy_total * price)
-        busy = typical + self.cents(Decimal("1.28") * variance.sqrt())
+            typical += self.cents(projection.typical_total * price)
+            busy += self.cents(projection.busy_total * price)
 
+        # Two weeks of sales is too few past origins to size a margin from,
+        # so the spread rule stands and the money is those rows at their prices.
+        self.assertEqual(payload["basis"]["busyBasis"], "spread")
         self.assertEqual(revenue["typicalCents"], typical)
         self.assertEqual(revenue["busyCents"], busy)
-        # One menu-level rush, not both products' rushes landing the same week.
-        self.assertLess(revenue["busyCents"], own_busy)
         self.assertEqual(
-            sum(
-                row["typicalUnits"]
-                for row in payload["series"]
-                if row["actualUnits"] is None
-            ),
-            payload["production"]["typicalUnits"],
+            revenue["busyCents"],
+            sum(row["busyCents"] for row in payload["products"]),
         )
+
+    def test_the_selected_dates_default_to_the_next_week_and_refuse_the_past(self):
+        today = date(2026, 4, 27)
+        self.assertEqual(forecast_horizon(None, None, today=today), (today, 7))
+        self.assertEqual(
+            forecast_horizon("2026-05-04", None, today=today), (date(2026, 5, 4), 7)
+        )
+        self.assertEqual(
+            forecast_horizon(None, "2026-04-27", today=today), (today, 1)
+        )
+        self.assertEqual(
+            forecast_horizon("2026-05-01", "2026-05-31", today=today),
+            (date(2026, 5, 1), 31),
+        )
+        for start, end, message in (
+            ("2026-04-26", None, "in the past"),
+            ("2026-05-04", "2026-05-03", "before its start"),
+            ("2027-05-01", None, "within a year"),
+            ("2026-05-01", "2026-08-31", f"at most {MAX_HORIZON_DAYS} days"),
+            ("May 1", None, "YYYY-MM-DD"),
+        ):
+            with self.subTest(start=start, end=end), self.assertRaisesMessage(
+                ValueError, message
+            ):
+                forecast_horizon(start, end, today=today)
+
+    def test_a_later_start_plans_those_dates_and_charts_the_days_between(self):
+        toast = self.product("Toast")
+        menu = self.menu(toast)
+        MenuItem.objects.filter(menu=menu).update(sell_price_cents=500)
+        variant = self.variant(toast)
+        for back in range(1, 57):
+            self.line(variant, self.today - timedelta(days=back), quantity="4")
+        start = self.today + timedelta(days=10)
+
+        payload = menu_forecast_payload(
+            self.user, menu, today=self.today, horizon_start=start, horizon_days=3
+        )
+
+        basis = payload["basis"]
+        self.assertEqual(basis["horizonStart"], start.isoformat())
+        self.assertEqual(basis["horizonEnd"], (start + timedelta(days=2)).isoformat())
+        self.assertEqual(basis["horizonDays"], 3)
+        # History is still the eight weeks before today: nothing newer exists.
+        self.assertEqual(basis["historyEnd"], (self.today - timedelta(days=1)).isoformat())
+        self.assertEqual(
+            [row["date"] for row in payload["days"]],
+            [(start + timedelta(days=offset)).isoformat() for offset in range(3)],
+        )
+        self.assertEqual(payload["products"][0]["typicalQuantity"], 12.0)
+        self.assertEqual(
+            [row["date"] for row in payload["products"][0]["days"]],
+            [row["date"] for row in payload["days"]],
+        )
+        self.assertEqual(basis["weeks"]["horizon"][0]["start"], start.isoformat())
+        # The chart runs unbroken from history to the plan: the ten days in
+        # between carry typical units but nothing planned.
+        series = payload["series"]
+        between = [
+            row for row in series
+            if self.today.isoformat() <= row["date"] < start.isoformat()
+        ]
+        self.assertEqual(len(between), 10)
+        self.assertTrue(all(row["typicalUnits"] == 4 for row in between))
+        self.assertTrue(all(row["plannedUnits"] is None for row in between))
+        self.assertTrue(all(row["actualUnits"] is None for row in between))
+        planned = [row for row in series if row["date"] >= start.isoformat()]
+        self.assertEqual(len(planned), 3)
+        self.assertTrue(all(row["plannedUnits"] == 4 for row in planned))
+        with self.assertRaisesMessage(ValueError, "in the past"):
+            menu_forecast_payload(
+                self.user, menu, today=self.today,
+                horizon_start=self.today - timedelta(days=1), horizon_days=3,
+            )
+
+    def test_busy_margin_is_the_ninth_decile_of_past_misses(self):
+        bread = self.product("Bread")
+        bun = self.product("Bun")
+        menu = self.menu(bread, bun)
+        MenuItem.objects.filter(menu=menu, product=bread).update(sell_price_cents=500)
+        MenuItem.objects.filter(menu=menu, product=bun).update(sell_price_cents=300)
+        bread_variant = self.variant(bread)
+        bun_variant = self.variant(bun)
+        # A three-day cycle against a seven-day basis: every replayed week
+        # misses by a little, so there are misses to size a margin from.
+        for back in range(1, 21 * 7 + 1):
+            sold_on = self.today - timedelta(days=back)
+            self.line(bread_variant, sold_on, quantity=str(4 + back % 3))
+            self.line(bun_variant, sold_on, quantity=str(2 + back % 3))
+
+        for horizon_days in (7, 30):
+            with self.subTest(horizon_days=horizon_days):
+                inputs = load_forecast_inputs(
+                    self.user, menu, today=self.today, horizon_days=horizon_days
+                )
+                replays = _replays(
+                    inputs.daily,
+                    inputs.scoped_product_ids,
+                    today=self.today,
+                    weeks=CALIBRATION_WEEKS,
+                    horizon_days=horizon_days,
+                    exists_from=inputs.exists_from,
+                    last_year=inputs.last_year,
+                )
+                margin = busy_margin(replays, before=self.today)
+                self.assertGreater(margin, 0)
+                residuals = sorted(row.actual - row.typical for row in replays)
+                # Nearest rank: the ninth decile of n misses is the ceil(0.9n)th.
+                self.assertEqual(margin, residuals[-(len(residuals) - (9 * len(residuals) + 9) // 10) - 1])
+
+                payload = menu_forecast_payload(
+                    self.user, menu, today=self.today, horizon_days=horizon_days
+                )
+                self.assertEqual(payload["basis"]["busyBasis"], "history")
+                rows = {row["productName"]: row for row in payload["products"]}
+                allowance = sum(
+                    Decimal(str(row["busyQuantity"])) - Decimal(str(row["typicalQuantity"]))
+                    for row in rows.values()
+                )
+                # The members' allowances add up to the margin, to rounding.
+                self.assertAlmostEqual(allowance, margin, delta=Decimal("0.002"))
+                # The mix is the spread rule's: both products scaled alike.
+                spread = {
+                    name: project_product(
+                        inputs.daily[product_id],
+                        exists_from=inputs.exists_from[product_id],
+                        history_end=self.today - timedelta(days=1),
+                        horizon_start=self.today,
+                        horizon_days=horizon_days,
+                    )
+                    for name, product_id in (("Bread", str(bread.id)), ("Bun", str(bun.id)))
+                }
+                ratios = {
+                    name: (
+                        Decimal(str(rows[name]["busyQuantity"]))
+                        - Decimal(str(rows[name]["typicalQuantity"]))
+                    )
+                    / (spread[name].busy_total - spread[name].typical_total)
+                    for name in spread
+                }
+                self.assertAlmostEqual(ratios["Bread"], ratios["Bun"], delta=Decimal("0.01"))
+                self.assertEqual(
+                    payload["revenue"]["busyCents"],
+                    sum(row["busyCents"] for row in rows.values()),
+                )
+                self.assertEqual(
+                    payload["production"]["busyUnits"],
+                    float(sum(Decimal(str(row["busyQuantity"])) for row in rows.values())),
+                )
+
+    def test_the_backtest_scores_the_busy_the_page_would_have_planned(self):
+        bread = self.product("Bread")
+        menu = self.menu(bread)
+        MenuItem.objects.filter(menu=menu).update(sell_price_cents=500)
+        variant = self.variant(bread)
+        for back in range(1, 21 * 7 + 1):
+            self.line(variant, self.today - timedelta(days=back), quantity=str(4 + back % 3))
+
+        inputs = load_forecast_inputs(self.user, menu, today=self.today, horizon_days=7)
+        replays = _replays(
+            inputs.daily,
+            inputs.scoped_product_ids,
+            today=self.today,
+            weeks=CALIBRATION_WEEKS,
+            horizon_days=7,
+            exists_from=inputs.exists_from,
+            last_year=inputs.last_year,
+        )
+        backtest = menu_forecast_payload(self.user, menu, today=self.today)["backtest"]
+
+        self.assertEqual(len(backtest["weeks"]), BACKTEST_WEEKS)
+        for week, row in zip(backtest["weeks"], replays[-BACKTEST_WEEKS:], strict=True):
+            margin = busy_margin(replays, before=row.start)
+            self.assertIsNotNone(margin)
+            self.assertEqual(week["start"], row.start.isoformat())
+            self.assertEqual(
+                Decimal(str(week["busyUnits"])), _round_quantity(row.typical + margin)
+            )
+            self.assertNotEqual(Decimal(str(week["busyUnits"])), row.spread_busy)
 
     def test_only_menu_members_are_priced_and_a_zero_price_is_unpriced(self):
         latte = self.product("Latte")
@@ -1140,24 +1323,33 @@ class MenuForecastTests(TestCase):
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
 
-    def test_endpoint_takes_a_seven_or_thirty_day_horizon_and_refuses_others(self):
+    def test_endpoint_takes_the_selected_dates_and_refuses_the_past(self):
         menu = self.menu(self.product("Toast"))
+        today = django_timezone.now().astimezone(workspace_zone(self.user)).date()
 
         def response(query: dict):
             request = RequestFactory().get("/", query)
             request.user = self.user
             return menu_forecast(request, menu_ref=menu.public_id)
 
-        self.assertEqual(json.loads(response({}).content)["basis"]["horizonDays"], 7)
-        self.assertEqual(
-            json.loads(response({"days": "30"}).content)["basis"]["horizonDays"], 30
-        )
-        refused = response({"days": "5"})
+        default = json.loads(response({}).content)["basis"]
+        self.assertEqual(default["horizonDays"], 7)
+        self.assertEqual(default["horizonStart"], today.isoformat())
+        start = today + timedelta(days=3)
+        end = start + timedelta(days=13)
+        chosen = json.loads(
+            response({"start": start.isoformat(), "end": end.isoformat()}).content
+        )["basis"]
+        self.assertEqual(chosen["horizonStart"], start.isoformat())
+        self.assertEqual(chosen["horizonEnd"], end.isoformat())
+        self.assertEqual(chosen["horizonDays"], 14)
+        refused = response({"start": (today - timedelta(days=1)).isoformat()})
         self.assertEqual(refused.status_code, 400)
         self.assertEqual(
             json.loads(refused.content),
-            {"error": "Forecast horizon must be 7 or 30 days"},
+            {"error": "Forecast dates must not be in the past"},
         )
+        self.assertEqual(response({"start": "soon"}).status_code, 400)
 
     def test_endpoint_accepts_both_refs_and_hides_foreign_or_missing_menus(self):
         menu = self.menu(self.product("Toast"))

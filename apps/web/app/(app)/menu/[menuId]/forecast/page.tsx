@@ -16,19 +16,18 @@ export default async function MenuForecastPage({
   searchParams,
 }: {
   params: Promise<{ menuId: string }>
-  searchParams: Promise<{ days?: string; plan?: string; view?: string }>
+  searchParams: Promise<{ start?: string; end?: string; plan?: string }>
 }) {
   await requireUser()
-  const [{ menuId }, { days, plan, view }] = await Promise.all([
+  const [{ menuId }, { start, end, plan }] = await Promise.all([
     params,
     searchParams,
   ])
+  // Both dates or neither: a half range falls back to the default week
+  // rather than guessing the other end.
+  const range = start && end ? { start, end } : null
   const [forecast, settings] = await Promise.all([
-    getMenuForecast(
-      menuId,
-      days === "30" ? 30 : 7,
-      plan === "busy" ? "busy" : "typical"
-    ),
+    getMenuForecast(menuId, range, plan === "busy" ? "busy" : "typical"),
     getBusinessSettings(),
   ])
   if (!forecast) notFound()
@@ -42,7 +41,7 @@ export default async function MenuForecastPage({
       >
         <MenuForecast
           forecast={forecast}
-          view={view === "day" ? "day" : "week"}
+          selectedRange={range}
           measurementSystem={settings.measurementSystem}
         />
       </MenuChrome>

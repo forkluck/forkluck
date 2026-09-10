@@ -994,12 +994,16 @@ It returns `{menu, items, recipes, ingredients, products, currencyCode}` — the
 picker's sources travel with the worksheet so opening one is a single read.
 
 `menu/<menu_ref>/forecast/` accepts the same owner-scoped public-id or UUID
-forms and returns a non-persisted production forecast beginning on the
-workspace-local current date. `?days=` is `7` (default) or `30`; `?plan=` is
-`typical` (default) or `busy`. Invalid plans return 400
-(`{"error": "Forecast plan must be typical or busy"}`). The web page also accepts
-`?view=day`; omitting it shows whole-horizon quantities. View is presentation
-state only: both views consume the same payload and dated rows.
+forms and returns a non-persisted production forecast for the selected dates.
+`?start=` and `?end=` are workspace-local `YYYY-MM-DD` dates; the default is
+the next seven days from today, a start alone runs a week from that day, and
+an end alone runs from today. The past, an end before its start, a start more
+than a year out, or a range longer than 92 days return 400 with a plain
+message. `?plan=` is `typical` (default) or `busy`; invalid plans return 400
+(`{"error": "Forecast plan must be typical or busy"}`). History is always the
+eight weeks before today, whatever the dates: a later start reads no newer
+sales, and the chart projects the days between today and the start without
+planning them (`plannedUnits` null).
 
 `basis` names the 56 complete historical days, `historyWeeks: 8`,
 `horizonDays`, the horizon's first and last date, `plan`, `seasonalAdjustment`,
@@ -1014,8 +1018,17 @@ ratio, clamped to 0.5–2. Both windows shift back 364 days to align weekdays.
 Products without that evidence keep factor 1. The projection and each replay
 share this same rule; the production framing does not change it.
 
+The busy allowance is sized from the forecast's own past misses. The page
+replays its projection at twelve weekly origins of its own horizon, keeps the
+residual (actual minus typical) of every completed origin that sold anything,
+and takes the nearest-rank ninth decile, never below zero. Every member's
+spread-rule allowance (1.28 pooled standard deviations) is scaled by one ratio
+so the members' allowances sum to that margin; included products scale by the
+same ratio. With fewer than four such origins the spread rule stands unscaled.
+`basis.busyBasis` is `"history"` or `"spread"` accordingly.
+
 `products[]` carries product identity/name/activity, `menuMember`,
-`weeksObserved`, `typicalQuantity`, pooled `busyQuantity`, `totalQuantity`
+`weeksObserved`, `typicalQuantity`, `busyQuantity`, `totalQuantity`
 (the selected plan), and `seasonalFactor`. `days[]` on each product contains
 `{date, typicalQuantity, plannedQuantity}` for every horizon day. Planned
 quantities spread that product's chosen horizon total in proportion to its
@@ -1076,8 +1089,10 @@ all three equal as a bridge; other history rows have null projections and
 horizon rows have null actuals. Only the busy plan draws a typical-to-planned
 band. The chart remains available for unpriced menus.
 `backtest.weeks[]` contains `{start,end,typicalUnits,busyUnits,actualUnits}`
-for four replayed weeks, using menu members irrespective of price. Its busy
-level pools variance across products and days in units. `errorPercent` is
+for four replayed weeks, using menu members irrespective of price. Each week's
+busy is the level the page would have planned then: typical plus the margin
+sized from the origins before it, or the spread rule while there were too few.
+`errorPercent` is
 volume-weighted absolute error on menu totals, null without positive actual
 volume; `scoredWeeks` counts those weeks and `busyCoveredWeeks` counts coverage
 on the same denominator. None of these comparisons reads net revenue.
@@ -1086,8 +1101,8 @@ on the same denominator. None of these comparisons reads net revenue.
 remain available. Revenue prices menu members only, at the first positive
 linked menu-row price by position, otherwise the product price; zero is
 unpriced. Included bundle members/modifiers carry no additional money unless
-they are themselves menu members. Menu busy money still pools variance at
-price squared and is not the sum of individual product busy money. The page
+they are themselves menu members. Menu busy money is the product rows' busy
+quantities at their prices, the same plan the tables show. The page
 uses revenue and aggregate material cost in one caption, with missing prices
 explicit. Material shopping rows retain their cost details.
 

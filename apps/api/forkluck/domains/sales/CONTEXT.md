@@ -194,10 +194,17 @@ the same ledger, not a fitted curve or a trend line.
 *Avoid:* "seasonality model", "year-over-year growth".
 
 **Plan** — which of the two published levels a forecast read expands: typical
-(the weighted weekday mean) or busy (typical plus 1.28 pooled standard
-deviations over the whole horizon). It is a request parameter, not a stored
-setting or a model choice.
+(the weighted weekday mean) or busy (typical plus the busy margin). It is a
+request parameter, not a stored setting or a model choice.
 *Avoid:* "scenario", "confidence interval", "P90 per day".
+
+**Busy margin** — the amount past typical that the forecast's own past misses
+stayed under about nine times in ten: the ninth decile of actual over typical
+at twelve replayed origins of the same horizon, completed and with sales.
+Members' spread-rule allowances (1.28 pooled standard deviations) are scaled
+by one ratio to sum to it, so the spread decides the mix and history decides
+the size. With fewer than four such origins the spread rule stands unscaled.
+*Avoid:* "conformal", "prediction interval", "quantile", "safety stock".
 
 **Projected revenue** — the one caption line of projected menu-member units at current menu prices. It
 is planning money, not net sales: it is never allocated, banked, or compared
@@ -216,10 +223,12 @@ multiples are secondary, with batches as an explicit fallback for missing yield.
 Whole-horizon materials remain a shopping requirement.
 *Avoid:* "units sold", "revenue forecast".
 
-**Day view** — the selected horizon plan distributed by each product's weekday
-pattern, with recipe batches on the same dates. A 30-day view groups those
-dates into the basis's week blocks; the export retains every day.
-*Avoid:* "daily busy level", "daily confidence".
+**Selected dates** — the days a forecast read plans for: today onward by
+default for a week, or any first and last day the kitchen picks, up to a
+quarter long and a year out. History is the eight weeks before today whatever
+the dates. Dated rows still allocate the plan by each product's weekday
+pattern for the prep export; the screen shows the dates' totals.
+*Avoid:* "horizon" (in copy), "daily busy level", "daily confidence".
 
 **Why this quantity?** — one product's recent demand estimate, signed seasonal
 change, resulting expected demand, and separate Busy allowance when selected.

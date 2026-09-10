@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 self.stdout.write(f"{product.public_id} {product.name} | " + " | ".join(values))
         winners = [
             name for name, score in scores.items() if name != "current"
-            and qualifies(score, scores["current"], busy=name == "current+conformal")
+            and qualifies(score, scores["current"])
         ]
         if not available:
             verdict = "keep current; not enough completed, supported, nonzero origins."
@@ -104,8 +104,9 @@ class Command(BaseCommand):
         self.stdout.write("Verdict: " + verdict)
         self.stdout.write(
             "Rule: same origins; 7-day menu WAPE improves by >=2.0 points, median product "
-            "WAPE rises by <=0.5; busy candidates must preserve coverage and add <=2 points "
-            "of over-production. Confirm the same candidate does not lose at 30 days. "
+            "WAPE rises by <=0.5, busy coverage holds and over-production grows by <=2 "
+            "points. A busy-only candidate instead holds coverage and cuts over-production "
+            "by >=2 points. Confirm the same candidate does not lose at 30 days. "
             "Ties keep current. This command never changes the live basis."
         )
 

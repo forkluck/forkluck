@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, time, timedelta, timezone as datetime_timezone
-from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP
+from decimal import Decimal, ROUND_CEILING, ROUND_DOWN, ROUND_HALF_UP
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -57,15 +57,52 @@ WEEKLY_DECAY = Decimal("0.8")
 BUSY_Z = Decimal("1.28")
 SERIES_HISTORY_DAYS = 28
 BACKTEST_WEEKS = 4
-# The oldest backtest week has to read its own history out of the same single
-# ledger read, so the window is both spans end to end.
-LEDGER_WEEKS = HISTORY_WEEKS + BACKTEST_WEEKS
+# The busy margin is sized from the forecast's own past misses: twelve weekly
+# origins replayed at the page's horizon, the ninth decile of what actual ran
+# over typical.  Fewer than four scored origins is too little to size from, so
+# the spread rule (1.28 pooled standard deviations) stands in.
+CALIBRATION_WEEKS = 12
+CALIBRATION_MIN_ORIGINS = 4
+BUSY_QUANTILE = Decimal("0.9")
+# The oldest replayed origin has to read its own history out of the same
+# single ledger read, so the window is both spans end to end.
+LEDGER_WEEKS = HISTORY_WEEKS + CALIBRATION_WEEKS
+# The dates a forecast can be asked for: from today, up to a year ahead, at
+# most a quarter long.  Longer than that is a budget, not a production plan.
+MAX_HORIZON_DAYS = 92
+MAX_HORIZON_LEAD_DAYS = 366
 _NO_SEASONAL = Decimal(1)
 # Last year's same weekday: 52 whole weeks back, not a calendar year.
 SEASONAL_LAG_DAYS = 364
 SEASONAL_DAMPING = Decimal(2)
 SEASONAL_FLOOR = Decimal("0.5")
 SEASONAL_CEILING = Decimal(2)
+
+
+def forecast_horizon(
+    start: str | None, end: str | None, *, today: date
+) -> tuple[date, int]:
+    """The selected dates as a first day and a length; the next week by default.
+
+    A start alone runs a week from that day; an end alone runs from today.
+    The past cannot be planned for, and a range longer than a quarter or
+    further than a year out is refused rather than projected on thin air.
+    """
+    try:
+        first = date.fromisoformat(start) if start else today
+        last = date.fromisoformat(end) if end else first + timedelta(days=6)
+    except ValueError:
+        raise ValueError("Forecast dates must be YYYY-MM-DD") from None
+    if first < today:
+        raise ValueError("Forecast dates must not be in the past")
+    if last < first:
+        raise ValueError("Forecast end must not come before its start")
+    if (first - today).days > MAX_HORIZON_LEAD_DAYS:
+        raise ValueError("Forecast dates must start within a year")
+    days = (last - first).days + 1
+    if days > MAX_HORIZON_DAYS:
+        raise ValueError(f"Forecast range must be at most {MAX_HORIZON_DAYS} days")
+    return first, days
 
 
 def _round_quantity(value: Decimal) -> Decimal:
@@ -305,28 +342,145 @@ def _money(units: Decimal, price_cents: int) -> int:
 def _priced(
     projections: Mapping[str, ProductProjection],
     prices: Mapping[str, int],
-    days: Sequence[date] | None = None,
 ) -> tuple[int, int]:
-    """Typical and busy cents for the priced products over ``days``.
+    """Typical and busy cents for the priced products over the horizon.
 
-    Defaults to the whole horizon.  Busy pools variance across every product
-    and day at price squared, so the menu's busy is one level history stayed
-    under nine weeks in ten, not every product's own rush landing at once.
-    Money is rounded a day at a time so the horizon rows sum to the total.
+    Both are the product rows' own quantities at their prices, so the caption
+    is the plan on the screen priced, not a second busy level of its own.
     """
     typical = 0
-    variance = Decimal()
+    busy = 0
     for product_id, price in prices.items():
         projection = projections[product_id]
-        selected = (
-            projection.days.values()
-            if days is None
-            else [projection.days[day] for day in days]
+        typical += _money(projection.typical_total, price)
+        busy += _money(projection.busy_total, price)
+    return typical, busy
+
+
+@dataclass(frozen=True)
+class Replay:
+    """One past origin projected as the live forecast would have, then scored."""
+
+    start: date
+    end: date
+    typical: Decimal
+    spread_busy: Decimal
+    actual: Decimal
+
+
+def _replays(
+    daily: Mapping[str, Mapping[date, Decimal]],
+    member_ids: set[str],
+    *,
+    today: date,
+    weeks: int,
+    horizon_days: int,
+    exists_from: Mapping[str, date],
+    last_year: Mapping[str, Mapping[date, Decimal]],
+) -> list[Replay]:
+    """Replay the projection at weekly origins it could not have seen past.
+
+    Oldest first.  Only a horizon that has fully elapsed is replayed, so a
+    30-day origin inside the last month is left out rather than scored on a
+    partial month.  The projection derives its own seasonal factor from the
+    origin handed in, so each replay says exactly what the live forecast would
+    have said then.
+    """
+    rows: list[Replay] = []
+    for back in range(weeks, 0, -1):
+        as_of = today - timedelta(days=7 * back)
+        end = as_of + timedelta(days=horizon_days - 1)
+        if end >= today:
+            continue
+        actual = Decimal()
+        typical = Decimal()
+        variance = Decimal()
+        for product_id in member_ids:
+            product_daily = daily.get(product_id, {})
+            projection = project_product(
+                product_daily,
+                exists_from=exists_from.get(product_id),
+                history_end=as_of - timedelta(days=1),
+                horizon_start=as_of,
+                horizon_days=horizon_days,
+                last_year=last_year.get(product_id),
+            )
+            typical += projection.typical_total
+            variance += sum((day.variance for day in projection.days.values()), Decimal())
+            actual += _window_total(product_daily, as_of, end)
+        rows.append(
+            Replay(
+                start=as_of,
+                end=end,
+                typical=typical,
+                spread_busy=_clamped(typical + BUSY_Z * variance.sqrt()),
+                actual=actual,
+            )
         )
-        for entry in selected:
-            typical += _money(entry.typical, price)
-            variance += Decimal(price) ** 2 * entry.variance
-    return typical, typical + _money(BUSY_Z * variance.sqrt(), 1)
+    return rows
+
+
+def empirical_margin(residuals: Sequence[Decimal]) -> Decimal:
+    """Nearest-rank ninth decile of past misses, never below zero.
+
+    A negative margin would plan for less than typical; a past that mostly
+    over-forecast earns no allowance rather than a deduction.
+    """
+    ordered = sorted(residuals)
+    rank = int((BUSY_QUANTILE * len(ordered)).to_integral_value(rounding=ROUND_CEILING))
+    return max(Decimal(), ordered[rank - 1])
+
+
+def busy_margin(replays: Sequence[Replay], *, before: date) -> Decimal | None:
+    """The margin past typical that earlier completed origins stayed under.
+
+    Only an origin whose horizon ended before ``before`` and that sold
+    anything can calibrate: a horizon still in flight would leak its own
+    outcome, and a week with no sales is a closure, not a miss.  ``None``
+    means too few origins to size from.
+    """
+    residuals = [
+        row.actual - row.typical
+        for row in replays
+        if row.end < before and row.actual > 0
+    ]
+    if len(residuals) < CALIBRATION_MIN_ORIGINS:
+        return None
+    return empirical_margin(residuals)
+
+
+def _calibrated(
+    projections: Mapping[str, ProductProjection],
+    member_ids: set[str],
+    margin: Decimal,
+) -> dict[str, ProductProjection]:
+    """Scale every product's busy allowance so the members' sum is the margin.
+
+    The spread rule still decides which products carry the allowance; the
+    calibration only decides how much of it there is in total, so the mix of
+    a busy plan is the same one history spread and the size is the one it
+    stayed under.  With no allowance to scale, the projections stand.
+    """
+    allowance = sum(
+        (
+            projections[product_id].busy_total - projections[product_id].typical_total
+            for product_id in member_ids
+        ),
+        Decimal(),
+    )
+    if allowance <= 0:
+        return dict(projections)
+    ratio = margin / allowance
+    return {
+        product_id: replace(
+            projection,
+            busy_total=_clamped(
+                projection.typical_total
+                + (projection.busy_total - projection.typical_total) * ratio
+            ),
+        )
+        for product_id, projection in projections.items()
+    }
 
 
 def _menu_scope(
@@ -821,8 +975,14 @@ def _series(
     history_end: date,
     horizon_start: date,
     horizon_days: int,
+    lead: Mapping[str, ProductProjection] | None = None,
 ) -> list[JsonObject]:
-    """Menu-member units, with the last history row bridging the two lines."""
+    """Menu-member units, with the last history row bridging the two lines.
+
+    When the selected dates start after today, ``lead`` projects the days in
+    between so the typical line runs unbroken from history to the plan; those
+    days carry no planned units, because nothing was asked for them.
+    """
     rows: list[JsonObject] = []
     for offset in range(SERIES_HISTORY_DAYS - 1, -1, -1):
         day = history_end - timedelta(days=offset)
@@ -833,6 +993,14 @@ def _series(
             "date": day.isoformat(), "actualUnits": actual,
             "typicalUnits": actual if offset == 0 else None,
             "plannedUnits": actual if offset == 0 else None,
+        })
+    for day in sorted({day for pid in member_ids for day in (lead or {}).get(pid, ProductProjection({}, Decimal(), Decimal(), 0, Decimal(1))).days}):
+        rows.append({
+            "date": day.isoformat(), "actualUnits": None,
+            "typicalUnits": _json_quantity(sum(
+                (lead[pid].days[day].typical for pid in member_ids), Decimal()
+            )),
+            "plannedUnits": None,
         })
     for offset in range(horizon_days):
         day = horizon_start + timedelta(days=offset)
@@ -856,12 +1024,14 @@ def _product_basis(
     exists_from: date | None,
     today: date,
     horizon_days: int,
+    horizon_start: date | None = None,
 ) -> JsonObject:
     """Explain one product using the same pure projection and loaded history."""
     history_end = today - timedelta(days=1)
+    horizon_start = horizon_start or today
     recent = project_product(
         daily, exists_from=exists_from, history_end=history_end,
-        horizon_start=today, horizon_days=horizon_days, last_year=None,
+        horizon_start=horizon_start, horizon_days=horizon_days, last_year=None,
     ).typical_total
     last_year = last_year or {}
     lag = timedelta(days=SEASONAL_LAG_DAYS)
@@ -874,7 +1044,7 @@ def _product_basis(
             for back in range(HISTORY_WEEKS, 0, -1)
         ]
 
-    last_year_start = today - lag
+    last_year_start = horizon_start - lag
     last_year_end = last_year_start + timedelta(days=horizon_days - 1)
     return {
         "recentQuantity": _json_quantity(recent),
@@ -882,7 +1052,7 @@ def _product_basis(
         "busyAllowance": _json_quantity(projection.busy_total - projection.typical_total),
         "lastYearComparable": _seasonal_ratio(
             last_year, exists_from=exists_from, history_end=history_end,
-            horizon_start=today, horizon_days=horizon_days,
+            horizon_start=horizon_start, horizon_days=horizon_days,
         ) is not None,
         "recentWeeks": recorded_weeks(daily, history_end),
         "lastYearWeeks": recorded_weeks(last_year, history_end - lag),
@@ -895,7 +1065,7 @@ def _product_basis(
 
 def _basis_weeks(
     daily, last_year, projections, daily_plans, member_ids, exists_from,
-    *, today: date, horizon_days: int,
+    *, today: date, horizon_start: date, horizon_days: int,
 ) -> tuple[JsonObject, JsonObject]:
     """Expose aligned menu-member history and the weekly level, in memory."""
     def units(source, start, end):
@@ -919,8 +1089,8 @@ def _basis_weeks(
     }
     horizon = []
     for offset in range(0, horizon_days, 7):
-        start = today + timedelta(days=offset)
-        end = today + timedelta(days=min(offset + 6, horizon_days - 1))
+        start = horizon_start + timedelta(days=offset)
+        end = horizon_start + timedelta(days=min(offset + 6, horizon_days - 1))
         horizon.append({
             "start": start.isoformat(), "end": end.isoformat(),
             "typicalUnits": units(typical_days, start, end),
@@ -943,62 +1113,37 @@ def _basis_weeks(
     }
 
 
-def _backtest(
-    daily: Mapping[str, Mapping[date, Decimal]],
-    member_ids: set[str],
-    *,
-    today: date,
-    exists_from: Mapping[str, date],
-    last_year: Mapping[str, Mapping[date, Decimal]],
-) -> JsonObject:
-    """Replay the same projection at four past weeks it could not have seen.
+def _backtest(replays: Sequence[Replay]) -> JsonObject:
+    """Score the last replayed weeks the way the screen reports them.
 
-    The projection derives its own seasonal factor from the as_of handed in, so
-    the replay scores exactly what the live forecast would have said then.
-    The error is volume-weighted, so one quiet week cannot dominate the number
-    the screen shows.
+    Each week's busy is the level the live rule would have planned then: the
+    margin sized from the origins before it, or the spread rule while there
+    were too few.  The error is volume-weighted, so one quiet week cannot
+    dominate the number the screen shows.
     """
     weeks: list[JsonObject] = []
     error = Decimal()
     volume = Decimal()
     scored = 0
     covered = 0
-    for back in range(BACKTEST_WEEKS, 0, -1):
-        as_of = today - timedelta(days=7 * back)
-        actual = Decimal()
-        projections: dict[str, ProductProjection] = {}
-        for product_id in member_ids:
-            product_daily = daily.get(product_id, {})
-            projections[product_id] = project_product(
-                product_daily,
-                exists_from=exists_from.get(product_id),
-                history_end=as_of - timedelta(days=1),
-                horizon_start=as_of,
-                horizon_days=7,
-                last_year=last_year.get(product_id),
-            )
-            actual += sum(
-                product_daily.get(as_of + timedelta(days=offset), Decimal())
-                for offset in range(7)
-            )
-        typical = sum((p.typical_total for p in projections.values()), Decimal())
-        variance = sum((day.variance for p in projections.values() for day in p.days.values()), Decimal())
-        busy = _clamped(typical + BUSY_Z * variance.sqrt())
+    for row in replays[-BACKTEST_WEEKS:]:
+        margin = busy_margin(replays, before=row.start)
+        busy = row.spread_busy if margin is None else _clamped(row.typical + margin)
         weeks.append(
             {
-                "start": as_of.isoformat(),
-                "end": (as_of + timedelta(days=6)).isoformat(),
-                "typicalUnits": _json_quantity(typical),
+                "start": row.start.isoformat(),
+                "end": row.end.isoformat(),
+                "typicalUnits": _json_quantity(row.typical),
                 "busyUnits": _json_quantity(busy),
-                "actualUnits": _json_quantity(actual),
+                "actualUnits": _json_quantity(row.actual),
             }
         )
-        if actual <= 0:
+        if row.actual <= 0:
             continue
         scored += 1
-        error += abs(typical - actual)
-        volume += actual
-        covered += busy >= actual
+        error += abs(row.typical - row.actual)
+        volume += row.actual
+        covered += busy >= row.actual
     return {
         "weeks": weeks,
         "scoredWeeks": scored,
@@ -1038,6 +1183,7 @@ def load_forecast_inputs(
     today: date | None,
     horizon_days: int,
     ledger_weeks: int = LEDGER_WEEKS,
+    horizon_start: date | None = None,
 ) -> ForecastInputs:
     """Read the owner-scoped inputs once for live planning or offline replay."""
     if menu.user_id != user.pk:
@@ -1071,7 +1217,7 @@ def load_forecast_inputs(
     last_year, last_year_first_seen = _forecast_history(
         user,
         start=today - timedelta(days=7 * ledger_weeks + SEASONAL_LAG_DAYS),
-        end=today - timedelta(days=SEASONAL_LAG_DAYS - horizon_days + 1),
+        end=(horizon_start or today) + timedelta(days=horizon_days - 1 - SEASONAL_LAG_DAYS),
         scoped_product_ids=consumption_ids,
         index=index,
         modifiers=False,
@@ -1124,22 +1270,30 @@ def menu_forecast_payload(
     today: date | None = None,
     horizon_days: int = 7,
     plan: str = "typical",
+    horizon_start: date | None = None,
 ) -> JsonObject:
     """Build the selected menu's non-persisted demand forecast over a horizon.
 
     Every horizon day is projected from its own matching weekdays, recent
     weeks counting more. Day rows allocate the chosen production total by
     that weekday profile, so a cook can schedule the plan without treating
-    each date as an independently calibrated busy forecast. ``today`` is an
-    explicit test seam.
+    each date as an independently calibrated busy forecast. The horizon is
+    the selected dates, today onward by default; a later start still reads
+    the same history, because the last eight weeks are all there is to read.
+    ``today`` is an explicit test seam.
     """
     if menu.user_id != user.pk:
         raise ValueError("Menu does not belong to this workspace")
     if plan not in ("typical", "busy"):
         raise ValueError("Forecast plan must be typical or busy")
-    inputs = load_forecast_inputs(user, menu, today=today, horizon_days=horizon_days)
+    inputs = load_forecast_inputs(
+        user, menu, today=today, horizon_days=horizon_days, horizon_start=horizon_start
+    )
     zone = inputs.zone
     today = inputs.history_end + timedelta(days=1)
+    horizon_start = horizon_start or today
+    if horizon_start < today:
+        raise ValueError("Forecast dates must not be in the past")
     history_start = today - timedelta(days=7 * HISTORY_WEEKS)
     history_end = today - timedelta(days=1)
     products = inputs.products
@@ -1154,12 +1308,41 @@ def menu_forecast_payload(
             daily.get(product_id, {}),
             exists_from=exists_from[product_id],
             history_end=history_end,
-            horizon_start=today,
+            horizon_start=horizon_start,
             horizon_days=horizon_days,
             last_year=last_year.get(product_id),
         )
         for product_id in products
     }
+    # The days between today and a later start are projected for the chart
+    # only, so the line runs unbroken; nothing is planned for them.
+    lead_days = (horizon_start - today).days
+    lead = {
+        product_id: project_product(
+            daily.get(product_id, {}),
+            exists_from=exists_from[product_id],
+            history_end=history_end,
+            horizon_start=today,
+            horizon_days=lead_days,
+            last_year=last_year.get(product_id),
+        )
+        for product_id in scoped_product_ids
+    } if lead_days else None
+    # The busy margin is sized from what this same projection missed by at
+    # past origins of the page's own horizon.  Weekly replays feed the accuracy
+    # panel too, so a 7-day page reads one set of replays for both.
+    replay_kwargs = dict(
+        today=today, weeks=CALIBRATION_WEEKS, exists_from=exists_from, last_year=last_year
+    )
+    weekly_replays = _replays(daily, scoped_product_ids, horizon_days=7, **replay_kwargs)
+    horizon_replays = (
+        weekly_replays
+        if horizon_days == 7
+        else _replays(daily, scoped_product_ids, horizon_days=horizon_days, **replay_kwargs)
+    )
+    margin = busy_margin(horizon_replays, before=today)
+    if margin is not None:
+        projections = _calibrated(projections, scoped_product_ids, margin)
     # Only a menu member is priced; a member reached inside a box is demand,
     # not a second sale.  The menu's own price wins over the product's.
     priced = {
@@ -1200,7 +1383,8 @@ def menu_forecast_payload(
                 "seasonalFactor": _json_quantity(projection.seasonal_factor),
                 "basis": _product_basis(
                     daily.get(product_id, {}), last_year.get(product_id), projection,
-                    exists_from=exists_from[product_id], today=today, horizon_days=horizon_days,
+                    exists_from=exists_from[product_id], today=today,
+                    horizon_start=horizon_start, horizon_days=horizon_days,
                 ),
                 "days": [
                     {"date": day.isoformat(), "typicalQuantity": _json_quantity(entry.typical),
@@ -1223,7 +1407,7 @@ def menu_forecast_payload(
     unresolved.extend(material_unresolved)
     basis_weeks, level = _basis_weeks(
         daily, last_year, projections, daily_plans, scoped_product_ids, exists_from,
-        today=today, horizon_days=horizon_days,
+        today=today, horizon_start=horizon_start, horizon_days=horizon_days,
     )
     return {
         "menu": {
@@ -1235,8 +1419,8 @@ def menu_forecast_payload(
             "timezone": zone.key,
             "historyStart": history_start.isoformat(),
             "historyEnd": history_end.isoformat(),
-            "horizonStart": today.isoformat(),
-            "horizonEnd": (today + timedelta(days=horizon_days - 1)).isoformat(),
+            "horizonStart": horizon_start.isoformat(),
+            "horizonEnd": (horizon_start + timedelta(days=horizon_days - 1)).isoformat(),
             "horizonDays": horizon_days,
             "historyWeeks": HISTORY_WEEKS,
             "plan": plan,
@@ -1245,6 +1429,10 @@ def menu_forecast_payload(
                 for projection in projections.values()
             ),
             "compositionBasis": "current",
+            # Where the busy allowance's size came from: the forecast's own
+            # past misses, or the spread of recent weeks while there are too
+            # few scored origins to size from.
+            "busyBasis": "spread" if margin is None else "history",
             "weeks": basis_weeks,
             "level": level,
         },
@@ -1279,7 +1467,7 @@ def menu_forecast_payload(
             {"date": day.isoformat(),
              "typicalUnits": _json_quantity(sum((p.days[day].typical for p in projections.values()), Decimal())),
              "plannedUnits": _json_quantity(sum((days[day] for days in daily_plans.values()), Decimal()))}
-            for day in (today + timedelta(days=offset) for offset in range(horizon_days))
+            for day in (horizon_start + timedelta(days=offset) for offset in range(horizon_days))
         ],
         "series": _series(
             daily,
@@ -1287,16 +1475,11 @@ def menu_forecast_payload(
             scoped_product_ids,
             daily_plans,
             history_end=history_end,
-            horizon_start=today,
+            horizon_start=horizon_start,
             horizon_days=horizon_days,
+            lead=lead,
         ),
-        "backtest": _backtest(
-            daily,
-            scoped_product_ids,
-            today=today,
-            exists_from=exists_from,
-            last_year=last_year,
-        ),
+        "backtest": _backtest(weekly_replays),
         "products": product_rows,
         "recipeRequirements": recipe_requirements,
         "materialRequirements": material_requirements,

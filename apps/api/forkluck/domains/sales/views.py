@@ -10,6 +10,7 @@ from decimal import Decimal
 
 from django.db.models import Prefetch, Q
 from django.http import HttpRequest, JsonResponse
+from django.utils import timezone
 
 from ...http.request import error
 from ...models import (
@@ -221,10 +222,20 @@ def product_detail(request: HttpRequest, product_ref: str) -> JsonResponse:
 
 
 def menu_forecast(request: HttpRequest, menu_ref: str) -> JsonResponse:
-    """Return one tenant-owned Menu's read-time demand forecast."""
-    days = request.GET.get("days", "7")
-    if days not in {"7", "30"}:
-        return error("Forecast horizon must be 7 or 30 days")
+    """Return one tenant-owned Menu's read-time demand forecast.
+
+    ``?start=`` and ``?end=`` are the selected dates, workspace-local; the
+    default is the next seven days from today.
+    """
+    from .forecast import forecast_horizon
+
+    today = timezone.now().astimezone(workspace_zone(request.user)).date()
+    try:
+        horizon_start, horizon_days = forecast_horizon(
+            request.GET.get("start"), request.GET.get("end"), today=today
+        )
+    except ValueError as exc:
+        return error(str(exc))
     plan = request.GET.get("plan", "typical")
     if plan not in {"typical", "busy"}:
         return error("Forecast plan must be typical or busy")
@@ -242,7 +253,13 @@ def menu_forecast(request: HttpRequest, menu_ref: str) -> JsonResponse:
     from .forecast import menu_forecast_payload
 
     return JsonResponse(
-        menu_forecast_payload(request.user, menu, horizon_days=int(days), plan=plan)
+        menu_forecast_payload(
+            request.user,
+            menu,
+            horizon_start=horizon_start,
+            horizon_days=horizon_days,
+            plan=plan,
+        )
     )
 
 

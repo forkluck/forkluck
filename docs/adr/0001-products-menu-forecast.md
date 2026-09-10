@@ -100,3 +100,44 @@ No forecast engine, persisted relation, ledger scope or query is added. The
 reference-code analysis in [Forecast reference review](../FORECAST_REFERENCE_REVIEW.md)
 records what ETS, Theta, AutoARIMA and MLForecast can contribute, and why fitting
 an engine is separate from proving a replacement on held-out kitchen history.
+
+
+## Amended 2026-09-10 (busy margin sized from past misses)
+
+The read-only backtest was run on the te-company September menu over 26
+weekly origins. No demand candidate met the rule: switching the seasonal
+factor off cost 3.2 points of 7-day menu WAPE and 6.6 at 30 days; unweighted
+four and six week windows lost by 3 or more; a damped trend term lost; scaling
+last year's weeks won 1.6 points on the menu total but was 7 points worse per
+product, the wrong trade for a kitchen. The eight-week weighted basis and the
+damped seasonal factor stay.
+
+The busy level changes. The spread rule (1.28 pooled standard deviations)
+covered 96% of 7-day weeks while over-producing by 35%; the same coverage
+came from a margin sized at the ninth decile of the projection's own past
+misses with 25% over-production, and at 30 days that margin raised coverage
+from 82% to 86% while over-producing slightly less. The page now replays its
+projection at twelve weekly origins of its own horizon, takes the ninth
+decile of completed, nonzero residuals, and scales every product's spread
+allowance by one ratio so the members' allowances sum to it: history sizes
+the allowance, the spread still decides which products carry it. With fewer
+than four such origins the spread rule stands, and `basis.busyBasis` says
+which applied. Revenue busy and the accuracy panel's busy are that same plan,
+so the caption and the coverage sentence describe what the tables show. The
+ledger read widens to twenty weeks; it is still one read and no query is
+added. The backtest command's `current` sizes its busy the same way, and a
+busy-only candidate is judged on coverage held and over-production cut rather
+than on an error it cannot move.
+
+
+## Amended 2026-09-10 (selected dates)
+
+The horizon is the dates the kitchen selects on a forward-facing calendar,
+not a choice between seven and thirty days: `?start=` and `?end=`, a week
+from today by default, at most 92 days and at most a year out. The week and
+day toggle goes with the fixed horizons; picking one day is the day view.
+History stays the eight weeks before today whatever the dates, so a plan for
+next month reads the same sales a plan for tomorrow does, and the chart
+projects the days between today and the start without planning them. The
+menu-wide weeks panel returns above the product table, and a full eight weeks
+of history is no longer worded on every row.

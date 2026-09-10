@@ -1532,6 +1532,9 @@ export const menuForecastPayloadSchema = z.strictObject({
     plan: z.enum(["typical", "busy"]),
     seasonalAdjustment: z.boolean(),
     compositionBasis: z.literal("current"),
+    // Where the busy allowance's size came from: the forecast's own past
+    // misses, or the spread of recent weeks while too few origins are scored.
+    busyBasis: z.enum(["history", "spread"]),
     weeks: z.strictObject({
       recent: z.array(
         z.strictObject({

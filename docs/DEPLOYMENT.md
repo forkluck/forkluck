@@ -535,6 +535,9 @@ trim the scored count. The long modifier-history walk can use substantial
 memory even though query count stays fixed. A marked row is only the lowest
 aggregate error: replace the live basis only after the 7-day result improves
 menu WAPE by at least 2 points, median product WAPE rises by at most 0.5,
-and the candidate does not lose at 30 days. Busy candidates must also preserve
-coverage and add no more than 2 points of signed over-production. Record any
-accepted change in the forecast ADR; ties keep the current basis.
+and the candidate does not lose at 30 days, with busy coverage held and no more
+than 2 points of added over-production. A candidate that changes only the busy
+level is judged on holding coverage and cutting over-production by at least 2
+points. `current` sizes its busy from the origins before each one, as the page
+does; `--stretch` adds `spread-busy` for the unscaled spread rule beside it.
+Record any accepted change in the forecast ADR; ties keep the current basis.

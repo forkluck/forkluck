@@ -8,7 +8,12 @@ import {
   screen,
   within,
 } from "@testing-library/react"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
+
+// The dates pill pushes a new URL through the router; nothing here reads it.
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn(), replace: vi.fn() }),
+}))
 
 import { MenuForecast } from "@/components/menus/menu-forecast"
 import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
@@ -79,6 +84,7 @@ const FORECAST: MenuForecastData = {
     plan: "typical",
     seasonalAdjustment: false,
     compositionBasis: "current",
+    busyBasis: "history",
     weeks: {
       recent: RECENT,
       horizon: [
@@ -242,9 +248,9 @@ const FORECAST: MenuForecastData = {
   ],
 }
 
-/** The tables in page order: Expected demand, Prep quantities, materials. */
+/** The tables in page order after Demand by week: Expected demand, Prep quantities, materials. */
 const table = (index: number) =>
-  within(document.querySelectorAll("table")[index] as HTMLElement)
+  within(document.querySelectorAll("table")[index + 1] as HTMLElement)
 /** One link per row, so the links are the row order. */
 const rowsOf = (index: number) =>
   table(index)
@@ -259,12 +265,57 @@ const busy = (): MenuForecastData => ({
 })
 
 describe("Menu forecast", () => {
+  it("shows the menu's demand by week: recent weeks, last year, and the plan", () => {
+    render(<MenuForecast forecast={FORECAST} measurementSystem="metric" />)
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Demand by week" })
+    ).toBeDefined()
+    const rows = within(
+      screen
+        .getByRole("heading", { level: 2, name: "Demand by week" })
+        .closest("section")!
+    ).getAllByRole("row")
+    // A header row, eight recorded weeks, then the one planned week.
+    expect(rows).toHaveLength(10)
+    expect(
+      within(rows[1]!)
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent)
+    ).toEqual(["Mar 2–Mar 8", "7", "6", "–"])
+    expect(
+      within(rows[9]!)
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent)
+    ).toEqual(["Apr 27–May 3", "–", "8", "7"])
+    expect(
+      screen.getByText(
+        "Recent weeks point to about 7 menu items a week, recent weeks counting more."
+      )
+    ).toBeDefined()
+    expect(
+      screen.getByText(
+        "No product has comparable history from last year, so nothing is scaled for the season."
+      )
+    ).toBeDefined()
+  })
+
+  it("keeps a full eight weeks of history quiet and the explanation behind one icon", () => {
+    render(<MenuForecast forecast={FORECAST} measurementSystem="metric" />)
+    expect(screen.queryByText("8 weeks recorded")).toBeNull()
+    expect(screen.queryByText("Why this quantity?")).toBeNull()
+    expect(
+      screen.getByRole("button", { name: "Why this quantity for Scone" })
+    ).toBeDefined()
+  })
+
   it("renders the independent-menu warning and current-composition basis", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
     expect(screen.getByText(/current recipes and yields/)).toBeDefined()
     expect(screen.queryByText("Seasonal")).toBeNull()
-    expect(screen.getByText("Apr 27 to May 3, 2026")).toBeDefined()
+    expect(
+      screen.getByRole("button", { name: "Dates: Apr 27, 2026 – May 3, 2026" })
+    ).toBeDefined()
     expect(screen.getByText("How the forecast works")).toBeDefined()
     expect(screen.getByText(/Adding forecasts from overlapping/)).toBeDefined()
     expect(screen.getByText(/1 Menu row is not linked/)).toBeDefined()
@@ -667,7 +718,7 @@ describe("Menu forecast", () => {
       render(
         <MenuForecast
           measurementSystem={system}
-          view="day"
+
           forecast={{
             ...FORECAST,
             recipeRequirements: [
@@ -689,8 +740,7 @@ describe("Menu forecast", () => {
         "cell"
       )
       expect(cells[1]!.textContent).toBe(output)
-      expect(cells[8]!.textContent).toBe(output)
-      expect(cells[9]!.textContent).toBe(equivalent)
+      expect(cells[2]!.textContent).toBe(equivalent)
     }
   )
 
@@ -753,49 +803,51 @@ describe("Menu forecast", () => {
     )
   })
 
-  it("marks the active pills and keeps the other parameter in each link", () => {
-    render(<MenuForecast measurementSystem="metric" forecast={busy()} />)
+  it("names the dates being planned for and keeps them in each plan link", () => {
+    render(
+      <MenuForecast
+        measurementSystem="metric"
+        forecast={busy()}
+        selectedRange={{ start: "2026-04-27", end: "2026-05-03" }}
+      />
+    )
 
-    const week = screen.getByText("Next 7 days")
-    const month = screen.getByText("Next 30 days")
-    expect(week.getAttribute("aria-current")).toBe("page")
-    // Only the active pill is current; the inactive one carries nothing for a
-    // screen reader to announce as the place it already is.
-    expect(month.getAttribute("aria-current")).toBeNull()
+    const dates = screen.getByRole("button", { name: /^Dates: / })
+    expect(dates.getAttribute("aria-label")).toBe(
+      "Dates: Apr 27, 2026 – May 3, 2026"
+    )
     expect(
       screen.getByRole("link", { name: "Busy" }).getAttribute("aria-current")
     ).toBe("page")
     expect(
       screen.getByRole("link", { name: "Typical" }).getAttribute("aria-current")
     ).toBeNull()
-    expect(week.getAttribute("href")).toBe(
-      "/menu/mnu_spring/forecast?plan=busy"
+    expect(
+      screen.getByRole("link", { name: "Typical" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast?start=2026-04-27&end=2026-05-03")
+    expect(
+      screen.getByRole("link", { name: "Busy" }).getAttribute("href")
+    ).toBe(
+      "/menu/mnu_spring/forecast?start=2026-04-27&end=2026-05-03&plan=busy"
     )
-    expect(month.getAttribute("href")).toBe(
-      "/menu/mnu_spring/forecast?days=30&plan=busy"
-    )
+  })
+
+  it("keeps the default week out of the plan links", () => {
+    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
+
+    expect(
+      screen.getByRole("link", { name: "Typical" }).getAttribute("aria-current")
+    ).toBe("page")
+    expect(
+      screen.getByRole("link", { name: "Busy" }).getAttribute("aria-current")
+    ).toBeNull()
     expect(
       screen.getByRole("link", { name: "Typical" }).getAttribute("href")
     ).toBe("/menu/mnu_spring/forecast")
+    expect(
+      screen.getByRole("link", { name: "Busy" }).getAttribute("href")
+    ).toBe("/menu/mnu_spring/forecast?plan=busy")
   })
-
-  it("leaves the 30-day and busy pills uncurrent on a 7-day typical forecast", () => {
-    render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
-
-    expect(screen.getByText("Next 7 days").getAttribute("aria-current")).toBe(
-      "page"
-    )
-    expect(
-      screen.getByText("Next 30 days").getAttribute("aria-current")
-    ).toBeNull()
-    expect(
-      screen.getByRole("link", { name: "Typical" }).getAttribute("aria-current")
-    ).toBe("page")
-    expect(
-      screen.getByRole("link", { name: "Busy" }).getAttribute("aria-current")
-    ).toBeNull()
-  })
-
   it("sorts product demand by a clicked header and flips it on a second click", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 
@@ -895,113 +947,6 @@ describe("Menu forecast", () => {
     fireEvent.click(table(1).getByRole("button", { name: "Recipe" }))
     expect(rowsOf(1)).toEqual(["Cookie dough", "Almond biscotti"])
   })
-  it("preserves horizon and plan in day-view links and displays the daily plan", () => {
-    render(
-      <MenuForecast measurementSystem="metric" forecast={FORECAST} view="day" />
-    )
-    expect(
-      screen.getByRole("link", { name: "Day" }).getAttribute("aria-current")
-    ).toBe("page")
-    expect(
-      screen.getByRole("link", { name: "Busy" }).getAttribute("href")
-    ).toBe("/menu/mnu_spring/forecast?plan=busy&view=day")
-    expect(
-      screen.getByRole("link", { name: "Next 30 days" }).getAttribute("href")
-    ).toBe("/menu/mnu_spring/forecast?days=30&view=day")
-    expect(
-      screen.getByRole("link", { name: "Week" }).getAttribute("href")
-    ).toBe("/menu/mnu_spring/forecast")
-    expect(table(0).getAllByRole("columnheader")).toHaveLength(10)
-    const cells = within(table(0).getAllByRole("row")[1]!).getAllByRole("cell")
-    const sum = cells
-      .slice(1, 8)
-      .reduce((total, cell) => total + Number(cell.textContent), 0)
-    expect(sum).toBe(Number(cells[8]!.textContent))
-    const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
-      "cell"
-    )
-    expect(recipeCells.slice(1, 8).map((cell) => cell.textContent)).toEqual([
-      "48 ea",
-      "0 ea",
-      "0 ea",
-      "0 ea",
-      "0 ea",
-      "0 ea",
-      "0 ea",
-    ])
-    expect(recipeCells[8]!.textContent).toBe("48 ea")
-    expect(recipeCells[9]!.textContent).toBe("2 × 24 ea")
-  })
-
-  it("groups the 30-day schedule by its five basis blocks, including the last two days", () => {
-    const dates = Array.from({ length: 30 }, (_, i) =>
-      new Date(Date.UTC(2026, 3, 27 + i)).toISOString().slice(0, 10)
-    )
-    const horizon = Array.from({ length: 5 }, (_, i) => ({
-      start: dates[i * 7]!,
-      end: dates[Math.min(i * 7 + 6, 29)]!,
-      typicalUnits: i === 4 ? 2 : 7,
-      plannedUnits: i === 4 ? 2 : 7,
-      lastYearUnits: 0,
-    }))
-    const forecast: MenuForecastData = {
-      ...FORECAST,
-      basis: {
-        ...FORECAST.basis,
-        horizonDays: 30,
-        horizonEnd: dates[29]!,
-        plan: "busy",
-        weeks: { ...FORECAST.basis.weeks, horizon },
-      },
-      days: dates.map((date) => ({ date, typicalUnits: 1, plannedUnits: 1 })),
-      products: [
-        {
-          ...FORECAST.products[0]!,
-          totalQuantity: 30,
-          busyQuantity: 30,
-          days: dates.map((date) => ({
-            date,
-            typicalQuantity: 1,
-            plannedQuantity: 1,
-          })),
-        },
-      ],
-      recipeRequirements: [
-        {
-          ...FORECAST.recipeRequirements[0]!,
-          batches: 30,
-          days: dates.map((date) => ({ date, batches: 1 })),
-        },
-      ],
-    }
-    render(
-      <MenuForecast measurementSystem="metric" forecast={forecast} view="day" />
-    )
-    expect(
-      screen.getByRole("heading", { name: "Production forecast" })
-    ).toBeDefined()
-    expect(
-      screen.getByRole("link", { name: "Week" }).getAttribute("href")
-    ).toBe("/menu/mnu_spring/forecast?days=30&plan=busy")
-    expect(table(0).getAllByRole("columnheader")).toHaveLength(8)
-    const cells = within(table(0).getAllByRole("row")[1]!).getAllByRole("cell")
-    expect(cells.slice(1, 6).map((cell) => Number(cell.textContent))).toEqual([
-      7, 7, 7, 7, 2,
-    ])
-    expect(cells[6]!.textContent).toBe("30")
-    const recipeCells = within(table(1).getAllByRole("row")[1]!).getAllByRole(
-      "cell"
-    )
-    expect(recipeCells.slice(1, 6).map((cell) => cell.textContent)).toEqual([
-      "168 ea",
-      "168 ea",
-      "168 ea",
-      "168 ea",
-      "48 ea",
-    ])
-    expect(recipeCells[6]!.textContent).toBe("720 ea")
-  })
-
   it("keeps dated recorded history inside the selected product explanation", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
     expect(screen.queryByRole("table", { name: "Forecast basis" })).toBeNull()
@@ -1042,9 +987,7 @@ describe("Menu forecast", () => {
   it("separates the busy allowance from expected demand for the whole selected period", () => {
     const forecast = busy()
     forecast.products = [{ ...FORECAST.products[0]!, totalQuantity: 11 }]
-    render(
-      <MenuForecast measurementSystem="metric" forecast={forecast} view="day" />
-    )
+    render(<MenuForecast measurementSystem="metric" forecast={forecast} />)
     fireEvent.click(
       screen.getByRole("button", {
         name: "Why this quantity for Cookie add-on",

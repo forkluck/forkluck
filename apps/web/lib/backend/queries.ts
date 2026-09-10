@@ -803,10 +803,14 @@ export async function getMenu(ref: string): Promise<MenuDetail | null> {
 
 export async function getMenuForecast(
   ref: string,
-  days: 7 | 30 = 7,
+  range: { start: string; end: string } | null = null,
   plan: MenuForecastPlan = "typical"
 ): Promise<MenuForecast | null> {
-  const query = new URLSearchParams({ days: String(days), plan })
+  const query = new URLSearchParams({ plan })
+  if (range) {
+    query.set("start", range.start)
+    query.set("end", range.end)
+  }
   try {
     return await djangoGetParsed(
       `/internal/v1/menu/${encodeURIComponent(ref)}/forecast/?${query}`,
