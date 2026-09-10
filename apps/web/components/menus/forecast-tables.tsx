@@ -15,6 +15,7 @@ import {
 import {
   amount,
   units,
+  wholeBatches,
   buyLabel,
   makes,
   measure,
@@ -254,7 +255,7 @@ function Makes({
   return made ? (
     <>{measure(made.quantity, made.unit, system)}</>
   ) : (
-    <>{amount(batches)} batches</>
+    <>{amount(wholeBatches(batches))} batches</>
   )
 }
 
@@ -333,7 +334,7 @@ export function RecipeBatchesTable({
                     <Makes row={row} system={measurementSystem} />
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {amount(row.batches)}{" "}
+                    {amount(wholeBatches(row.batches))}{" "}
                     {row.yieldAmount !== null && row.yieldUnit
                       ? `× ${amount(row.yieldAmount)} ${unitShort(row.yieldUnit) || row.yieldUnit}`
                       : "batches"}
