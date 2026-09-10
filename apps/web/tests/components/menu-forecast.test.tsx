@@ -432,10 +432,11 @@ describe("Menu forecast", () => {
       />
     )
 
-    expect(screen.getByText("2.35 × 24 ea")).toBeDefined()
-    // A thousand grams steps up to kilograms, and the pack is read the same
-    // way. A fifth of a pack is one pack to buy, at the pack's price.
-    expect(screen.getByText("1.23 kg")).toBeDefined()
+    // 2.35 batches is three to make; nobody makes a third of one.
+    expect(screen.getByText("3 × 24 ea")).toBeDefined()
+    // A thousand grams steps up to kilograms, read to one decimal, and the
+    // pack is read the same way. A fifth of a pack is one pack to buy.
+    expect(screen.getByText("1.2 kg")).toBeDefined()
     expect(screen.getByText("5 kg")).toBeDefined()
     expect(screen.getByText("1 × 5 kg")).toBeDefined()
     expect(screen.getByText("1 × 12 ea")).toBeDefined()
@@ -529,7 +530,7 @@ describe("Menu forecast", () => {
       />
     )
 
-    expect(screen.getByText("2.72 lb")).toBeDefined()
+    expect(screen.getByText("2.7 lb")).toBeDefined()
     expect(screen.getByText("5 lb")).toBeDefined()
     expect(screen.getByText("1 × 5 lb")).toBeDefined()
   })
@@ -670,9 +671,9 @@ describe("Menu forecast", () => {
       />
     )
 
-    // 2.35 batches of two dozen is 57 whole cookies; six litres of stock.
+    // 2.35 batches of two dozen is 57 whole cookies, made as three batches.
     expect(screen.getByText("57 ea")).toBeDefined()
-    expect(screen.getByText("2.35 × 24 ea")).toBeDefined()
+    expect(screen.getByText("3 × 24 ea")).toBeDefined()
     expect(screen.getByText("6 L")).toBeDefined()
     expect(
       screen.getByText("Yield not recorded; shown in batches.")
@@ -686,15 +687,15 @@ describe("Menu forecast", () => {
       batches: 0.5,
       system: "metric" as const,
       output: "250 g",
-      equivalent: "0.5 × 500 g",
+      equivalent: "1 × 500 g",
     },
     {
       yieldAmount: 500,
       yieldUnit: "g",
       batches: 0.5,
       system: "us" as const,
-      output: "8.82 oz",
-      equivalent: "0.5 × 500 g",
+      output: "9 oz",
+      equivalent: "1 × 500 g",
     },
     {
       yieldAmount: 0.5,

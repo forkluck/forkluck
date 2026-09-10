@@ -11,12 +11,20 @@ import {
   TableHeaderRow,
   TableRow,
 } from "@/components/ui/table"
+import { units } from "@/components/menus/forecast-format"
 import type { MenuForecast } from "@/lib/backend/types"
 import { formatCalendarDate } from "@/lib/datetime"
 
 type Product = MenuForecast["products"][number]
 type Week = Product["basis"]["recentWeeks"][number]
-const quantity = new Intl.NumberFormat("en-US", { maximumFractionDigits: 3 })
+/** Whole units throughout: the panel explains what the table shows. */
+const quantity = { format: (value: number) => units(value) }
+/** A change in whole units with its sign, and "none" for one that rounds away. */
+function signedUnits(value: number) {
+  const whole = Math.round(value)
+  if (whole === 0) return "none"
+  return `${whole > 0 ? "+" : "−"}${units(Math.abs(whole))} units`
+}
 const dates = (row: { start: string; end: string }) =>
   `${formatCalendarDate(row.start)}–${formatCalendarDate(row.end)}`
 
@@ -85,8 +93,7 @@ export function ProductForecastBasis({
         <div>
           <dt className="text-muted-foreground">Seasonal change</dt>
           <dd className="mt-1 font-medium tabular-nums">
-            {adjustment > 0 ? "+" : ""}
-            {quantity.format(adjustment)} units
+            {signedUnits(adjustment)}
           </dd>
         </div>
         <div>

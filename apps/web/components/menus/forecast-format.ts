@@ -41,9 +41,23 @@ export function isApproximateUnit(unit: string) {
   return unitDefinition(unit)?.approximate === true
 }
 
+const oneDecimal = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 })
+
+/**
+ * A figure a kitchen can weigh out or count: whole grams, millilitres and
+ * ounces, whole pieces, and one decimal once the unit steps up to kilograms,
+ * pounds or litres. A forecast is only good to a tenth or so of its total,
+ * so 200.33 g is 200 g and 8.14 kg is 8.1 kg.
+ */
+function kitchenAmount(value: number, unit: string) {
+  return unit === "g" || unit === "ml" || unit === "oz" || isCountUnit(unit)
+    ? amountFormats[0].format(Math.round(value))
+    : oneDecimal.format(value)
+}
+
 /**
  * A weight in the kitchen's own system, stepping up to the larger unit once
- * it gets there: 1,234 g reads 1.23 kg, and a thousand millilitres a litre.
+ * it gets there: 1,234 g reads 1.2 kg, and a thousand millilitres a litre.
  * Cups, cases and pieces are shown as they stand, except that a count is
  * whole: nobody buys 48.7 eggs.
  */
@@ -54,15 +68,24 @@ export function measure(
 ) {
   if (WEIGHT_UNITS.includes(unit as WeightUnit)) {
     const display = displayWeight(toGrams(quantity, unit as WeightUnit), system)
-    return `${amount(display.amount)} ${display.unit}`
+    return `${kitchenAmount(display.amount, display.unit)} ${display.unit}`
   }
   if (unit === "ml" || unit === "l") {
     const millilitres = unit === "l" ? quantity * 1000 : quantity
     const litres = millilitres >= 1000
-    return `${amount(litres ? millilitres / 1000 : millilitres)} ${unitShort(litres ? "l" : "ml")}`
+    const shownUnit = litres ? "l" : "ml"
+    return `${kitchenAmount(litres ? millilitres / 1000 : millilitres, shownUnit)} ${unitShort(shownUnit)}`
   }
   const shown = isCountUnit(unit) ? Math.ceil(quantity) : quantity
-  return `${amount(shown)} ${unitShort(unit) || unit}`
+  return `${kitchenAmount(shown, unit)} ${unitShort(unit) || unit}`
+}
+
+/**
+ * Batches to make: whole, and rounded up, because a kitchen makes 52 batches
+ * to cover 51.5 and never makes half of one. Nothing needed is nothing made.
+ */
+export function wholeBatches(batches: number) {
+  return batches > 0 ? Math.max(1, Math.ceil(batches - 1e-9)) : 0
 }
 
 export function quantities(rows: Quantity[], system: MeasurementSystem) {
