@@ -15,7 +15,6 @@ import {
 import {
   amount,
   units,
-  planColumns,
   buyLabel,
   makes,
   measure,
@@ -24,7 +23,6 @@ import {
   packsToBuy,
   usageNote,
 } from "@/components/menus/forecast-format"
-import type { ForecastView } from "@/components/menus/forecast-controls"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -72,14 +70,11 @@ const blank = <span className="text-faint">–</span>
 /** Rows arrive A–Z from the backend and stay that way until a header is clicked. */
 export function ProductForecastTable({
   forecast,
-  view = "week",
 }: {
   forecast: MenuForecastData
-  view?: ForecastView
 }) {
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null)
   const busy = forecast.basis.plan === "busy"
-  const columns = view === "day" ? planColumns(forecast) : []
   const { sort, toggle, directionFor } = useSortState<ProductSortKey>()
   const rows = sortRows<ProductRow, ProductSortKey>(forecast.products, sort, {
     product: (row) => row.productName,
@@ -109,11 +104,7 @@ export function ProductForecastTable({
     <section className="break-inside-avoid">
       <SectionHeader
         title="Expected demand"
-        subtitle={
-          view === "day"
-            ? `The ${planWord(forecast.basis.plan)} plan, spread by weekday rhythm${forecast.basis.horizonDays === 30 ? " and grouped by week" : ""}.`
-            : "Quantities by product for the selected dates. Open a row’s explanation to see why."
-        }
+        subtitle="Quantities by product for the selected dates. Open a row’s explanation to see why."
         badge={`${forecast.coverage.productsWithHistory} of ${forecast.coverage.products} with history`}
       />
       <TableFrame className="overflow-x-auto">
@@ -121,24 +112,8 @@ export function ProductForecastTable({
           <TableHeader>
             <TableHeaderRow>
               {header("product", "Product")}
-              {view === "day" ? (
-                <>
-                  {columns.map((column) => (
-                    <TableHead
-                      key={column.start}
-                      className="min-w-24 text-right"
-                    >
-                      {column.label}
-                    </TableHead>
-                  ))}
-                  {header(busy ? "busy" : "typical", "Total", "right")}
-                </>
-              ) : (
-                <>
-                  {header("typical", "Expected", "right")}
-                  {header("busy", "Busy", "right")}
-                </>
-              )}
+              {header("typical", "Expected", "right")}
+              {header("busy", "Busy", "right")}
               {header("history", "History")}
             </TableHeaderRow>
           </TableHeader>
@@ -167,51 +142,22 @@ export function ProductForecastTable({
                         </Badge>
                       ) : null}
                     </TableCell>
-                    {view === "day" ? (
-                      <>
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.start}
-                            className="text-right tabular-nums"
-                          >
-                            {units(
-                              product.days
-                                .filter(
-                                  (day) =>
-                                    day.date >= column.start &&
-                                    day.date <= column.end
-                                )
-                                .reduce(
-                                  (sum, day) => sum + day.plannedQuantity,
-                                  0
-                                )
-                            )}
-                          </TableCell>
-                        ))}
-                        <TableCell className="text-right font-medium tabular-nums">
-                          {units(product.totalQuantity)}
-                        </TableCell>
-                      </>
-                    ) : (
-                      <>
-                        <TableCell
-                          className={cn(
-                            "text-right tabular-nums",
-                            !busy && "font-medium"
-                          )}
-                        >
-                          {units(product.typicalQuantity)}
-                        </TableCell>
-                        <TableCell
-                          className={cn(
-                            "text-right tabular-nums",
-                            busy && "font-medium"
-                          )}
-                        >
-                          {units(product.busyQuantity)}
-                        </TableCell>
-                      </>
-                    )}
+                    <TableCell
+                      className={cn(
+                        "text-right tabular-nums",
+                        !busy && "font-medium"
+                      )}
+                    >
+                      {units(product.typicalQuantity)}
+                    </TableCell>
+                    <TableCell
+                      className={cn(
+                        "text-right tabular-nums",
+                        busy && "font-medium"
+                      )}
+                    >
+                      {units(product.busyQuantity)}
+                    </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {/* A full eight weeks is the norm and says nothing;
                           only thin history is worth a word. The explanation
@@ -242,7 +188,7 @@ export function ProductForecastTable({
                   {expandedProduct === product.productId ? (
                     <TableRow>
                       <TableCell
-                        colSpan={view === "day" ? columns.length + 3 : 4}
+                        colSpan={4}
                         className="bg-muted/30 whitespace-normal"
                       >
                         <ProductForecastBasis
@@ -255,7 +201,7 @@ export function ProductForecastTable({
                 </Fragment>
               ))
             ) : (
-              <TableEmpty colSpan={view === "day" ? columns.length + 3 : 4}>
+              <TableEmpty colSpan={4}>
                 Link Products to this Menu to forecast demand.
               </TableEmpty>
             )}
@@ -315,13 +261,10 @@ function Makes({
 export function RecipeBatchesTable({
   forecast,
   measurementSystem,
-  view = "week",
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
-  view?: ForecastView
 }) {
-  const columns = view === "day" ? planColumns(forecast) : []
   // The backend lists recipes in id order, which means nothing to a cook, so
   // the table opens A to Z; a header click takes it from there.
   const { sort, toggle, directionFor } = useSortState<RecipeSortKey>({
@@ -352,11 +295,6 @@ export function RecipeBatchesTable({
                   Recipe
                 </SortHeader>
               </TableHead>
-              {columns.map((column) => (
-                <TableHead key={column.start} className="min-w-24 text-right">
-                  {column.label}
-                </TableHead>
-              ))}
               <TableHead className="min-w-32 text-right">
                 Required output
               </TableHead>
@@ -391,23 +329,6 @@ export function RecipeBatchesTable({
                       </p>
                     ) : null}
                   </TableCell>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.start}
-                      className="text-right tabular-nums"
-                    >
-                      <Makes
-                        row={row}
-                        system={measurementSystem}
-                        batches={row.days
-                          .filter(
-                            (day) =>
-                              day.date >= column.start && day.date <= column.end
-                          )
-                          .reduce((sum, day) => sum + day.batches, 0)}
-                      />
-                    </TableCell>
-                  ))}
                   <TableCell className="text-right font-medium tabular-nums">
                     <Makes row={row} system={measurementSystem} />
                   </TableCell>
@@ -420,9 +341,7 @@ export function RecipeBatchesTable({
                 </TableRow>
               ))
             ) : (
-              <TableEmpty colSpan={3 + columns.length}>
-                No recipe demand.
-              </TableEmpty>
+              <TableEmpty colSpan={3}>No recipe demand.</TableEmpty>
             )}
           </TableBody>
         </Table>
@@ -571,17 +490,14 @@ export function MaterialsTable({
 export function Requirements({
   forecast,
   measurementSystem,
-  view = "week",
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
-  view?: ForecastView
 }) {
   return (
     <>
       <RecipeBatchesTable
         forecast={forecast}
-        view={view}
         measurementSystem={measurementSystem}
       />
       <MaterialsTable

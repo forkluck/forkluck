@@ -128,3 +128,16 @@ ledger read widens to twenty weeks; it is still one read and no query is
 added. The backtest command's `current` sizes its busy the same way, and a
 busy-only candidate is judged on coverage held and over-production cut rather
 than on an error it cannot move.
+
+
+## Amended 2026-09-10 (selected dates)
+
+The horizon is the dates the kitchen selects on a forward-facing calendar,
+not a choice between seven and thirty days: `?start=` and `?end=`, a week
+from today by default, at most 92 days and at most a year out. The week and
+day toggle goes with the fixed horizons; picking one day is the day view.
+History stays the eight weeks before today whatever the dates, so a plan for
+next month reads the same sales a plan for tomorrow does, and the chart
+projects the days between today and the start without planning them. The
+menu-wide weeks panel returns above the product table, and a full eight weeks
+of history is no longer worded on every row.

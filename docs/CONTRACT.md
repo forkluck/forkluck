@@ -994,12 +994,16 @@ It returns `{menu, items, recipes, ingredients, products, currencyCode}` — the
 picker's sources travel with the worksheet so opening one is a single read.
 
 `menu/<menu_ref>/forecast/` accepts the same owner-scoped public-id or UUID
-forms and returns a non-persisted production forecast beginning on the
-workspace-local current date. `?days=` is `7` (default) or `30`; `?plan=` is
-`typical` (default) or `busy`. Invalid plans return 400
-(`{"error": "Forecast plan must be typical or busy"}`). The web page also accepts
-`?view=day`; omitting it shows whole-horizon quantities. View is presentation
-state only: both views consume the same payload and dated rows.
+forms and returns a non-persisted production forecast for the selected dates.
+`?start=` and `?end=` are workspace-local `YYYY-MM-DD` dates; the default is
+the next seven days from today, a start alone runs a week from that day, and
+an end alone runs from today. The past, an end before its start, a start more
+than a year out, or a range longer than 92 days return 400 with a plain
+message. `?plan=` is `typical` (default) or `busy`; invalid plans return 400
+(`{"error": "Forecast plan must be typical or busy"}`). History is always the
+eight weeks before today, whatever the dates: a later start reads no newer
+sales, and the chart projects the days between today and the start without
+planning them (`plannedUnits` null).
 
 `basis` names the 56 complete historical days, `historyWeeks: 8`,
 `horizonDays`, the horizon's first and last date, `plan`, `seasonalAdjustment`,

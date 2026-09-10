@@ -1,7 +1,7 @@
 import { ForecastActions } from "@/components/menus/forecast-actions"
 import {
   ForecastControls,
-  type ForecastView,
+  type ForecastRange,
 } from "@/components/menus/forecast-controls"
 import {
   accuracySentence,
@@ -21,13 +21,6 @@ import {
 } from "@/components/overview/analytics-cards"
 import type { MenuForecast as MenuForecastData } from "@/lib/backend/types"
 import type { MeasurementSystem } from "@/lib/business-settings"
-import { parseDateKey } from "@/lib/date-presets"
-import { formatDayMonth, formatFullDate } from "@/lib/datetime"
-
-/** "Sep 8 to Sep 14, 2026": the year once, at the end. */
-function horizonLabel(start: string, end: string) {
-  return `${formatDayMonth(parseDateKey(start), "UTC")} to ${formatFullDate(parseDateKey(end), "UTC")}`
-}
 
 /** Method and scope stay beneath the operational tables. */
 function ForecastBasis({ busyBasis }: { busyBasis: "history" | "spread" }) {
@@ -69,21 +62,22 @@ function ForecastBasis({ busyBasis }: { busyBasis: "history" | "spread" }) {
 export function MenuForecast({
   forecast,
   measurementSystem,
-  view = "week",
+  selectedRange = null,
 }: {
   forecast: MenuForecastData
   measurementSystem: MeasurementSystem
-  view?: ForecastView
+  /** The dates in the URL, or null on the default week. */
+  selectedRange?: ForecastRange | null
 }) {
   const base = `/menu/${encodeURIComponent(forecast.menu.publicId)}/forecast`
-  const { horizonDays, plan, horizonStart, horizonEnd } = forecast.basis
+  const { plan, horizonStart, horizonEnd, timezone } = forecast.basis
   return (
     <ForecastControls
       base={base}
-      days={horizonDays}
+      range={{ start: horizonStart, end: horizonEnd }}
+      selectedRange={selectedRange}
+      timeZone={timezone}
       plan={plan}
-      view={view}
-      horizon={horizonLabel(horizonStart, horizonEnd)}
       actions={<ForecastActions forecast={forecast} />}
     >
       <header>
@@ -105,12 +99,8 @@ export function MenuForecast({
       ) : null}
 
       <DemandByWeek forecast={forecast} />
-      <ProductForecastTable forecast={forecast} view={view} />
-      <Requirements
-        forecast={forecast}
-        measurementSystem={measurementSystem}
-        view={view}
-      />
+      <ProductForecastTable forecast={forecast} />
+      <Requirements forecast={forecast} measurementSystem={measurementSystem} />
 
       {forecast.unresolved.length ? (
         <section className="rounded-xl border border-border bg-card p-4">

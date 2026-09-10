@@ -2,19 +2,24 @@ from __future__ import annotations
 
 import json
 from datetime import date, datetime, timedelta, timezone
+
+from django.utils import timezone as django_timezone
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.test import RequestFactory, TestCase
 
+from .domains.shared.workspace_timezone import workspace_zone
 from .domains.sales.forecast import (
     BACKTEST_WEEKS,
     CALIBRATION_WEEKS,
+    MAX_HORIZON_DAYS,
     _product_basis,
     _replays,
     _round_quantity,
     _seasonal_factor,
     _spread_plan,
     busy_margin,
+    forecast_horizon,
     load_forecast_inputs,
     menu_forecast_payload,
     project_product,
@@ -733,6 +738,80 @@ class MenuForecastTests(TestCase):
             sum(row["busyCents"] for row in payload["products"]),
         )
 
+    def test_the_selected_dates_default_to_the_next_week_and_refuse_the_past(self):
+        today = date(2026, 4, 27)
+        self.assertEqual(forecast_horizon(None, None, today=today), (today, 7))
+        self.assertEqual(
+            forecast_horizon("2026-05-04", None, today=today), (date(2026, 5, 4), 7)
+        )
+        self.assertEqual(
+            forecast_horizon(None, "2026-04-27", today=today), (today, 1)
+        )
+        self.assertEqual(
+            forecast_horizon("2026-05-01", "2026-05-31", today=today),
+            (date(2026, 5, 1), 31),
+        )
+        for start, end, message in (
+            ("2026-04-26", None, "in the past"),
+            ("2026-05-04", "2026-05-03", "before its start"),
+            ("2027-05-01", None, "within a year"),
+            ("2026-05-01", "2026-08-31", f"at most {MAX_HORIZON_DAYS} days"),
+            ("May 1", None, "YYYY-MM-DD"),
+        ):
+            with self.subTest(start=start, end=end), self.assertRaisesMessage(
+                ValueError, message
+            ):
+                forecast_horizon(start, end, today=today)
+
+    def test_a_later_start_plans_those_dates_and_charts_the_days_between(self):
+        toast = self.product("Toast")
+        menu = self.menu(toast)
+        MenuItem.objects.filter(menu=menu).update(sell_price_cents=500)
+        variant = self.variant(toast)
+        for back in range(1, 57):
+            self.line(variant, self.today - timedelta(days=back), quantity="4")
+        start = self.today + timedelta(days=10)
+
+        payload = menu_forecast_payload(
+            self.user, menu, today=self.today, horizon_start=start, horizon_days=3
+        )
+
+        basis = payload["basis"]
+        self.assertEqual(basis["horizonStart"], start.isoformat())
+        self.assertEqual(basis["horizonEnd"], (start + timedelta(days=2)).isoformat())
+        self.assertEqual(basis["horizonDays"], 3)
+        # History is still the eight weeks before today: nothing newer exists.
+        self.assertEqual(basis["historyEnd"], (self.today - timedelta(days=1)).isoformat())
+        self.assertEqual(
+            [row["date"] for row in payload["days"]],
+            [(start + timedelta(days=offset)).isoformat() for offset in range(3)],
+        )
+        self.assertEqual(payload["products"][0]["typicalQuantity"], 12.0)
+        self.assertEqual(
+            [row["date"] for row in payload["products"][0]["days"]],
+            [row["date"] for row in payload["days"]],
+        )
+        self.assertEqual(basis["weeks"]["horizon"][0]["start"], start.isoformat())
+        # The chart runs unbroken from history to the plan: the ten days in
+        # between carry typical units but nothing planned.
+        series = payload["series"]
+        between = [
+            row for row in series
+            if self.today.isoformat() <= row["date"] < start.isoformat()
+        ]
+        self.assertEqual(len(between), 10)
+        self.assertTrue(all(row["typicalUnits"] == 4 for row in between))
+        self.assertTrue(all(row["plannedUnits"] is None for row in between))
+        self.assertTrue(all(row["actualUnits"] is None for row in between))
+        planned = [row for row in series if row["date"] >= start.isoformat()]
+        self.assertEqual(len(planned), 3)
+        self.assertTrue(all(row["plannedUnits"] == 4 for row in planned))
+        with self.assertRaisesMessage(ValueError, "in the past"):
+            menu_forecast_payload(
+                self.user, menu, today=self.today,
+                horizon_start=self.today - timedelta(days=1), horizon_days=3,
+            )
+
     def test_busy_margin_is_the_ninth_decile_of_past_misses(self):
         bread = self.product("Bread")
         bun = self.product("Bun")
@@ -1244,24 +1323,33 @@ class MenuForecastTests(TestCase):
         ):
             menu_forecast_payload(self.user, menu, today=self.today)
 
-    def test_endpoint_takes_a_seven_or_thirty_day_horizon_and_refuses_others(self):
+    def test_endpoint_takes_the_selected_dates_and_refuses_the_past(self):
         menu = self.menu(self.product("Toast"))
+        today = django_timezone.now().astimezone(workspace_zone(self.user)).date()
 
         def response(query: dict):
             request = RequestFactory().get("/", query)
             request.user = self.user
             return menu_forecast(request, menu_ref=menu.public_id)
 
-        self.assertEqual(json.loads(response({}).content)["basis"]["horizonDays"], 7)
-        self.assertEqual(
-            json.loads(response({"days": "30"}).content)["basis"]["horizonDays"], 30
-        )
-        refused = response({"days": "5"})
+        default = json.loads(response({}).content)["basis"]
+        self.assertEqual(default["horizonDays"], 7)
+        self.assertEqual(default["horizonStart"], today.isoformat())
+        start = today + timedelta(days=3)
+        end = start + timedelta(days=13)
+        chosen = json.loads(
+            response({"start": start.isoformat(), "end": end.isoformat()}).content
+        )["basis"]
+        self.assertEqual(chosen["horizonStart"], start.isoformat())
+        self.assertEqual(chosen["horizonEnd"], end.isoformat())
+        self.assertEqual(chosen["horizonDays"], 14)
+        refused = response({"start": (today - timedelta(days=1)).isoformat()})
         self.assertEqual(refused.status_code, 400)
         self.assertEqual(
             json.loads(refused.content),
-            {"error": "Forecast horizon must be 7 or 30 days"},
+            {"error": "Forecast dates must not be in the past"},
         )
+        self.assertEqual(response({"start": "soon"}).status_code, 400)
 
     def test_endpoint_accepts_both_refs_and_hides_foreign_or_missing_menus(self):
         menu = self.menu(self.product("Toast"))
