@@ -1,5 +1,6 @@
 "use client"
 
+import { Info } from "lucide-react"
 import Link from "next/link"
 import { Fragment, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -61,7 +62,7 @@ type MaterialSortKey = "material" | "buy" | "cost"
 
 /** Only thin history is worth a word; a full eight weeks is the norm. */
 function historyLabel(weeksObserved: number) {
-  if (weeksObserved === 8) return "8 weeks recorded"
+  if (weeksObserved === 8) return null
   return weeksObserved ? `${weeksObserved} of 8 weeks` : "No recent records"
 }
 
@@ -211,19 +212,18 @@ export function ProductForecastTable({
                         </TableCell>
                       </>
                     )}
-                    <TableCell
-                      className={cn(
-                        "text-sm",
-                        product.weeksObserved === 8
-                          ? "text-faint"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {historyLabel(product.weeksObserved)}
-                      <div className="mt-1 print:hidden">
+                    <TableCell className="text-sm text-muted-foreground">
+                      {/* A full eight weeks is the norm and says nothing;
+                          only thin history is worth a word. The explanation
+                          sits behind one quiet icon so the column stays a
+                          column of numbers. */}
+                      <div className="flex items-center justify-between gap-2">
+                        <span>{historyLabel(product.weeksObserved)}</span>
                         <Button
                           variant="ghost"
                           size="xs"
+                          className="print:hidden"
+                          title="Why this quantity?"
                           aria-label={`Why this quantity for ${product.productName}`}
                           aria-expanded={expandedProduct === product.productId}
                           onClick={() =>
@@ -234,7 +234,7 @@ export function ProductForecastTable({
                             )
                           }
                         >
-                          Why this quantity?
+                          <Info aria-hidden="true" />
                         </Button>
                       </div>
                     </TableCell>
@@ -274,7 +274,7 @@ function planWord(plan: MenuForecastPlan) {
  * A section's title, its one-line subtitle and the count at the right, the
  * same shape over each of the page's tables so the eye reads three alike.
  */
-function SectionHeader({
+export function SectionHeader({
   title,
   subtitle,
   badge,

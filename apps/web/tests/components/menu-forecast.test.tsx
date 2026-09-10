@@ -243,9 +243,9 @@ const FORECAST: MenuForecastData = {
   ],
 }
 
-/** The tables in page order: Expected demand, Prep quantities, materials. */
+/** The tables in page order after Demand by week: Expected demand, Prep quantities, materials. */
 const table = (index: number) =>
-  within(document.querySelectorAll("table")[index] as HTMLElement)
+  within(document.querySelectorAll("table")[index + 1] as HTMLElement)
 /** One link per row, so the links are the row order. */
 const rowsOf = (index: number) =>
   table(index)
@@ -260,6 +260,49 @@ const busy = (): MenuForecastData => ({
 })
 
 describe("Menu forecast", () => {
+  it("shows the menu's demand by week: recent weeks, last year, and the plan", () => {
+    render(<MenuForecast forecast={FORECAST} measurementSystem="metric" />)
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Demand by week" })
+    ).toBeDefined()
+    const rows = within(
+      screen
+        .getByRole("heading", { level: 2, name: "Demand by week" })
+        .closest("section")!
+    ).getAllByRole("row")
+    // A header row, eight recorded weeks, then the one planned week.
+    expect(rows).toHaveLength(10)
+    expect(
+      within(rows[1]!)
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent)
+    ).toEqual(["Mar 2–Mar 8", "7", "6", "–"])
+    expect(
+      within(rows[9]!)
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent)
+    ).toEqual(["Apr 27–May 3", "–", "8", "7"])
+    expect(
+      screen.getByText(
+        "Recent weeks point to about 7 menu items a week, recent weeks counting more."
+      )
+    ).toBeDefined()
+    expect(
+      screen.getByText(
+        "No product has comparable history from last year, so nothing is scaled for the season."
+      )
+    ).toBeDefined()
+  })
+
+  it("keeps a full eight weeks of history quiet and the explanation behind one icon", () => {
+    render(<MenuForecast forecast={FORECAST} measurementSystem="metric" />)
+    expect(screen.queryByText("8 weeks recorded")).toBeNull()
+    expect(screen.queryByText("Why this quantity?")).toBeNull()
+    expect(
+      screen.getByRole("button", { name: "Why this quantity for Scone" })
+    ).toBeDefined()
+  })
+
   it("renders the independent-menu warning and current-composition basis", () => {
     render(<MenuForecast measurementSystem="metric" forecast={FORECAST} />)
 

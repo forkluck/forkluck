@@ -13,6 +13,7 @@ import {
   ProductForecastTable,
   Requirements,
 } from "@/components/menus/forecast-tables"
+import { DemandByWeek } from "@/components/menus/forecast-weeks"
 import {
   AnalyticsCard,
   CardLabel,
@@ -103,6 +104,7 @@ export function MenuForecast({
         </div>
       ) : null}
 
+      <DemandByWeek forecast={forecast} />
       <ProductForecastTable forecast={forecast} view={view} />
       <Requirements
         forecast={forecast}
