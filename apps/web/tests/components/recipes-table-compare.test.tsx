@@ -106,7 +106,7 @@ describe("comparing recipes from the list", () => {
   })
 
   it("refuses more columns than the page can show", async () => {
-    const many = Array.from({ length: 7 }, (_, index) =>
+    const many = Array.from({ length: 5 }, (_, index) =>
       recipe({
         id: `rec-${index}`,
         publicId: `rcp_${index}`,
@@ -114,8 +114,8 @@ describe("comparing recipes from the list", () => {
       })
     )
     render(<RecipesTable rows={many} currencyCode="USD" />)
-    for (let index = 0; index < 7; index += 1) selectRow(index)
-    const item = await compareItem("Compare up to 6")
+    for (let index = 0; index < 5; index += 1) selectRow(index)
+    const item = await compareItem("Compare up to 4")
     expect(item.hasAttribute("data-disabled")).toBe(true)
     expect(go).not.toHaveBeenCalled()
   })
