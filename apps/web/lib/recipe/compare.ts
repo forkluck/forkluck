@@ -26,7 +26,7 @@ import { convertAmount, unitDefinition } from "../unit-registry"
  * cycle. Import it by path.
  */
 
-export const MAX_COMPARE_RECIPES = 6
+export const MAX_COMPARE_RECIPES = 4
 export const COMPARE_PATH = "/recipes/compare"
 
 export type PercentMode = "bakers" | "weight"
@@ -88,6 +88,7 @@ export type FormulaInput = {
   key: string
   title: string
   source: "saved" | "pasted"
+  category?: string | null
   href?: string
   lines: FormulaLineInput[]
   /** Pasted lines that looked like ingredients but could not be read. */
@@ -149,6 +150,7 @@ export type Formula = {
   key: string
   title: string
   source: "saved" | "pasted"
+  category?: string | null
   href?: string
   lines: FormulaLine[]
   basis: FormulaBasis
@@ -491,6 +493,7 @@ export function buildFormula(
     key: input.key,
     title: input.title,
     source: input.source,
+    category: input.category,
     href: input.href,
     lines,
     basis,
@@ -652,6 +655,7 @@ export function savedFormulaInput(
     key: recipe.publicId,
     title: recipe.title,
     source: "saved",
+    category: recipe.category,
     href: `/recipes/${recipe.publicId}/recipe`,
     lines: legacy ? parsedFormulaLines(recipe.body, identities).lines : lines,
   }

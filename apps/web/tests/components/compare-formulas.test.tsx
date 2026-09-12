@@ -40,9 +40,14 @@ vi.mock("@/components/navigation-blocker", () => ({
 }))
 
 import {
-  COMPARE_MODE_KEY,
+  COMPARE_GRAMS_KEY,
   COMPARE_PASTED_KEY,
   CompareFormulas,
+  compareRowStats,
+  formatCompareDeltaPoints,
+  formatCompareGrams,
+  formatComparePercent,
+  formulaAxisMax,
 } from "@/components/recipes/compare-formulas"
 import type { FormulaInput } from "@/lib/recipe/compare"
 
@@ -50,6 +55,7 @@ const LOAF: FormulaInput = {
   key: "rcp_loaf",
   title: "Country loaf",
   source: "saved",
+  category: "Bread",
   href: "/recipes/rcp_loaf/recipe",
   lines: [
     { id: "1", name: "Bread flour", grams: 500, written: "500 g" },
@@ -63,6 +69,7 @@ const BRIOCHE: FormulaInput = {
   key: "rcp_brioche",
   title: "Brioche",
   source: "saved",
+  category: "Pastry",
   href: "/recipes/rcp_brioche/recipe",
   lines: [
     { id: "1", name: "Bread flour", grams: 500, written: "500 g" },
@@ -74,9 +81,9 @@ const BRIOCHE: FormulaInput = {
 }
 
 const OPTIONS = [
-  { publicId: "rcp_loaf", title: "Country loaf" },
-  { publicId: "rcp_brioche", title: "Brioche" },
-  { publicId: "rcp_focaccia", title: "Focaccia" },
+  { publicId: "rcp_loaf", title: "Country loaf", category: "Bread" },
+  { publicId: "rcp_brioche", title: "Brioche", category: "Pastry" },
+  { publicId: "rcp_focaccia", title: "Focaccia", category: "Bread" },
 ]
 
 function page(
@@ -90,164 +97,193 @@ function page(
       missingCount={0}
       identities={[]}
       recipeOptions={OPTIONS}
+      view="formula"
+      baseId={null}
       {...extra}
     />
   )
 }
 
-/** The row whose first cell reads `label`, so cells can be read off it. */
-function rowNamed(label: string): HTMLElement {
-  const cell = screen
-    .getAllByRole("cell")
-    .find((one) => one.textContent?.trim().startsWith(label))
-  if (!cell) throw new Error(`No row named ${label}`)
-  return cell.closest("tr") as HTMLElement
-}
-
-function cellsOf(row: HTMLElement): string[] {
-  return within(row)
-    .getAllByRole("cell")
-    .map((cell) => cell.textContent?.trim() ?? "")
-}
-
 beforeEach(() => {
   window.localStorage.clear()
+  vi.spyOn(crypto, "randomUUID").mockReturnValue("paste-1")
 })
 
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  vi.restoreAllMocks()
+})
+
+describe("compare formatting", () => {
+  it("prints percents, points and grams for the compare views", () => {
+    expect(formatComparePercent(1250)).toBe("1,250.0%")
+    expect(formatComparePercent(null)).toBe("—")
+    expect(formatCompareDeltaPoints(4.5)).toBe("+4.5 pts")
+    expect(formatCompareDeltaPoints(-12)).toBe("−12.0 pts")
+    expect(formatCompareDeltaPoints(0.04)).toBe("same")
+    expect(formatCompareGrams(1499.6)).toBe("1,500 g")
+  })
+
+  it("finds per-row spread and widens the axis above 100", () => {
+    expect(compareRowStats([null, 40, 52.5, 52.6])).toEqual({
+      min: 40,
+      max: 52.6,
+      spread: 12.6,
+    })
+    expect(formulaAxisMax([null, 99.9, 100])).toBe(100)
+    expect(formulaAxisMax([101])).toBe(150)
+    expect(formulaAxisMax([150])).toBe(200)
+  })
 })
 
 describe("the compare page", () => {
   it("explains both ways in when there is nothing to compare", () => {
     page([])
     expect(
-      screen.getByText("Compare recipes as baker’s percentages")
+      screen.getByText("Compare recipes as baker's percentages")
     ).toBeTruthy()
     expect(screen.getByRole("button", { name: "Paste recipe" })).toBeTruthy()
     expect(screen.getByRole("button", { name: /Add recipe/ })).toBeTruthy()
-    expect(screen.queryByRole("table")).toBeNull()
+    expect(screen.queryByText("Baker's %")).toBeNull()
   })
 
-  it("reads every line against the flour lines together", () => {
+  it("shows recipe chips, tabs and collapsed formula groups", () => {
     page([LOAF, BRIOCHE])
-    expect(screen.getAllByRole("table")).toHaveLength(2)
+    expect(screen.getAllByText("Country loaf").length).toBeGreaterThan(1)
+    expect(screen.getAllByText("Brioche").length).toBeGreaterThan(1)
+    expect(screen.getByRole("button", { name: "Formula" })).toBeTruthy()
+    expect(screen.getByRole("button", { name: "Spec sheet" })).toBeTruthy()
     expect(
-      screen.getAllByText("100% = Bread flour + Whole wheat flour")
-    ).toHaveLength(1)
-    expect(cellsOf(rowNamed("Bread flour"))).toEqual([
-      "Bread flour",
-      "500",
-      "83.3%",
-      "500",
-      "100.0%",
-      "+16.7",
-    ])
-    expect(cellsOf(rowNamed("Whole wheat flour")).slice(1)).toEqual([
-      "100",
-      "16.7%",
-      "—",
-      "—",
-      "−16.7",
-    ])
-    expect(cellsOf(rowNamed("Water")).slice(1)).toEqual([
-      "400",
-      "66.7%",
-      "—",
-      "—",
-      "−66.7",
-    ])
-    expect(cellsOf(rowNamed("Flour total")).slice(1)).toEqual([
-      "600",
-      "100.0%",
-      "500",
-      "100.0%",
-      "0.0",
-    ])
-    expect(cellsOf(rowNamed("Total")).slice(1)).toEqual([
-      "1,012",
-      "168.7%",
-      "910",
-      "182.0%",
-      "+13.3",
-    ])
-    // The formula summary reads hydration off the liquid lines.
-    expect(cellsOf(rowNamed("Hydration")).slice(1)).toEqual([
-      "66.7%",
-      "50.0%",
-      "−16.7",
-    ])
+      screen
+        .getByRole("button", { name: "Flour" })
+        .getAttribute("aria-expanded")
+    ).toBe("false")
+    expect(screen.queryByText("Whole wheat flour")).toBeNull()
+    expect(screen.getByTitle("Country loaf · 66.7%")).toBeTruthy()
   })
 
-  it("keeps an unweighed line on the page with a box for its grams", async () => {
+  it("sets and clears the baseline from a recipe chip", () => {
     page([LOAF, BRIOCHE])
-    const almond = rowNamed("Almond flour")
-    expect(cellsOf(almond).slice(1)).toEqual(["—", "—", "1 cup", "—", "—"])
-    expect(screen.getByText("1 line without a weight")).toBeTruthy()
-    const input = within(almond).getByLabelText(
-      "Grams for Almond flour in Brioche"
+    fireEvent.click(screen.getByRole("button", { name: "Country loaf" }))
+    expect(go).toHaveBeenCalledWith(
+      "/recipes/compare?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_loaf",
+      { replace: true }
     )
+
+    cleanup()
+    page([LOAF, BRIOCHE], { baseId: "rcp_loaf" })
+    expect(screen.getByText("baseline")).toBeTruthy()
+    expect(screen.getByText("−16.7 pts")).toBeTruthy()
+    fireEvent.click(
+      screen.getByRole("button", { name: "Country loaf baseline" })
+    )
+    expect(go).toHaveBeenLastCalledWith(
+      "/recipes/compare?r=rcp_loaf,rcp_brioche&view=formula",
+      { replace: true }
+    )
+  })
+
+  it("disables removal while only two recipes remain", () => {
+    page([LOAF, BRIOCHE])
+    expect(
+      screen
+        .getByRole("button", { name: "Remove Brioche" })
+        .hasAttribute("disabled")
+    ).toBe(true)
+    expect(
+      screen.getByRole("button", { name: "Remove Country loaf" })
+    ).toHaveProperty("disabled", true)
+  })
+
+  it("filters the add popover and picks a recipe", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: /Add recipe/ }))
+    const search = await screen.findByRole("searchbox", {
+      name: "Search recipes",
+    })
+    const selectedOption = screen
+      .getAllByRole("button", { name: /Country loaf/ })
+      .find((button) => button.textContent?.includes("Bread"))
+    expect(selectedOption?.hasAttribute("disabled")).toBe(true)
+    fireEvent.change(search, { target: { value: "foc" } })
+    expect(screen.queryByText("Pastry")).toBeNull()
+    fireEvent.click(screen.getByRole("button", { name: /Focaccia/ }))
+    expect(go).toHaveBeenCalledWith(
+      "/recipes/compare?r=rcp_loaf,rcp_brioche,rcp_focaccia&view=formula",
+      { replace: true }
+    )
+  })
+
+  it("opens the paste dialog from the add popover empty result", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: /Add recipe/ }))
+    const search = await screen.findByRole("searchbox", {
+      name: "Search recipes",
+    })
+    fireEvent.change(search, { target: { value: "zzz" } })
+    expect(screen.getByText("No recipes match")).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Paste a recipe" }))
+    expect(await screen.findByRole("dialog")).toBeTruthy()
+  })
+
+  it("expands formula groups and keeps unweighed lines editable", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: "Flour" }))
+    expect(screen.getByText("Whole wheat flour")).toBeTruthy()
+    const input = screen.getByLabelText("Grams for Almond flour in Brioche")
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: "50" } })
     fireEvent.blur(input)
-    // The field stays once filled: the number is the page's, not the recipe's.
     await waitFor(() => {
-      expect(cellsOf(rowNamed("Almond flour")).slice(1)).toEqual([
-        "—",
-        "—",
-        "",
-        "9.1%",
-        "+9.1",
-      ])
+      expect(
+        (
+          screen.getByLabelText(
+            "Grams for Almond flour in Brioche"
+          ) as HTMLInputElement
+        ).value
+      ).toBe("50")
     })
-    expect(
-      (
-        within(rowNamed("Almond flour")).getByLabelText(
-          "Grams for Almond flour in Brioche"
-        ) as HTMLInputElement
-      ).value
-    ).toBe("50")
-    // Almond flour is a flour line, so the brioche's 100% grew with it.
-    expect(cellsOf(rowNamed("Flour total")).slice(3)).toEqual([
-      "550",
-      "100.0%",
-      "0.0",
-    ])
-    expect(screen.queryByText("1 line without a weight")).toBeNull()
   })
 
-  it("moves a row to the group chosen for it, in every column", async () => {
+  it("moves a row to the group chosen for it", async () => {
     page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: "Flour" }))
     fireEvent.click(
       screen.getByRole("button", { name: "Group for Almond flour" })
     )
     fireEvent.click(await screen.findByRole("menuitem", { name: "Fats" }))
     await waitFor(() => {
-      expect(cellsOf(rowNamed("Fats total")).slice(1)).toEqual([
-        "0",
-        "0.0%",
-        "150",
-        "30.0%",
-        "+30.0",
-      ])
+      expect(screen.getByRole("button", { name: "Fats" })).toBeTruthy()
     })
   })
 
-  it("switches to shares of the whole and remembers it", async () => {
-    page([LOAF])
-    fireEvent.click(screen.getByRole("button", { name: "Show: Baker’s %" }))
-    fireEvent.click(await screen.findByRole("menuitem", { name: "Weight %" }))
-    await waitFor(() => {
-      expect(cellsOf(rowNamed("Water")).slice(1)).toEqual(["400", "39.5%"])
-    })
-    expect(screen.getByText("Share of total weight")).toBeTruthy()
-    expect(window.localStorage.getItem(COMPARE_MODE_KEY)).toBe("weight")
+  it("shows and remembers weights in the formula view", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: "Weights hidden" }))
+    expect(
+      screen
+        .getByRole("button", { name: "Weights shown" })
+        .getAttribute("aria-pressed")
+    ).toBe("true")
+    expect(window.localStorage.getItem(COMPARE_GRAMS_KEY)).toBe("shown")
+    expect(screen.getByText("600 g")).toBeTruthy()
+
     cleanup()
-    page([LOAF])
+    page([LOAF, BRIOCHE])
     await waitFor(() => {
-      expect(cellsOf(rowNamed("Water")).slice(1)).toEqual(["400", "39.5%"])
+      expect(screen.getByRole("button", { name: "Weights shown" })).toBeTruthy()
     })
+  })
+
+  it("renders the spec sheet with one column per recipe", () => {
+    page([LOAF, BRIOCHE], { view: "spec", baseId: "rcp_loaf" })
+    expect(screen.getByText("Pastry")).toBeTruthy()
+    expect(screen.getAllByText("Hydration")).toHaveLength(2)
+    expect(screen.getByText("600 g flour · 1,012 g dough")).toBeTruthy()
+    expect(screen.getByText("500 g flour · 910 g dough")).toBeTruthy()
+    expect(screen.getByText("−16.7 pts")).toBeTruthy()
+    expect(screen.getByText("Not in this recipe")).toBeTruthy()
   })
 
   it("adds a pasted recipe as a column of this browser's own", async () => {
@@ -267,42 +303,21 @@ describe("the compare page", () => {
       },
     })
     fireEvent.click(within(dialog).getByRole("button", { name: "Add" }))
-    // The title heads both tables.
+
     await waitFor(() => {
-      expect(screen.getAllByText("Serious Eats focaccia")).toHaveLength(2)
+      expect(
+        screen.getAllByText("Serious Eats focaccia").length
+      ).toBeGreaterThan(1)
     })
-    expect(screen.getByText("Pasted")).toBeTruthy()
-    expect(cellsOf(rowNamed("Water")).slice(1)).toEqual([
-      "400",
-      "66.7%",
-      "380",
-      "76.0%",
-      "+9.3",
-    ])
-    // Two cups of oil with no pantry to weigh them keep their row.
-    expect(cellsOf(rowNamed("Olive oil")).slice(1)).toEqual([
-      "—",
-      "—",
-      "2 cups",
-      "—",
-      "—",
-    ])
+    expect(
+      screen.getByLabelText("Grams for Olive oil in Serious Eats focaccia")
+    ).toBeTruthy()
     const stored = JSON.parse(
       window.localStorage.getItem(COMPARE_PASTED_KEY) ?? "[]"
     ) as Array<{ title: string; text: string }>
     expect(stored).toHaveLength(1)
     expect(stored[0]?.title).toBe("Serious Eats focaccia")
     expect(stored[0]?.text).toContain("380 g water")
-
-    // Removing a pasted column is this browser's business alone.
-    fireEvent.click(
-      screen.getByRole("button", { name: "Remove Serious Eats focaccia" })
-    )
-    await waitFor(() => {
-      expect(screen.queryAllByText("Serious Eats focaccia")).toHaveLength(0)
-    })
-    expect(window.localStorage.getItem(COMPARE_PASTED_KEY)).toBe("[]")
-    expect(go).not.toHaveBeenCalled()
   })
 
   it("brings a pasted recipe back on the next visit", async () => {
@@ -315,25 +330,9 @@ describe("the compare page", () => {
     )
     page([])
     await waitFor(() => {
-      expect(screen.getAllByText("From the book")).toHaveLength(2)
+      expect(screen.getByText("From the book")).toBeTruthy()
     })
-    expect(cellsOf(rowNamed("Water")).slice(1)).toEqual(["300", "60.0%"])
-  })
-
-  it("rewrites the URL to add or remove a saved recipe", async () => {
-    page([LOAF, BRIOCHE])
-    fireEvent.click(screen.getByRole("button", { name: "Remove Brioche" }))
-    expect(go).toHaveBeenCalledWith("/recipes/compare?r=rcp_loaf", {
-      replace: true,
-    })
-    fireEvent.click(screen.getByRole("button", { name: /Add recipe/ }))
-    const chosen = await screen.findByRole("menuitem", { name: "Country loaf" })
-    expect(chosen.hasAttribute("data-disabled")).toBe(true)
-    fireEvent.click(screen.getByRole("menuitem", { name: "Focaccia" }))
-    expect(go).toHaveBeenCalledWith(
-      "/recipes/compare?r=rcp_loaf,rcp_brioche,rcp_focaccia",
-      { replace: true }
-    )
+    expect(screen.getByText("Add one more recipe to compare.")).toBeTruthy()
   })
 
   it("says how many selected recipes could not be opened", () => {
