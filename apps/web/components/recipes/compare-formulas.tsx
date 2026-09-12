@@ -845,7 +845,10 @@ function FormulaView({
         className="overflow-x-auto"
         onScroll={(event) => setScrolled(event.currentTarget.scrollLeft > 0)}
       >
-        <Table className="min-w-full">
+        {/* Every column is a set width and the table is no wider than its
+            columns, so a dot's place on the axis does not shift when a
+            recipe is added or the window changes. */}
+        <Table className="w-auto">
           <TableHeader>
             <TableHeaderRow className="h-11">
               <TableHead
@@ -857,7 +860,7 @@ function FormulaView({
               >
                 {axisLabel}
               </TableHead>
-              <TableHead className="min-w-[320px] align-middle">
+              <TableHead className="w-[400px] max-w-[400px] min-w-[400px] align-middle">
                 <div className="relative h-11">
                   {axisTicks.map((tick, index) => (
                     <span
@@ -1061,7 +1064,7 @@ function FormulaPlotRow({
           </div>
         )}
       </TableCell>
-      <TableCell className="min-w-[320px]">
+      <TableCell className="w-[400px] max-w-[400px] min-w-[400px]">
         <div className={row.kind === "group" ? "h-14" : "h-10"}>
           <DotPlot row={row} columns={columns} axisMax={axisMax} />
         </div>
