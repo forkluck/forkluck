@@ -8,6 +8,7 @@ import {
   GuardedLink,
   useGuardedNavigate,
 } from "@/components/navigation-blocker"
+import { ActionsMenu } from "@/components/ui/actions-menu"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -16,7 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { FilterPill } from "@/components/ui/filter-pill"
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import {
   Menu,
@@ -795,10 +795,8 @@ function FormulaView({
   expanded,
   gramOverrides,
   onExpandedChange,
-  onChooseMode,
   onSetRole,
   onSetGrams,
-  onToggleGrams,
   pending,
   busy,
   onToggleBase,
@@ -812,10 +810,8 @@ function FormulaView({
   expanded: Record<string, boolean>
   gramOverrides: Record<string, number>
   onExpandedChange: (role: FormulaRole) => void
-  onChooseMode: (mode: PercentMode) => void
   onSetRole: (rowKey: string, role: FormulaRole) => void
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
-  onToggleGrams: () => void
   pending: boolean
   busy: string | null
   onToggleBase: (formula: Formula) => void
@@ -951,24 +947,6 @@ function FormulaView({
               ? "Baker's percentages: each ingredient as a share of flour. Click a recipe to use it as the baseline."
               : "Weight percentages: each ingredient as a share of the dough. Click a recipe to use it as the baseline."}
         </p>
-        <div className="flex items-center justify-end gap-2">
-          <FilterPill
-            label="Show"
-            value={mode}
-            options={MODE_OPTIONS}
-            onSelect={onChooseMode}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            aria-pressed={showGrams}
-            onClick={onToggleGrams}
-            className="h-7 rounded-full"
-          >
-            {showGrams ? "Weights shown" : "Weights hidden"}
-          </Button>
-        </div>
       </div>
     </>
   )
@@ -1547,6 +1525,20 @@ export function CompareFormulas({
             </TabPills>
             <ToolbarSpacer />
             {addPopover}
+            <ActionsMenu>
+              {MODE_OPTIONS.map((option) => (
+                <MenuCheckItem
+                  key={option.value}
+                  checked={mode === option.value}
+                  onClick={() => chooseMode(option.value)}
+                >
+                  {option.label}
+                </MenuCheckItem>
+              ))}
+              <MenuCheckItem checked={showGrams} onClick={toggleGrams}>
+                Show weights
+              </MenuCheckItem>
+            </ActionsMenu>
             {pasteButton}
           </Toolbar>
           {missingCount > 0 ? (
@@ -1583,10 +1575,8 @@ export function CompareFormulas({
                   [role]: !current[role],
                 }))
               }
-              onChooseMode={chooseMode}
               onSetRole={setRole}
               onSetGrams={setGrams}
-              onToggleGrams={toggleGrams}
               pending={pending}
               busy={busy}
               onToggleBase={toggleBase}

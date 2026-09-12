@@ -168,7 +168,7 @@ describe("the compare page", () => {
 
   it("switches to weight percentages and remembers it", async () => {
     page([LOAF, BRIOCHE])
-    fireEvent.click(screen.getByRole("button", { name: "Show: Baker's %" }))
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
     fireEvent.click(await screen.findByRole("menuitem", { name: "Weight %" }))
     await waitFor(() => {
       expect(
@@ -278,19 +278,17 @@ describe("the compare page", () => {
 
   it("shows and remembers weights in the formula view", async () => {
     page([LOAF, BRIOCHE])
-    fireEvent.click(screen.getByRole("button", { name: "Weights hidden" }))
-    expect(
-      screen
-        .getByRole("button", { name: "Weights shown" })
-        .getAttribute("aria-pressed")
-    ).toBe("true")
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Show weights" })
+    )
     expect(window.localStorage.getItem(COMPARE_GRAMS_KEY)).toBe("shown")
     expect(screen.getByText("600 g")).toBeTruthy()
 
     cleanup()
     page([LOAF, BRIOCHE])
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Weights shown" })).toBeTruthy()
+      expect(screen.getByText("600 g")).toBeTruthy()
     })
   })
 
