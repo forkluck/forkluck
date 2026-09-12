@@ -1509,37 +1509,43 @@ export function CompareFormulas({
       ) : (
         <>
           <Toolbar>
-            <TabPills>
-              <TabPill
-                active={view === "formula"}
-                onClick={() => navigate({ view: "formula" })}
-              >
-                Formula
-              </TabPill>
-              <TabPill
-                active={view === "spec"}
-                onClick={() => navigate({ view: "spec" })}
-              >
-                Spec sheet
-              </TabPill>
-            </TabPills>
-            <ToolbarSpacer />
-            {addPopover}
-            <ActionsMenu>
-              {MODE_OPTIONS.map((option) => (
-                <MenuCheckItem
-                  key={option.value}
-                  checked={mode === option.value}
-                  onClick={() => chooseMode(option.value)}
+            {/* On a phone the toolbar stacks; these rows keep the controls at
+                their own width instead of stretching across the screen. */}
+            <div className="flex flex-wrap items-center gap-2 md:contents">
+              <TabPills>
+                <TabPill
+                  active={view === "formula"}
+                  onClick={() => navigate({ view: "formula" })}
                 >
-                  {option.label}
+                  Formula
+                </TabPill>
+                <TabPill
+                  active={view === "spec"}
+                  onClick={() => navigate({ view: "spec" })}
+                >
+                  Spec sheet
+                </TabPill>
+              </TabPills>
+            </div>
+            <ToolbarSpacer />
+            <div className="flex flex-wrap items-center gap-2 md:contents">
+              {addPopover}
+              <ActionsMenu>
+                {MODE_OPTIONS.map((option) => (
+                  <MenuCheckItem
+                    key={option.value}
+                    checked={mode === option.value}
+                    onClick={() => chooseMode(option.value)}
+                  >
+                    {option.label}
+                  </MenuCheckItem>
+                ))}
+                <MenuCheckItem checked={showGrams} onClick={toggleGrams}>
+                  Show weights
                 </MenuCheckItem>
-              ))}
-              <MenuCheckItem checked={showGrams} onClick={toggleGrams}>
-                Show weights
-              </MenuCheckItem>
-            </ActionsMenu>
-            {pasteButton}
+              </ActionsMenu>
+              {pasteButton}
+            </div>
           </Toolbar>
           {missingCount > 0 ? (
             <p className="mb-4 text-xs text-muted-foreground">
