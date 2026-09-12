@@ -149,12 +149,12 @@ describe("the compare page", () => {
     expect(screen.queryByText("Baker's %")).toBeNull()
   })
 
-  it("shows recipe chips, tabs and collapsed formula groups", () => {
+  it("shows the view tabs, column headers and collapsed formula groups", () => {
     page([LOAF, BRIOCHE])
     expect(screen.getByRole("table")).toBeTruthy()
     expect(screen.getByRole("columnheader", { name: "Baker's %" })).toBeTruthy()
-    expect(screen.getAllByText("Country loaf").length).toBeGreaterThan(1)
-    expect(screen.getAllByText("Brioche").length).toBeGreaterThan(1)
+    expect(screen.getByRole("button", { name: "Country loaf" })).toBeTruthy()
+    expect(screen.getByRole("button", { name: "Brioche" })).toBeTruthy()
     expect(screen.getByRole("button", { name: "Formula" })).toBeTruthy()
     expect(screen.getByRole("button", { name: "Spec sheet" })).toBeTruthy()
     expect(
@@ -180,7 +180,7 @@ describe("the compare page", () => {
     expect(window.localStorage.getItem(COMPARE_MODE_KEY)).toBe("weight")
   })
 
-  it("sets and clears the baseline from a recipe chip", () => {
+  it("sets and clears the baseline from a column header", () => {
     page([LOAF, BRIOCHE])
     fireEvent.click(screen.getByRole("button", { name: "Country loaf" }))
     expect(go).toHaveBeenCalledWith(
@@ -190,7 +190,11 @@ describe("the compare page", () => {
 
     cleanup()
     page([LOAF, BRIOCHE], { baseId: "rcp_loaf" })
-    expect(screen.getByText("baseline")).toBeTruthy()
+    expect(
+      screen
+        .getByRole("button", { name: "Country loaf baseline" })
+        .getAttribute("aria-pressed")
+    ).toBe("true")
     expect(screen.getByText("−16.7 pts")).toBeTruthy()
     fireEvent.click(
       screen.getByRole("button", { name: "Country loaf baseline" })
@@ -320,8 +324,8 @@ describe("the compare page", () => {
 
     await waitFor(() => {
       expect(
-        screen.getAllByText("Serious Eats focaccia").length
-      ).toBeGreaterThan(1)
+        screen.getByRole("button", { name: "Serious Eats focaccia" })
+      ).toBeTruthy()
     })
     expect(
       screen.getByLabelText("Grams for Olive oil in Serious Eats focaccia")

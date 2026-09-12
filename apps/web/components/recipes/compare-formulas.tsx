@@ -24,7 +24,7 @@ import {
   MenuContent,
   MenuTrigger,
 } from "@/components/ui/menu"
-import { EmptyState } from "@/components/ui/page"
+import { EmptyState, Toolbar, ToolbarSpacer } from "@/components/ui/page"
 import { TabPill, TabPills } from "@/components/ui/tab-pills"
 import {
   Table,
@@ -587,95 +587,71 @@ function AddRecipePopover({
   )
 }
 
-function RecipeChips({
-  columns,
+/**
+ * A column's name: press it to make that recipe the baseline, press again
+ * to clear; the X takes the column off the page.
+ */
+function ColumnHeader({
+  formula,
+  index,
   baseId,
-  view,
   pending,
   busy,
-  actions,
-  onRemove,
   onToggleBase,
-  onView,
+  onRemove,
 }: {
-  columns: Formula[]
+  formula: Formula
+  index: number
   baseId: string | null
-  view: CompareView
   pending: boolean
   busy: string | null
-  /** Paste and Add, on the right as the toolbar had them. */
-  actions: React.ReactNode
-  onRemove: (formula: Formula) => void
   onToggleBase: (formula: Formula) => void
-  onView: (view: CompareView) => void
+  onRemove: (formula: Formula) => void
 }) {
+  const active = formula.key === baseId
   return (
-    <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-        {columns.map((formula, index) => {
-          const active = formula.key === baseId
-          return (
-            <div
-              key={formula.key}
-              className={cn(
-                "flex h-8 max-w-full items-center gap-1.5 rounded-full border border-border bg-card pr-1 pl-2.5",
-                active && "border-foreground bg-muted"
-              )}
-            >
-              <button
-                type="button"
-                aria-label={
-                  active ? `${formula.title} baseline` : formula.title
-                }
-                onClick={() => onToggleBase(formula)}
-                className="flex min-w-0 items-center gap-1.5 outline-none focus-visible:underline"
-              >
-                <span
-                  className={cn(
-                    "size-[9px] shrink-0 rounded-full",
-                    COLUMN_COLORS[index]?.dot
-                  )}
-                  aria-hidden="true"
-                />
-                <span className="max-w-[220px] min-w-0 truncate text-sm font-medium text-foreground">
-                  {formula.title}
-                </span>
-                {active ? (
-                  <span className="text-xs text-muted-foreground">
-                    baseline
-                  </span>
-                ) : null}
-              </button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                aria-label={`Remove ${formula.title}`}
-                pending={pending && busy === `remove:${formula.key}`}
-                onClick={() => onRemove(formula)}
-                className="size-6 rounded-full"
-              >
-                <X strokeWidth={2} aria-hidden="true" />
-              </Button>
-            </div>
-          )
-        })}
-      </div>
-      <div className="flex shrink-0 items-center gap-2">
-        {actions}
-        <TabPills>
-          <TabPill
-            active={view === "formula"}
-            onClick={() => onView("formula")}
-          >
-            Formula
-          </TabPill>
-          <TabPill active={view === "spec"} onClick={() => onView("spec")}>
-            Spec sheet
-          </TabPill>
-        </TabPills>
-      </div>
-    </div>
+    <span className="flex min-w-0 items-center justify-end gap-0.5">
+      <button
+        type="button"
+        aria-pressed={active}
+        aria-label={active ? `${formula.title} baseline` : formula.title}
+        title={
+          active ? "Baseline. Click to clear." : "Click to use as baseline"
+        }
+        onClick={() => onToggleBase(formula)}
+        className={cn(
+          "flex min-w-0 items-center gap-1.5 rounded-md px-1.5 py-0.5 outline-none hover:bg-accent focus-visible:bg-accent",
+          active && "bg-muted"
+        )}
+      >
+        <span
+          className={cn(
+            "size-[7px] shrink-0 rounded-full",
+            COLUMN_COLORS[index]?.dot
+          )}
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            "min-w-0 truncate text-xs font-medium",
+            active ? "text-foreground" : "text-muted-foreground"
+          )}
+        >
+          {formula.title}
+        </span>
+      </button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-xs"
+        aria-label={`Remove ${formula.title}`}
+        pending={pending && busy === `remove:${formula.key}`}
+        onClick={() => onRemove(formula)}
+        className="shrink-0"
+      >
+        <X strokeWidth={2} aria-hidden="true" />
+      </Button>
+    </span>
   )
 }
 
@@ -821,6 +797,10 @@ function FormulaView({
   onSetRole,
   onSetGrams,
   onToggleGrams,
+  pending,
+  busy,
+  onToggleBase,
+  onRemove,
 }: {
   columns: Formula[]
   groups: ComparisonGroup[]
@@ -834,6 +814,10 @@ function FormulaView({
   onSetRole: (rowKey: string, role: FormulaRole) => void
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
   onToggleGrams: () => void
+  pending: boolean
+  busy: string | null
+  onToggleBase: (formula: Formula) => void
+  onRemove: (formula: Formula) => void
 }) {
   const [scrolled, setScrolled] = React.useState(false)
   const groupRows = groups.map((group) => groupPlotRow(group, columns))
@@ -895,20 +879,17 @@ function FormulaView({
               {columns.map((formula, index) => (
                 <TableHead
                   key={formula.key}
-                  className="w-[104px] min-w-[104px] text-right align-middle"
+                  className="w-[136px] min-w-[136px] text-right align-middle"
                 >
-                  <span className="flex min-w-0 items-center justify-end gap-1.5">
-                    <span
-                      className={cn(
-                        "size-[7px] rounded-full",
-                        COLUMN_COLORS[index]?.dot
-                      )}
-                      aria-hidden="true"
-                    />
-                    <span className="min-w-0 truncate text-xs font-medium text-muted-foreground">
-                      {formula.title}
-                    </span>
-                  </span>
+                  <ColumnHeader
+                    formula={formula}
+                    index={index}
+                    baseId={baseId}
+                    pending={pending}
+                    busy={busy}
+                    onToggleBase={onToggleBase}
+                    onRemove={onRemove}
+                  />
                 </TableHead>
               ))}
             </TableHeaderRow>
@@ -1089,7 +1070,7 @@ function FormulaPlotRow({
         <TableCell
           key={formula.key}
           className={cn(
-            "w-[104px] min-w-[104px] text-right",
+            "w-[136px] min-w-[136px] text-right",
             row.kind === "group"
               ? "text-md font-medium text-foreground"
               : "text-base text-muted-foreground"
@@ -1125,6 +1106,10 @@ function SpecSheetView({
   showGrams,
   gramOverrides,
   onSetGrams,
+  pending,
+  busy,
+  onToggleBase,
+  onRemove,
 }: {
   columns: Formula[]
   groups: ComparisonGroup[]
@@ -1133,6 +1118,10 @@ function SpecSheetView({
   showGrams: boolean
   gramOverrides: Record<string, number>
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+  pending: boolean
+  busy: string | null
+  onToggleBase: (formula: Formula) => void
+  onRemove: (formula: Formula) => void
 }) {
   const groupRows = groups.map((group) => groupPlotRow(group, columns))
   return (
@@ -1166,17 +1155,37 @@ function SpecSheetView({
                     {formula.title}
                   </span>
                 )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={`Remove ${formula.title}`}
+                  pending={pending && busy === `remove:${formula.key}`}
+                  onClick={() => onRemove(formula)}
+                  className="ml-auto shrink-0"
+                >
+                  <X strokeWidth={2} aria-hidden="true" />
+                </Button>
               </div>
-              <p className="mt-1 text-sm text-faint">
-                {formula.source === "pasted"
-                  ? "Pasted recipe"
-                  : (formula.category ?? "")}
-                {formula.key === baseId ? (
-                  <span className="font-medium text-foreground">
-                    {" "}
-                    · Baseline
-                  </span>
-                ) : null}
+              <p className="mt-1 flex items-center gap-2 text-sm text-faint">
+                <span className="min-w-0 truncate">
+                  {formula.source === "pasted"
+                    ? "Pasted recipe"
+                    : (formula.category ?? "")}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  aria-pressed={formula.key === baseId}
+                  onClick={() => onToggleBase(formula)}
+                  className={cn(
+                    "shrink-0",
+                    formula.key === baseId && "bg-muted text-foreground"
+                  )}
+                >
+                  {formula.key === baseId ? "Baseline" : "Use as baseline"}
+                </Button>
               </p>
               {basisNote(formula) ? (
                 <p className="mt-1 text-sm text-faint">{basisNote(formula)}</p>
@@ -1457,6 +1466,8 @@ export function CompareFormulas({
       baseId: selectedBase === formula.key ? null : selectedBase,
     })
   }
+  const toggleBase = (formula: Formula) =>
+    navigate({ baseId: selectedBase === formula.key ? null : formula.key })
   const addPasted = (title: string, text: string) => {
     const id = crypto.randomUUID()
     savePasted([
@@ -1514,26 +1525,25 @@ export function CompareFormulas({
         </EmptyState>
       ) : (
         <>
-          <RecipeChips
-            columns={columns}
-            baseId={selectedBase}
-            view={view}
-            pending={pending}
-            busy={busy}
-            actions={
-              <>
-                {pasteButton}
-                {addPopover}
-              </>
-            }
-            onRemove={remove}
-            onToggleBase={(formula) =>
-              navigate({
-                baseId: selectedBase === formula.key ? null : formula.key,
-              })
-            }
-            onView={(nextView) => navigate({ view: nextView })}
-          />
+          <Toolbar>
+            <TabPills>
+              <TabPill
+                active={view === "formula"}
+                onClick={() => navigate({ view: "formula" })}
+              >
+                Formula
+              </TabPill>
+              <TabPill
+                active={view === "spec"}
+                onClick={() => navigate({ view: "spec" })}
+              >
+                Spec sheet
+              </TabPill>
+            </TabPills>
+            <ToolbarSpacer />
+            {addPopover}
+            {pasteButton}
+          </Toolbar>
           {missingCount > 0 ? (
             <p className="mb-4 text-xs text-muted-foreground">
               {plural(missingCount, "selected recipe")} could not be opened.
@@ -1548,6 +1558,10 @@ export function CompareFormulas({
               showGrams={showGrams}
               gramOverrides={gramOverrides}
               onSetGrams={setGrams}
+              pending={pending}
+              busy={busy}
+              onToggleBase={toggleBase}
+              onRemove={remove}
             />
           ) : (
             <FormulaView
@@ -1568,6 +1582,10 @@ export function CompareFormulas({
               onSetRole={setRole}
               onSetGrams={setGrams}
               onToggleGrams={toggleGrams}
+              pending={pending}
+              busy={busy}
+              onToggleBase={toggleBase}
+              onRemove={remove}
             />
           )}
         </>
