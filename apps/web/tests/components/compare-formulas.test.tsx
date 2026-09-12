@@ -41,6 +41,7 @@ vi.mock("@/components/navigation-blocker", () => ({
 
 import {
   COMPARE_GRAMS_KEY,
+  COMPARE_MODE_KEY,
   COMPARE_PASTED_KEY,
   CompareFormulas,
   compareRowStats,
@@ -150,6 +151,8 @@ describe("the compare page", () => {
 
   it("shows recipe chips, tabs and collapsed formula groups", () => {
     page([LOAF, BRIOCHE])
+    expect(screen.getByRole("table")).toBeTruthy()
+    expect(screen.getByRole("columnheader", { name: "Baker's %" })).toBeTruthy()
     expect(screen.getAllByText("Country loaf").length).toBeGreaterThan(1)
     expect(screen.getAllByText("Brioche").length).toBeGreaterThan(1)
     expect(screen.getByRole("button", { name: "Formula" })).toBeTruthy()
@@ -161,6 +164,20 @@ describe("the compare page", () => {
     ).toBe("false")
     expect(screen.queryByText("Whole wheat flour")).toBeNull()
     expect(screen.getByTitle("Country loaf · 66.7%")).toBeTruthy()
+  })
+
+  it("switches to weight percentages and remembers it", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: "Show: Baker's %" }))
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Weight %" }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole("columnheader", { name: "Weight %" })
+      ).toBeTruthy()
+    })
+    expect(screen.getByRole("button", { name: "Liquids" })).toBeTruthy()
+    expect(screen.queryByText("Hydration")).toBeNull()
+    expect(window.localStorage.getItem(COMPARE_MODE_KEY)).toBe("weight")
   })
 
   it("sets and clears the baseline from a recipe chip", () => {

@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { FilterPill } from "@/components/ui/filter-pill"
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import {
   Menu,
@@ -25,6 +26,16 @@ import {
 } from "@/components/ui/menu"
 import { EmptyState } from "@/components/ui/page"
 import { TabPill, TabPills } from "@/components/ui/tab-pills"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFrame,
+  TableHead,
+  TableHeader,
+  TableHeaderRow,
+  TableRow,
+} from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import type { PriceListEntry } from "@/lib/pricing"
 import {
@@ -41,6 +52,7 @@ import {
   type FormulaInput,
   type FormulaLine,
   type FormulaOverrides,
+  type PercentMode,
   type FormulaRole,
 } from "@/lib/recipe/compare"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
@@ -58,6 +70,7 @@ import { cn } from "@/lib/utils"
  * they are read again on every load. */
 export const COMPARE_PASTED_KEY = "recipe.compare.pasted"
 export const COMPARE_GRAMS_KEY = "recipe.compare.grams"
+export const COMPARE_MODE_KEY = "recipe.compare.percentMode"
 
 export type CompareView = "formula" | "spec"
 export type PastedRecipe = { id: string; title: string; text: string }
@@ -100,12 +113,10 @@ const COLUMN_COLORS = [
   { dot: "bg-chart-4", fill: "bg-chart-4" },
 ] as const
 
-const FORMULA_GRID_CLASSES: Record<number, string> = {
-  1: "grid-cols-[168px_minmax(320px,1fr)_repeat(1,104px)]",
-  2: "grid-cols-[168px_minmax(320px,1fr)_repeat(2,104px)]",
-  3: "grid-cols-[168px_minmax(320px,1fr)_repeat(3,104px)]",
-  4: "grid-cols-[168px_minmax(320px,1fr)_repeat(4,104px)]",
-}
+const MODE_OPTIONS: Array<{ value: PercentMode; label: string }> = [
+  { value: "bakers", label: "Baker's %" },
+  { value: "weight", label: "Weight %" },
+]
 
 const SPEC_GRID_CLASSES: Record<number, string> = {
   1: "grid-cols-[repeat(1,minmax(260px,1fr))]",
@@ -795,10 +806,12 @@ function FormulaView({
   columns,
   groups,
   baseId,
+  mode,
   showGrams,
   expanded,
   gramOverrides,
   onExpandedChange,
+  onChooseMode,
   onSetRole,
   onSetGrams,
   onToggleGrams,
@@ -806,14 +819,17 @@ function FormulaView({
   columns: Formula[]
   groups: ComparisonGroup[]
   baseId: string | null
+  mode: PercentMode
   showGrams: boolean
   expanded: Record<string, boolean>
   gramOverrides: Record<string, number>
   onExpandedChange: (role: FormulaRole) => void
+  onChooseMode: (mode: PercentMode) => void
   onSetRole: (rowKey: string, role: FormulaRole) => void
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
   onToggleGrams: () => void
 }) {
+  const [scrolled, setScrolled] = React.useState(false)
   const groupRows = groups.map((group) => groupPlotRow(group, columns))
   const visibleRows = groupRows.flatMap((groupRow) => [
     groupRow,
@@ -828,90 +844,110 @@ function FormulaView({
   )
   const axisTicks = [0, axisMax / 2, axisMax]
   const basisTitle = columns.map(formulaBasisLine).join(" ")
+  const axisLabel = mode === "bakers" ? "Baker's %" : "Weight %"
+  const stickyClass = cn(
+    "sticky left-0 z-[1] bg-card after:absolute after:inset-y-0 after:right-0 after:w-px after:content-['']",
+    scrolled ? "after:bg-border" : "after:bg-transparent"
+  )
   return (
     <>
-      <div className="overflow-x-auto rounded-xl border border-border bg-card">
-        <div
-          className={cn(
-            "grid min-w-full",
-            FORMULA_GRID_CLASSES[columns.length] ?? FORMULA_GRID_CLASSES[4]
-          )}
-        >
-          <div
-            title={basisTitle}
-            className="flex h-11 items-center border-b border-border px-3 text-xs font-medium text-muted-foreground"
-          >
-            Baker&apos;s %
-          </div>
-          <div className="relative h-11 border-b border-border">
-            {axisTicks.map((tick, index) => (
-              <span
-                key={tick}
+      <TableFrame
+        className="overflow-x-auto"
+        onScroll={(event) => setScrolled(event.currentTarget.scrollLeft > 0)}
+      >
+        <Table className="min-w-full">
+          <TableHeader>
+            <TableHeaderRow className="h-11">
+              <TableHead
+                title={basisTitle}
                 className={cn(
-                  "absolute top-1/2 -translate-y-1/2 text-2xs text-faint",
-                  index === 0
-                    ? "left-0"
-                    : index === 1
-                      ? "left-1/2 -translate-x-1/2"
-                      : "right-0"
+                  "w-[168px] min-w-[168px] align-middle",
+                  stickyClass
                 )}
               >
-                {formatAxisTick(tick)}
-              </span>
-            ))}
-          </div>
-          {columns.map((formula, index) => (
-            <div
-              key={formula.key}
-              className="flex h-11 items-center justify-end gap-1.5 border-b border-border px-3"
-            >
-              <span
-                className={cn(
-                  "size-[7px] rounded-full",
-                  COLUMN_COLORS[index]?.dot
-                )}
-                aria-hidden="true"
-              />
-              <span className="min-w-0 truncate text-right text-xs font-medium text-muted-foreground">
-                {formula.title}
-              </span>
-            </div>
-          ))}
-          {groupRows.map((groupRow) => (
-            <React.Fragment key={groupRow.key}>
-              <FormulaPlotRow
-                row={groupRow}
-                columns={columns}
-                axisMax={axisMax}
-                baseId={baseId}
-                showGrams={showGrams}
-                expanded={expanded[groupRow.role] ?? false}
-                gramOverrides={gramOverrides}
-                onExpandedChange={onExpandedChange}
-                onSetRole={onSetRole}
-                onSetGrams={onSetGrams}
-              />
-              {expanded[groupRow.role]
-                ? groupRow.group.rows.map((row) => (
-                    <FormulaPlotRow
-                      key={row.key}
-                      row={ingredientPlotRow(groupRow.group, row, columns)}
-                      columns={columns}
-                      axisMax={axisMax}
-                      baseId={baseId}
-                      showGrams={showGrams}
-                      expanded={false}
-                      gramOverrides={gramOverrides}
-                      onExpandedChange={onExpandedChange}
-                      onSetRole={onSetRole}
-                      onSetGrams={onSetGrams}
+                {axisLabel}
+              </TableHead>
+              <TableHead className="min-w-[320px] align-middle">
+                <div className="relative h-11">
+                  {axisTicks.map((tick, index) => (
+                    <span
+                      key={tick}
+                      className={cn(
+                        "absolute top-1/2 -translate-y-1/2 text-2xs text-faint",
+                        index === 0
+                          ? "left-0"
+                          : index === 1
+                            ? "left-1/2 -translate-x-1/2"
+                            : "right-0"
+                      )}
+                    >
+                      {formatAxisTick(tick)}
+                    </span>
+                  ))}
+                </div>
+              </TableHead>
+              {columns.map((formula, index) => (
+                <TableHead
+                  key={formula.key}
+                  className="w-[104px] min-w-[104px] text-right align-middle"
+                >
+                  <span className="flex min-w-0 items-center justify-end gap-1.5">
+                    <span
+                      className={cn(
+                        "size-[7px] rounded-full",
+                        COLUMN_COLORS[index]?.dot
+                      )}
+                      aria-hidden="true"
                     />
-                  ))
-                : null}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+                    <span className="min-w-0 truncate text-xs font-medium text-muted-foreground">
+                      {formula.title}
+                    </span>
+                  </span>
+                </TableHead>
+              ))}
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {groupRows.map((groupRow) => (
+              <React.Fragment key={groupRow.key}>
+                <FormulaPlotRow
+                  row={groupRow}
+                  columns={columns}
+                  axisMax={axisMax}
+                  baseId={baseId}
+                  mode={mode}
+                  showGrams={showGrams}
+                  expanded={expanded[groupRow.role] ?? false}
+                  stickyClass={stickyClass}
+                  gramOverrides={gramOverrides}
+                  onExpandedChange={onExpandedChange}
+                  onSetRole={onSetRole}
+                  onSetGrams={onSetGrams}
+                />
+                {expanded[groupRow.role]
+                  ? groupRow.group.rows.map((row) => (
+                      <FormulaPlotRow
+                        key={row.key}
+                        row={ingredientPlotRow(groupRow.group, row, columns)}
+                        columns={columns}
+                        axisMax={axisMax}
+                        baseId={baseId}
+                        mode={mode}
+                        showGrams={showGrams}
+                        expanded={false}
+                        stickyClass={stickyClass}
+                        gramOverrides={gramOverrides}
+                        onExpandedChange={onExpandedChange}
+                        onSetRole={onSetRole}
+                        onSetGrams={onSetGrams}
+                      />
+                    ))
+                  : null}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableFrame>
       <div className="mt-3.5 flex flex-col gap-2 text-sm text-faint md:flex-row md:items-center">
         <p className="flex-1">
           {baseId
@@ -919,18 +955,28 @@ function FormulaView({
                 columns.find((formula) => formula.key === baseId)?.title ??
                 "baseline"
               }. Click it again to clear.`
-            : "Baker's percentages: each ingredient as a share of flour. Click a recipe to use it as the baseline."}
+            : mode === "bakers"
+              ? "Baker's percentages: each ingredient as a share of flour. Click a recipe to use it as the baseline."
+              : "Weight percentages: each ingredient as a share of the dough. Click a recipe to use it as the baseline."}
         </p>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          aria-pressed={showGrams}
-          onClick={onToggleGrams}
-          className="h-7 rounded-full"
-        >
-          {showGrams ? "Weights shown" : "Weights hidden"}
-        </Button>
+        <div className="flex items-center justify-end gap-2">
+          <FilterPill
+            label="Show"
+            value={mode}
+            options={MODE_OPTIONS}
+            onSelect={onChooseMode}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            aria-pressed={showGrams}
+            onClick={onToggleGrams}
+            className="h-7 rounded-full"
+          >
+            {showGrams ? "Weights shown" : "Weights hidden"}
+          </Button>
+        </div>
       </div>
     </>
   )
@@ -941,8 +987,10 @@ function FormulaPlotRow({
   columns,
   axisMax,
   baseId,
+  mode,
   showGrams,
   expanded,
+  stickyClass,
   gramOverrides,
   onExpandedChange,
   onSetRole,
@@ -952,8 +1000,10 @@ function FormulaPlotRow({
   columns: Formula[]
   axisMax: number
   baseId: string | null
+  mode: PercentMode
   showGrams: boolean
   expanded: boolean
+  stickyClass: string
   gramOverrides: Record<string, number>
   onExpandedChange: (role: FormulaRole) => void
   onSetRole: (rowKey: string, role: FormulaRole) => void
@@ -964,13 +1014,10 @@ function FormulaPlotRow({
     ? (row.values[columns.findIndex((formula) => formula.key === baseId)]
         ?.percent ?? null)
     : null
-  const rowClass =
-    row.kind === "group"
-      ? "min-h-14 border-b border-muted hover:bg-accent"
-      : "min-h-10 border-b border-muted hover:bg-accent"
+  const note = mode === "bakers" && row.role === "liquid"
   return (
-    <>
-      <div className={cn("flex items-center px-3", rowClass)}>
+    <TableRow className={row.kind === "group" ? "h-14" : "h-10"}>
+      <TableCell className={cn("w-[168px] min-w-[168px]", stickyClass)}>
         {canExpand ? (
           <button
             type="button"
@@ -987,7 +1034,7 @@ function FormulaPlotRow({
               <span className="block truncate text-md font-semibold text-foreground">
                 {row.label}
               </span>
-              {row.role === "liquid" ? (
+              {note ? (
                 <span className="block text-xs text-faint">Hydration</span>
               ) : null}
             </span>
@@ -1010,7 +1057,7 @@ function FormulaPlotRow({
               >
                 {row.label}
               </span>
-              {row.kind === "group" && row.role === "liquid" ? (
+              {row.kind === "group" && note ? (
                 <span className="block text-xs text-faint">Hydration</span>
               ) : null}
             </span>
@@ -1023,16 +1070,17 @@ function FormulaPlotRow({
             ) : null}
           </div>
         )}
-      </div>
-      <div className={cn(rowClass, "px-3")}>
-        <DotPlot row={row} columns={columns} axisMax={axisMax} />
-      </div>
+      </TableCell>
+      <TableCell className="min-w-[320px]">
+        <div className={row.kind === "group" ? "h-14" : "h-10"}>
+          <DotPlot row={row} columns={columns} axisMax={axisMax} />
+        </div>
+      </TableCell>
       {columns.map((formula, index) => (
-        <div
+        <TableCell
           key={formula.key}
           className={cn(
-            "flex items-center justify-end px-3 text-right",
-            rowClass,
+            "w-[104px] min-w-[104px] text-right",
             row.kind === "group"
               ? "text-md font-medium text-foreground"
               : "text-base text-muted-foreground"
@@ -1054,9 +1102,9 @@ function FormulaPlotRow({
             gramOverrides={gramOverrides}
             onSetGrams={onSetGrams}
           />
-        </div>
+        </TableCell>
       ))}
-    </>
+    </TableRow>
   )
 }
 
@@ -1064,6 +1112,7 @@ function SpecSheetView({
   columns,
   groups,
   baseId,
+  mode,
   showGrams,
   gramOverrides,
   onSetGrams,
@@ -1071,6 +1120,7 @@ function SpecSheetView({
   columns: Formula[]
   groups: ComparisonGroup[]
   baseId: string | null
+  mode: PercentMode
   showGrams: boolean
   gramOverrides: Record<string, number>
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
@@ -1135,6 +1185,7 @@ function SpecSheetView({
                 formulaIndex={index}
                 columns={columns}
                 baseId={baseId}
+                mode={mode}
                 showGrams={showGrams}
                 gramOverrides={gramOverrides}
                 onSetGrams={onSetGrams}
@@ -1153,6 +1204,7 @@ function SpecSection({
   formulaIndex,
   columns,
   baseId,
+  mode,
   showGrams,
   gramOverrides,
   onSetGrams,
@@ -1162,6 +1214,7 @@ function SpecSection({
   formulaIndex: number
   columns: Formula[]
   baseId: string | null
+  mode: PercentMode
   showGrams: boolean
   gramOverrides: Record<string, number>
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
@@ -1183,7 +1236,9 @@ function SpecSection({
       ? Math.max(0, Math.min(100, (value.percent / rowMax) * 100))
       : 0
   const sectionLabel =
-    groupRow.role === "liquid" ? "Hydration" : groupRow.group.label
+    mode === "bakers" && groupRow.role === "liquid"
+      ? "Hydration"
+      : groupRow.group.label
   const showLines =
     groupRow.group.rows.length > 1 ||
     groupRow.group.rows.some((row) => row.label !== sectionLabel)
@@ -1308,6 +1363,7 @@ export function CompareFormulas({
   baseId: string | null
 }) {
   const { go, pending } = useGuardedNavigate()
+  const [mode, setMode] = React.useState<PercentMode>("bakers")
   const [pasted, setPasted] = React.useState<PastedRecipe[]>([])
   const [showGrams, setShowGrams] = React.useState(false)
   const [gramOverrides, setGramOverrides] = React.useState<
@@ -1325,6 +1381,11 @@ export function CompareFormulas({
   // what this browser prefers or has pasted.
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMode(
+      window.localStorage.getItem(COMPARE_MODE_KEY) === "weight"
+        ? "weight"
+        : "bakers"
+    )
     setShowGrams(window.localStorage.getItem(COMPARE_GRAMS_KEY) === "shown")
     setPasted(readPasted())
   }, [])
@@ -1346,8 +1407,8 @@ export function CompareFormulas({
     [gramOverrides, roleOverrides]
   )
   const comparison = React.useMemo(
-    () => compareFormulas([...formulas, ...pastedInputs], "bakers", overrides),
-    [formulas, pastedInputs, overrides]
+    () => compareFormulas([...formulas, ...pastedInputs], mode, overrides),
+    [formulas, pastedInputs, mode, overrides]
   )
   const columns = comparison.formulas
   const selectedBase = columns.some((formula) => formula.key === baseId)
@@ -1405,6 +1466,10 @@ export function CompareFormulas({
     })
   const setRole = (rowKey: string, role: FormulaRole) =>
     setRoleOverrides((current) => ({ ...current, [rowKey]: role }))
+  const chooseMode = (next: PercentMode) => {
+    setMode(next)
+    window.localStorage.setItem(COMPARE_MODE_KEY, next)
+  }
   const toggleGrams = () =>
     setShowGrams((current) => {
       const next = !current
@@ -1474,6 +1539,7 @@ export function CompareFormulas({
               columns={columns}
               groups={comparison.groups}
               baseId={selectedBase}
+              mode={mode}
               showGrams={showGrams}
               gramOverrides={gramOverrides}
               onSetGrams={setGrams}
@@ -1483,6 +1549,7 @@ export function CompareFormulas({
               columns={columns}
               groups={comparison.groups}
               baseId={selectedBase}
+              mode={mode}
               showGrams={showGrams}
               expanded={expanded}
               gramOverrides={gramOverrides}
@@ -1492,6 +1559,7 @@ export function CompareFormulas({
                   [role]: !current[role],
                 }))
               }
+              onChooseMode={chooseMode}
               onSetRole={setRole}
               onSetGrams={setGrams}
               onToggleGrams={toggleGrams}
