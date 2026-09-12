@@ -1076,32 +1076,94 @@ function FormulaPlotRow({
   )
 }
 
+/* ----------------------------------------------------------------------- */
+/* Spec sheet: what comes out                                               */
+/* ----------------------------------------------------------------------- */
+
+type SpecFigureKey =
+  "hydration" | "water" | "fat" | "sugar" | "protein" | "salt" | "solids"
+
+const SPEC_FIGURES: readonly SpecFigureKey[] = [
+  "hydration",
+  "water",
+  "fat",
+  "sugar",
+  "protein",
+  "salt",
+  "solids",
+]
+
+function specFigureLabel(key: SpecFigureKey, mode: PercentMode): string {
+  switch (key) {
+    case "hydration":
+      return mode === "bakers" ? "Hydration" : "Liquids"
+    case "water":
+      return "Total water"
+    case "fat":
+      return "Fat"
+    case "sugar":
+      return "Sugars"
+    case "protein":
+      return "Protein"
+    case "salt":
+      return "Salt"
+    case "solids":
+      return "Total solids"
+  }
+}
+
+/**
+ * A composition figure on the column's basis: flour in baker's mode, the
+ * whole dough in weight mode. Solids are always a share of the weight the
+ * profiles cover, since "solids of flour" means nothing.
+ */
+export function specFigure(
+  formula: Formula,
+  key: SpecFigureKey,
+  mode: PercentMode
+): number | null {
+  if (key === "solids") return formula.summary.solidsPercent
+  const basis = mode === "bakers" ? formula.basisGrams : formula.totalGrams
+  if (basis <= 0) return null
+  const grams = formula.summary.grams[key === "hydration" ? "liquid" : key]
+  return Math.round((grams / basis) * 1000) / 10
+}
+
+function coverageLine(formula: Formula): string {
+  const { coveragePercent, unmappedCount } = formula.summary
+  const covered = `Profiles cover ${formatComparePercent(coveragePercent)} of the weight`
+  return unmappedCount > 0
+    ? `${covered} · ${plural(unmappedCount, "line")} unmapped`
+    : covered
+}
+
 function SpecSheetView({
   columns,
-  groups,
   baseId,
   mode,
-  showGrams,
-  gramOverrides,
-  onSetGrams,
   pending,
   busy,
   onToggleBase,
   onRemove,
 }: {
   columns: Formula[]
-  groups: ComparisonGroup[]
   baseId: string | null
   mode: PercentMode
-  showGrams: boolean
-  gramOverrides: Record<string, number>
-  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
   pending: boolean
   busy: string | null
   onToggleBase: (formula: Formula) => void
   onRemove: (formula: Formula) => void
 }) {
-  const groupRows = groups.map((group) => groupPlotRow(group, columns))
+  const baseIndex = columns.findIndex((formula) => formula.key === baseId)
+  const figures = SPEC_FIGURES.map((key) => {
+    const values = columns.map((formula) => specFigure(formula, key, mode))
+    return {
+      key,
+      values,
+      rowMax: compareRowStats(values).max,
+      baseline: baseIndex >= 0 ? (values[baseIndex] ?? null) : null,
+    }
+  })
   return (
     <div className="overflow-x-auto">
       <div
@@ -1110,231 +1172,161 @@ function SpecSheetView({
           SPEC_GRID_CLASSES[columns.length] ?? SPEC_GRID_CLASSES[4]
         )}
       >
-        {columns.map((formula, index) => (
-          <div key={formula.key} className="min-w-0">
-            <div className="pb-[22px]">
-              <div className="flex min-w-0 items-center gap-2">
-                <span
-                  className={cn(
-                    "size-[9px] rounded-full",
-                    COLUMN_COLORS[index]?.dot
+        {columns.map((formula, index) => {
+          const isBaseline = formula.key === baseId
+          const partial = formula.summary.coveragePercent < 100
+          return (
+            <div key={formula.key} className="min-w-0">
+              <div className="pb-[22px]">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span
+                    className={cn(
+                      "size-[9px] shrink-0 rounded-full",
+                      COLUMN_COLORS[index]?.dot
+                    )}
+                    aria-hidden="true"
+                  />
+                  {formula.href ? (
+                    <GuardedLink
+                      href={formula.href}
+                      className="min-w-0 truncate text-lg font-semibold text-foreground hover:underline"
+                    >
+                      {formula.title}
+                    </GuardedLink>
+                  ) : (
+                    <span className="min-w-0 truncate text-lg font-semibold text-foreground">
+                      {formula.title}
+                    </span>
                   )}
-                  aria-hidden="true"
-                />
-                {formula.href ? (
-                  <GuardedLink
-                    href={formula.href}
-                    className="min-w-0 truncate text-lg font-semibold text-foreground hover:underline"
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={`Remove ${formula.title}`}
+                    pending={pending && busy === `remove:${formula.key}`}
+                    onClick={() => onRemove(formula)}
+                    className="ml-auto shrink-0"
                   >
-                    {formula.title}
-                  </GuardedLink>
-                ) : (
-                  <span className="min-w-0 truncate text-lg font-semibold text-foreground">
-                    {formula.title}
+                    <X strokeWidth={2} aria-hidden="true" />
+                  </Button>
+                </div>
+                <p className="mt-1 flex items-center gap-2 text-sm text-faint">
+                  <span className="min-w-0 truncate">
+                    {formula.source === "pasted"
+                      ? "Pasted recipe"
+                      : (formula.category ?? "")}
                   </span>
-                )}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={`Remove ${formula.title}`}
-                  pending={pending && busy === `remove:${formula.key}`}
-                  onClick={() => onRemove(formula)}
-                  className="ml-auto shrink-0"
-                >
-                  <X strokeWidth={2} aria-hidden="true" />
-                </Button>
-              </div>
-              <p className="mt-1 flex items-center gap-2 text-sm text-faint">
-                <span className="min-w-0 truncate">
-                  {formula.source === "pasted"
-                    ? "Pasted recipe"
-                    : (formula.category ?? "")}
-                </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="xs"
-                  aria-pressed={formula.key === baseId}
-                  onClick={() => onToggleBase(formula)}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    aria-pressed={isBaseline}
+                    onClick={() => onToggleBase(formula)}
+                    className={cn(
+                      "shrink-0",
+                      isBaseline && "bg-muted text-foreground"
+                    )}
+                  >
+                    {isBaseline ? "Baseline" : "Use as baseline"}
+                  </Button>
+                </p>
+                {basisNote(formula) ? (
+                  <p className="mt-1 text-sm text-faint">
+                    {basisNote(formula)}
+                  </p>
+                ) : null}
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {formatCompareGrams(formula.roleTotals.flour.grams)} flour ·{" "}
+                  {formatCompareGrams(formula.totalGrams)} dough
+                </p>
+                {/* The figures below are only as good as the profile links,
+                    so a gap is said up here, not in a footnote. */}
+                <p
                   className={cn(
-                    "shrink-0",
-                    formula.key === baseId && "bg-muted text-foreground"
+                    "mt-1 text-sm",
+                    partial
+                      ? "font-medium text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
-                  {formula.key === baseId ? "Baseline" : "Use as baseline"}
-                </Button>
-              </p>
-              {basisNote(formula) ? (
-                <p className="mt-1 text-sm text-faint">{basisNote(formula)}</p>
-              ) : null}
-              <p className="mt-1 text-sm text-muted-foreground">
-                {formatCompareGrams(formula.roleTotals.flour.grams)} flour ·{" "}
-                {formatCompareGrams(formula.totalGrams)} dough
-              </p>
+                  {coverageLine(formula)}
+                </p>
+              </div>
+              {figures.map((figure) => {
+                const value = figure.values[index] ?? null
+                const delta =
+                  baseId &&
+                  !isBaseline &&
+                  value !== null &&
+                  figure.baseline !== null
+                    ? Math.round((value - figure.baseline) * 10) / 10
+                    : null
+                const width =
+                  value !== null && figure.rowMax !== null && figure.rowMax > 0
+                    ? Math.min(100, (value / figure.rowMax) * 100)
+                    : 0
+                return (
+                  <section
+                    key={figure.key}
+                    className="border-t border-border pt-4 pb-[18px]"
+                  >
+                    <h3 className="text-xs font-medium text-muted-foreground">
+                      {specFigureLabel(figure.key, mode)}
+                      {figure.key === "solids" ? (
+                        <span className="font-normal text-faint">
+                          {" "}
+                          · of covered weight
+                        </span>
+                      ) : null}
+                    </h3>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      {value === null ? (
+                        <>
+                          <span className="text-2xl font-semibold text-faint">
+                            —
+                          </span>
+                          <span className="text-xs text-faint">
+                            Nothing weighed
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span
+                            className={cn(
+                              "font-semibold tracking-tight text-foreground tabular-nums",
+                              figure.key === "hydration"
+                                ? "text-3xl"
+                                : "text-2xl"
+                            )}
+                          >
+                            {formatComparePercent(value)}
+                          </span>
+                          {delta !== null ? (
+                            <span className="text-sm font-medium text-muted-foreground tabular-nums">
+                              {formatCompareDeltaPoints(delta)}
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                    <div className="mt-2 h-1 w-full rounded-full bg-muted">
+                      <div
+                        className={cn(
+                          "h-1 rounded-full",
+                          COLUMN_COLORS[index]?.fill
+                        )}
+                        style={{ width: `${width}%` }}
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </section>
+                )
+              })}
             </div>
-            {groupRows.map((groupRow) => (
-              <SpecSection
-                key={groupRow.key}
-                groupRow={groupRow}
-                formula={formula}
-                formulaIndex={index}
-                columns={columns}
-                baseId={baseId}
-                mode={mode}
-                showGrams={showGrams}
-                gramOverrides={gramOverrides}
-                onSetGrams={onSetGrams}
-              />
-            ))}
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
-  )
-}
-
-function SpecSection({
-  groupRow,
-  formula,
-  formulaIndex,
-  columns,
-  baseId,
-  mode,
-  showGrams,
-  gramOverrides,
-  onSetGrams,
-}: {
-  groupRow: PlotRow
-  formula: Formula
-  formulaIndex: number
-  columns: Formula[]
-  baseId: string | null
-  mode: PercentMode
-  showGrams: boolean
-  gramOverrides: Record<string, number>
-  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
-}) {
-  const value = groupRow.values[formulaIndex] ?? {
-    percent: null,
-    grams: null,
-    line: null,
-    present: false,
-  }
-  const baseline =
-    baseId && formula.key !== baseId
-      ? (groupRow.values[columns.findIndex((one) => one.key === baseId)]
-          ?.percent ?? null)
-      : null
-  const rowMax = compareRowStats(groupRow.values.map((one) => one.percent)).max
-  const width =
-    value.percent !== null && rowMax && rowMax > 0
-      ? Math.max(0, Math.min(100, (value.percent / rowMax) * 100))
-      : 0
-  const sectionLabel =
-    mode === "bakers" && groupRow.role === "liquid"
-      ? "Hydration"
-      : groupRow.group.label
-  const showLines =
-    groupRow.group.rows.length > 1 ||
-    groupRow.group.rows.some((row) => row.label !== sectionLabel)
-  return (
-    <section className="border-t border-border py-4 pb-[18px]">
-      <div className="text-xs font-medium text-muted-foreground">
-        {sectionLabel}
-      </div>
-      {value.percent === null || !value.present ? (
-        <div className="mt-1">
-          <div className="text-2xl font-semibold text-faint tabular-nums">
-            —
-          </div>
-          <div className="text-xs text-faint">Not in this recipe</div>
-        </div>
-      ) : (
-        <>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span
-              className={cn(
-                "font-semibold text-foreground tabular-nums",
-                groupRow.role === "liquid" ? "text-3xl" : "text-2xl"
-              )}
-            >
-              {formatComparePercent(value.percent)}
-            </span>
-            {baseline !== null ? (
-              <span className="text-sm font-medium text-muted-foreground">
-                {formatCompareDeltaPoints(value.percent - baseline)}
-              </span>
-            ) : null}
-          </div>
-          <div className="mt-3 h-1 rounded-full bg-muted">
-            <div
-              className={cn(
-                "h-1 rounded-full",
-                COLUMN_COLORS[formulaIndex]?.fill
-              )}
-              style={{ width: `${width}%` }}
-            />
-          </div>
-        </>
-      )}
-      {showLines ? (
-        <div className="mt-3 grid gap-1.5">
-          {groupRow.group.rows.map((row) => {
-            const line = row.cells[formulaIndex]
-            if (!line) return null
-            return (
-              <div key={row.key} className="flex min-w-0 items-center gap-3">
-                <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                  {row.label}
-                </span>
-                <SpecLineValue
-                  formula={formula}
-                  line={line}
-                  showGrams={showGrams}
-                  gramOverrides={gramOverrides}
-                  onSetGrams={onSetGrams}
-                />
-              </div>
-            )
-          })}
-        </div>
-      ) : null}
-    </section>
-  )
-}
-
-function SpecLineValue({
-  formula,
-  line,
-  showGrams,
-  gramOverrides,
-  onSetGrams,
-}: {
-  formula: Formula
-  line: FormulaLine
-  showGrams: boolean
-  gramOverrides: Record<string, number>
-  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
-}) {
-  const overrideId = lineOverrideId(formula, line, gramOverrides)
-  if (overrideId !== null) {
-    return (
-      <GramsInput
-        label={line.label}
-        column={formula.title}
-        value={gramOverrides[gramOverrideKey(formula.key, overrideId)]}
-        onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
-      />
-    )
-  }
-  return (
-    <span className="shrink-0 text-sm text-muted-foreground tabular-nums">
-      {formatComparePercent(line.percent)}
-      {showGrams && line.grams !== null
-        ? ` · ${formatCompareGrams(line.grams)}`
-        : ""}
-    </span>
   )
 }
 
@@ -1555,12 +1547,8 @@ export function CompareFormulas({
           {view === "spec" ? (
             <SpecSheetView
               columns={columns}
-              groups={comparison.groups}
               baseId={selectedBase}
               mode={mode}
-              showGrams={showGrams}
-              gramOverrides={gramOverrides}
-              onSetGrams={setGrams}
               pending={pending}
               busy={busy}
               onToggleBase={toggleBase}

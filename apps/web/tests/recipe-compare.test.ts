@@ -159,8 +159,14 @@ describe("buildFormula", () => {
     expect(built.basisGrams).toBe(1018)
     expect(built.lines.find((row) => row.label === "Water")?.percent).toBe(39.3)
     expect(built.totalPercent).toBe(100)
-    // The summary is a baker's reading whatever the column shows.
+    // The summary is a baker's reading whatever the column shows; the grams
+    // behind it let a screen share them on any basis.
     expect(built.summary.hydration).toBe(66.7)
+    expect(built.summary.grams.liquid).toBe(400)
+    expect(built.summary.grams.water).toBeGreaterThan(400)
+    expect(built.summary.grams.salt).toBeGreaterThan(10)
+    expect(built.summary.solidsPercent).toBeGreaterThan(50)
+    expect(built.summary.solidsPercent).toBeLessThan(65)
   })
 
   it("falls back to the marked base line, then the heaviest, then nothing", () => {

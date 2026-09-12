@@ -79,6 +79,9 @@ const NAV_SECTIONS: NavSection[] = [
         label: "Recipes",
         icon: Book,
         action: { href: "/recipes/new", label: "New recipe" },
+        // Comparing is reading recipes, not a thing of its own: it opens
+        // under Recipes the way Supplies opens under Products.
+        children: [{ href: "/recipes/compare", label: "Compare" }],
       },
       { href: "/ingredients", label: "Ingredients", icon: Package },
       { href: "/menu", label: "Menus", icon: Utensils },
