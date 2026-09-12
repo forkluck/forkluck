@@ -119,14 +119,7 @@ def _reserve_checkout(
             .first()
         )
         if active is not None:
-            if not active.with_trial:
-                return active
-            # Reserved before trials were removed; reusing it would still start
-            # one, so it is retired in favour of a fresh attempt.
-            StripeCheckoutAttempt.objects.filter(pk=active.pk).update(
-                status=StripeCheckoutAttempt.Status.EXPIRED,
-                updated_at=timezone.now(),
-            )
+            return active
 
         customer = (
             account.stripe_customers.order_by("-is_primary", "created_at", "id")
@@ -140,11 +133,7 @@ def _reserve_checkout(
             raise ValueError(
                 "Your previous Checkout is still being confirmed. Refresh status."
             )
-        return StripeCheckoutAttempt.objects.create(
-            account=account,
-            customer=customer,
-            with_trial=False,
-        )
+        return StripeCheckoutAttempt.objects.create(account=account, customer=customer)
 
 
 def _ensure_provider_customer(user: User, customer: StripeCustomer) -> StripeCustomer:
@@ -191,7 +180,6 @@ def _create_provider_checkout(
         settings.FORKLUCK_APP_ORIGIN + "/subscribe",
         str(user.id),
         str(attempt.id),
-        attempt.with_trial,
         idempotency_key=f"forkluck.checkout.{attempt.id}",
     )
     session_id = str(session.get("id") or "")

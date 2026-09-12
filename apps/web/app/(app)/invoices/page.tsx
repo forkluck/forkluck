@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
 import { InvoicesScreen } from "@/components/invoices/invoices-screen"
-import { requireUser } from "@/lib/auth-session"
+import { getSession } from "@/lib/auth-session"
 import { getDriveFolder, getInvoicesOverview } from "@/lib/backend/queries"
+import { onTrial } from "@/lib/billing"
 import { monthSearchParam } from "@/lib/date-search-param"
 import { extractionConfig } from "@/lib/invoice-extract"
 import type { GoogleDriveConfig } from "@/lib/google-drive"
@@ -29,9 +31,9 @@ export default async function InvoicesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  // The session check runs beside the reads, not ahead of them; see
+  // The session read runs beside the data reads, not ahead of them; see
   // ingredients.
-  const user = requireUser()
+  const sessionRead = getSession()
   const { month, q, tab } = await searchParams
   const query = typeof q === "string" ? q : undefined
   const attention = tab === "attention" ? "attention" : undefined
@@ -44,7 +46,8 @@ export default async function InvoicesPage({
     getDriveFolder(),
   ])
   reads.catch(() => undefined)
-  await user
+  const session = await sessionRead
+  if (!session) redirect("/login")
   const [overview, drive] = await reads
 
   return (
@@ -54,6 +57,7 @@ export default async function InvoicesPage({
       // A search answers across every month, so it is neither tab's list.
       tab={query?.trim() ? null : (attention ?? null)}
       byok={extractionConfig().engine === "anthropic"}
+      trial={onTrial(session.billing)}
       driveConfig={googleDriveConfig()}
       driveConnectHref={
         process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && !drive.folder

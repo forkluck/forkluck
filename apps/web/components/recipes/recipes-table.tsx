@@ -43,7 +43,6 @@ import { describeRecipeIssues, type RecipeHealth } from "@/lib/recipe/health"
 import { toSaveFailure } from "@/lib/save-failure"
 import { cn } from "@/lib/utils"
 import type { RecipeStatusFilter } from "@/components/recipes/types"
-import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
 import { ShareRecipesDialog } from "@/components/recipes/share-recipes-dialog"
 import {
   deleteRecipe,
@@ -127,8 +126,6 @@ export function RecipesTable({
   const { timezone } = useBusinessSettings()
   const toast = useToast()
   const { go } = useGuardedNavigate()
-  const { show: showRecipeLimit, dialog: recipeLimitDialog } =
-    useRecipeLimitDialog()
   const [deleteTarget, setDeleteTarget] = React.useState<RecipeHealth | null>(
     null
   )
@@ -167,8 +164,7 @@ export function RecipesTable({
         try {
           const result = await duplicateRecipe(recipe.id)
           if ("error" in result) {
-            if (!showRecipeLimit(result))
-              toast.add({ title: result.error, type: "error" })
+            toast.add({ title: result.error, type: "error" })
             return
           }
           startStatus(() => {
@@ -181,7 +177,7 @@ export function RecipesTable({
         }
       })
     },
-    [showRecipeLimit, toast]
+    [toast]
   )
 
   // One row shows the wait on itself; a selection shows it on the menu that
@@ -545,7 +541,6 @@ export function RecipesTable({
           onShared={heldShare.clear}
         />
       ) : null}
-      {recipeLimitDialog}
     </>
   )
 }

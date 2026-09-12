@@ -733,7 +733,6 @@ class SerializerContractTests(ShapeAssertions, TestCase):
                 "entitlements.catalogSearch",
                 "entitlements.connectors",
                 "entitlements.invoiceAi",
-                "entitlements.maxRecipes",
                 "entitlements.posSync",
                 "entitlements.primo",
                 "entitlements.usdaSearch",

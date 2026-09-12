@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 
 import { OverviewDashboard } from "@/components/overview/overview-dashboard"
 import { getSession, requireUser } from "@/lib/auth-session"
+import { onTrial } from "@/lib/billing"
 import {
   getDashboardOverview,
   getPosConnections,
@@ -65,7 +66,11 @@ export default async function AnalyticsPage({
       currencyCode={dashboard.currencyCode}
       connections={connections}
       priceMoves={dashboard.priceMoves}
-      freePlan={session?.billing.plan === "free"}
+      trialDaysLeft={
+        session && onTrial(session.billing)
+          ? session.billing.trialDaysLeft
+          : null
+      }
     />
   )
 }

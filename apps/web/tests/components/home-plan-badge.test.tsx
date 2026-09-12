@@ -14,14 +14,16 @@ import { HomePlanBadge } from "@/components/overview/home-plan-badge"
 afterEach(cleanup)
 
 describe("HomePlanBadge", () => {
-  it("shows the Free plan and upgrade path only for free accounts", () => {
-    const view = render(<HomePlanBadge freePlan />)
-    expect(screen.getByText("Free")).toBeDefined()
+  it("counts down the trial and offers the subscription, and only then", () => {
+    const view = render(<HomePlanBadge trialDaysLeft={9} />)
+    expect(screen.getByText("Trial, 9 days left")).toBeDefined()
     expect(
-      screen.getByRole("link", { name: "Upgrade" }).getAttribute("href")
+      screen.getByRole("link", { name: "Subscribe" }).getAttribute("href")
     ).toBe("/subscribe")
-    view.rerender(<HomePlanBadge freePlan={false} />)
-    expect(screen.queryByText("Free")).toBeNull()
-    expect(screen.queryByRole("link", { name: "Upgrade" })).toBeNull()
+    view.rerender(<HomePlanBadge trialDaysLeft={1} />)
+    expect(screen.getByText("Trial, 1 day left")).toBeDefined()
+    view.rerender(<HomePlanBadge trialDaysLeft={null} />)
+    expect(screen.queryByText(/Trial/)).toBeNull()
+    expect(screen.queryByRole("link", { name: "Subscribe" })).toBeNull()
   })
 })

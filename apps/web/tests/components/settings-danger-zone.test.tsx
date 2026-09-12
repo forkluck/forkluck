@@ -78,7 +78,6 @@ function settings() {
         locked: false,
         plan: "paid",
         entitlements: {
-          maxRecipes: null,
           primo: true,
           posSync: true,
           connectors: true,

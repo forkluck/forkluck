@@ -24,9 +24,7 @@ afterEach(() => {
 })
 
 it("releases subscription status refresh after the action and route settle", async () => {
-  render(
-    <SubscribeCard email="cook@example.test" firstSubscription canReturn />
-  )
+  render(<SubscribeCard email="cook@example.test" state="trial" canReturn />)
   const button = screen.getByRole("button", {
     name: "Already subscribed? Refresh status",
   })

@@ -12,6 +12,7 @@ import { LabeledInput } from "@/components/ui/labeled-field"
 import {
   authHeadingClassName,
   authLinkClassName,
+  authSubtitleClassName,
   authSwitchClassName,
 } from "@/components/auth/auth-styles"
 import { PasswordHint } from "@/components/auth/password-hint"
@@ -79,6 +80,9 @@ export function SignupForm({
   return (
     <form onSubmit={submit} className="flex flex-col" data-auth-form="signup">
       <h1 className={authHeadingClassName}>Create your account</h1>
+      <p className={authSubtitleClassName}>
+        Every feature free for 14 days. No card needed.
+      </p>
 
       <div className="mt-8 flex flex-col gap-5">
         <LabeledInput

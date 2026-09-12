@@ -1,6 +1,6 @@
 """Hosted AI allowance: both entry points spend the same durable budget."""
 
-from datetime import datetime, timezone as dt_timezone
+from datetime import datetime, timedelta, timezone as dt_timezone
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest import skipUnless
@@ -12,7 +12,7 @@ from django.test import TransactionTestCase, override_settings
 from .domains.invoices.ai_usage import action_invoice_ai_usage, invoice_ai_usage
 from .domains.invoices.views import invoices_overview
 from .domains.invoices.actions import ensure_expense_categories
-from .domains.shared.billing import EntitlementError
+from .domains.shared.billing import EntitlementError, trial_ends_at
 from .models import BillingAccount, DriveFolderSource, Invoice, InvoiceAiRead, User
 from .testing import InternalApiTestCase, internal_payload
 
@@ -35,19 +35,20 @@ class InvoiceAiUsageTests(InternalApiTestCase):
             {"operation": "reserve", "pages": pages, "attempts": 2, "readId": read_id},
         )
 
-    def test_tenth_page_is_allowed_and_eleventh_spends_nothing(self):
-        self.reserve(9)
+    def test_last_trial_page_is_allowed_and_the_next_spends_nothing(self):
+        self.reserve(24)
         read = self.reserve()
-        # Finishing the admitted tenth page still works at the page cap.
+        # Finishing the admitted last page still works at the page cap.
         self.reserve(0, read["readId"])
         with self.assertRaises(EntitlementError) as caught:
             self.reserve()
         self.assertEqual(caught.exception.code, "invoice_ai_limit_reached")
+        self.assertIn("Enter invoices manually or subscribe.", str(caught.exception))
         self.assertEqual(
             invoice_ai_usage(self.user),
             {
-                "usedPages": 10,
-                "maxPages": 10,
+                "usedPages": 25,
+                "maxPages": 25,
                 "resetsOn": "2027-01-01",
                 "exhausted": True,
             },
@@ -55,19 +56,19 @@ class InvoiceAiUsageTests(InternalApiTestCase):
         self.assertEqual(InvoiceAiRead.objects.count(), 2)
 
     def test_a_multi_page_file_is_refused_whole(self):
-        self.reserve(9)
+        self.reserve(24)
         with self.assertRaises(EntitlementError):
             self.reserve(2)
-        self.assertEqual(invoice_ai_usage(self.user)["usedPages"], 9)
+        self.assertEqual(invoice_ai_usage(self.user)["usedPages"], 24)
 
     def test_retries_and_escalation_spend_attempts_without_recharging_pages(self):
         read = self.reserve()
-        for _ in range(39):
+        for _ in range(99):
             self.reserve(0, read["readId"])
         with self.assertRaises(EntitlementError):
             self.reserve(0, read["readId"])
         row = InvoiceAiRead.objects.get()
-        self.assertEqual((row.pages, row.attempts), (1, 80))
+        self.assertEqual((row.pages, row.attempts), (1, 200))
         self.assertTrue(invoice_ai_usage(self.user)["exhausted"])
 
     def test_recording_usage_is_scoped_cumulative_and_cannot_refund(self):
@@ -93,7 +94,7 @@ class InvoiceAiUsageTests(InternalApiTestCase):
         DriveFolderSource.objects.create(
             user=self.user, folder_id="folder", folder_name="Invoices"
         )
-        self.reserve(9)
+        self.reserve(24)
         body = {
             "userId": str(self.user.id),
             "operation": "reserve",
@@ -107,7 +108,7 @@ class InvoiceAiUsageTests(InternalApiTestCase):
         self.assertEqual(refused.status_code, 403)
         self.assertEqual(refused.json()["code"], "invoice_ai_limit_reached")
         # A body-supplied owner never redirects a session-scoped action.
-        self.assertEqual(invoice_ai_usage(self.user)["usedPages"], 10)
+        self.assertEqual(invoice_ai_usage(self.user)["usedPages"], 25)
 
     def test_disconnected_drive_and_locked_workspace_cannot_spend(self):
         body = {
@@ -127,6 +128,27 @@ class InvoiceAiUsageTests(InternalApiTestCase):
             self.post_system("system/invoice-ai-usage/", body).status_code, 403
         )
         self.assertFalse(InvoiceAiRead.objects.exists())
+
+    def test_an_expired_account_has_no_allowance_and_cannot_spend(self):
+        after = trial_ends_at(self.user) + timedelta(days=1)
+        with patch("forkluck.domains.shared.billing.current_time", return_value=after):
+            self.assertEqual(invoice_ai_usage(self.user)["maxPages"], 0)
+            self.assertTrue(invoice_ai_usage(self.user)["exhausted"])
+            with self.assertRaises(EntitlementError) as caught:
+                self.reserve()
+        self.assertEqual(caught.exception.code, "subscription_required")
+        self.assertEqual(
+            str(caught.exception), "Your trial has ended. Subscribe to keep editing."
+        )
+        self.assertFalse(InvoiceAiRead.objects.exists())
+
+    def test_a_paid_account_gets_the_full_allowance(self):
+        BillingAccount.objects.create(user=self.user, status="active")
+        self.assertEqual(invoice_ai_usage(self.user)["maxPages"], 100)
+        self.reserve(100)
+        with self.assertRaises(EntitlementError) as caught:
+            self.reserve()
+        self.assertIn("You can still enter invoices manually.", str(caught.exception))
 
     def test_month_boundary_resets_and_old_reads_cannot_keep_spending(self):
         old = self.reserve(10)
@@ -183,7 +205,7 @@ class InvoiceAiUsageTests(InternalApiTestCase):
         self.assertFalse(InvoiceAiRead.objects.exists())
 
     def test_deleting_invoices_does_not_refund_ai_and_account_deletion_cascades(self):
-        self.reserve(10)
+        self.reserve(25)
         Invoice.objects.filter(user=self.user).delete()
         with self.assertRaises(EntitlementError):
             self.reserve()
@@ -205,7 +227,7 @@ class InvoiceAiUsageTests(InternalApiTestCase):
             msg="Overview adds one billing lookup and one AI usage aggregate, independent of invoices",
         ):
             payload = internal_payload(invoices_overview, self.user)
-        self.assertEqual(payload["aiUsage"]["maxPages"], 10)
+        self.assertEqual(payload["aiUsage"]["maxPages"], 25)
 
 
 @skipUnless(connection.vendor == "postgresql", "Requires PostgreSQL row locks")
@@ -214,7 +236,7 @@ class InvoiceAiConcurrencyTests(TransactionTestCase):
     def test_two_readers_cannot_both_spend_the_last_page(self):
         user = User.objects.create_user(email="ai-race@example.com")
         action_invoice_ai_usage(
-            user, {"operation": "reserve", "pages": 9, "attempts": 2}
+            user, {"operation": "reserve", "pages": 24, "attempts": 2}
         )
         barrier = Barrier(2)
 
@@ -236,4 +258,4 @@ class InvoiceAiConcurrencyTests(TransactionTestCase):
         with ThreadPoolExecutor(max_workers=2) as executor:
             results = list(executor.map(lambda _: reserve(), range(2)))
         self.assertEqual(sorted(results), [False, True])
-        self.assertEqual(invoice_ai_usage(user)["usedPages"], 10)
+        self.assertEqual(invoice_ai_usage(user)["usedPages"], 25)

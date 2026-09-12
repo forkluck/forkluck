@@ -15,7 +15,6 @@ import {
   type MenuLinkTarget,
 } from "@/components/menus/menu-items-table"
 import { MenuSummaryCards } from "@/components/menus/menu-summary-cards"
-import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { DateRangeFilter } from "@/components/ui/date-range-filter"
@@ -115,7 +114,6 @@ export function MenuEditor({
 }) {
   const { go } = useGuardedNavigate()
   const toast = useToast()
-  const recipeLimit = useRecipeLimitDialog()
   const { saveRef, setDirty, setSaveState } = useMenuEdit()
   const nameRef = React.useRef<HTMLInputElement>(null)
   const [nameMissing, setNameMissing] = React.useState(false)
@@ -396,7 +394,6 @@ export function MenuEditor({
   const createRecipe = async (itemKey: string, title: string) => {
     const result = await saveRecipe({ id: null, title })
     if ("error" in result) {
-      if (recipeLimit.show(result)) return
       toast.add({
         title: "Couldn’t create the recipe",
         description: result.error,
@@ -583,8 +580,6 @@ export function MenuEditor({
           }
         />
       </div>
-
-      {recipeLimit.dialog}
 
       <ImportProductsDialog
         open={importOpen}

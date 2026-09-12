@@ -6,6 +6,7 @@ settings blank ACS_CONNECTION_STRING and an unpatched send would raise.
 
 import json
 import secrets
+from datetime import timedelta
 from unittest import mock
 
 from django.conf import settings
@@ -13,6 +14,7 @@ from django.test import Client, override_settings
 from django.utils import timezone
 
 from .domains.recipes.guest_links import hash_guest_token
+from .domains.shared.billing import trial_ends_at
 from .domains.shared.recipe_invites import claim_invitations
 from .integrations.emails import EmailNotConfigured
 from .models import (
@@ -327,6 +329,18 @@ class GuestLinkInvariantTests(GuestLinkTestCase):
             locked=False,
         )
         with override_settings(STRIPE_BILLING_ENABLED=True):
+            self.assertEqual(self.guest_get(token).status_code, 200)
+
+    def test_an_expired_owner_keeps_serving(self):
+        # Read-only means reads still work; only deletion takes a link down.
+        token = self.mint()
+        after = trial_ends_at(self.owner) + timedelta(days=1)
+        with (
+            override_settings(STRIPE_BILLING_ENABLED=True),
+            mock.patch(
+                "forkluck.domains.shared.billing.current_time", return_value=after
+            ),
+        ):
             self.assertEqual(self.guest_get(token).status_code, 200)
 
     def test_a_deleting_owner_stops_serving(self):

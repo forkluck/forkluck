@@ -15,9 +15,8 @@ function billing(primo: boolean): BillingState {
     status: primo ? "active" : "none",
     trialDaysLeft: null,
     locked: false,
-    plan: primo ? "paid" : "free",
+    plan: primo ? "paid" : "expired",
     entitlements: {
-      maxRecipes: primo ? null : 10,
       primo,
       posSync: true,
       connectors: true,

@@ -9,6 +9,7 @@ settings blank ACS_CONNECTION_STRING and an unpatched send would raise.
 """
 
 import json
+from datetime import timedelta
 from unittest import mock
 
 from django.core.exceptions import ValidationError
@@ -17,10 +18,9 @@ from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
 from .domains.recipes.actions import (
-    action_save_recipe,
     action_save_recipe_comment,
 )
-from .domains.shared.billing import EntitlementError
+from .domains.shared.billing import trial_ends_at
 from .domains.shared.recipe_access import (
     accessible_recipe_queryset,
     editable_recipe_queryset,
@@ -565,32 +565,19 @@ class CreateInKitchenTests(KitchenTestCase):
         row = Recipe.objects.get(id=self.create().json()["id"])
         self.assertNotEqual(row.code, "RCP-0501")
 
-    def test_the_owners_cap_is_what_stops_the_member(self):
-        Recipe.objects.bulk_create(
-            Recipe(user=self.owner, title=f"Filler {n}", code=f"F-{n}")
-            for n in range(9)
-        )
-        response = self.create()
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(
-            response.json(),
-            {
-                "error": (
-                    "This kitchen has reached its recipe limit. Ask the owner "
-                    "to upgrade."
-                ),
-                "code": "recipe_limit_reached",
-            },
-        )
-
-    def test_the_owners_own_cap_message_is_unchanged(self):
-        Recipe.objects.bulk_create(
-            Recipe(user=self.owner, title=f"Filler {n}", code=f"F-{n}")
-            for n in range(9)
-        )
-        with self.assertRaises(EntitlementError) as caught:
-            action_save_recipe(self.owner, {"id": None, "title": "Eleventh"})
-        self.assertIn("Free plan", str(caught.exception))
+    def test_an_expired_kitchen_refuses_the_create(self):
+        # The owner's window has closed while the member's is still open, so
+        # the refusal is the kitchen's, not the caller's own gate.
+        now = trial_ends_at(self.owner) + timedelta(days=1)
+        self.member.date_joined = now - timedelta(days=1)
+        self.member.save(update_fields=["date_joined"])
+        with mock.patch(
+            "forkluck.domains.shared.billing.current_time", return_value=now
+        ):
+            response = self.create()
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], CLOSED)
+        self.assertEqual(Recipe.objects.count(), 1)
 
     def test_a_locked_kitchen_refuses_the_create(self):
         BillingAccount.objects.create(

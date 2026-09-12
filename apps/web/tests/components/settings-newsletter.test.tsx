@@ -73,7 +73,6 @@ function settings(newsletter: NewsletterStatus) {
         locked: false,
         plan: "paid",
         entitlements: {
-          maxRecipes: null,
           primo: true,
           posSync: true,
           connectors: true,

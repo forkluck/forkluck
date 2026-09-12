@@ -5,7 +5,6 @@ import { Check, ClipboardList, ExternalLink } from "lucide-react"
 
 import { createPrimoRecipe } from "@/app/(app)/recipes/actions"
 import { GuardedLink } from "@/components/navigation-blocker"
-import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
 import { Button } from "@/components/ui/button"
 import { useFormSave } from "@/hooks/use-form-save"
 import type { PrimoRecipeDraft } from "@/lib/primo/recipe"
@@ -39,16 +38,12 @@ export function PrimoRecipeDraftCard({ draft }: { draft: PrimoRecipeDraft }) {
   const [createdPublicId, setCreatedPublicId] = React.useState<string | null>(
     null
   )
-  const recipeLimit = useRecipeLimitDialog()
   const form = useFormSave({
     snapshot: JSON.stringify(draft),
     saved: false,
     save: async () => {
       const result = await createPrimoRecipe(draft)
-      if ("error" in result) {
-        recipeLimit.show(result)
-        return toSaveFailure(result)
-      }
+      if ("error" in result) return toSaveFailure(result)
       setCreatedPublicId(result.publicId)
       return null
     },
@@ -173,7 +168,6 @@ export function PrimoRecipeDraftCard({ draft }: { draft: PrimoRecipeDraft }) {
           </div>
         )}
       </div>
-      {recipeLimit.dialog}
     </section>
   )
 }
