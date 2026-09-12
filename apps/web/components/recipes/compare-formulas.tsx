@@ -1025,11 +1025,6 @@ function FormulaPlotRow({
             onClick={() => onExpandedChange(row.role)}
             className="flex min-w-0 items-center gap-1.5 text-left outline-none focus-visible:underline"
           >
-            <ChevronDown
-              className={cn("size-3 text-faint", expanded && "rotate-180")}
-              strokeWidth={2}
-              aria-hidden="true"
-            />
             <span className="min-w-0">
               <span className="block truncate text-md font-semibold text-foreground">
                 {row.label}
@@ -1038,6 +1033,14 @@ function FormulaPlotRow({
                 <span className="block text-xs text-faint">Hydration</span>
               ) : null}
             </span>
+            <ChevronDown
+              className={cn(
+                "size-3 shrink-0 text-faint",
+                expanded && "rotate-180"
+              )}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
           </button>
         ) : (
           <div
