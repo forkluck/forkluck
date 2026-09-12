@@ -32,6 +32,12 @@ os.environ.update(
         "SQUARE_APPLICATION_SECRET": "",
         "SHOPIFY_API_KEY": "",
         "SHOPIFY_API_SECRET": "",
+        # Billing off, as in CI: no trial clock, no gating, no Stripe calls.
+        "STRIPE_SECRET_KEY": "",
+        "STRIPE_WEBHOOK_SECRET": "",
+        "STRIPE_PRICE_ID": "",
+        "STRIPE_PRODUCT_ID": "",
+        "STRIPE_WEBHOOK_ENDPOINT_ID": "",
         "FORKLUCK_TOKEN_ENCRYPTION_KEY": "aa" * 32,
         "FORKLUCK_TOKEN_ENCRYPTION_KEY_ID": "acceptance",
         "FORKLUCK_TOKEN_ENCRYPTION_KEYS": "",

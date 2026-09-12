@@ -27,7 +27,7 @@ from ...models import (
     RecipeTagMembership,
     User,
 )
-from ..shared.billing import write_blocked
+from ..shared.billing import workspace_closed
 from ..shared.pagination import (
     DOCUMENT_DEFAULT_ORDER,
     optional_filter,
@@ -587,14 +587,14 @@ def guest_recipe(request: HttpRequest, token: str) -> JsonResponse:
     """The lean read a capability link serves; the token is the authorization.
 
     An archived recipe still serves: archiving is filing, and the owner
-    revokes by deleting the link. A closed workspace does not, so the same
-    lock that stops the owner writing stops their links being read.
+    revokes by deleting the link. An account being deleted does not. A
+    read-only one still serves: read-only means reads still work.
     """
     link = resolve_guest_link(token)
     if link is None:
         return error("Not found", 404)
     owner = link.recipe.user
-    if not owner.is_active or write_blocked(owner):
+    if not owner.is_active or workspace_closed(owner):
         return error("Not found", 404)
     row = _guest_recipe_queryset().get(id=link.recipe_id)
     return JsonResponse({"item": guest_recipe_json(row, link.role)})
@@ -611,7 +611,7 @@ def guest_book(request: HttpRequest, token: str) -> JsonResponse:
     if book is None:
         return error("Not found", 404)
     owner = book.user
-    if not owner.is_active or write_blocked(owner):
+    if not owner.is_active or workspace_closed(owner):
         return error("Not found", 404)
     ordered_ids = list(book.items.values_list("recipe_id", flat=True))
     rows = {row.id: row for row in _guest_recipe_queryset().filter(id__in=ordered_ids)}

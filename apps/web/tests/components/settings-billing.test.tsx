@@ -53,7 +53,6 @@ import type { BillingState } from "@/lib/billing"
 import { DEFAULT_BUSINESS_SETTINGS } from "@/lib/business-settings"
 
 const PAID_ENTITLEMENTS = {
-  maxRecipes: null,
   primo: true,
   posSync: true,
   connectors: true,
@@ -65,13 +64,20 @@ const PAID_ENTITLEMENTS = {
 function billingState(status: string, plan: string): BillingState {
   return {
     status,
-    trialDaysLeft: null,
+    trialDaysLeft: plan === "trial" ? 9 : null,
     locked: false,
     plan,
     entitlements:
-      plan === "paid"
-        ? PAID_ENTITLEMENTS
-        : { ...PAID_ENTITLEMENTS, maxRecipes: 10, primo: false },
+      plan === "expired"
+        ? {
+            primo: false,
+            posSync: false,
+            connectors: false,
+            usdaSearch: false,
+            catalogSearch: false,
+            invoiceAi: false,
+          }
+        : PAID_ENTITLEMENTS,
     recipeCount: 0,
   }
 }
@@ -134,34 +140,45 @@ describe("billing settings", () => {
     )
   })
 
-  it("offers only the upgrade path before a customer exists", () => {
-    renderSettings(billingState("none", "free"))
+  it("offers only the subscription before a customer exists", () => {
+    renderSettings(billingState("none", "trial"))
 
-    expect(screen.getByRole("link", { name: /Upgrade/ })).toHaveProperty(
-      "href",
-      "http://localhost:3000/subscribe"
+    const subscribe = screen.getByRole("link", { name: /Subscribe/ })
+    expect(subscribe).toHaveProperty("href", "http://localhost:3000/subscribe")
+    expect(subscribe.textContent).toContain(
+      "Trial, 9 days left. $7 a month. Cancel any time."
     )
     expect(screen.queryByRole("button", { name: /Manage billing/ })).toBeNull()
   })
 
-  it("keeps the portal beside the upgrade row after a lapse", () => {
-    renderSettings(billingState("canceled", "free"))
+  it("names the trial that ended on the subscription row", () => {
+    renderSettings(billingState("none", "expired"))
 
-    expect(screen.getByRole("button", { name: /Manage billing/ })).toBeTruthy()
-    expect(screen.getByRole("link", { name: /Upgrade/ })).toBeTruthy()
+    expect(
+      screen.getByRole("link", { name: /Subscribe/ }).textContent
+    ).toContain("Trial ended. $7 a month. Cancel any time.")
   })
 
-  it("shows no upgrade row on the paid plan", () => {
+  it("keeps the portal beside the subscription row after a lapse", () => {
+    renderSettings(billingState("canceled", "expired"))
+
+    expect(screen.getByRole("button", { name: /Manage billing/ })).toBeTruthy()
+    expect(
+      screen.getByRole("link", { name: /Subscribe/ }).textContent
+    ).toContain("Subscription ended. $7 a month. Cancel any time.")
+  })
+
+  it("shows no subscription row on the paid plan", () => {
     renderSettings(billingState("active", "paid"))
 
     expect(screen.getByRole("button", { name: /Manage billing/ })).toBeTruthy()
-    expect(screen.queryByRole("link", { name: /Upgrade/ })).toBeNull()
+    expect(screen.queryByRole("link", { name: /Subscribe/ })).toBeNull()
   })
 
   // Members are unlimited on every plan, so the Kitchen group stands above
   // billing whatever billing says.
   it("keeps the Members row above the billing group", () => {
-    renderSettings(billingState("none", "free"))
+    renderSettings(billingState("none", "trial"))
 
     expect(screen.getByRole("button", { name: /Members/ })).toBeTruthy()
   })

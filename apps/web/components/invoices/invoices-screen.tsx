@@ -39,6 +39,7 @@ export function InvoicesScreen({
   query,
   tab,
   byok,
+  trial,
   driveConfig,
   driveConnectHref,
 }: {
@@ -50,6 +51,8 @@ export function InvoicesScreen({
   /** The deployment reads with the workspace's own Anthropic key rather than
    * Forkluck's AI, so the key is worth offering here. */
   byok: boolean
+  /** On a trial the allowance line offers the subscription that raises it. */
+  trial: boolean
   driveConfig: GoogleDriveConfig | null
   /** Where to connect a folder, when this server can read Drive but the
    * workspace has not connected one yet. */
@@ -175,25 +178,27 @@ export function InvoicesScreen({
         <PageTitle>Invoices</PageTitle>
       </PageHeader>
 
-      {!byok && overview.aiUsage?.maxPages !== null && overview.aiUsage && (
+      {/* No line when the read is unmetered (BYOK, self-hosted) or when the
+          account is read-only: the banner above already says what to do. */}
+      {!byok && overview.aiUsage && overview.aiUsage.maxPages ? (
         <p className="text-xs text-muted-foreground" role="status">
           {overview.aiUsage.usedPages} of {overview.aiUsage.maxPages} AI pages
           used. Resets {formatCalendarDayMonth(overview.aiUsage.resetsOn)}.
           {overview.aiUsage.exhausted &&
             " You can still enter invoices manually."}
-          {overview.aiUsage.maxPages === 10 && (
+          {trial && (
             <>
               {" "}
               <GuardedLink
                 href="/subscribe"
                 className="underline underline-offset-4"
               >
-                Upgrade
+                Subscribe
               </GuardedLink>
             </>
           )}
         </p>
-      )}
+      ) : null}
 
       {hasInvoices ? (
         <>

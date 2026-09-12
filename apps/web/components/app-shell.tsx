@@ -12,6 +12,7 @@ import {
 import { KitchenToolsWebMcp } from "@/components/primo/kitchen-tools-webmcp"
 import { PrimoProvider, usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRail } from "@/components/primo/primo-rail"
+import { ReadOnlyBanner } from "@/components/billing/read-only-banner"
 import { LoadingRegion } from "@/components/ui/loading-region"
 import { ToastProvider } from "@/components/ui/toast"
 import type { SessionUser } from "@/lib/auth-session"
@@ -27,6 +28,7 @@ function AppShellContents({
   children,
   primoEnabled,
   webmcpTools,
+  readOnlyNotice,
 }: {
   user: SessionUser
   kitchen: ActiveKitchen | null
@@ -34,6 +36,7 @@ function AppShellContents({
   children: React.ReactNode
   primoEnabled: boolean
   webmcpTools: KitchenToolDescriptor[]
+  readOnlyNotice: string | null
 }) {
   const [navOpen, setNavOpen] = React.useState(false)
   const [collapsed, setCollapsed] = React.useState(false)
@@ -115,6 +118,11 @@ function AppShellContents({
               onTogglePrimo={() => setPrimoVisibility(!primoOpen)}
               primoTriggerRef={primoTriggerRef}
             />
+            {readOnlyNotice ? (
+              <div className="px-4 pt-4 sm:px-6 print:hidden">
+                <ReadOnlyBanner notice={readOnlyNotice} />
+              </div>
+            ) : null}
             <LoadingRegion
               pending={slow}
               label="Loading page"
@@ -142,6 +150,7 @@ export function AppShell({
   children,
   primoEnabled = false,
   webmcpTools = [],
+  readOnlyNotice = null,
 }: {
   user: SessionUser
   kitchen?: ActiveKitchen | null
@@ -149,6 +158,7 @@ export function AppShell({
   children: React.ReactNode
   primoEnabled?: boolean
   webmcpTools?: KitchenToolDescriptor[]
+  readOnlyNotice?: string | null
 }) {
   return (
     <NavigationBlockerProvider>
@@ -160,6 +170,7 @@ export function AppShell({
             kitchens={kitchens}
             primoEnabled={primoEnabled}
             webmcpTools={webmcpTools}
+            readOnlyNotice={readOnlyNotice}
           >
             {children}
           </AppShellContents>

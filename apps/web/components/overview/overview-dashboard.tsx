@@ -59,14 +59,15 @@ export function OverviewDashboard({
   currencyCode,
   connections,
   priceMoves,
-  freePlan = false,
+  trialDaysLeft = null,
 }: {
   recipeMetrics: DashboardOverview["recipeMetrics"]
   sales: SalesOverview
   currencyCode: CurrencyCode
   connections: PosConnectionRow[]
   priceMoves: PriceMove[]
-  freePlan?: boolean
+  /** Days left in the trial, or null when there is no trial to count. */
+  trialDaysLeft?: number | null
 }) {
   // The period change is a navigation to this same page, carried by the
   // browse hook every filter pill uses: the URL keeps whatever else it holds,
@@ -132,7 +133,7 @@ export function OverviewDashboard({
       <div className="mb-6">
         <div className="flex items-center gap-2">
           <PageTitle>Analytics</PageTitle>
-          <HomePlanBadge freePlan={freePlan} />
+          <HomePlanBadge trialDaysLeft={trialDaysLeft} />
           {/* With nothing to filter there is no filter row, so freshness sits
               on the title line rather than alone on an empty one under it. */}
           {hasPeriod ? null : (

@@ -33,6 +33,10 @@ vi.mock("@/app/(app)/ingredients/actions", () => ({
 vi.mock("@/app/(app)/recipes/actions", () => ({
   saveRecipe: vi.fn(),
 }))
+const toastAdd = vi.hoisted(() => vi.fn())
+vi.mock("@/components/ui/toast", () => ({
+  useToast: () => ({ add: toastAdd }),
+}))
 
 const searchMock = vi.mocked(searchCatalogIngredients)
 const saveIngredientMock = vi.mocked(saveIngredient)
@@ -681,21 +685,21 @@ describe("recipe items table creating from the picker", () => {
     expect(screen.queryByRole("button", { name: "Add preparation" })).toBeNull()
   })
 
-  it("keeps the Free-plan limit dialog when creating a recipe", async () => {
+  it("reports a refused recipe create as a toast and keeps the line", async () => {
     searchMock.mockResolvedValue({ items: [] })
     saveRecipeMock.mockResolvedValue({
-      error: "The Free plan includes up to 25 recipes.",
-      code: "recipe_limit_reached",
+      error: "Your trial has ended. Subscribe to keep editing.",
     })
     render(<Harness initial={[item({ displayName: "" })]} />)
     openPicker("babka filling")
     fireEvent.click(await screen.findByRole("button", { name: "Add recipe" }))
-    expect(
-      await screen.findByRole("heading", { name: "Recipe limit reached" })
-    ).toBeTruthy()
-    expect(
-      screen.getByText("The Free plan includes up to 25 recipes.")
-    ).toBeTruthy()
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith({
+        title: "Your trial has ended. Subscribe to keep editing.",
+        type: "error",
+      })
+    )
+    expect(screen.queryByRole("dialog")).toBeNull()
   })
 
   it("does not offer to create what already exists", async () => {

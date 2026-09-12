@@ -68,7 +68,6 @@ import {
   ORIGINAL_BATCH,
 } from "@/components/recipes/batch-size-select"
 import { CustomBatchDialog } from "@/components/recipes/custom-batch-dialog"
-import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
 import {
   UsedInList,
   useUsedInRows,
@@ -790,8 +789,6 @@ export function RecipeEditor({
     wholePair(shelfLifeAmount, shelfLifeUnit) &&
     wholePair(prepTimeAmount, prepTimeUnit)
 
-  const recipeLimit = useRecipeLimitDialog()
-
   /** One save, whoever asked for it. */
   const save = async (
     expectedEditVersion: number | null,
@@ -901,10 +898,7 @@ export function RecipeEditor({
               steps: normalizedSteps,
             }
       )
-      if ("error" in profile) {
-        if (creating) recipeLimit.show(profile)
-        return toSaveFailure(profile)
-      }
+      if ("error" in profile) return toSaveFailure(profile)
       const id = profile.id
       recipeIdRef.current = id
       setRecipeId(id)
@@ -2206,8 +2200,6 @@ export function RecipeEditor({
             </div>
           </Section>
         ) : null}
-
-        {recipeLimit.dialog}
 
         <ImportRecipeDialog
           open={importPart !== null}

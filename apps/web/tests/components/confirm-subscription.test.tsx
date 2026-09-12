@@ -17,10 +17,10 @@ vi.mock("next/navigation", () => ({
 
 import { ConfirmSubscription } from "@/app/(auth)/subscribe/complete/confirm-subscription"
 
-const free = {
+const trial = {
   status: "none",
-  plan: "free",
-  trialDaysLeft: null,
+  plan: "trial",
+  trialDaysLeft: 9,
   locked: false,
 }
 const paid = {
@@ -43,8 +43,8 @@ afterEach(() => {
 describe("subscription confirmation", () => {
   it("polls bounded provider lag until the plan turns paid", async () => {
     syncStripeSubscription
-      .mockResolvedValueOnce(free)
-      .mockResolvedValueOnce(free)
+      .mockResolvedValueOnce(trial)
+      .mockResolvedValueOnce(trial)
       .mockResolvedValueOnce(paid)
       .mockResolvedValue(paid)
     render(<ConfirmSubscription sessionId="cs_owned" />)
@@ -66,8 +66,8 @@ describe("subscription confirmation", () => {
     expect(refresh).toHaveBeenCalledOnce()
   })
 
-  it("stops after eight Free snapshots and offers a retry", async () => {
-    syncStripeSubscription.mockResolvedValue(free)
+  it("stops after eight unpaid snapshots and offers a retry", async () => {
+    syncStripeSubscription.mockResolvedValue(trial)
     render(<ConfirmSubscription sessionId="cs_slow" />)
 
     await act(async () => {

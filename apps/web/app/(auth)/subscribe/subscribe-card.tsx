@@ -12,20 +12,51 @@ import {
   authSwitchClassName,
 } from "@/components/auth/auth-styles"
 import { authClient } from "@/lib/auth-client"
+import { trialDaysLeftLabel } from "@/lib/billing"
 import { cn } from "@/lib/utils"
 import { useRefresh } from "@/hooks/use-refresh"
 
 import { createStripeCheckout, syncStripeSubscription } from "./actions"
 
+/** Where the account stands: a running trial, a trial that ran out, or a
+ * subscription that ended. */
+export type SubscribeState = "trial" | "trialEnded" | "lapsed"
+
+function subscribeCopy(state: SubscribeState, trialDaysLeft: number | null) {
+  switch (state) {
+    case "trial":
+      return {
+        heading: "Subscribe to Forkluck",
+        body: `Forkluck is $7 a month. Cancel anytime. You have ${trialDaysLeftLabel(trialDaysLeft ?? 0)} in your trial, and subscribing keeps everything as it is.`,
+        button: "Subscribe",
+      }
+    case "trialEnded":
+      return {
+        heading: "Subscribe to Forkluck",
+        body: "Your trial has ended. Subscribe to keep editing. Everything you made is still here.",
+        button: "Subscribe",
+      }
+    case "lapsed":
+      return {
+        heading: "Resubscribe to Forkluck",
+        body: "Your subscription has ended. Forkluck is $7 a month. Cancel anytime. Everything you made is still here.",
+        button: "Resubscribe",
+      }
+  }
+}
+
 export function SubscribeCard({
   email,
-  firstSubscription,
+  state,
+  trialDaysLeft = null,
   canReturn,
 }: {
   email: string
-  firstSubscription: boolean
+  state: SubscribeState
+  trialDaysLeft?: number | null
   canReturn: boolean
 }) {
+  const copy = subscribeCopy(state, trialDaysLeft)
   const router = useRouter()
   const { refresh } = useRefresh()
   const [error, setError] = React.useState<string | null>(null)
@@ -72,14 +103,8 @@ export function SubscribeCard({
 
   return (
     <div className="flex flex-col">
-      <h1 className={authHeadingClassName}>
-        {firstSubscription ? "Upgrade your account" : "Resubscribe to Forkluck"}
-      </h1>
-      <p className={authSubtitleClassName}>
-        {firstSubscription
-          ? "Forkluck is $7 a month. Cancel anytime. Upgrading lifts the 10-recipe limit on the Free plan."
-          : "Your subscription has ended and your account is on the Free plan. Forkluck is $7 a month. Cancel anytime. Everything you made is still here."}
-      </p>
+      <h1 className={authHeadingClassName}>{copy.heading}</h1>
+      <p className={authSubtitleClassName}>{copy.body}</p>
 
       {error ? (
         <p role="alert" className="mt-4 text-md leading-5 text-destructive">
@@ -88,7 +113,7 @@ export function SubscribeCard({
       ) : null}
 
       <Button size="lg" pending={pending} onClick={checkout} className="mt-6">
-        {firstSubscription ? "Upgrade" : "Resubscribe"}
+        {copy.button}
       </Button>
 
       <button

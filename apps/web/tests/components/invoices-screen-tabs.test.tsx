@@ -78,7 +78,7 @@ function overview(partial: Partial<InvoicesOverview> = {}): InvoicesOverview {
   return {
     aiUsage: {
       usedPages: 0,
-      maxPages: 10,
+      maxPages: 100,
       resetsOn: "2026-09-01",
       exhausted: false,
     },
@@ -153,6 +153,7 @@ function screenFor(
       query=""
       tab={null}
       byok={false}
+      trial={false}
       driveConfig={null}
       driveConnectHref={null}
       {...props}
@@ -163,27 +164,51 @@ function screenFor(
 describe("the invoices screen's tabs", () => {
   it("shows exhausted AI usage without disabling ordinary invoice entry", () => {
     screenFor({
+      trial: true,
       overview: overview({
         aiUsage: {
-          usedPages: 10,
-          maxPages: 10,
+          usedPages: 25,
+          maxPages: 25,
           resetsOn: "2026-10-01",
           exhausted: true,
         },
       }),
     })
     expect(screen.getByRole("status").textContent).toContain(
-      "10 of 10 AI pages used. Resets Oct 1."
+      "25 of 25 AI pages used. Resets Oct 1."
     )
     expect(screen.getByRole("status").textContent).toContain(
       "enter invoices manually"
     )
     expect(
-      screen.getByRole("link", { name: "Upgrade" }).getAttribute("href")
+      screen.getByRole("link", { name: "Subscribe" }).getAttribute("href")
     ).toBe("/subscribe")
     expect(
       screen.getByRole("link", { name: "New invoice" }).getAttribute("href")
     ).toBe("/invoices/new")
+  })
+
+  it("offers the subscription on the allowance line only during a trial", () => {
+    screenFor({ trial: false })
+    expect(screen.getByRole("status").textContent).toContain(
+      "0 of 100 AI pages used."
+    )
+    expect(screen.queryByRole("link", { name: "Subscribe" })).toBeNull()
+  })
+
+  it("shows no allowance line on a read-only account", () => {
+    screenFor({
+      overview: overview({
+        aiUsage: {
+          usedPages: 0,
+          maxPages: 0,
+          resetsOn: "2026-10-01",
+          exhausted: true,
+        },
+      }),
+    })
+    expect(screen.queryByRole("status")).toBeNull()
+    expect(screen.queryByText(/AI pages/)).toBeNull()
   })
 
   it("does not show a hosted AI allowance for BYOK", () => {

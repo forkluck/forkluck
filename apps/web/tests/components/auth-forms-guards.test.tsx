@@ -128,6 +128,13 @@ describe("signup Create account", () => {
     expect(readLastSignInMethod()).toBe("password")
   })
 
+  it("says what the trial gives before asking for anything", () => {
+    render(<SignupForm />)
+    expect(
+      screen.getByText("Every feature free for 14 days. No card needed.")
+    ).toBeTruthy()
+  })
+
   it("stays enabled while empty and guards before calling the action", () => {
     render(<SignupForm />)
     const button = screen.getByRole("button", { name: "Create account" })

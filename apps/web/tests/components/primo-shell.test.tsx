@@ -89,6 +89,33 @@ beforeEach(() => {
   })
 })
 
+describe("read-only banner", () => {
+  it("sits above the page only while the account is read-only", () => {
+    const { rerender } = render(
+      <AppShell
+        user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}
+        readOnlyNotice="Your trial ended. Subscribe to keep editing."
+      >
+        <main>Recipe</main>
+      </AppShell>
+    )
+    expect(
+      screen.getByText("Your trial ended. Subscribe to keep editing.")
+    ).toBeTruthy()
+    expect(
+      screen.getByRole("button", { name: "Subscribe" }).getAttribute("href")
+    ).toBe("/subscribe")
+    rerender(
+      <AppShell
+        user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}
+      >
+        <main>Recipe</main>
+      </AppShell>
+    )
+    expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull()
+  })
+})
+
 describe("Primo shell integration", () => {
   it("implements the four desktop grid states and restores trigger focus", () => {
     const { container } = render(

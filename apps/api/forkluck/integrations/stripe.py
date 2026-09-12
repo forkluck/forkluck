@@ -113,7 +113,6 @@ def create_checkout_session(
     cancel_url: str,
     user_id,
     attempt_id,
-    with_trial: bool,
     *,
     idempotency_key: str,
 ) -> dict:
@@ -129,8 +128,6 @@ def create_checkout_session(
         "subscription_data[metadata][forkluck_user_id]": user_id,
         "subscription_data[metadata][forkluck_checkout_attempt_id]": attempt_id,
     }
-    if with_trial:
-        params["subscription_data[trial_period_days]"] = 14
     return _request(
         "POST",
         "/v1/checkout/sessions",

@@ -54,7 +54,6 @@ export const sessionPayloadSchema = z.strictObject({
     locked: z.boolean(),
     plan: z.string(),
     entitlements: z.strictObject({
-      maxRecipes: z.number().nullable(),
       primo: z.boolean(),
       posSync: z.boolean(),
       connectors: z.boolean(),
