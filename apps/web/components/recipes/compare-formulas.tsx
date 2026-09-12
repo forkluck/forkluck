@@ -1,13 +1,14 @@
 "use client"
 
 import * as React from "react"
+import { Popover } from "@base-ui/react/popover"
 import { ChevronDown, ClipboardPaste, X } from "lucide-react"
 
 import {
   GuardedLink,
   useGuardedNavigate,
 } from "@/components/navigation-blocker"
-import { Badge } from "@/components/ui/badge"
+import { ActionsMenu } from "@/components/ui/actions-menu"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -16,8 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { FilterPill } from "@/components/ui/filter-pill"
-import { Input } from "@/components/ui/input"
+import { SearchInput, inputClassName } from "@/components/ui/input"
 import {
   Menu,
   MenuCheckItem,
@@ -25,6 +25,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu"
 import { EmptyState, Toolbar, ToolbarSpacer } from "@/components/ui/page"
+import { TabPill, TabPills } from "@/components/ui/tab-pills"
 import {
   Table,
   TableBody,
@@ -38,19 +39,21 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import type { PriceListEntry } from "@/lib/pricing"
 import {
+  COMPARE_PATH,
   compareFormulas,
-  compareHref,
   FORMULA_ROLE_LABELS,
   FORMULA_ROLES,
   gramOverrideKey,
   MAX_COMPARE_RECIPES,
   pastedFormulaInput,
+  type ComparisonGroup,
+  type ComparisonRow,
   type Formula,
   type FormulaInput,
   type FormulaLine,
   type FormulaOverrides,
-  type FormulaRole,
   type PercentMode,
+  type FormulaRole,
 } from "@/lib/recipe/compare"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
 import { cn } from "@/lib/utils"
@@ -63,57 +66,101 @@ import { cn } from "@/lib/utils"
  * recipe of the kitchen's.
  */
 
-/** This browser's last choice of denominator. Its own key: the editor's
- * `recipe.percentageMode` divides raw quantities by one base line, which is
- * a different reading, and one screen must not silently flip the other. */
-export const COMPARE_MODE_KEY = "recipe.compare.percentMode"
 /** The recipes pasted here, as text: identities differ between visits, so
  * they are read again on every load. */
 export const COMPARE_PASTED_KEY = "recipe.compare.pasted"
+export const COMPARE_GRAMS_KEY = "recipe.compare.grams"
+export const COMPARE_MODE_KEY = "recipe.compare.percentMode"
 
+export type CompareView = "formula" | "spec"
 export type PastedRecipe = { id: string; title: string; text: string }
 
+type RecipeOption = {
+  publicId: string
+  title: string
+  category?: string | null
+}
+
+type CellValue = {
+  percent: number | null
+  grams: number | null
+  line: FormulaLine | null
+  present: boolean
+}
+
+type PlotRow = {
+  key: string
+  label: string
+  role: FormulaRole
+  group: ComparisonGroup
+  row: ComparisonRow | null
+  kind: "group" | "ingredient"
+  values: CellValue[]
+}
+
+const percentFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+})
+const gramsFormat = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+})
+
+const COLUMN_COLORS = [
+  { dot: "bg-chart-1", fill: "bg-chart-1" },
+  { dot: "bg-chart-3", fill: "bg-chart-3" },
+  { dot: "bg-chart-6", fill: "bg-chart-6" },
+  { dot: "bg-chart-4", fill: "bg-chart-4" },
+] as const
+
 const MODE_OPTIONS: Array<{ value: PercentMode; label: string }> = [
-  { value: "bakers", label: "Baker’s %" },
+  { value: "bakers", label: "Baker's %" },
   { value: "weight", label: "Weight %" },
 ]
 
-const SUMMARY_ROWS: Array<{
-  key: "hydration" | "water" | "fat" | "sugar" | "protein" | "salt"
-  label: string
-}> = [
-  { key: "hydration", label: "Hydration" },
-  { key: "water", label: "Water" },
-  { key: "fat", label: "Fat" },
-  { key: "sugar", label: "Sugar" },
-  { key: "protein", label: "Protein" },
-  { key: "salt", label: "Salt" },
-]
-
-const gramsFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 })
-
-function formatGrams(grams: number): string {
-  return gramsFormat.format(grams)
+const SPEC_GRID_CLASSES: Record<number, string> = {
+  1: "grid-cols-[repeat(1,minmax(260px,1fr))]",
+  2: "grid-cols-[repeat(2,minmax(260px,1fr))]",
+  3: "grid-cols-[repeat(3,minmax(260px,1fr))]",
+  4: "grid-cols-[repeat(4,minmax(260px,1fr))]",
 }
 
-function formatPercent(percent: number | null): string {
-  return percent === null ? "—" : `${percent.toFixed(1)}%`
+export function formatComparePercent(percent: number | null): string {
+  return percent === null ? "—" : `${percentFormat.format(percent)}%`
 }
 
-/** Signed points, a proper minus, and a flat zero under half a point. */
-function formatDelta(delta: number | null): string {
+export function formatCompareDeltaPoints(delta: number | null): string {
   if (delta === null) return "—"
-  if (Math.abs(delta) < 0.05) return "0.0"
-  return `${delta > 0 ? "+" : "−"}${Math.abs(delta).toFixed(1)}`
+  if (Math.abs(delta) < 0.05) return "same"
+  return `${delta > 0 ? "+" : "−"}${percentFormat.format(Math.abs(delta))} pts`
 }
 
-function pointsDelta(
-  count: number,
-  first: number | null | undefined,
-  second: number | null | undefined
-): number | null {
-  if (count !== 2 || first == null || second == null) return null
-  return Math.round((second - first) * 10) / 10
+export function formatCompareGrams(grams: number | null): string {
+  return grams === null ? "—" : `${gramsFormat.format(Math.round(grams))} g`
+}
+
+export function compareRowStats(values: Array<number | null>): {
+  min: number | null
+  max: number | null
+  spread: number
+} {
+  const present = values.filter((value): value is number => value !== null)
+  if (present.length === 0) return { min: null, max: null, spread: 0 }
+  const min = Math.min(...present)
+  const max = Math.max(...present)
+  return { min, max, spread: Math.round((max - min) * 10) / 10 }
+}
+
+export function formulaAxisMax(values: Array<number | null>): number {
+  const max = compareRowStats(values).max ?? 0
+  if (max <= 100) return 100
+  return (Math.floor(max / 50) + 1) * 50
+}
+
+function formatAxisTick(value: number): string {
+  return `${new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(value)}%`
 }
 
 function plural(count: number, noun: string): string {
@@ -205,7 +252,7 @@ function GramsInput({
     if (Number.isFinite(grams) && grams > 0) onCommit(grams)
   }
   return (
-    <Input
+    <input
       type="text"
       inputMode="decimal"
       aria-label={`Grams for ${label} in ${column}`}
@@ -217,7 +264,10 @@ function GramsInput({
       onKeyDown={(event) => {
         if (event.key === "Enter") event.currentTarget.blur()
       }}
-      className="ml-auto h-7 w-20 px-2 text-right text-sm tabular-nums md:text-sm"
+      className={cn(
+        inputClassName,
+        "ml-auto h-7 w-20 px-2 text-right text-sm tabular-nums md:text-sm"
+      )}
     />
   )
 }
@@ -255,13 +305,14 @@ function PasteFormulaDialog({
             >
               Name
             </label>
-            <Input
+            <input
               id="paste-formula-title"
               autoFocus
               maxLength={120}
               value={title}
               placeholder="Serious Eats focaccia"
               onChange={(event) => setTitle(event.target.value)}
+              className={inputClassName}
             />
           </div>
           <div className="grid gap-2">
@@ -314,15 +365,977 @@ function PasteFormulaDialog({
   )
 }
 
-function basisNote(formula: Formula, mode: PercentMode): string | null {
-  if (mode !== "bakers") return null
+function formulaBasisLine(formula: Formula): string {
+  if (formula.basis === "none") return `${formula.title}: nothing weighed yet.`
+  return `${formula.title}: 100% = ${formula.basisLabel}.`
+}
+
+function basisNote(formula: Formula): string | null {
   if (formula.basis === "base" || formula.basis === "heaviest") {
-    return `${formula.title}: no flour line, so percentages are of ${formula.basisLabel}.`
+    return `100% = ${formula.basisLabel}`
   }
-  if (formula.basis === "none") {
-    return `${formula.title}: nothing weighed yet, so there are no percentages.`
-  }
+  if (formula.basis === "none") return "Nothing weighed"
   return null
+}
+
+function compareUrl({
+  selected,
+  view,
+  baseId,
+}: {
+  selected: string[]
+  view: CompareView
+  baseId: string | null
+}): string {
+  const parts: string[] = []
+  if (selected.length) {
+    parts.push(`r=${selected.map(encodeURIComponent).join(",")}`)
+  }
+  parts.push(`view=${view}`)
+  if (baseId) parts.push(`base=${encodeURIComponent(baseId)}`)
+  return `${COMPARE_PATH}?${parts.join("&")}`
+}
+
+function lineOverrideId(
+  formula: Formula,
+  line: FormulaLine,
+  gramOverrides: Record<string, number>
+): string | null {
+  return (
+    line.lineIds.find(
+      (id) => gramOverrides[gramOverrideKey(formula.key, id)] !== undefined
+    ) ??
+    line.unweighedLineId ??
+    null
+  )
+}
+
+function groupValue(
+  group: ComparisonGroup,
+  index: number,
+  row: ComparisonRow | null
+): CellValue {
+  if (row) {
+    const line = row.cells[index] ?? null
+    return {
+      percent: line?.percent ?? null,
+      grams: line?.grams ?? null,
+      line,
+      present: line !== null,
+    }
+  }
+  const present = group.rows.some((one) => one.cells[index] !== null)
+  const cell = group.subtotal.cells[index]
+  return {
+    percent: present ? (cell?.percent ?? null) : null,
+    grams: present ? (cell?.grams ?? null) : null,
+    line: null,
+    present,
+  }
+}
+
+function groupPlotRow(group: ComparisonGroup, columns: Formula[]): PlotRow {
+  const row = group.rows.length === 1 ? (group.rows[0] ?? null) : null
+  return {
+    key: `group:${group.role}`,
+    label: row ? row.label : group.label,
+    role: group.role,
+    group,
+    row,
+    kind: "group",
+    values: columns.map((_, index) => groupValue(group, index, row)),
+  }
+}
+
+function ingredientPlotRow(
+  group: ComparisonGroup,
+  row: ComparisonRow,
+  columns: Formula[]
+): PlotRow {
+  return {
+    key: row.key,
+    label: row.label,
+    role: group.role,
+    group,
+    row,
+    kind: "ingredient",
+    values: columns.map((_, index) => groupValue(group, index, row)),
+  }
+}
+
+function AddRecipePopover({
+  disabled,
+  recipeOptions,
+  selected,
+  pending,
+  onChoose,
+  onPaste,
+  className,
+}: {
+  disabled: boolean
+  recipeOptions: RecipeOption[]
+  selected: string[]
+  pending: boolean
+  onChoose: (publicId: string) => void
+  onPaste: () => void
+  className?: string
+}) {
+  const [open, setOpen] = React.useState(false)
+  const [query, setQuery] = React.useState("")
+  const needle = query.trim().toLocaleLowerCase()
+  const matches = recipeOptions.filter((option) =>
+    option.title.toLocaleLowerCase().includes(needle)
+  )
+  const firstEnabled = matches.find(
+    (option) => !selected.includes(option.publicId)
+  )
+  const choose = (publicId: string) => {
+    onChoose(publicId)
+    setOpen(false)
+    setQuery("")
+  }
+  return (
+    <Popover.Root
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (next) setQuery("")
+      }}
+    >
+      {/* The black primary at the toolbar's end, as the recipes list has it. */}
+      <Popover.Trigger
+        disabled={disabled}
+        render={
+          <Button type="button" pending={pending} className={className} />
+        }
+      >
+        + Add recipe
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner align="start" sideOffset={6} className="z-50">
+          <Popover.Popup className="z-50 w-64 origin-(--transform-origin) rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
+            <Popover.Title className="sr-only">Add recipe</Popover.Title>
+            <div className="p-1.5">
+              <SearchInput
+                autoFocus
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") return
+                  event.preventDefault()
+                  if (firstEnabled) choose(firstEnabled.publicId)
+                }}
+                placeholder="Search recipes"
+                aria-label="Search recipes"
+                className="max-w-none"
+                inputClassName="h-8"
+              />
+            </div>
+            <div className="flex max-h-64 flex-col overflow-y-auto p-1.5 pt-0">
+              {matches.length === 0 ? (
+                <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+                  No recipes match
+                </span>
+              ) : null}
+              {matches.map((option) => {
+                const chosen = selected.includes(option.publicId)
+                return (
+                  <button
+                    key={option.publicId}
+                    type="button"
+                    disabled={chosen}
+                    onClick={() => choose(option.publicId)}
+                    className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-disabled-foreground"
+                  >
+                    <span className="min-w-0 flex-1 truncate text-base">
+                      {option.title}
+                    </span>
+                    {option.category ? (
+                      <span className="max-w-20 truncate text-xs text-faint">
+                        {option.category}
+                      </span>
+                    ) : null}
+                  </button>
+                )
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  setQuery("")
+                  onPaste()
+                }}
+                className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-base outline-none hover:bg-accent focus-visible:bg-accent"
+              >
+                <ClipboardPaste
+                  className="size-[17px]"
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+                Paste a recipe
+              </button>
+            </div>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  )
+}
+
+/**
+ * A column's name: press it to make that recipe the baseline, press again
+ * to clear; the X takes the column off the page.
+ */
+function ColumnHeader({
+  formula,
+  index,
+  baseId,
+  pending,
+  busy,
+  onToggleBase,
+  onRemove,
+}: {
+  formula: Formula
+  index: number
+  baseId: string | null
+  pending: boolean
+  busy: string | null
+  onToggleBase: (formula: Formula) => void
+  onRemove: (formula: Formula) => void
+}) {
+  const active = formula.key === baseId
+  return (
+    <span className="flex min-w-0 items-center justify-end gap-0.5">
+      <button
+        type="button"
+        aria-pressed={active}
+        aria-label={active ? `${formula.title} baseline` : formula.title}
+        title={
+          active ? "Baseline. Click to clear." : "Click to use as baseline"
+        }
+        onClick={() => onToggleBase(formula)}
+        className={cn(
+          "flex min-w-0 items-center gap-1.5 rounded-md px-1.5 py-0.5 outline-none hover:bg-accent focus-visible:bg-accent",
+          active && "bg-muted"
+        )}
+      >
+        <span
+          className={cn(
+            "size-[7px] shrink-0 rounded-full",
+            COLUMN_COLORS[index]?.dot
+          )}
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            "min-w-0 truncate text-xs font-medium",
+            active ? "text-foreground" : "text-muted-foreground"
+          )}
+        >
+          {formula.title}
+        </span>
+      </button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-xs"
+        aria-label={`Remove ${formula.title}`}
+        pending={pending && busy === `remove:${formula.key}`}
+        onClick={() => onRemove(formula)}
+        className="shrink-0"
+      >
+        <X strokeWidth={2} aria-hidden="true" />
+      </Button>
+    </span>
+  )
+}
+
+function FormulaValue({
+  formula,
+  value,
+  baseline,
+  isBaseline,
+  showGrams,
+  gramOverrides,
+  onSetGrams,
+  className,
+}: {
+  formula: Formula
+  value: CellValue
+  baseline: number | null
+  isBaseline: boolean
+  showGrams: boolean
+  gramOverrides: Record<string, number>
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+  className?: string
+}) {
+  const overrideId = value.line
+    ? lineOverrideId(formula, value.line, gramOverrides)
+    : null
+  if (value.line?.note === "nonEdible") {
+    return <span className="text-base text-muted-foreground">Not food</span>
+  }
+  if (value.line && overrideId !== null) {
+    return (
+      <div className="flex flex-col items-end gap-0.5">
+        <GramsInput
+          label={value.line.label}
+          column={formula.title}
+          value={gramOverrides[gramOverrideKey(formula.key, overrideId)]}
+          onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
+        />
+        {value.line.written ? (
+          <span className="text-2xs text-faint">{value.line.written}</span>
+        ) : null}
+      </div>
+    )
+  }
+  if (value.percent === null) {
+    return <span className={cn("text-faint", className)}>—</span>
+  }
+  if (baseline !== null) {
+    if (isBaseline) {
+      return (
+        <span className={cn("text-faint tabular-nums", className)}>
+          {formatComparePercent(value.percent)}
+        </span>
+      )
+    }
+    return (
+      <span className={cn("tabular-nums", className)}>
+        {formatCompareDeltaPoints(value.percent - baseline)}
+        <span className="block text-2xs font-normal text-faint">
+          {formatComparePercent(value.percent)}
+        </span>
+      </span>
+    )
+  }
+  return (
+    <span className={cn("tabular-nums", className)}>
+      {formatComparePercent(value.percent)}
+      {showGrams && value.grams !== null ? (
+        <span className="block text-2xs font-normal text-faint">
+          {formatCompareGrams(value.grams)}
+        </span>
+      ) : null}
+      {value.line?.note === "discarded" ? (
+        <span className="block text-2xs font-normal text-faint">discarded</span>
+      ) : null}
+    </span>
+  )
+}
+
+function DotPlot({
+  row,
+  columns,
+  axisMax,
+}: {
+  row: PlotRow
+  columns: Formula[]
+  axisMax: number
+}) {
+  const stats = compareRowStats(row.values.map((value) => value.percent))
+  return (
+    <div className="relative mx-1.5 h-full">
+      {/* The guide the dots sit on, with a tick at 0, half and the end so a
+          dot's place reads without looking up at the header. The 6px inset
+          on each side keeps a dot at 0 or at the end whole; the header
+          ticks carry the same inset. */}
+      <span
+        className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-border"
+        aria-hidden="true"
+      />
+      {["left-0", "left-1/2", "right-0"].map((side) => (
+        <span
+          key={side}
+          className={cn("absolute inset-y-3 w-px bg-border", side)}
+          aria-hidden="true"
+        />
+      ))}
+      {stats.min !== null && stats.max !== null && stats.spread > 0.05 ? (
+        <span
+          className="absolute top-1/2 h-0.5 -translate-y-1/2 bg-line-strong"
+          style={{
+            left: `${(stats.min / axisMax) * 100}%`,
+            width: `${((stats.max - stats.min) / axisMax) * 100}%`,
+          }}
+          aria-hidden="true"
+        />
+      ) : null}
+      {row.values.map((value, index) =>
+        value.percent === null ? null : (
+          <span
+            key={columns[index]?.key ?? index}
+            className={cn(
+              "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-card",
+              row.kind === "group" ? "size-[11px]" : "size-2",
+              COLUMN_COLORS[index]?.dot
+            )}
+            style={{ left: `${(value.percent / axisMax) * 100}%` }}
+            title={`${columns[index]?.title ?? "Recipe"} · ${formatComparePercent(value.percent)}`}
+            aria-hidden="true"
+          />
+        )
+      )}
+    </div>
+  )
+}
+
+function FormulaView({
+  columns,
+  groups,
+  baseId,
+  mode,
+  showGrams,
+  expanded,
+  gramOverrides,
+  onExpandedChange,
+  onSetRole,
+  onSetGrams,
+  pending,
+  busy,
+  onToggleBase,
+  onRemove,
+}: {
+  columns: Formula[]
+  groups: ComparisonGroup[]
+  baseId: string | null
+  mode: PercentMode
+  showGrams: boolean
+  expanded: Record<string, boolean>
+  gramOverrides: Record<string, number>
+  onExpandedChange: (role: FormulaRole) => void
+  onSetRole: (rowKey: string, role: FormulaRole) => void
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+  pending: boolean
+  busy: string | null
+  onToggleBase: (formula: Formula) => void
+  onRemove: (formula: Formula) => void
+}) {
+  const [scrolled, setScrolled] = React.useState(false)
+  const groupRows = groups.map((group) => groupPlotRow(group, columns))
+  const visibleRows = groupRows.flatMap((groupRow) => [
+    groupRow,
+    ...(expanded[groupRow.role]
+      ? groupRow.group.rows.map((row) =>
+          ingredientPlotRow(groupRow.group, row, columns)
+        )
+      : []),
+  ])
+  const axisMax = formulaAxisMax(
+    visibleRows.flatMap((row) => row.values.map((value) => value.percent))
+  )
+  const axisTicks = [0, axisMax / 2, axisMax]
+  const basisTitle = columns.map(formulaBasisLine).join(" ")
+  const axisLabel = mode === "bakers" ? "Baker's %" : "Weight %"
+  const stickyClass = cn(
+    "sticky left-0 z-[1] bg-card after:absolute after:inset-y-0 after:right-0 after:w-px after:content-['']",
+    scrolled ? "after:bg-border" : "after:bg-transparent"
+  )
+  return (
+    <>
+      <TableFrame
+        className="overflow-x-auto"
+        onScroll={(event) => setScrolled(event.currentTarget.scrollLeft > 0)}
+      >
+        {/* Every column is a set width and the table is no wider than its
+            columns, so a dot's place on the axis does not shift when a
+            recipe is added or the window changes. */}
+        <Table className="w-auto">
+          <TableHeader>
+            <TableHeaderRow className="h-11">
+              <TableHead
+                title={basisTitle}
+                className={cn(
+                  "w-[168px] min-w-[168px] align-middle",
+                  stickyClass
+                )}
+              >
+                {axisLabel}
+              </TableHead>
+              <TableHead className="w-[400px] max-w-[400px] min-w-[400px] align-middle">
+                <div className="relative mx-1.5 h-11">
+                  {axisTicks.map((tick, index) => (
+                    <span
+                      key={tick}
+                      className={cn(
+                        "absolute top-1/2 -translate-y-1/2 text-2xs text-faint",
+                        index === 0
+                          ? "left-0"
+                          : index === 1
+                            ? "left-1/2 -translate-x-1/2"
+                            : "right-0"
+                      )}
+                    >
+                      {formatAxisTick(tick)}
+                    </span>
+                  ))}
+                </div>
+              </TableHead>
+              {columns.map((formula, index) => (
+                <TableHead
+                  key={formula.key}
+                  className="w-[136px] min-w-[136px] text-right align-middle"
+                >
+                  <ColumnHeader
+                    formula={formula}
+                    index={index}
+                    baseId={baseId}
+                    pending={pending}
+                    busy={busy}
+                    onToggleBase={onToggleBase}
+                    onRemove={onRemove}
+                  />
+                </TableHead>
+              ))}
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {groupRows.map((groupRow) => (
+              <React.Fragment key={groupRow.key}>
+                <FormulaPlotRow
+                  row={groupRow}
+                  columns={columns}
+                  axisMax={axisMax}
+                  baseId={baseId}
+                  mode={mode}
+                  showGrams={showGrams}
+                  expanded={expanded[groupRow.role] ?? false}
+                  stickyClass={stickyClass}
+                  gramOverrides={gramOverrides}
+                  onExpandedChange={onExpandedChange}
+                  onSetRole={onSetRole}
+                  onSetGrams={onSetGrams}
+                />
+                {expanded[groupRow.role]
+                  ? groupRow.group.rows.map((row) => (
+                      <FormulaPlotRow
+                        key={row.key}
+                        row={ingredientPlotRow(groupRow.group, row, columns)}
+                        columns={columns}
+                        axisMax={axisMax}
+                        baseId={baseId}
+                        mode={mode}
+                        showGrams={showGrams}
+                        expanded={false}
+                        stickyClass={stickyClass}
+                        gramOverrides={gramOverrides}
+                        onExpandedChange={onExpandedChange}
+                        onSetRole={onSetRole}
+                        onSetGrams={onSetGrams}
+                      />
+                    ))
+                  : null}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableFrame>
+      <div className="mt-3.5 flex flex-col gap-2 text-sm text-faint md:flex-row md:items-center">
+        <p className="flex-1">
+          {baseId
+            ? `Differences in points against ${
+                columns.find((formula) => formula.key === baseId)?.title ??
+                "baseline"
+              }. Click it again to clear.`
+            : mode === "bakers"
+              ? "Baker's percentages: each ingredient as a share of flour. Click a recipe to use it as the baseline."
+              : "Weight percentages: each ingredient as a share of the dough. Click a recipe to use it as the baseline."}
+        </p>
+      </div>
+    </>
+  )
+}
+
+function FormulaPlotRow({
+  row,
+  columns,
+  axisMax,
+  baseId,
+  mode,
+  showGrams,
+  expanded,
+  stickyClass,
+  gramOverrides,
+  onExpandedChange,
+  onSetRole,
+  onSetGrams,
+}: {
+  row: PlotRow
+  columns: Formula[]
+  axisMax: number
+  baseId: string | null
+  mode: PercentMode
+  showGrams: boolean
+  expanded: boolean
+  stickyClass: string
+  gramOverrides: Record<string, number>
+  onExpandedChange: (role: FormulaRole) => void
+  onSetRole: (rowKey: string, role: FormulaRole) => void
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+}) {
+  const canExpand = row.kind === "group" && row.group.rows.length > 1
+  const baseline = baseId
+    ? (row.values[columns.findIndex((formula) => formula.key === baseId)]
+        ?.percent ?? null)
+    : null
+  const note = mode === "bakers" && row.role === "liquid"
+  return (
+    <TableRow className={row.kind === "group" ? "h-14" : "h-10"}>
+      <TableCell className={cn("w-[168px] min-w-[168px]", stickyClass)}>
+        {canExpand ? (
+          <button
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => onExpandedChange(row.role)}
+            className="flex min-w-0 items-center gap-1.5 text-left outline-none focus-visible:underline"
+          >
+            <span className="min-w-0">
+              <span className="block truncate text-md font-semibold text-foreground">
+                {row.label}
+              </span>
+              {note ? (
+                <span className="block text-xs text-faint">Hydration</span>
+              ) : null}
+            </span>
+            <ChevronDown
+              className={cn(
+                "size-3 shrink-0 text-faint",
+                expanded && "rotate-180"
+              )}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+          </button>
+        ) : (
+          <div
+            className={cn(
+              "flex min-w-0 items-center gap-1.5",
+              row.kind === "ingredient" && "pl-4"
+            )}
+          >
+            <span className="min-w-0">
+              <span
+                className={cn(
+                  "block truncate",
+                  row.kind === "group"
+                    ? "text-md font-semibold text-foreground"
+                    : "text-base text-muted-foreground"
+                )}
+              >
+                {row.label}
+              </span>
+              {row.kind === "group" && note ? (
+                <span className="block text-xs text-faint">Hydration</span>
+              ) : null}
+            </span>
+            {row.kind === "ingredient" && row.row ? (
+              <RoleMenu
+                label={row.label}
+                role={row.row.role}
+                onChoose={(role) => onSetRole(row.row?.key ?? row.key, role)}
+              />
+            ) : null}
+          </div>
+        )}
+      </TableCell>
+      <TableCell className="w-[400px] max-w-[400px] min-w-[400px]">
+        <div className={row.kind === "group" ? "h-14" : "h-10"}>
+          <DotPlot row={row} columns={columns} axisMax={axisMax} />
+        </div>
+      </TableCell>
+      {columns.map((formula, index) => (
+        <TableCell
+          key={formula.key}
+          className={cn(
+            "w-[136px] min-w-[136px] text-right",
+            row.kind === "group"
+              ? "text-md font-medium text-foreground"
+              : "text-base text-muted-foreground"
+          )}
+        >
+          <FormulaValue
+            formula={formula}
+            value={
+              row.values[index] ?? {
+                percent: null,
+                grams: null,
+                line: null,
+                present: false,
+              }
+            }
+            baseline={baseline}
+            isBaseline={formula.key === baseId}
+            showGrams={showGrams}
+            gramOverrides={gramOverrides}
+            onSetGrams={onSetGrams}
+          />
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+function SpecSheetView({
+  columns,
+  groups,
+  baseId,
+  mode,
+  showGrams,
+  gramOverrides,
+  onSetGrams,
+  pending,
+  busy,
+  onToggleBase,
+  onRemove,
+}: {
+  columns: Formula[]
+  groups: ComparisonGroup[]
+  baseId: string | null
+  mode: PercentMode
+  showGrams: boolean
+  gramOverrides: Record<string, number>
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+  pending: boolean
+  busy: string | null
+  onToggleBase: (formula: Formula) => void
+  onRemove: (formula: Formula) => void
+}) {
+  const groupRows = groups.map((group) => groupPlotRow(group, columns))
+  return (
+    <div className="overflow-x-auto">
+      <div
+        className={cn(
+          "grid min-w-full gap-8",
+          SPEC_GRID_CLASSES[columns.length] ?? SPEC_GRID_CLASSES[4]
+        )}
+      >
+        {columns.map((formula, index) => (
+          <div key={formula.key} className="min-w-0">
+            <div className="pb-[22px]">
+              <div className="flex min-w-0 items-center gap-2">
+                <span
+                  className={cn(
+                    "size-[9px] rounded-full",
+                    COLUMN_COLORS[index]?.dot
+                  )}
+                  aria-hidden="true"
+                />
+                {formula.href ? (
+                  <GuardedLink
+                    href={formula.href}
+                    className="min-w-0 truncate text-lg font-semibold text-foreground hover:underline"
+                  >
+                    {formula.title}
+                  </GuardedLink>
+                ) : (
+                  <span className="min-w-0 truncate text-lg font-semibold text-foreground">
+                    {formula.title}
+                  </span>
+                )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={`Remove ${formula.title}`}
+                  pending={pending && busy === `remove:${formula.key}`}
+                  onClick={() => onRemove(formula)}
+                  className="ml-auto shrink-0"
+                >
+                  <X strokeWidth={2} aria-hidden="true" />
+                </Button>
+              </div>
+              <p className="mt-1 flex items-center gap-2 text-sm text-faint">
+                <span className="min-w-0 truncate">
+                  {formula.source === "pasted"
+                    ? "Pasted recipe"
+                    : (formula.category ?? "")}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  aria-pressed={formula.key === baseId}
+                  onClick={() => onToggleBase(formula)}
+                  className={cn(
+                    "shrink-0",
+                    formula.key === baseId && "bg-muted text-foreground"
+                  )}
+                >
+                  {formula.key === baseId ? "Baseline" : "Use as baseline"}
+                </Button>
+              </p>
+              {basisNote(formula) ? (
+                <p className="mt-1 text-sm text-faint">{basisNote(formula)}</p>
+              ) : null}
+              <p className="mt-1 text-sm text-muted-foreground">
+                {formatCompareGrams(formula.roleTotals.flour.grams)} flour ·{" "}
+                {formatCompareGrams(formula.totalGrams)} dough
+              </p>
+            </div>
+            {groupRows.map((groupRow) => (
+              <SpecSection
+                key={groupRow.key}
+                groupRow={groupRow}
+                formula={formula}
+                formulaIndex={index}
+                columns={columns}
+                baseId={baseId}
+                mode={mode}
+                showGrams={showGrams}
+                gramOverrides={gramOverrides}
+                onSetGrams={onSetGrams}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SpecSection({
+  groupRow,
+  formula,
+  formulaIndex,
+  columns,
+  baseId,
+  mode,
+  showGrams,
+  gramOverrides,
+  onSetGrams,
+}: {
+  groupRow: PlotRow
+  formula: Formula
+  formulaIndex: number
+  columns: Formula[]
+  baseId: string | null
+  mode: PercentMode
+  showGrams: boolean
+  gramOverrides: Record<string, number>
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+}) {
+  const value = groupRow.values[formulaIndex] ?? {
+    percent: null,
+    grams: null,
+    line: null,
+    present: false,
+  }
+  const baseline =
+    baseId && formula.key !== baseId
+      ? (groupRow.values[columns.findIndex((one) => one.key === baseId)]
+          ?.percent ?? null)
+      : null
+  const rowMax = compareRowStats(groupRow.values.map((one) => one.percent)).max
+  const width =
+    value.percent !== null && rowMax && rowMax > 0
+      ? Math.max(0, Math.min(100, (value.percent / rowMax) * 100))
+      : 0
+  const sectionLabel =
+    mode === "bakers" && groupRow.role === "liquid"
+      ? "Hydration"
+      : groupRow.group.label
+  const showLines =
+    groupRow.group.rows.length > 1 ||
+    groupRow.group.rows.some((row) => row.label !== sectionLabel)
+  return (
+    <section className="border-t border-border py-4 pb-[18px]">
+      <div className="text-xs font-medium text-muted-foreground">
+        {sectionLabel}
+      </div>
+      {value.percent === null || !value.present ? (
+        <div className="mt-1">
+          <div className="text-2xl font-semibold text-faint tabular-nums">
+            —
+          </div>
+          <div className="text-xs text-faint">Not in this recipe</div>
+        </div>
+      ) : (
+        <>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span
+              className={cn(
+                "font-semibold text-foreground tabular-nums",
+                groupRow.role === "liquid" ? "text-3xl" : "text-2xl"
+              )}
+            >
+              {formatComparePercent(value.percent)}
+            </span>
+            {baseline !== null ? (
+              <span className="text-sm font-medium text-muted-foreground">
+                {formatCompareDeltaPoints(value.percent - baseline)}
+              </span>
+            ) : null}
+          </div>
+          <div className="mt-3 h-1 rounded-full bg-muted">
+            <div
+              className={cn(
+                "h-1 rounded-full",
+                COLUMN_COLORS[formulaIndex]?.fill
+              )}
+              style={{ width: `${width}%` }}
+            />
+          </div>
+        </>
+      )}
+      {showLines ? (
+        <div className="mt-3 grid gap-1.5">
+          {groupRow.group.rows.map((row) => {
+            const line = row.cells[formulaIndex]
+            if (!line) return null
+            return (
+              <div key={row.key} className="flex min-w-0 items-center gap-3">
+                <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                  {row.label}
+                </span>
+                <SpecLineValue
+                  formula={formula}
+                  line={line}
+                  showGrams={showGrams}
+                  gramOverrides={gramOverrides}
+                  onSetGrams={onSetGrams}
+                />
+              </div>
+            )
+          })}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+function SpecLineValue({
+  formula,
+  line,
+  showGrams,
+  gramOverrides,
+  onSetGrams,
+}: {
+  formula: Formula
+  line: FormulaLine
+  showGrams: boolean
+  gramOverrides: Record<string, number>
+  onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+}) {
+  const overrideId = lineOverrideId(formula, line, gramOverrides)
+  if (overrideId !== null) {
+    return (
+      <GramsInput
+        label={line.label}
+        column={formula.title}
+        value={gramOverrides[gramOverrideKey(formula.key, overrideId)]}
+        onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
+      />
+    )
+  }
+  return (
+    <span className="shrink-0 text-sm text-muted-foreground tabular-nums">
+      {formatComparePercent(line.percent)}
+      {showGrams && line.grams !== null
+        ? ` · ${formatCompareGrams(line.grams)}`
+        : ""}
+    </span>
+  )
 }
 
 export function CompareFormulas({
@@ -331,6 +1344,8 @@ export function CompareFormulas({
   missingCount,
   identities,
   recipeOptions,
+  view,
+  baseId,
 }: {
   /** The saved recipes in the URL, in order. */
   selected: string[]
@@ -339,21 +1354,24 @@ export function CompareFormulas({
   missingCount: number
   /** The pantry, for weighing pasted lines; empty where cost is not the reader's. */
   identities: PriceListEntry[]
-  recipeOptions: Array<{ publicId: string; title: string }>
+  recipeOptions: RecipeOption[]
+  view: CompareView
+  baseId: string | null
 }) {
   const { go, pending } = useGuardedNavigate()
   const [mode, setMode] = React.useState<PercentMode>("bakers")
   const [pasted, setPasted] = React.useState<PastedRecipe[]>([])
+  const [showGrams, setShowGrams] = React.useState(false)
   const [gramOverrides, setGramOverrides] = React.useState<
     Record<string, number>
   >({})
   const [roleOverrides, setRoleOverrides] = React.useState<
     Record<string, FormulaRole>
   >({})
+  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
   const [pasteOpen, setPasteOpen] = React.useState(false)
   // The control whose press started the navigation, so its wait shows there.
   const [busy, setBusy] = React.useState<string | null>(null)
-  const [scrolled, setScrolled] = React.useState(false)
 
   // This browser's last choices. Read after mount: the server cannot know
   // what this browser prefers or has pasted.
@@ -364,13 +1382,10 @@ export function CompareFormulas({
         ? "weight"
         : "bakers"
     )
+    setShowGrams(window.localStorage.getItem(COMPARE_GRAMS_KEY) === "shown")
     setPasted(readPasted())
   }, [])
 
-  const chooseMode = (next: PercentMode) => {
-    setMode(next)
-    window.localStorage.setItem(COMPARE_MODE_KEY, next)
-  }
   const savePasted = (next: PastedRecipe[]) => {
     setPasted(next)
     window.localStorage.setItem(COMPARE_PASTED_KEY, JSON.stringify(next))
@@ -392,25 +1407,45 @@ export function CompareFormulas({
     [formulas, pastedInputs, mode, overrides]
   )
   const columns = comparison.formulas
-  const count = columns.length
-  const full = count >= MAX_COMPARE_RECIPES
-  const twoColumns = count === 2
-  const span = 1 + count * 2 + (twoColumns ? 1 : 0)
+  const selectedBase = columns.some((formula) => formula.key === baseId)
+    ? baseId
+    : null
+  const full = columns.length >= MAX_COMPARE_RECIPES
+
+  const navigate = (next: {
+    selected?: string[]
+    view?: CompareView
+    baseId?: string | null
+  }) => {
+    void go(
+      compareUrl({
+        selected: next.selected ?? selected,
+        view: next.view ?? view,
+        baseId: next.baseId === undefined ? selectedBase : next.baseId,
+      }),
+      { replace: true }
+    )
+  }
 
   const addRecipe = (publicId: string) => {
     setBusy("add")
-    void go(compareHref([...selected, publicId]), { replace: true })
+    navigate({ selected: [...selected, publicId] })
   }
   const remove = (formula: Formula) => {
     if (formula.source === "pasted") {
       savePasted(pasted.filter((one) => `paste:${one.id}` !== formula.key))
+      if (selectedBase === formula.key) navigate({ baseId: null })
       return
     }
     setBusy(`remove:${formula.key}`)
-    void go(compareHref(selected.filter((id) => id !== formula.key)), {
-      replace: true,
+    const nextSelected = selected.filter((id) => id !== formula.key)
+    navigate({
+      selected: nextSelected,
+      baseId: selectedBase === formula.key ? null : selectedBase,
     })
   }
+  const toggleBase = (formula: Formula) =>
+    navigate({ baseId: selectedBase === formula.key ? null : formula.key })
   const addPasted = (title: string, text: string) => {
     const id = crypto.randomUUID()
     savePasted([
@@ -428,458 +1463,135 @@ export function CompareFormulas({
     })
   const setRole = (rowKey: string, role: FormulaRole) =>
     setRoleOverrides((current) => ({ ...current, [rowKey]: role }))
+  const chooseMode = (next: PercentMode) => {
+    setMode(next)
+    window.localStorage.setItem(COMPARE_MODE_KEY, next)
+  }
+  const toggleGrams = () =>
+    setShowGrams((current) => {
+      const next = !current
+      window.localStorage.setItem(COMPARE_GRAMS_KEY, next ? "shown" : "hidden")
+      return next
+    })
 
-  const addMenu = (
-    <Menu>
-      <MenuTrigger
-        disabled={full}
-        render={
-          <Button
-            variant="outline"
-            pending={pending && busy === "add"}
-            className="shrink-0"
-          />
-        }
-      >
-        Add recipe
-        <ChevronDown
-          className="size-[13px]"
-          strokeWidth={2}
-          aria-hidden="true"
-        />
-      </MenuTrigger>
-      <MenuContent align="end" className="max-h-80 w-64 overflow-y-auto">
-        {recipeOptions.length === 0 ? (
-          <span className="flex h-9 items-center px-2.5 text-base text-faint">
-            No recipes yet
-          </span>
-        ) : (
-          recipeOptions.map((option) => {
-            const chosen = selected.includes(option.publicId)
-            return (
-              <MenuCheckItem
-                key={option.publicId}
-                checked={chosen}
-                disabled={chosen}
-                onClick={() => addRecipe(option.publicId)}
-              >
-                <span className="min-w-0 truncate">{option.title}</span>
-              </MenuCheckItem>
-            )
-          })
-        )}
-      </MenuContent>
-    </Menu>
-  )
   const pasteButton = (
-    <Button type="button" disabled={full} onClick={() => setPasteOpen(true)}>
+    <Button
+      type="button"
+      variant="outline"
+      disabled={full}
+      onClick={() => setPasteOpen(true)}
+    >
       <ClipboardPaste strokeWidth={1.8} aria-hidden="true" />
       Paste recipe
     </Button>
   )
-
-  // The name column stays put while the rest scrolls; its hairline only
-  // shows once there is something hidden behind it.
-  const stickyClass = cn(
-    "sticky left-0 z-[1] bg-card after:absolute after:inset-y-0 after:right-0 after:w-px after:content-['']",
-    scrolled ? "after:bg-border" : "after:bg-transparent"
+  const addPopover = (
+    <AddRecipePopover
+      disabled={full}
+      recipeOptions={recipeOptions}
+      selected={selected}
+      pending={pending && busy === "add"}
+      onChoose={addRecipe}
+      onPaste={() => setPasteOpen(true)}
+    />
   )
-  const numberCell = "text-right text-base whitespace-nowrap tabular-nums"
-
-  const gramsCell = (formula: Formula, line: FormulaLine) => {
-    if (line.note === "nonEdible") {
-      return <span className="text-base text-muted-foreground">Not food</span>
-    }
-    const overrideId =
-      line.lineIds.find(
-        (id) => gramOverrides[gramOverrideKey(formula.key, id)] !== undefined
-      ) ?? line.unweighedLineId
-    if (overrideId !== null) {
-      return (
-        <div className="flex flex-col items-end gap-0.5 py-1.5">
-          <GramsInput
-            label={line.label}
-            column={formula.title}
-            value={gramOverrides[gramOverrideKey(formula.key, overrideId)]}
-            onCommit={(grams) => setGrams(formula.key, overrideId, grams)}
-          />
-          {line.written ? (
-            <span className="text-2xs text-muted-foreground">
-              {line.written}
-            </span>
-          ) : null}
-        </div>
-      )
-    }
-    return (
-      <>
-        {formatGrams(line.grams ?? 0)}
-        {line.note === "discarded" ? (
-          <span className="block text-2xs text-muted-foreground">
-            discarded
-          </span>
-        ) : null}
-      </>
-    )
-  }
-
-  const notes = columns
-    .map((formula) => basisNote(formula, mode))
-    .filter((note): note is string => note !== null)
 
   return (
     <>
-      {count === 0 ? (
+      {columns.length === 0 ? (
         <EmptyState
-          title="Compare recipes as baker’s percentages"
+          title="Compare recipes as baker's percentages"
           description="Select recipes on the Recipes list and choose Compare from Actions, or paste a recipe from anywhere to read it beside one of yours, or on its own."
         >
           {pasteButton}
-          {addMenu}
+          {addPopover}
         </EmptyState>
       ) : (
         <>
           <Toolbar>
-            <FilterPill
-              label="Show"
-              value={mode}
-              options={MODE_OPTIONS}
-              onSelect={chooseMode}
-            />
+            {/* On a phone the toolbar stacks; these rows keep the controls at
+                their own width instead of stretching across the screen. */}
+            <div className="flex flex-wrap items-center gap-2 md:contents">
+              <TabPills>
+                <TabPill
+                  active={view === "formula"}
+                  onClick={() => navigate({ view: "formula" })}
+                >
+                  Formula
+                </TabPill>
+                <TabPill
+                  active={view === "spec"}
+                  onClick={() => navigate({ view: "spec" })}
+                >
+                  Spec sheet
+                </TabPill>
+              </TabPills>
+            </div>
             <ToolbarSpacer />
             <div className="flex flex-wrap items-center gap-2 md:contents">
-              {addMenu}
               {pasteButton}
+              <ActionsMenu>
+                {MODE_OPTIONS.map((option) => (
+                  <MenuCheckItem
+                    key={option.value}
+                    checked={mode === option.value}
+                    onClick={() => chooseMode(option.value)}
+                  >
+                    {option.label}
+                  </MenuCheckItem>
+                ))}
+                <MenuCheckItem checked={showGrams} onClick={toggleGrams}>
+                  Show weights
+                </MenuCheckItem>
+              </ActionsMenu>
+              {addPopover}
             </div>
           </Toolbar>
-
-          <TableFrame
-            className="overflow-x-auto"
-            onScroll={(event) =>
-              setScrolled(event.currentTarget.scrollLeft > 0)
-            }
-          >
-            <Table>
-              <TableHeader>
-                <TableHeaderRow className="h-auto border-b-0">
-                  <TableHead
-                    rowSpan={2}
-                    className={cn(
-                      "min-w-[200px] pb-2 align-bottom",
-                      stickyClass
-                    )}
-                  >
-                    Ingredient
-                  </TableHead>
-                  {columns.map((formula) => (
-                    <TableHead
-                      key={formula.key}
-                      colSpan={2}
-                      className="min-w-[176px] pt-3 pb-1 align-top whitespace-normal"
-                    >
-                      <div className="flex items-start gap-1">
-                        <div className="flex min-w-0 flex-col gap-0.5">
-                          <span className="flex min-w-0 items-center gap-1.5 text-base font-medium text-foreground">
-                            {formula.href ? (
-                              <GuardedLink
-                                href={formula.href}
-                                className="min-w-0 truncate hover:underline"
-                              >
-                                {formula.title}
-                              </GuardedLink>
-                            ) : (
-                              <span className="min-w-0 truncate">
-                                {formula.title}
-                              </span>
-                            )}
-                            {formula.source === "pasted" ? (
-                              <Badge size="row">Pasted</Badge>
-                            ) : null}
-                          </span>
-                          <span className="text-2xs font-normal text-muted-foreground">
-                            {mode === "bakers"
-                              ? formula.basis === "flour"
-                                ? `100% = ${formula.basisLabel}`
-                                : formula.basis === "none"
-                                  ? "Nothing weighed"
-                                  : `100% = ${formula.basisLabel}`
-                              : "Share of total weight"}
-                          </span>
-                          {formula.summary.unweighedCount > 0 ||
-                          formula.skippedCount > 0 ? (
-                            <span className="text-2xs font-normal text-muted-foreground">
-                              {[
-                                formula.summary.unweighedCount > 0
-                                  ? `${plural(formula.summary.unweighedCount, "line")} without a weight`
-                                  : null,
-                                formula.skippedCount > 0
-                                  ? `${plural(formula.skippedCount, "line")} not read`
-                                  : null,
-                              ]
-                                .filter(Boolean)
-                                .join(" · ")}
-                            </span>
-                          ) : null}
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          aria-label={`Remove ${formula.title}`}
-                          pending={pending && busy === `remove:${formula.key}`}
-                          onClick={() => remove(formula)}
-                          className="ml-auto shrink-0"
-                        >
-                          <X strokeWidth={2} aria-hidden="true" />
-                        </Button>
-                      </div>
-                    </TableHead>
-                  ))}
-                  {twoColumns ? (
-                    <TableHead
-                      rowSpan={2}
-                      className="w-20 pb-2 text-right align-bottom"
-                    >
-                      Δ pts
-                    </TableHead>
-                  ) : null}
-                </TableHeaderRow>
-                <TableHeaderRow className="h-8">
-                  {columns.map((formula) => (
-                    <React.Fragment key={formula.key}>
-                      <TableHead className="w-24 text-right">g</TableHead>
-                      <TableHead className="w-20 text-right">%</TableHead>
-                    </React.Fragment>
-                  ))}
-                </TableHeaderRow>
-              </TableHeader>
-              <TableBody>
-                {comparison.groups.map((group) => (
-                  <React.Fragment key={group.role}>
-                    <TableRow className="h-9 hover:bg-transparent">
-                      <TableCell
-                        className={cn(
-                          "pt-3 text-2xs font-medium text-ink-soft",
-                          stickyClass
-                        )}
-                      >
-                        {group.label}
-                      </TableCell>
-                      <TableCell colSpan={span - 1} />
-                    </TableRow>
-                    {group.rows.map((row) => (
-                      <TableRow key={row.key} className="h-11">
-                        <TableCell
-                          className={cn(
-                            "max-w-0",
-                            stickyClass,
-                            "group-hover/row:bg-fill-soft"
-                          )}
-                        >
-                          <div className="flex min-w-0 items-center gap-1">
-                            <span className="min-w-0 truncate text-base">
-                              {row.label}
-                            </span>
-                            <RoleMenu
-                              label={row.label}
-                              role={row.role}
-                              onChoose={(role) => setRole(row.key, role)}
-                            />
-                          </div>
-                        </TableCell>
-                        {row.cells.map((cell, index) => {
-                          const formula = columns[index]
-                          if (!formula || cell === null) {
-                            return (
-                              <React.Fragment key={formula?.key ?? index}>
-                                <TableCell
-                                  className={cn(numberCell, "text-faint")}
-                                >
-                                  —
-                                </TableCell>
-                                <TableCell
-                                  className={cn(numberCell, "text-faint")}
-                                >
-                                  —
-                                </TableCell>
-                              </React.Fragment>
-                            )
-                          }
-                          return (
-                            <React.Fragment key={formula.key}>
-                              <TableCell className={numberCell}>
-                                {gramsCell(formula, cell)}
-                              </TableCell>
-                              <TableCell
-                                className={cn(
-                                  numberCell,
-                                  cell.percent === null && "text-faint"
-                                )}
-                              >
-                                {formatPercent(cell.percent)}
-                              </TableCell>
-                            </React.Fragment>
-                          )
-                        })}
-                        {twoColumns ? (
-                          <TableCell
-                            className={cn(
-                              numberCell,
-                              (row.delta === null ||
-                                Math.abs(row.delta) < 0.05) &&
-                                "text-muted-foreground"
-                            )}
-                          >
-                            {formatDelta(row.delta)}
-                          </TableCell>
-                        ) : null}
-                      </TableRow>
-                    ))}
-                    {group.rows.length > 1 ? (
-                      <TableRow className="h-10 hover:bg-transparent">
-                        <TableCell
-                          className={cn("text-base font-medium", stickyClass)}
-                        >
-                          {group.label} total
-                        </TableCell>
-                        {group.subtotal.cells.map((cell, index) => (
-                          <React.Fragment key={columns[index]?.key ?? index}>
-                            <TableCell
-                              className={cn(numberCell, "font-medium")}
-                            >
-                              {formatGrams(cell.grams)}
-                            </TableCell>
-                            <TableCell
-                              className={cn(numberCell, "font-medium")}
-                            >
-                              {formatPercent(cell.percent)}
-                            </TableCell>
-                          </React.Fragment>
-                        ))}
-                        {twoColumns ? (
-                          <TableCell className={cn(numberCell, "font-medium")}>
-                            {formatDelta(group.subtotal.delta)}
-                          </TableCell>
-                        ) : null}
-                      </TableRow>
-                    ) : null}
-                  </React.Fragment>
-                ))}
-                <TableRow className="h-11 border-t border-border hover:bg-transparent">
-                  <TableCell
-                    className={cn("text-base font-medium", stickyClass)}
-                  >
-                    Total
-                  </TableCell>
-                  {comparison.total.cells.map((cell, index) => (
-                    <React.Fragment key={columns[index]?.key ?? index}>
-                      <TableCell className={cn(numberCell, "font-medium")}>
-                        {formatGrams(cell.grams)}
-                      </TableCell>
-                      <TableCell className={cn(numberCell, "font-medium")}>
-                        {formatPercent(cell.percent)}
-                      </TableCell>
-                    </React.Fragment>
-                  ))}
-                  {twoColumns ? (
-                    <TableCell className={cn(numberCell, "font-medium")}>
-                      {formatDelta(comparison.total.delta)}
-                    </TableCell>
-                  ) : null}
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableFrame>
-          {notes.length ? (
-            <div className="mt-2 grid gap-1 text-xs text-muted-foreground">
-              {notes.map((note) => (
-                <p key={note}>{note}</p>
-              ))}
-            </div>
+          {missingCount > 0 ? (
+            <p className="mb-4 text-xs text-muted-foreground">
+              {plural(missingCount, "selected recipe")} could not be opened.
+            </p>
           ) : null}
-
-          <h2 className="mt-8 mb-3 text-xl leading-[normal] font-semibold tracking-[-0.01em] text-foreground">
-            Formula
-          </h2>
-          <TableFrame className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableHeaderRow className="h-10">
-                  <TableHead className="min-w-[200px]">% of flour</TableHead>
-                  {columns.map((formula) => (
-                    <TableHead
-                      key={formula.key}
-                      className="max-w-[200px] min-w-[120px] truncate text-right"
-                    >
-                      {formula.title}
-                    </TableHead>
-                  ))}
-                  {twoColumns ? (
-                    <TableHead className="w-20 text-right">Δ pts</TableHead>
-                  ) : null}
-                </TableHeaderRow>
-              </TableHeader>
-              <TableBody>
-                {SUMMARY_ROWS.map(({ key, label }) => {
-                  const values = columns.map((formula) => formula.summary[key])
-                  return (
-                    <TableRow key={key} className="h-10">
-                      <TableCell className="text-base">{label}</TableCell>
-                      {values.map((value, index) => (
-                        <TableCell
-                          key={columns[index]?.key ?? index}
-                          className={cn(
-                            numberCell,
-                            value === null && "text-faint"
-                          )}
-                        >
-                          {formatPercent(value)}
-                        </TableCell>
-                      ))}
-                      {twoColumns ? (
-                        <TableCell className={numberCell}>
-                          {formatDelta(
-                            pointsDelta(count, values[0], values[1])
-                          )}
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  )
-                })}
-                <TableRow className="h-10 hover:bg-transparent">
-                  <TableCell className="text-base text-muted-foreground">
-                    Not in the composition
-                  </TableCell>
-                  {columns.map((formula) => (
-                    <TableCell
-                      key={formula.key}
-                      className="text-right text-xs whitespace-nowrap text-muted-foreground"
-                    >
-                      {[
-                        formula.summary.unmappedCount > 0
-                          ? `${formula.summary.unmappedCount} not mapped`
-                          : null,
-                        formula.summary.unweighedCount > 0
-                          ? `${formula.summary.unweighedCount} unweighed`
-                          : null,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ") || "—"}
-                    </TableCell>
-                  ))}
-                  {twoColumns ? <TableCell /> : null}
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableFrame>
-          <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            Estimates from built-in ingredient profiles and linked nutrition
-            records. Water counts the water in milk, eggs and butter; hydration
-            counts the liquid lines only. Sub-recipe lines and unmapped
-            ingredients weigh in the totals but not in the composition.
-          </p>
+          {view === "spec" ? (
+            <SpecSheetView
+              columns={columns}
+              groups={comparison.groups}
+              baseId={selectedBase}
+              mode={mode}
+              showGrams={showGrams}
+              gramOverrides={gramOverrides}
+              onSetGrams={setGrams}
+              pending={pending}
+              busy={busy}
+              onToggleBase={toggleBase}
+              onRemove={remove}
+            />
+          ) : (
+            <FormulaView
+              columns={columns}
+              groups={comparison.groups}
+              baseId={selectedBase}
+              mode={mode}
+              showGrams={showGrams}
+              expanded={expanded}
+              gramOverrides={gramOverrides}
+              onExpandedChange={(role) =>
+                setExpanded((current) => ({
+                  ...current,
+                  [role]: !current[role],
+                }))
+              }
+              onSetRole={setRole}
+              onSetGrams={setGrams}
+              pending={pending}
+              busy={busy}
+              onToggleBase={toggleBase}
+              onRemove={remove}
+            />
+          )}
         </>
       )}
-      {missingCount > 0 ? (
+      {columns.length === 0 && missingCount > 0 ? (
         <p className="mt-3 text-xs text-muted-foreground">
           {plural(missingCount, "selected recipe")} could not be opened.
         </p>

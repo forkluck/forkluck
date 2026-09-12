@@ -24,6 +24,7 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
@@ -243,6 +244,7 @@
   --chart-3: #18181b;
   --chart-4: #52525b;
   --chart-5: #c9c9cf;
+  --chart-6: #c8880c;
   --radius: 10px;
   /* Blue is data and selection: the peak bar and progress fill, the pale bar
      body, the icon tile, and the fill of a selected card. */

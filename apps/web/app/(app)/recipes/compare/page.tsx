@@ -44,6 +44,13 @@ export default async function CompareRecipesPage({
   )
   const params = await searchParams
   const ids = parseCompareIds(singleSearchParam(params.r))
+  const view = singleSearchParam(params.view) === "spec" ? "spec" : "formula"
+  const requestedBase = singleSearchParam(params.base) ?? null
+  const baseId =
+    requestedBase &&
+    (ids.includes(requestedBase) || requestedBase.startsWith("paste:"))
+      ? requestedBase
+      : null
   const [browse, ...pairs] = await Promise.all([
     browseRecipes({
       limit: 100,
@@ -83,9 +90,12 @@ export default async function CompareRecipesPage({
         formulas={formulas}
         missingCount={ids.length - loaded.length}
         identities={identities}
-        recipeOptions={browse.items.map(({ publicId, title }) => ({
+        view={view}
+        baseId={baseId}
+        recipeOptions={browse.items.map(({ publicId, title, category }) => ({
           publicId,
           title,
+          category,
         }))}
       />
     </Page>
