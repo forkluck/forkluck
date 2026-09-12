@@ -741,9 +741,11 @@ function DotPlot({
 }) {
   const stats = compareRowStats(row.values.map((value) => value.percent))
   return (
-    <div className="relative h-full">
+    <div className="relative mx-1.5 h-full">
       {/* The guide the dots sit on, with a tick at 0, half and the end so a
-          dot's place reads without looking up at the header. */}
+          dot's place reads without looking up at the header. The 6px inset
+          on each side keeps a dot at 0 or at the end whole; the header
+          ticks carry the same inset. */}
       <span
         className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-border"
         aria-hidden="true"
@@ -861,7 +863,7 @@ function FormulaView({
                 {axisLabel}
               </TableHead>
               <TableHead className="w-[400px] max-w-[400px] min-w-[400px] align-middle">
-                <div className="relative h-11">
+                <div className="relative mx-1.5 h-11">
                   {axisTicks.map((tick, index) => (
                     <span
                       key={tick}
