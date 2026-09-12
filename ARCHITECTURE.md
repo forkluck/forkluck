@@ -505,6 +505,11 @@ matcher, and calculation engine.
   changes, and final baked yield are not modeled here.
 - Source similarity uses normalized ingredient-set overlap. Current records are
   clearly labeled demo entries, not live web-search results.
+- `/recipes/compare` (`apps/web/lib/recipe/compare.ts`) is where the bread
+  signals surface: saved recipes arrive weighed by the nutrition read, a
+  pasted recipe is weighed by the paste parser in the browser, and both are
+  aligned as baker's percentages. Pasted formulas stay in the browser and are
+  never saved as recipes.
 
 The label preview on a recipe's Nutrition tab is a different engine:
 `apps/api/forkluck/domains/recipes/nutrition.py` walks the normalized recipe
