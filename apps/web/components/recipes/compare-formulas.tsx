@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Popover } from "@base-ui/react/popover"
-import { ChevronDown, ClipboardPaste, Plus, X } from "lucide-react"
+import { ChevronDown, ClipboardPaste, X } from "lucide-react"
 
 import {
   GuardedLink,
@@ -502,16 +502,20 @@ function AddRecipePopover({
         if (next) setQuery("")
       }}
     >
+      {/* The list of chips grows the way every list here does: "+ Add". */}
       <Popover.Trigger
-        disabled={disabled || pending}
-        aria-busy={pending || undefined}
-        className={cn(
-          "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-dashed border-border bg-card px-3 text-sm leading-none font-medium text-foreground outline-none hover:border-line-strong focus-visible:border-foreground disabled:cursor-not-allowed disabled:text-disabled-foreground",
-          className
-        )}
+        disabled={disabled}
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            pending={pending}
+            className={className}
+          />
+        }
       >
-        <Plus className="size-3.5" strokeWidth={2} aria-hidden="true" />
-        Add recipe
+        + Add recipe
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner align="start" sideOffset={6} className="z-50">
