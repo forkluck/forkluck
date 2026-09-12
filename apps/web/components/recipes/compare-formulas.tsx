@@ -509,7 +509,6 @@ function AddRecipePopover({
           <Button
             type="button"
             variant="outline"
-            size="sm"
             pending={pending}
             className={className}
           />
