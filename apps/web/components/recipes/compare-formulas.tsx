@@ -502,16 +502,11 @@ function AddRecipePopover({
         if (next) setQuery("")
       }}
     >
-      {/* The list of chips grows the way every list here does: "+ Add". */}
+      {/* The black primary at the toolbar's end, as the recipes list has it. */}
       <Popover.Trigger
         disabled={disabled}
         render={
-          <Button
-            type="button"
-            variant="outline"
-            pending={pending}
-            className={className}
-          />
+          <Button type="button" pending={pending} className={className} />
         }
       >
         + Add recipe
@@ -1480,7 +1475,12 @@ export function CompareFormulas({
     })
 
   const pasteButton = (
-    <Button type="button" disabled={full} onClick={() => setPasteOpen(true)}>
+    <Button
+      type="button"
+      variant="outline"
+      disabled={full}
+      onClick={() => setPasteOpen(true)}
+    >
       <ClipboardPaste strokeWidth={1.8} aria-hidden="true" />
       Paste recipe
     </Button>
@@ -1529,7 +1529,7 @@ export function CompareFormulas({
             </div>
             <ToolbarSpacer />
             <div className="flex flex-wrap items-center gap-2 md:contents">
-              {addPopover}
+              {pasteButton}
               <ActionsMenu>
                 {MODE_OPTIONS.map((option) => (
                   <MenuCheckItem
@@ -1544,7 +1544,7 @@ export function CompareFormulas({
                   Show weights
                 </MenuCheckItem>
               </ActionsMenu>
-              {pasteButton}
+              {addPopover}
             </div>
           </Toolbar>
           {missingCount > 0 ? (
