@@ -201,16 +201,13 @@ describe("the compare page", () => {
     )
   })
 
-  it("disables removal while only two recipes remain", () => {
-    page([LOAF, BRIOCHE])
-    expect(
-      screen
-        .getByRole("button", { name: "Remove Brioche" })
-        .hasAttribute("disabled")
-    ).toBe(true)
-    expect(
-      screen.getByRole("button", { name: "Remove Country loaf" })
-    ).toHaveProperty("disabled", true)
+  it("shows a single recipe on its own and lets it be removed", () => {
+    page([LOAF])
+    expect(screen.getByRole("table")).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Remove Country loaf" }))
+    expect(go).toHaveBeenCalledWith("/recipes/compare?view=formula", {
+      replace: true,
+    })
   })
 
   it("filters the add popover and picks a recipe", async () => {
@@ -347,9 +344,9 @@ describe("the compare page", () => {
     )
     page([])
     await waitFor(() => {
-      expect(screen.getByText("From the book")).toBeTruthy()
+      expect(screen.getAllByText("From the book").length).toBeGreaterThan(0)
     })
-    expect(screen.getByText("Add one more recipe to compare.")).toBeTruthy()
+    expect(screen.getByRole("table")).toBeTruthy()
   })
 
   it("says how many selected recipes could not be opened", () => {

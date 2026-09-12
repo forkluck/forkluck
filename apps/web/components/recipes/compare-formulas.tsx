@@ -589,28 +589,23 @@ function AddRecipePopover({
 
 function RecipeChips({
   columns,
-  selected,
   baseId,
   view,
-  recipeOptions,
   pending,
   busy,
-  onAdd,
+  actions,
   onRemove,
-  onPaste,
   onToggleBase,
   onView,
 }: {
   columns: Formula[]
-  selected: string[]
   baseId: string | null
   view: CompareView
-  recipeOptions: RecipeOption[]
   pending: boolean
   busy: string | null
-  onAdd: (publicId: string) => void
+  /** Paste and Add, on the right as the toolbar had them. */
+  actions: React.ReactNode
   onRemove: (formula: Formula) => void
-  onPaste: () => void
   onToggleBase: (formula: Formula) => void
   onView: (view: CompareView) => void
 }) {
@@ -656,7 +651,6 @@ function RecipeChips({
                 variant="ghost"
                 size="icon-xs"
                 aria-label={`Remove ${formula.title}`}
-                disabled={columns.length <= 2}
                 pending={pending && busy === `remove:${formula.key}`}
                 onClick={() => onRemove(formula)}
                 className="size-6 rounded-full"
@@ -666,25 +660,21 @@ function RecipeChips({
             </div>
           )
         })}
-        {columns.length < MAX_COMPARE_RECIPES ? (
-          <AddRecipePopover
-            disabled={false}
-            recipeOptions={recipeOptions}
-            selected={selected}
-            pending={pending && busy === "add"}
-            onChoose={onAdd}
-            onPaste={onPaste}
-          />
-        ) : null}
       </div>
-      <TabPills>
-        <TabPill active={view === "formula"} onClick={() => onView("formula")}>
-          Formula
-        </TabPill>
-        <TabPill active={view === "spec"} onClick={() => onView("spec")}>
-          Spec sheet
-        </TabPill>
-      </TabPills>
+      <div className="flex shrink-0 items-center gap-2">
+        {actions}
+        <TabPills>
+          <TabPill
+            active={view === "formula"}
+            onClick={() => onView("formula")}
+          >
+            Formula
+          </TabPill>
+          <TabPill active={view === "spec"} onClick={() => onView("spec")}>
+            Spec sheet
+          </TabPill>
+        </TabPills>
+      </div>
     </div>
   )
 }
@@ -1455,7 +1445,6 @@ export function CompareFormulas({
     navigate({ selected: [...selected, publicId] })
   }
   const remove = (formula: Formula) => {
-    if (columns.length <= 2) return
     if (formula.source === "pasted") {
       savePasted(pasted.filter((one) => `paste:${one.id}` !== formula.key))
       if (selectedBase === formula.key) navigate({ baseId: null })
@@ -1527,15 +1516,17 @@ export function CompareFormulas({
         <>
           <RecipeChips
             columns={columns}
-            selected={selected}
             baseId={selectedBase}
             view={view}
-            recipeOptions={recipeOptions}
             pending={pending}
             busy={busy}
-            onAdd={addRecipe}
+            actions={
+              <>
+                {pasteButton}
+                {addPopover}
+              </>
+            }
             onRemove={remove}
-            onPaste={() => setPasteOpen(true)}
             onToggleBase={(formula) =>
               navigate({
                 baseId: selectedBase === formula.key ? null : formula.key,
@@ -1548,12 +1539,7 @@ export function CompareFormulas({
               {plural(missingCount, "selected recipe")} could not be opened.
             </p>
           ) : null}
-          {columns.length === 1 ? (
-            <EmptyState title="Add one more recipe to compare.">
-              {pasteButton}
-              {addPopover}
-            </EmptyState>
-          ) : view === "spec" ? (
+          {view === "spec" ? (
             <SpecSheetView
               columns={columns}
               groups={comparison.groups}
