@@ -773,9 +773,22 @@ function DotPlot({
   const stats = compareRowStats(row.values.map((value) => value.percent))
   return (
     <div className="relative h-full">
+      {/* The guide the dots sit on, with a tick at 0, half and the end so a
+          dot's place reads without looking up at the header. */}
+      <span
+        className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-border"
+        aria-hidden="true"
+      />
+      {["left-0", "left-1/2", "right-0"].map((side) => (
+        <span
+          key={side}
+          className={cn("absolute inset-y-3 w-px bg-border", side)}
+          aria-hidden="true"
+        />
+      ))}
       {stats.min !== null && stats.max !== null && stats.spread > 0.05 ? (
         <span
-          className="absolute top-1/2 h-0.5 -translate-y-1/2 bg-border"
+          className="absolute top-1/2 h-0.5 -translate-y-1/2 bg-line-strong"
           style={{
             left: `${(stats.min / axisMax) * 100}%`,
             width: `${((stats.max - stats.min) / axisMax) * 100}%`,
