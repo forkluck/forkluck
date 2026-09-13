@@ -144,6 +144,17 @@ export type FormulaSummary = {
   unmappedCount: number
   unweighedCount: number
   coveragePercent: number
+  /** The grams behind each figure, so a screen can share them on any basis. */
+  grams: {
+    liquid: number
+    water: number
+    fat: number
+    sugar: number
+    protein: number
+    salt: number
+  }
+  /** Dry matter as % of the weight the profiles cover: 100 minus water. */
+  solidsPercent: number | null
 }
 
 export type Formula = {
@@ -487,6 +498,16 @@ export function buildFormula(
       (line) => line.grams === null && line.note !== "nonEdible"
     ).length,
     coveragePercent: analysis.coveragePercent,
+    grams: {
+      liquid: round(roleTotals.liquid.grams),
+      water: analysis.waterG,
+      fat: round(analysis.nutritionTotals.fat),
+      sugar: round(analysis.nutritionTotals.sugars),
+      protein: round(analysis.nutritionTotals.protein),
+      salt: round(analysis.nutritionTotals.salt),
+    },
+    solidsPercent:
+      analysis.knownMassG > 0 ? round(analysis.dryMatterPercent) : null,
   }
 
   return {

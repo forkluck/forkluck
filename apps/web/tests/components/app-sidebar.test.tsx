@@ -85,6 +85,18 @@ describe("sidebar rows", () => {
     expect(screen.queryByText("Supplies")).toBeNull()
   })
 
+  it("opens compare under recipes while on the compare page", () => {
+    mockPathname = "/recipes/compare"
+    renderSidebar()
+
+    const compare = screen.getByText("Compare").closest("a")
+    expect(compare?.getAttribute("href")).toBe("/recipes/compare")
+    expect(compare?.getAttribute("aria-current")).toBe("page")
+    expect(
+      screen.getByText("Recipes").closest("a")?.getAttribute("aria-current")
+    ).toBeNull()
+  })
+
   it("opens supplies under products while on either list", () => {
     mockPathname = "/supplies"
     renderSidebar()
@@ -180,7 +192,7 @@ describe("the sidebar inside someone else's kitchen", () => {
     expect(
       screen.getByTestId("search-places").getAttribute("data-places")
     ).toBe(
-      "Home, Analytics, Products, Supplies, Recipes, New recipe, Ingredients, Menus, Invoices, Labor, Sales, Suppliers, Settings"
+      "Home, Analytics, Products, Supplies, Recipes, New recipe, Compare, Ingredients, Menus, Invoices, Labor, Sales, Suppliers, Settings"
     )
   })
 
@@ -191,7 +203,7 @@ describe("the sidebar inside someone else's kitchen", () => {
     })
     expect(
       screen.getByTestId("search-places").getAttribute("data-places")
-    ).toBe("Recipes")
+    ).toBe("Recipes, Compare")
   })
 
   it("gives a viewer the list without the way to add to it", () => {

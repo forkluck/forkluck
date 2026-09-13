@@ -292,14 +292,38 @@ describe("the compare page", () => {
     })
   })
 
-  it("renders the spec sheet with one column per recipe", () => {
+  it("renders the spec sheet as composition, one column per recipe", () => {
     page([LOAF, BRIOCHE], { view: "spec", baseId: "rcp_loaf" })
     expect(screen.getByText("Pastry")).toBeTruthy()
-    expect(screen.getAllByText("Hydration")).toHaveLength(2)
     expect(screen.getByText("600 g flour · 1,012 g dough")).toBeTruthy()
     expect(screen.getByText("500 g flour · 910 g dough")).toBeTruthy()
+    // What comes out, not what goes in: water, fat, sugars, protein, salt
+    // and solids from the profiles, hydration from the liquid group.
+    for (const label of [
+      "Hydration",
+      "Total water",
+      "Fat",
+      "Sugars",
+      "Protein",
+      "Salt",
+      "Total solids",
+    ]) {
+      expect(screen.getAllByText(label)).toHaveLength(2)
+    }
+    // Hydration: 400 / 600 against 250 / 500, so −16.7 points.
     expect(screen.getByText("−16.7 pts")).toBeTruthy()
-    expect(screen.getByText("Not in this recipe")).toBeTruthy()
+    // The brioche's fat is all butter; the loaf has next to none.
+    const fat = screen
+      .getAllByText("Fat")
+      .map((heading) => heading.parentElement?.textContent)
+    expect(fat.some((text) => text?.includes("pts"))).toBe(true)
+    expect(screen.getAllByText(/Profiles cover/)).toHaveLength(2)
+  })
+
+  it("shares the composition on the column's basis", () => {
+    page([LOAF], { view: "spec" })
+    // Total solids are a share of the covered weight whatever the mode.
+    expect(screen.getByText("· of covered weight")).toBeTruthy()
   })
 
   it("adds a pasted recipe as a column of this browser's own", async () => {
