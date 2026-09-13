@@ -2378,6 +2378,41 @@ def _comparison_columns_from(user: User, body: JsonObject) -> list[JsonObject]:
     return rows
 
 
+COMPARISON_OVERRIDE_LIMIT = 500
+COMPARISON_ROLES = frozenset(
+    {"flour", "liquid", "fat", "sweetener", "egg", "salt", "leavening", "other"}
+)
+
+
+def _comparison_overrides(value: Any) -> JsonObject:
+    """The page's own numbers: grams typed for unweighed lines and rows moved
+    to another group. Bounded, so a record cannot grow without limit."""
+    if value is None:
+        return {"grams": {}, "roles": {}}
+    if not isinstance(value, dict):
+        raise ValueError("Overrides must be an object")
+    grams_in = value.get("grams") or {}
+    roles_in = value.get("roles") or {}
+    if not isinstance(grams_in, dict) or not isinstance(roles_in, dict):
+        raise ValueError("Overrides must hold grams and roles")
+    if (
+        len(grams_in) > COMPARISON_OVERRIDE_LIMIT
+        or len(roles_in) > COMPARISON_OVERRIDE_LIMIT
+    ):
+        raise ValueError("Too many overrides")
+    grams: dict[str, float] = {}
+    for key, amount in grams_in.items():
+        key = text_value(key, "Override key", max_length=200)
+        grams[key] = number_value(amount, "Grams", minimum=0.001, maximum=1000000)
+    roles: dict[str, str] = {}
+    for key, role in roles_in.items():
+        key = text_value(key, "Override key", max_length=200)
+        if role not in COMPARISON_ROLES:
+            raise ValueError("Unknown group")
+        roles[key] = role
+    return {"grams": grams, "roles": roles}
+
+
 def action_save_comparison(user: User, body: JsonObject) -> JsonObject:
     comparison = None
     if body.get("id"):
@@ -2404,6 +2439,14 @@ def action_save_comparison(user: User, body: JsonObject) -> JsonObject:
     baseline = body.get("baselinePosition")
     if baseline is not None:
         baseline = int_value(baseline, "Baseline", minimum=0, maximum=len(rows) - 1)
+    percent_mode = body.get("percentMode", SavedComparison.PERCENT_BAKERS)
+    if percent_mode not in {
+        SavedComparison.PERCENT_BAKERS,
+        SavedComparison.PERCENT_WEIGHT,
+    }:
+        raise ValueError("Percent mode must be bakers or weight")
+    show_grams = bool_value(body.get("showGrams", False), "Show weights")
+    overrides = _comparison_overrides(body.get("overrides"))
 
     with transaction.atomic():
         added = comparison is None
@@ -2417,6 +2460,9 @@ def action_save_comparison(user: User, body: JsonObject) -> JsonObject:
         comparison.title = title
         comparison.view = view
         comparison.baseline_position = baseline
+        comparison.percent_mode = percent_mode
+        comparison.show_grams = show_grams
+        comparison.overrides = overrides
         comparison.save()
         # Columns are the whole list every time: positions shift when one is
         # removed, so replacing is simpler than reconciling.

@@ -624,6 +624,30 @@ export function compareFormulas(
 /* Adapters                                                                 */
 /* ----------------------------------------------------------------------- */
 
+/**
+ * Grams through the pantry row's own measures: "1 each is 50 g" weighs
+ * "4 eggs", and "1 cup is 227 g" weighs "2 cups", pack or no pack. Null
+ * when the row states nothing that reaches a weight.
+ */
+function pantryGrams(
+  quantity: number | null,
+  unit: string,
+  entry: PriceListEntry | undefined,
+  preparationNote?: string | null
+): number | null {
+  if (quantity === null || quantity <= 0 || !entry) return null
+  // The weigher counts pieces as "pcs"; a bare number is a count too.
+  const countUnit = !unit || unit === "each" ? "pcs" : unit
+  const grams = measureIngredientAmount(
+    quantity,
+    countUnit,
+    entry,
+    "mass",
+    preparationNote
+  )
+  return grams !== null && grams > 0 ? grams : null
+}
+
 /** Grams of a line written in a mass unit, whatever it is linked to. */
 function massGrams(quantity: number | null, unit: string): number | null {
   if (quantity === null || quantity <= 0 || !unit) return null
@@ -663,7 +687,9 @@ export function savedFormulaInput(
         : entry?.measureName?.trim() || item.ingredientName || undefined,
       grams: nonEdible
         ? null
-        : (weighed?.grams ?? massGrams(item.quantity, item.unit)),
+        : (weighed?.grams ??
+          pantryGrams(item.quantity, item.unit, entry, item.preparationNote) ??
+          massGrams(item.quantity, item.unit)),
       written:
         item.quantity === null
           ? ""
@@ -764,6 +790,20 @@ function parsedFormulaLines(
         "mass",
         line.qualifier
       )
+    }
+    // A kitchen that states what one of an ingredient weighs counts it:
+    // "4 eggs", with or without a unit, is four of those, and the pantry's
+    // piece size answers before any built-in guess or an assumed gram does.
+    const counted = !unit || unit === "each" || unit === "pcs"
+    if (entry?.conversion?.each && counted && line.enteredAmount > 0) {
+      const byPiece = measureIngredientAmount(
+        line.enteredAmount,
+        "pcs",
+        entry,
+        "mass",
+        line.qualifier
+      )
+      if (byPiece !== null && byPiece > 0) grams = byPiece
     }
     return {
       id: `line-${line.lineNumber}`,

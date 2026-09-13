@@ -86,6 +86,7 @@ RECORDED_ROWS = [
     "0056_user_google_subject",
     "0057_fix_kitchen_ingredient_names",
     "0058_saved_comparisons",
+    "0059_saved_comparison_settings",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",

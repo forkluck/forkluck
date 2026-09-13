@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   clearDraftsForUser,
   draftKey,
+  comparisonDraft,
   invoiceDraft,
   menuDraft,
   readDraft,
@@ -86,6 +87,29 @@ describe("what reaches storage", () => {
       "name",
       "periodEnd",
       "periodStart",
+    ])
+    expect(
+      Object.keys(
+        comparisonDraft({
+          title: "Loaves",
+          view: "formula",
+          percentMode: "bakers",
+          showGrams: false,
+          baselineKey: null,
+          recipeIds: ["rcp_a"],
+          pasted: [],
+          overrides: { grams: {}, roles: {} },
+        })
+      ).sort()
+    ).toEqual([
+      "baselineKey",
+      "overrides",
+      "pasted",
+      "percentMode",
+      "recipeIds",
+      "showGrams",
+      "title",
+      "view",
     ])
     expect(Object.keys(invoiceDraft(invoice)).sort()).toEqual([
       "dueDate",

@@ -951,12 +951,22 @@ export type SavedComparisonColumn = {
   pastedText: string
 }
 
+export type SavedComparisonOverrides = {
+  /** Grams typed for an unweighed line, keyed "<column>|<line>". */
+  grams: Record<string, number>
+  /** The group a row was moved to, keyed by row. */
+  roles: Record<string, string>
+}
+
 export type SavedComparisonDetail = {
   id: string
   publicId: string
   title: string
   view: SavedComparisonView
   baselinePosition: number | null
+  percentMode: "bakers" | "weight"
+  showGrams: boolean
+  overrides: SavedComparisonOverrides
   editVersion: number
   columns: SavedComparisonColumn[]
   missingCount: number

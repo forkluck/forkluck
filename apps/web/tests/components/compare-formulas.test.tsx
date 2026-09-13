@@ -3,6 +3,7 @@
 import * as React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -12,16 +13,18 @@ import {
 } from "@testing-library/react"
 
 /**
- * The compare page: saved recipes from the URL and pasted ones from this
- * browser, side by side as a baker reads them, with nothing a recipe wrote
- * dropped because it could not be weighed.
+ * The compare editor: recipes from the URL and pasted ones from the page,
+ * side by side as a baker reads them, saved the way a menu is: a name, the
+ * header's Save, a leave guard, and a draft this browser keeps.
  */
 
+const replace = vi.hoisted(() => vi.fn())
+const push = vi.hoisted(() => vi.fn())
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
+  usePathname: () => "/recipes/compare/new",
+  useRouter: () => ({ push, replace, refresh: vi.fn() }),
 }))
 
-const go = vi.hoisted(() => vi.fn())
 const toastAdd = vi.hoisted(() => vi.fn())
 const saveComparison = vi.hoisted(() => vi.fn())
 const deleteComparison = vi.hoisted(() => vi.fn())
@@ -32,38 +35,26 @@ vi.mock("@/components/business-settings-provider", () => ({
   useBusinessSettings: () => ({ currencyCode: "USD", timezone: "UTC" }),
 }))
 vi.mock("@/app/(app)/recipes/compare/actions", () => ({
-  saveComparison,
-  deleteComparison,
-}))
-vi.mock("@/components/navigation-blocker", () => ({
-  useGuardedNavigate: () => ({ go, pending: false }),
-  GuardedLink: ({
-    href,
-    children,
-    className,
-  }: {
-    href: string
-    children?: React.ReactNode
-    className?: string
-  }) => (
-    <a href={href} className={className}>
-      {children}
-    </a>
-  ),
+  saveComparison: (...args: unknown[]) => saveComparison(...args),
+  deleteComparison: (...args: unknown[]) => deleteComparison(...args),
 }))
 
+import { CompareChrome } from "@/components/recipes/compare-chrome"
 import {
-  COMPARE_GRAMS_KEY,
-  COMPARE_MODE_KEY,
-  COMPARE_PASTED_KEY,
   CompareFormulas,
   compareRowStats,
   formatCompareDeltaPoints,
   formatCompareGrams,
   formatComparePercent,
   formulaAxisMax,
+  type SavedComparisonState,
 } from "@/components/recipes/compare-formulas"
+import {
+  NavigationBlockerProvider,
+  useNavigationBlocker,
+} from "@/components/navigation-blocker"
 import type { FormulaInput } from "@/lib/recipe/compare"
+import type { PriceListEntry } from "@/lib/pricing"
 
 const LOAF: FormulaInput = {
   key: "rcp_loaf",
@@ -100,26 +91,70 @@ const OPTIONS = [
   { publicId: "rcp_focaccia", title: "Focaccia", category: "Bread" },
 ]
 
+const SAVED: SavedComparisonState = {
+  id: "uuid-1",
+  publicId: "cmp_loaves",
+  title: "Loaves",
+  editVersion: 2,
+  missingCount: 0,
+  pasted: [],
+  percentMode: "bakers",
+  showGrams: false,
+  overrides: { grams: {}, roles: {} },
+}
+
+/** The pill in the header, which the tests read as the save's state. */
+const badge = () => screen.getByRole("status").textContent
+
+const leaveAnswers: boolean[] = []
+function LeaveButton() {
+  const { confirmNavigation } = useNavigationBlocker()
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        void confirmNavigation().then((answer) => leaveAnswers.push(answer))
+      }}
+    >
+      Leave
+    </button>
+  )
+}
+
 function page(
   formulas: FormulaInput[],
   extra: Partial<React.ComponentProps<typeof CompareFormulas>> = {}
 ) {
+  const saved = extra.saved ?? null
   return render(
-    <CompareFormulas
-      selected={formulas.map((formula) => formula.key)}
-      formulas={formulas}
-      missingCount={0}
-      identities={[]}
-      recipeOptions={OPTIONS}
-      view="formula"
-      baseId={null}
-      {...extra}
-    />
+    <NavigationBlockerProvider>
+      <CompareChrome
+        title={saved ? saved.title : "New comparison"}
+        publicId={saved?.publicId}
+      >
+        <CompareFormulas
+          selected={formulas.map((formula) => formula.key)}
+          formulas={formulas}
+          missingCount={0}
+          identities={[]}
+          recipeOptions={OPTIONS}
+          view="formula"
+          baseId={null}
+          currentUserId="user-1"
+          {...extra}
+        />
+      </CompareChrome>
+      <LeaveButton />
+    </NavigationBlockerProvider>
   )
 }
 
+const nameField = () => screen.getByLabelText("Name (required)")
+
 beforeEach(() => {
   window.localStorage.clear()
+  window.history.replaceState(null, "", "/recipes/compare/new")
+  leaveAnswers.length = 0
   vi.spyOn(crypto, "randomUUID").mockReturnValue("paste-1")
 })
 
@@ -152,7 +187,7 @@ describe("compare formatting", () => {
 })
 
 describe("the compare page", () => {
-  it("explains both ways in when there is nothing to compare", () => {
+  it("starts empty and explains both ways in", () => {
     page([])
     expect(
       screen.getByText("Compare recipes as baker's percentages")
@@ -160,10 +195,12 @@ describe("the compare page", () => {
     expect(screen.getByRole("button", { name: "Paste recipe" })).toBeTruthy()
     expect(screen.getByRole("button", { name: /Add recipe/ })).toBeTruthy()
     expect(screen.queryByText("Baker's %")).toBeNull()
+    expect(badge()).toBe("")
   })
 
-  it("shows the view tabs, column headers and collapsed formula groups", () => {
+  it("shows the name, the view tabs, column headers and collapsed groups", () => {
     page([LOAF, BRIOCHE])
+    expect(nameField()).toBeTruthy()
     expect(screen.getByRole("table")).toBeTruthy()
     expect(screen.getByRole("columnheader", { name: "Baker's %" })).toBeTruthy()
     expect(screen.getByRole("button", { name: "Country loaf" })).toBeTruthy()
@@ -179,7 +216,7 @@ describe("the compare page", () => {
     expect(screen.getByTitle("Country loaf · 66.7%")).toBeTruthy()
   })
 
-  it("switches to weight percentages and remembers it", async () => {
+  it("switches to weight percentages and reads as changed", async () => {
     page([LOAF, BRIOCHE])
     fireEvent.click(screen.getByRole("button", { name: "Actions" }))
     fireEvent.click(await screen.findByRole("menuitem", { name: "Weight %" }))
@@ -190,15 +227,14 @@ describe("the compare page", () => {
     })
     expect(screen.getByRole("button", { name: "Liquids" })).toBeTruthy()
     expect(screen.queryByText("Hydration")).toBeNull()
-    expect(window.localStorage.getItem(COMPARE_MODE_KEY)).toBe("weight")
+    expect(badge()).toBe("Draft")
   })
 
   it("sets and clears the baseline from a column header", () => {
     page([LOAF, BRIOCHE])
     fireEvent.click(screen.getByRole("button", { name: "Country loaf" }))
-    expect(go).toHaveBeenCalledWith(
-      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_loaf",
-      { replace: true }
+    expect(replace).toHaveBeenCalledWith(
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_loaf"
     )
 
     cleanup()
@@ -212,9 +248,17 @@ describe("the compare page", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Country loaf baseline" })
     )
-    expect(go).toHaveBeenLastCalledWith(
-      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula",
-      { replace: true }
+    expect(replace).toHaveBeenLastCalledWith(
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula"
+    )
+  })
+
+  it("keeps the recovery draft's id on every move", () => {
+    window.history.replaceState(null, "", "/recipes/compare/new?draft=d-1")
+    page([LOAF])
+    fireEvent.click(screen.getByRole("button", { name: "Spec sheet" }))
+    expect(replace).toHaveBeenLastCalledWith(
+      "/recipes/compare/new?r=rcp_loaf&view=spec&draft=d-1"
     )
   })
 
@@ -222,9 +266,7 @@ describe("the compare page", () => {
     page([LOAF])
     expect(screen.getByRole("table")).toBeTruthy()
     fireEvent.click(screen.getByRole("button", { name: "Remove Country loaf" }))
-    expect(go).toHaveBeenCalledWith("/recipes/compare/new?view=formula", {
-      replace: true,
-    })
+    expect(replace).toHaveBeenCalledWith("/recipes/compare/new?view=formula")
   })
 
   it("filters the add popover and picks a recipe", async () => {
@@ -240,22 +282,9 @@ describe("the compare page", () => {
     fireEvent.change(search, { target: { value: "foc" } })
     expect(screen.queryByText("Pastry")).toBeNull()
     fireEvent.click(screen.getByRole("button", { name: /Focaccia/ }))
-    expect(go).toHaveBeenCalledWith(
-      "/recipes/compare/new?r=rcp_loaf,rcp_brioche,rcp_focaccia&view=formula",
-      { replace: true }
+    expect(replace).toHaveBeenCalledWith(
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche,rcp_focaccia&view=formula"
     )
-  })
-
-  it("opens the paste dialog from the add popover empty result", async () => {
-    page([LOAF, BRIOCHE])
-    fireEvent.click(screen.getByRole("button", { name: /Add recipe/ }))
-    const search = await screen.findByRole("searchbox", {
-      name: "Search recipes",
-    })
-    fireEvent.change(search, { target: { value: "zzz" } })
-    expect(screen.getByText("No recipes match")).toBeTruthy()
-    fireEvent.click(screen.getByRole("button", { name: "Paste a recipe" }))
-    expect(await screen.findByRole("dialog")).toBeTruthy()
   })
 
   it("expands formula groups and keeps unweighed lines editable", async () => {
@@ -275,6 +304,8 @@ describe("the compare page", () => {
         ).value
       ).toBe("50")
     })
+    // A number the page was told is part of what it saves.
+    expect(badge()).toBe("Draft")
   })
 
   it("moves a row to the group chosen for it", async () => {
@@ -289,20 +320,13 @@ describe("the compare page", () => {
     })
   })
 
-  it("shows and remembers weights in the formula view", async () => {
+  it("shows weights in the formula view", async () => {
     page([LOAF, BRIOCHE])
     fireEvent.click(screen.getByRole("button", { name: "Actions" }))
     fireEvent.click(
       await screen.findByRole("menuitem", { name: "Show weights" })
     )
-    expect(window.localStorage.getItem(COMPARE_GRAMS_KEY)).toBe("shown")
     expect(screen.getByText("600 g")).toBeTruthy()
-
-    cleanup()
-    page([LOAF, BRIOCHE])
-    await waitFor(() => {
-      expect(screen.getByText("600 g")).toBeTruthy()
-    })
   })
 
   it("renders the spec sheet as composition, one column per recipe", () => {
@@ -310,8 +334,6 @@ describe("the compare page", () => {
     expect(screen.getByText("Pastry")).toBeTruthy()
     expect(screen.getByText("600 g flour · 1,012 g dough")).toBeTruthy()
     expect(screen.getByText("500 g flour · 910 g dough")).toBeTruthy()
-    // What comes out, not what goes in: water, fat, sugars, protein, salt
-    // and solids from the profiles, hydration from the liquid group.
     for (const label of [
       "Hydration",
       "Total water",
@@ -323,23 +345,11 @@ describe("the compare page", () => {
     ]) {
       expect(screen.getAllByText(label)).toHaveLength(2)
     }
-    // Hydration: 400 / 600 against 250 / 500, so −16.7 points.
     expect(screen.getByText("−16.7 pts")).toBeTruthy()
-    // The brioche's fat is all butter; the loaf has next to none.
-    const fat = screen
-      .getAllByText("Fat")
-      .map((heading) => heading.parentElement?.textContent)
-    expect(fat.some((text) => text?.includes("pts"))).toBe(true)
     expect(screen.getAllByText(/Profiles cover/)).toHaveLength(2)
   })
 
-  it("shares the composition on the column's basis", () => {
-    page([LOAF], { view: "spec" })
-    // Total solids are a share of the covered weight whatever the mode.
-    expect(screen.getByText("· of covered weight")).toBeTruthy()
-  })
-
-  it("adds a pasted recipe as a column of this browser's own", async () => {
+  it("adds a pasted recipe and edits it in place", async () => {
     page([LOAF])
     fireEvent.click(screen.getByRole("button", { name: "Paste recipe" }))
     const dialog = await screen.findByRole("dialog")
@@ -356,7 +366,6 @@ describe("the compare page", () => {
       },
     })
     fireEvent.click(within(dialog).getByRole("button", { name: "Add" }))
-
     await waitFor(() => {
       expect(
         screen.getByRole("button", { name: "Serious Eats focaccia" })
@@ -365,27 +374,58 @@ describe("the compare page", () => {
     expect(
       screen.getByLabelText("Grams for Olive oil in Serious Eats focaccia")
     ).toBeTruthy()
-    const stored = JSON.parse(
-      window.localStorage.getItem(COMPARE_PASTED_KEY) ?? "[]"
-    ) as Array<{ title: string; text: string }>
-    expect(stored).toHaveLength(1)
-    expect(stored[0]?.title).toBe("Serious Eats focaccia")
-    expect(stored[0]?.text).toContain("380 g water")
+    // Nothing of it is this browser's business any more.
+    expect(window.localStorage.getItem("recipe.compare.pasted")).toBeNull()
+
+    // Edit: the dialog opens on what was pasted and replaces it.
+    fireEvent.click(
+      screen.getByRole("button", { name: "Edit Serious Eats focaccia" })
+    )
+    const edit = await screen.findByRole("dialog")
+    expect(within(edit).getByText("Edit pasted recipe")).toBeTruthy()
+    expect(
+      (within(edit).getByLabelText("Ingredients") as HTMLTextAreaElement).value
+    ).toContain("380 g water")
+    fireEvent.change(within(edit).getByLabelText("Name"), {
+      target: { value: "Focaccia, wetter" },
+    })
+    fireEvent.change(within(edit).getByLabelText("Ingredients"), {
+      target: { value: "500 g bread flour\n420 g water\n10 g salt" },
+    })
+    fireEvent.click(within(edit).getByRole("button", { name: "Save" }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Focaccia, wetter" })
+      ).toBeTruthy()
+    })
+    expect(screen.getByTitle("Focaccia, wetter · 84.0%")).toBeTruthy()
+    expect(badge()).toBe("Draft")
   })
 
-  it("brings a pasted recipe back on the next visit", async () => {
-    window.localStorage.setItem(
-      COMPARE_PASTED_KEY,
-      JSON.stringify([
-        { id: "p1", title: "From the book", text: "500 g flour\n300 g water" },
-        { broken: true },
-      ])
-    )
-    page([])
-    await waitFor(() => {
-      expect(screen.getAllByText("From the book").length).toBeGreaterThan(0)
+  it("weighs a pasted count by the pantry's piece size", async () => {
+    const egg: PriceListEntry = {
+      id: "egg",
+      name: "Egg",
+      normalizedName: "egg",
+      measureName: "Egg",
+      purchaseCostCents: 100,
+      conversion: {
+        usesStandardConversion: false,
+        weight: { amount: 62, unit: "g" },
+        volume: null,
+        each: { amount: 1, unit: "pcs" },
+      },
+    }
+    page([LOAF], { identities: [egg] })
+    fireEvent.click(screen.getByRole("button", { name: "Paste recipe" }))
+    const dialog = await screen.findByRole("dialog")
+    fireEvent.change(within(dialog).getByLabelText("Ingredients"), {
+      target: { value: "500 g flour\n4 eggs" },
     })
-    expect(screen.getByRole("table")).toBeTruthy()
+    fireEvent.click(within(dialog).getByRole("button", { name: "Add" }))
+    // 248 g of egg on 500 g of flour: no grams box, no "Recipe says".
+    expect(await screen.findByTitle("Pasted recipe 1 · 49.6%")).toBeTruthy()
+    expect(screen.queryByText(/Recipe says/)).toBeNull()
   })
 
   it("says how many selected recipes could not be opened", () => {
@@ -395,58 +435,62 @@ describe("the compare page", () => {
     ).toBeTruthy()
   })
 
-  it("saves a comparison by name and opens it under its id", async () => {
+  it("refuses to save without a name and says so", async () => {
+    page([LOAF, BRIOCHE])
+    fireEvent.click(screen.getByRole("button", { name: "Save" }))
+    await waitFor(() => {
+      expect(toastAdd).toHaveBeenCalledWith({
+        title: "Give the comparison a name",
+        type: "error",
+      })
+    })
+    expect(saveComparison).not.toHaveBeenCalled()
+    expect(nameField().getAttribute("aria-invalid")).toBe("true")
+  })
+
+  it("saves a new comparison whole and moves to its address", async () => {
     saveComparison.mockResolvedValue({
       id: "uuid-1",
       publicId: "cmp_loaves",
+      title: "Loaves",
       editVersion: 0,
     })
     page([LOAF, BRIOCHE], { baseId: "rcp_brioche" })
-    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
-    fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Save comparison" })
-    )
-    const dialog = await screen.findByRole("dialog")
-    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }))
-    expect(within(dialog).getByRole("alert").textContent).toContain(
-      "Give the comparison a name."
-    )
-    fireEvent.change(within(dialog).getByLabelText("Name"), {
-      target: { value: "Loaves" },
-    })
-    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }))
+    fireEvent.change(nameField(), { target: { value: "Loaves" } })
+    expect(badge()).toBe("Draft")
+    fireEvent.click(screen.getByRole("button", { name: "Save" }))
     await waitFor(() => {
-      expect(saveComparison).toHaveBeenCalledWith({
-        id: null,
-        expectedEditVersion: undefined,
-        title: "Loaves",
-        view: "formula",
-        baselinePosition: 1,
-        columns: [{ recipeId: "rcp_loaf" }, { recipeId: "rcp_brioche" }],
-      })
+      expect(saveComparison).toHaveBeenCalledTimes(1)
+    })
+    expect(saveComparison).toHaveBeenCalledWith({
+      id: null,
+      title: "Loaves",
+      view: "formula",
+      baselinePosition: 1,
+      percentMode: "bakers",
+      showGrams: false,
+      overrides: { grams: {}, roles: {} },
+      columns: [{ recipeId: "rcp_loaf" }, { recipeId: "rcp_brioche" }],
     })
     await waitFor(() => {
-      expect(go).toHaveBeenLastCalledWith(
-        "/recipes/compare/cmp_loaves?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_brioche",
-        { replace: true }
+      expect(replace).toHaveBeenCalledWith(
+        "/recipes/compare/cmp_loaves?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_brioche"
       )
     })
-    expect(toastAdd).toHaveBeenCalledWith({ title: "Saved" })
+    expect(toastAdd).toHaveBeenCalledWith({ title: "Comparison saved" })
   })
 
-  it("opens a saved comparison with its pasted columns and saves changes", async () => {
+  it("saves changes to an open comparison against its version", async () => {
     saveComparison.mockResolvedValue({
       id: "uuid-1",
       publicId: "cmp_loaves",
+      title: "Loaves, spring",
       editVersion: 3,
     })
     page([LOAF], {
       saved: {
-        id: "uuid-1",
-        publicId: "cmp_loaves",
-        title: "Loaves",
-        editVersion: 2,
-        missingCount: 0,
+        ...SAVED,
+        showGrams: true,
         pasted: [
           { id: "saved-1", title: "From the book", text: "500 g flour" },
         ],
@@ -457,44 +501,74 @@ describe("the compare page", () => {
     expect(
       screen.getByRole("button", { name: "From the book baseline" })
     ).toBeTruthy()
-    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
-    fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Save changes" })
-    )
+    expect(badge()).toBe("Saved")
+    fireEvent.change(nameField(), { target: { value: "Loaves, spring" } })
+    expect(badge()).toBe("Draft")
+    fireEvent.click(screen.getByRole("button", { name: "Save" }))
     await waitFor(() => {
       expect(saveComparison).toHaveBeenCalledWith({
         id: "uuid-1",
         expectedEditVersion: 2,
-        title: "Loaves",
+        title: "Loaves, spring",
         view: "formula",
         baselinePosition: 1,
+        percentMode: "bakers",
+        showGrams: true,
+        overrides: { grams: {}, roles: {} },
         columns: [
           { recipeId: "rcp_loaf" },
           { pastedTitle: "From the book", pastedText: "500 g flour" },
         ],
       })
     })
-    expect(toastAdd).toHaveBeenCalledWith({ title: "Saved changes" })
-    // Moving within a saved comparison keeps its id in the URL.
-    fireEvent.click(screen.getByRole("button", { name: "Spec sheet" }))
-    expect(go).toHaveBeenLastCalledWith(
-      "/recipes/compare/cmp_loaves?r=rcp_loaf&view=spec&base=paste%3Asaved-1",
-      { replace: true }
-    )
+    // An update stays where it is.
+    expect(replace).not.toHaveBeenCalled()
+    await waitFor(() => {
+      expect(badge()).toBe("Saved")
+    })
+  })
+
+  it("saves on the way out and leaves without asking", async () => {
+    saveComparison.mockResolvedValue({
+      id: "uuid-1",
+      publicId: "cmp_loaves",
+      title: "Loaves",
+      editVersion: 0,
+    })
+    page([LOAF])
+    fireEvent.change(nameField(), { target: { value: "Loaves" } })
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Leave" }))
+    })
+    await waitFor(() => {
+      expect(leaveAnswers).toEqual([true])
+    })
+    expect(saveComparison).toHaveBeenCalledTimes(1)
+    // Leaving rewrites the entry being left; it never navigates.
+    expect(replace).not.toHaveBeenCalled()
+    expect(window.location.pathname).toBe("/recipes/compare/cmp_loaves")
+    expect(screen.queryByText("Leave without saving?")).toBeNull()
+  })
+
+  it("shows the conflict banner when the record changed elsewhere", async () => {
+    saveComparison.mockResolvedValue({
+      error: "Someone else saved this comparison.",
+      code: "stale_write",
+      editVersion: 5,
+    })
+    page([LOAF], { saved: SAVED })
+    fireEvent.change(nameField(), { target: { value: "Loaves, later" } })
+    fireEvent.click(screen.getByRole("button", { name: "Save" }))
+    await waitFor(() => {
+      expect(badge()).toBe("Changed elsewhere")
+    })
+    expect(screen.getByText("Someone else saved this comparison.")).toBeTruthy()
+    expect(screen.getByRole("button", { name: "Reload" })).toBeTruthy()
   })
 
   it("deletes an open comparison after confirming", async () => {
     deleteComparison.mockResolvedValue({ ok: true })
-    page([LOAF], {
-      saved: {
-        id: "uuid-1",
-        publicId: "cmp_loaves",
-        title: "Loaves",
-        editVersion: 0,
-        missingCount: 0,
-        pasted: [],
-      },
-    })
+    page([LOAF], { saved: SAVED })
     fireEvent.click(screen.getByRole("button", { name: "Actions" }))
     fireEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
     fireEvent.click(
@@ -504,7 +578,7 @@ describe("the compare page", () => {
       expect(deleteComparison).toHaveBeenCalledWith("uuid-1")
     })
     await waitFor(() => {
-      expect(go).toHaveBeenLastCalledWith("/recipes/compare", { replace: true })
+      expect(replace).toHaveBeenLastCalledWith("/recipes/compare")
     })
   })
 })

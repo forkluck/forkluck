@@ -83,12 +83,19 @@ def _ingredient_allergen_statuses(ingredient: Ingredient) -> dict[str, str]:
         catalog_ingredient = ingredient.catalog_ingredient
     elif ingredient.catalog_product_id and ingredient.catalog_product.ingredient_id:
         catalog_ingredient = ingredient.catalog_product.ingredient
-    defaults = {
-        row.allergen: row.status
-        for row in catalog_ingredient.allergen_defaults.all()
-    } if catalog_ingredient is not None else {}
-    defaults.update({row.allergen: row.status for row in ingredient.allergen_overrides.all()})
-    return {key: status for key, status in defaults.items() if status in {"contains", "mayContain"}}
+    defaults = (
+        {row.allergen: row.status for row in catalog_ingredient.allergen_defaults.all()}
+        if catalog_ingredient is not None
+        else {}
+    )
+    defaults.update(
+        {row.allergen: row.status for row in ingredient.allergen_overrides.all()}
+    )
+    return {
+        key: status
+        for key, status in defaults.items()
+        if status in {"contains", "mayContain"}
+    }
 
 
 def _merge_allergen(result: dict[str, str], key: str, status: str) -> None:
@@ -179,6 +186,7 @@ def recipe_allergens_many(recipes: Iterable[Recipe]) -> dict[object, dict[str, s
         visit(recipe.id, set())
     return resolved
 
+
 _VOCABULARY = vocabulary()
 
 VULGAR_FRACTIONS: dict[str, str] = _VOCABULARY["vulgarFractions"]
@@ -206,9 +214,7 @@ _MASS_UNIT_SOURCE = "|".join(
     _UNIT_PATTERNS[unit] for unit in _MASS_SLUGS if unit in _UNIT_PATTERNS
 )
 
-_AMOUNT_SOURCE = (
-    r"\d+\s+\d+/\d+|\d+/\d+|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?|\.\d+"
-)
+_AMOUNT_SOURCE = r"\d+\s+\d+/\d+|\d+/\d+|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?|\.\d+"
 _AMOUNT = re.compile(rf"^({_AMOUNT_SOURCE})\s*(.*)$")
 _SUPPORTED_UNIT = re.compile(
     rf"^({_UNIT_SOURCE})\.?(?:\s*,\s*|\s+|$)(.*)$", re.IGNORECASE
@@ -315,9 +321,7 @@ _QUALIFIER_WORDS = tuple(_VOCABULARY["qualifierWords"])
 # "garlic, pressed or minced", "mushrooms, cleaned + sliced". Anchoring on the
 # qualifier word alone left the rest of the clause welded to the base name, so
 # the ingredient identity never matched what the same line matches without it.
-_QUALIFIER_CLAUSE = re.compile(
-    rf"\b(?:{'|'.join(_QUALIFIER_WORDS)})\b", re.IGNORECASE
-)
+_QUALIFIER_CLAUSE = re.compile(rf"\b(?:{'|'.join(_QUALIFIER_WORDS)})\b", re.IGNORECASE)
 # The ingredient profiles the editor resolves measures and each-weights through
 # (`findIngredientProfile` in apps/web/lib/recipe/analyze.ts): every profile name and
 # synonym, normalized, mapped to the profile's canonical normalized name.
@@ -389,6 +393,43 @@ def _stated_pairs(conversion) -> tuple[tuple[float, str], ...]:
     )
 
 
+def _stated_grams(
+    quantity: float, unit: str, pairs: tuple[tuple[float, str], ...]
+) -> float | None:
+    """Grams of `quantity unit` through the measures a row states on its own,
+    with no pack in between: the pair in the line's family says how many of
+    the row's unit the line is, and the weight pair says what those weigh.
+    "1 each is 50 g" answers "4 eggs" whether or not the eggs were ever
+    bought by the dozen."""
+    line_unit = counted_as_each(unit)
+    family = unit_family(line_unit)
+    if family not in ("count", "volume"):
+        return None
+    weight = next(
+        (
+            (amount, pair_unit)
+            for amount, pair_unit in pairs
+            if unit_family(pair_unit) == "mass"
+        ),
+        None,
+    )
+    anchor = next(
+        (
+            (amount, pair_unit)
+            for amount, pair_unit in pairs
+            if unit_family(counted_as_each(pair_unit)) == family
+        ),
+        None,
+    )
+    if weight is None or anchor is None or anchor[0] <= 0:
+        return None
+    in_anchor = convert_amount(quantity, line_unit, counted_as_each(anchor[1]))
+    weight_grams = convert_amount(weight[0], weight[1], "g")
+    if in_anchor is None or weight_grams is None:
+        return None
+    return in_anchor / anchor[0] * weight_grams
+
+
 def _recipe_measure_pairs(
     recipe: Recipe, yield_basis: float | None = None
 ) -> tuple[tuple[float, str], ...]:
@@ -421,7 +462,11 @@ def _recipe_measure_pairs(
         return tuple(pairs)
     yield_family = unit_family(recipe.yield_unit)
     anchor = next(
-        ((amount, unit) for amount, unit in stated if unit_family(unit) == yield_family),
+        (
+            (amount, unit)
+            for amount, unit in stated
+            if unit_family(unit) == yield_family
+        ),
         None,
     )
     if anchor is None:
@@ -548,9 +593,7 @@ def _number(value: str) -> float | None:
         parsed_fraction = _number(fraction)
         try:
             result = (
-                float(whole) + parsed_fraction
-                if parsed_fraction is not None
-                else None
+                float(whole) + parsed_fraction if parsed_fraction is not None else None
             )
             return _round_quantity(
                 result if result is None or math.isfinite(result) else None
@@ -643,9 +686,7 @@ def _ingredient_description(name: str) -> tuple[str, str, str]:
         if trailing_annotation and _QUALIFIER_CLAUSE.search(
             trailing_annotation.group(2)
         ):
-            qualifiers.insert(
-                0, normalized_name(trailing_annotation.group(2).strip())
-            )
+            qualifiers.insert(0, normalized_name(trailing_annotation.group(2).strip()))
             base = trailing_annotation.group(1).strip()
             continue
         break
@@ -674,9 +715,7 @@ def _known_by_volume(
     density_name = resolve_density_name(name) if resolve_density_name else None
     if density_name is None:
         return False
-    return (
-        grams_for(MILLILITERS_PER_UNIT["fl-oz"], density_name, qualifier) is not None
-    )
+    return grams_for(MILLILITERS_PER_UNIT["fl-oz"], density_name, qualifier) is not None
 
 
 def _converted_grams(
@@ -774,9 +813,7 @@ def _name_first(line: str) -> tuple[float, str | None, str] | None:
     return amount, None, name
 
 
-def _looks_unmeasured(
-    line: str, has_identity: Callable[[str], bool] | None
-) -> bool:
+def _looks_unmeasured(line: str, has_identity: Callable[[str], bool] | None) -> bool:
     """Whether a line with no amount still names a real ingredient — "olive
     oil, for brushing", "Drizzle of avocado oil". Those cost nothing, so this
     read model drops them instead of reporting a line it could not price."""
@@ -820,9 +857,7 @@ def parse_ingredients(
             continue
         if _HEADING_LABEL.match(line) and not _AMOUNT.match(line):
             continue
-        leading_measure = (
-            None if _AMOUNT.match(line) else _LEADING_MEASURE.match(line)
-        )
+        leading_measure = None if _AMOUNT.match(line) else _LEADING_MEASURE.match(line)
         if leading_measure:
             line = (
                 f"{leading_measure.group(1)} {leading_measure.group(2)} "
@@ -924,15 +959,9 @@ def parse_ingredients(
                 and explicit_unit in GRAMS_PER_UNIT
                 and remaining_name
             ):
-                per_item = (
-                    amount != 1
-                    and (
-                        marker == "each"
-                        or (
-                            marker != "total"
-                            and (raw_unit is None or unit in COUNT_UNITS)
-                        )
-                    )
+                per_item = amount != 1 and (
+                    marker == "each"
+                    or (marker != "total" and (raw_unit is None or unit in COUNT_UNITS))
                 )
                 grams = explicit_amount * GRAMS_PER_UNIT[explicit_unit]
                 grams *= amount if per_item else 1
@@ -1025,7 +1054,11 @@ def _matched_source(
     saved_match = by_id.get(matches.get(full, "")) or by_id.get(matches.get(base, ""))
     match = exact or saved_match
     if match is not None and match.id == exclude_id:
-        match = saved_match if saved_match is not None and saved_match.id != exclude_id else None
+        match = (
+            saved_match
+            if saved_match is not None and saved_match.id != exclude_id
+            else None
+        )
     return match
 
 
@@ -1054,9 +1087,7 @@ def named_identities(body: str) -> tuple[set[str], set[tuple[str, str]]]:
     return identities, qualified
 
 
-def _preparation_for(
-    match: PriceSource, qualifier: str
-) -> SourcePreparation | None:
+def _preparation_for(match: PriceSource, qualifier: str) -> SourcePreparation | None:
     """The ingredient state this line asks for, or None when it asks for none.
 
     Exact equality on the normalized qualifier, the same rule a saved measure
@@ -1123,15 +1154,16 @@ def _sale_units_for(
         purchase_size=match.purchase_size,
         purchase_unit=match.purchase_unit,
         yield_percent=match.yield_percent,
-        conversion=tuple(Measure(value, pair_unit) for value, pair_unit in match.conversion),
+        conversion=tuple(
+            Measure(value, pair_unit) for value, pair_unit in match.conversion
+        ),
         conversion_is_automatic=match.conversion_is_automatic,
     )
     preparation_basis = (
         PreparationBasis(
             yield_percent=preparation.yield_percent,
             conversion=tuple(
-                Measure(value, pair_unit)
-                for value, pair_unit in preparation.conversion
+                Measure(value, pair_unit) for value, pair_unit in preparation.conversion
             ),
             conversion_is_automatic=preparation.conversion_is_automatic,
         )
@@ -1161,9 +1193,15 @@ def _pack_grams(
     """What one sale unit of the pack weighs: its size when bought by mass,
     otherwise the weight the stated pairs relate it to (a gallon bought of a
     row stating 227 g is 1 cup). None when nothing stated reaches a weight."""
-    if match.purchase_unit is None or not match.purchase_size or match.purchase_size <= 0:
+    if (
+        match.purchase_unit is None
+        or not match.purchase_size
+        or match.purchase_size <= 0
+    ):
         return None
-    grams = convert_amount(match.purchase_size, counted_as_each(match.purchase_unit), "g")
+    grams = convert_amount(
+        match.purchase_size, counted_as_each(match.purchase_unit), "g"
+    )
     if grams is not None:
         return grams
     per_gram = _sale_units_for(1.0, "g", match, preparation, qualifier)
@@ -1197,9 +1235,7 @@ def _price_lines(
 
         matched_component = int(
             component_names is not None
-            and _names_another_component(
-                ingredient.name, component_names, exclude_id
-            )
+            and _names_another_component(ingredient.name, component_names, exclude_id)
         )
         if (
             match is not None
@@ -1491,9 +1527,9 @@ class RecipeHealthReadModel:
         pantry_by_id = {row.id: row for row in sources}
         self.by_name = self.pantry_by_name
         self.by_id = pantry_by_id
-        user_measures = IngredientMeasure.objects.select_related(
-            "ingredient"
-        ).filter(ingredient__user=user)
+        user_measures = IngredientMeasure.objects.select_related("ingredient").filter(
+            ingredient__user=user
+        )
         self.measures = [
             *catalog_measure_sources(),
             *[
@@ -1623,9 +1659,7 @@ class RecipeHealthReadModel:
                     component_yield_amount=counted,
                     # "pcs" is the one spelling a piece basis is published
                     # in, whichever word the yield itself used.
-                    component_yield_unit=(
-                        "pcs" if counted is not None else None
-                    ),
+                    component_yield_unit=("pcs" if counted is not None else None),
                     component_weight_known=declared_grams is not None,
                 )
             )
@@ -1772,8 +1806,7 @@ class RecipeHealthReadModel:
                 continue
             direct = measure.unit == unit
             if not direct and not (
-                measure.unit in MILLILITERS_PER_UNIT
-                and unit in MILLILITERS_PER_UNIT
+                measure.unit in MILLILITERS_PER_UNIT and unit in MILLILITERS_PER_UNIT
             ):
                 continue
             if direct:
@@ -1788,11 +1821,13 @@ class RecipeHealthReadModel:
             score = (
                 (100 if measure.is_user else 0)
                 + (20 if measure.normalized_name == full else 0)
-                + (12 if profile is not None and measure.normalized_name == profile else 0)
-                + (10 if direct else 0)
-                + {"high": 3, "medium": 2, "low": 1}.get(
-                    measure.confidence, 0
+                + (
+                    12
+                    if profile is not None and measure.normalized_name == profile
+                    else 0
                 )
+                + (10 if direct else 0)
+                + {"high": 3, "medium": 2, "low": 1}.get(measure.confidence, 0)
             )
             candidates.append((score, measure, grams))
         if not candidates:
@@ -1952,9 +1987,7 @@ class RecipeHealthReadModel:
                     conversion_is_automatic=False,
                     is_component=True,
                     component_yield_amount=child_count,
-                    component_yield_unit=(
-                        "pcs" if child_count is not None else None
-                    ),
+                    component_yield_unit=("pcs" if child_count is not None else None),
                     component_weight_known=child_grams is not None,
                 )
                 sale_units = _sale_units_for(quantity, item.unit, child_source)
@@ -1983,32 +2016,32 @@ class RecipeHealthReadModel:
 
     def normalized_item_costs(self, recipe: Recipe) -> dict[str, float | None]:
         """The batch-cost contribution of every saved row in ``recipe``."""
-        _total, _issues, _declared_yield, line_costs = (
-            self._normalized_cost_detail(recipe)
+        _total, _issues, _declared_yield, line_costs = self._normalized_cost_detail(
+            recipe
         )
         return line_costs
 
     def _owner_recipes(self) -> dict[str, Recipe]:
         """The normalized owner graph, loaded once for every recursive read."""
         if self._normalized_recipes is None:
-            normalized_rows = Recipe.objects.filter(user=self.user).select_related(
-                "equivalency"
-            ).prefetch_related(
-                Prefetch(
-                    "items",
-                    queryset=RecipeItem.objects.select_related(
-                        "ingredient", "subrecipe__equivalency"
-                    ),
-                    to_attr="_normalized_items",
+            normalized_rows = (
+                Recipe.objects.filter(user=self.user)
+                .select_related("equivalency")
+                .prefetch_related(
+                    Prefetch(
+                        "items",
+                        queryset=RecipeItem.objects.select_related(
+                            "ingredient", "subrecipe__equivalency"
+                        ),
+                        to_attr="_normalized_items",
+                    )
                 )
             )
-            self._normalized_recipes = {
-                str(row.id): row for row in normalized_rows
-            }
+            self._normalized_recipes = {str(row.id): row for row in normalized_rows}
         return self._normalized_recipes
 
     def _stray_word_issues(self, recipe: Recipe) -> list[str]:
-        """"stray words" when a linked line's written name reads more than its
+        """ "stray words" when a linked line's written name reads more than its
         link: the extra words are free text that neither weighing nor costing
         reads, which the editor flags in amber, so the list must say so too."""
         graph = self._owner_recipes().get(str(recipe.id), recipe)
@@ -2044,7 +2077,11 @@ class RecipeHealthReadModel:
             if recipe.user_id == self.user.id and recipe.kind != Recipe.KIND_COMPONENT
             else None
         )
-        food_cost = ingredient_cents / menu_price if ingredient_cents is not None and menu_price else None
+        food_cost = (
+            ingredient_cents / menu_price
+            if ingredient_cents is not None and menu_price
+            else None
+        )
         steps = getattr(recipe, "_normalized_steps", None)
         if steps is None:
             steps = recipe.steps.all()
@@ -2062,14 +2099,26 @@ class RecipeHealthReadModel:
             else None
         )
         return {
-            "id": str(recipe.id), "publicId": recipe.public_id, "title": recipe.title,
-            "code": recipe.code, "kind": recipe.kind, "status": recipe.status,
+            "id": str(recipe.id),
+            "publicId": recipe.public_id,
+            "title": recipe.title,
+            "code": recipe.code,
+            "kind": recipe.kind,
+            "status": recipe.status,
             "categoryId": str(recipe.category_id) if recipe.category_id else None,
-            "category": recipe.category.name if recipe.category_id and recipe.category.user_id == recipe.user_id else None,
-            "updatedAt": iso(recipe.updated_at), "ingredientCents": ingredient_cents,
-            "menuPriceCents": menu_price, "foodCost": food_cost,
-            "overTarget": bool(food_cost is not None and food_cost > self.settings.food_cost_target_bps / 10000),
-            "suffix": unit[1] if unit is not None else "", "issues": sorted(set(issues)),
+            "category": recipe.category.name
+            if recipe.category_id and recipe.category.user_id == recipe.user_id
+            else None,
+            "updatedAt": iso(recipe.updated_at),
+            "ingredientCents": ingredient_cents,
+            "menuPriceCents": menu_price,
+            "foodCost": food_cost,
+            "overTarget": bool(
+                food_cost is not None
+                and food_cost > self.settings.food_cost_target_bps / 10000
+            ),
+            "suffix": unit[1] if unit is not None else "",
+            "issues": sorted(set(issues)),
             "labor": (
                 {
                     "centsPerBatch": round(labor_cents),
@@ -2157,9 +2206,7 @@ class RecipeHealthReadModel:
 
         ingredient_cents = pricing.total_cents / unit[0] if unit else None
         menu_price = (
-            None
-            if recipe.kind == Recipe.KIND_COMPONENT
-            else recipe.menu_price_cents
+            None if recipe.kind == Recipe.KIND_COMPONENT else recipe.menu_price_cents
         )
         food_cost = (
             ingredient_cents / menu_price
@@ -2168,8 +2215,7 @@ class RecipeHealthReadModel:
         )
         category = (
             recipe.category
-            if recipe.category is not None
-            and recipe.category.user_id == recipe.user_id
+            if recipe.category is not None and recipe.category.user_id == recipe.user_id
             else None
         )
         return {
@@ -2248,10 +2294,11 @@ class RecipeHealthReadModel:
         """Grams of `quantity unit` of one pantry row, or None when nothing
         relates them. The same ladder `ingredient_cents` climbs, so a line
         weighs what it costs: a mass unit directly, then the stated pairs
-        through the pack, then the saved and shared measures. Yields stay
-        out of it, because a line says what went into the bowl, not what was
-        bought to get there; and a price is not required, because an unpriced
-        ingredient still weighs something.
+        on their own, then the stated pairs through the pack, then the saved
+        and shared measures. Yields stay out of it, because a line says what
+        went into the bowl, not what was bought to get there; and neither a
+        price nor a pack is required, because a row that says what one of it
+        weighs still weighs something.
         """
         match = self.by_id.get(ingredient_id)
         if match is None or match.is_component:
@@ -2263,6 +2310,16 @@ class RecipeHealthReadModel:
         custom_preparation = (
             preparation is not None and not preparation.conversion_is_automatic
         )
+        # A custom preparation states its own measures and borrows none;
+        # anything else reads the ingredient's.
+        stated = (
+            preparation.conversion
+            if preparation is not None and custom_preparation
+            else match.conversion
+        )
+        grams = _stated_grams(quantity, unit, tuple(stated))
+        if grams is not None:
+            return grams
         bare = replace(match, yield_percent=None)
         bare_preparation = (
             replace(preparation, yield_percent=None) if preparation else None
@@ -2482,9 +2539,7 @@ def recipe_cost_diff_payload(
                             else None
                         )
                         cents = (
-                            sale_units * child_total
-                            if sale_units is not None
-                            else None
+                            sale_units * child_total if sale_units is not None else None
                         )
             else:
                 cents = None
@@ -2525,9 +2580,7 @@ def recipe_cost_diff_payload(
                     conversion=child_pairs,
                     is_component=True,
                     component_yield_amount=child_count,
-                    component_yield_unit=(
-                        "pcs" if child_count is not None else None
-                    ),
+                    component_yield_unit=("pcs" if child_count is not None else None),
                     component_weight_known=child_grams is not None,
                 )
                 efficiency = float(item.efficiency)
@@ -2750,7 +2803,10 @@ def dashboard_price_moves(model: RecipeHealthReadModel) -> list[JsonObject]:
         if row.id in settled:
             continue
         now = _price_per_unit(
-            row.purchase_cost_cents, row.purchase_size, row.purchase_unit, row.purchase_unit
+            row.purchase_cost_cents,
+            row.purchase_size,
+            row.purchase_unit,
+            row.purchase_unit,
         )
         was = _price_per_unit(
             previous.purchase_cost_cents,

@@ -6,7 +6,7 @@ const MAX_DRAFTS = 20
 /** How often a dirty screen is allowed to write its draft. */
 const THROTTLE_MS = 5000
 
-export type DraftKind = "recipe" | "menu" | "invoice"
+export type DraftKind = "recipe" | "menu" | "invoice" | "comparison"
 
 export type DraftSlot = {
   workspaceId: string
@@ -148,6 +148,31 @@ export function menuDraft(values: MenuDraft): MenuDraft {
     periodStart: values.periodStart,
     periodEnd: values.periodEnd,
     items: values.items,
+  }
+}
+
+export type ComparisonDraft = {
+  title: string
+  view: string
+  percentMode: string
+  showGrams: boolean
+  baselineKey: string | null
+  recipeIds: readonly string[]
+  pasted: readonly { id: string; title: string; text: string }[]
+  overrides: { grams: Record<string, number>; roles: Record<string, string> }
+}
+
+/** The comparison fields worth recovering, and nothing else. */
+export function comparisonDraft(values: ComparisonDraft): ComparisonDraft {
+  return {
+    title: values.title,
+    view: values.view,
+    percentMode: values.percentMode,
+    showGrams: values.showGrams,
+    baselineKey: values.baselineKey,
+    recipeIds: values.recipeIds,
+    pasted: values.pasted,
+    overrides: values.overrides,
   }
 }
 
