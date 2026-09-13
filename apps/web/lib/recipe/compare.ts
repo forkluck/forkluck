@@ -27,7 +27,13 @@ import { convertAmount, unitDefinition } from "../unit-registry"
  */
 
 export const MAX_COMPARE_RECIPES = 4
+/** The list of saved comparisons. */
 export const COMPARE_PATH = "/recipes/compare"
+/** Where a comparison is worked on before it has a name. */
+export const COMPARE_NEW_PATH = `${COMPARE_PATH}/new`
+/** A saved comparison's own address. */
+export const savedComparisonPath = (publicId: string) =>
+  `${COMPARE_PATH}/${encodeURIComponent(publicId)}`
 /** The column key a pasted column of a saved comparison reads under. */
 export const savedPastedKey = (position: number) => `paste:saved-${position}`
 
@@ -227,7 +233,9 @@ export function parseCompareIds(raw: string | undefined): string[] {
 
 export function compareHref(publicIds: string[]): string {
   const ids = parseCompareIds(publicIds.join(","))
-  return ids.length ? `${COMPARE_PATH}?r=${ids.join(",")}` : COMPARE_PATH
+  return ids.length
+    ? `${COMPARE_NEW_PATH}?r=${ids.join(",")}`
+    : COMPARE_NEW_PATH
 }
 
 /* ----------------------------------------------------------------------- */

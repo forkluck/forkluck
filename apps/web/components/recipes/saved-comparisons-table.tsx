@@ -15,7 +15,9 @@ import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import { formatDayMonth } from "@/lib/datetime"
 import type { SavedComparisonRow } from "@/lib/backend/types"
-import { COMPARE_PATH } from "@/lib/recipe/compare"
+import { COMPARE_NEW_PATH, savedComparisonPath } from "@/lib/recipe/compare"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 import { deleteComparison } from "@/app/(app)/recipes/compare/actions"
 
 const helper = dataTableColumns<SavedComparisonRow>()
@@ -28,8 +30,8 @@ function Cell({ children }: { children: React.ReactNode }) {
   )
 }
 
-export const savedComparisonHref = (row: { publicId: string }) =>
-  `${COMPARE_PATH}?c=${encodeURIComponent(row.publicId)}`
+const savedComparisonHref = (row: { publicId: string }) =>
+  savedComparisonPath(row.publicId)
 
 /** The comparisons this account kept, newest first; open one or delete it. */
 export function SavedComparisonsTable({
@@ -149,6 +151,11 @@ export function SavedComparisonsTable({
           headerColumnId: "actions",
         }}
         emptyMessage="No saved comparisons match your search."
+        toolbarExtra={
+          <GuardedLink href={COMPARE_NEW_PATH} className={cn(buttonVariants())}>
+            New comparison
+          </GuardedLink>
+        }
         onRowClick={(row) => go(savedComparisonHref(row))}
       />
       <ConfirmDialog
