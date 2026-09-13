@@ -22,6 +22,7 @@ import {
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { SaveBanner } from "@/components/ui/save-banner"
+import { Separator } from "@/components/ui/separator"
 import {
   Menu,
   MenuCheckItem,
@@ -1775,6 +1776,53 @@ export function CompareFormulas({
 
   return (
     <>
+      {conflict ? (
+        <SaveBanner text={conflict.message}>
+          <Button type="button" onClick={() => window.location.reload()}>
+            Reload
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              discardDraft()
+              window.location.reload()
+            }}
+          >
+            Discard my changes
+          </Button>
+        </SaveBanner>
+      ) : restorable ? (
+        <SaveBanner text="This device kept changes that never reached the server.">
+          <Button
+            type="button"
+            onClick={() => {
+              applyRecovery(restorable as ComparisonRecovery)
+              dismissRestore()
+            }}
+          >
+            Restore
+          </Button>
+          <Button type="button" variant="outline" onClick={discardDraft}>
+            Discard
+          </Button>
+        </SaveBanner>
+      ) : null}
+      {/* The name comes first and is always there: it is what the header's
+          Save asks for, columns or no columns. */}
+      <LabeledInput
+        ref={titleRef}
+        label="Name (required)"
+        value={title}
+        maxLength={120}
+        aria-invalid={titleMissing || undefined}
+        onChange={(event) => {
+          setTitle(event.target.value)
+          if (event.target.value.trim()) setTitleMissing(false)
+        }}
+        className="mb-5"
+      />
+      <Separator className="mb-5" />
       {columns.length === 0 ? (
         <EmptyState
           title="Compare recipes as baker's percentages"
@@ -1785,54 +1833,10 @@ export function CompareFormulas({
         </EmptyState>
       ) : (
         <>
-          {conflict ? (
-            <SaveBanner text={conflict.message}>
-              <Button type="button" onClick={() => window.location.reload()}>
-                Reload
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  discardDraft()
-                  window.location.reload()
-                }}
-              >
-                Discard my changes
-              </Button>
-            </SaveBanner>
-          ) : restorable ? (
-            <SaveBanner text="This device kept changes that never reached the server.">
-              <Button
-                type="button"
-                onClick={() => {
-                  applyRecovery(restorable as ComparisonRecovery)
-                  dismissRestore()
-                }}
-              >
-                Restore
-              </Button>
-              <Button type="button" variant="outline" onClick={discardDraft}>
-                Discard
-              </Button>
-            </SaveBanner>
-          ) : null}
           <Toolbar>
             {/* On a phone the toolbar stacks; these rows keep the controls at
                 their own width instead of stretching across the screen. */}
             <div className="flex flex-wrap items-center gap-2 md:contents">
-              <LabeledInput
-                ref={titleRef}
-                label="Name (required)"
-                value={title}
-                maxLength={120}
-                aria-invalid={titleMissing || undefined}
-                onChange={(event) => {
-                  setTitle(event.target.value)
-                  if (event.target.value.trim()) setTitleMissing(false)
-                }}
-                className="w-full md:w-64"
-              />
               <TabPills>
                 <TabPill
                   active={view === "formula"}

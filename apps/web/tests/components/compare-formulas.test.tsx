@@ -196,6 +196,8 @@ describe("the compare page", () => {
     expect(screen.getByRole("button", { name: /Add recipe/ })).toBeTruthy()
     expect(screen.queryByText("Baker's %")).toBeNull()
     expect(badge()).toBe("")
+    // The name is there from the start: it is what the header's Save asks for.
+    expect(nameField()).toBeTruthy()
   })
 
   it("shows the name, the view tabs, column headers and collapsed groups", () => {
