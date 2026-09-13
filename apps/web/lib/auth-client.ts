@@ -4,7 +4,7 @@ type AuthResult = {
   data?: { user: SessionUser }
   /** Set when the account exists but the email still needs its code. */
   pendingVerification?: boolean
-  error?: { message: string }
+  error?: { message: string; code?: string }
 }
 
 function csrfCookie() {
@@ -26,6 +26,7 @@ async function authRequest(
     pendingVerification?: boolean
     needsVerification?: boolean
     error?: string
+    code?: string
   } | null
   try {
     const signal = AbortSignal.timeout(30_000)
@@ -75,7 +76,12 @@ async function authRequest(
     }
   }
   if (!response.ok) {
-    return { error: { message: payload.error ?? "Request failed" } }
+    return {
+      error: {
+        message: payload.error ?? "Request failed",
+        ...(payload.code ? { code: payload.code } : {}),
+      },
+    }
   }
   return payload.user ? { data: { user: payload.user } } : {}
 }
@@ -86,8 +92,12 @@ export const authClient = {
       authRequest("/api/auth/login", input),
   },
   signUp: {
-    email: (input: { name: string; email: string; password: string }) =>
-      authRequest("/api/auth/register", input),
+    email: (input: {
+      name: string
+      email: string
+      password: string
+      turnstileToken?: string
+    }) => authRequest("/api/auth/register", input),
   },
   verifyEmail: (input: { email: string; code: string }) =>
     authRequest("/api/auth/verify-email", input),

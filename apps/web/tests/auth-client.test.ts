@@ -8,6 +8,37 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+describe("auth request refusals", () => {
+  it("carries the server's code beside its sentence", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true })))
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ error: "Nope.", code: "verification_failed" }),
+          { status: 400 }
+        )
+      )
+    vi.stubGlobal("fetch", fetch)
+    await expect(
+      authClient.signUp.email({
+        name: "Cook",
+        email: "cook@example.test",
+        password: "synthetic",
+        turnstileToken: "tok",
+      })
+    ).resolves.toEqual({
+      error: { message: "Nope.", code: "verification_failed" },
+    })
+    expect(JSON.parse(fetch.mock.calls[1][1].body)).toEqual({
+      name: "Cook",
+      email: "cook@example.test",
+      password: "synthetic",
+      turnstileToken: "tok",
+    })
+  })
+})
+
 describe("auth request failures", () => {
   it.each(["csrf", "post"])(
     "returns a retryable error when %s loses the connection",

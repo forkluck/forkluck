@@ -19,5 +19,11 @@ export default async function SignupPage({
   const [session, methods] = await Promise.all([getSession(), getAuthMethods()])
   if (session) redirect(next)
 
-  return <SignupForm next={next} googleEnabled={methods.google} />
+  return (
+    <SignupForm
+      next={next}
+      googleEnabled={methods.google}
+      turnstileSiteKey={methods.turnstileSiteKey}
+    />
+  )
 }

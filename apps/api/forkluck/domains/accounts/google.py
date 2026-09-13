@@ -16,6 +16,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
 
 from ...integrations import google_sign_in as google
+from ...integrations import turnstile
 from ...models import User
 from ...services import seed_user_workspace
 from ...throttling import Throttled, client_ip, hit
@@ -179,4 +180,13 @@ def google_callback(request: HttpRequest) -> HttpResponse:
 
 
 def auth_methods(request: HttpRequest) -> JsonResponse:
-    return JsonResponse({"google": google.is_configured()})
+    return JsonResponse(
+        {
+            "google": google.is_configured(),
+            # Public by design: the site key only names the widget the signup
+            # page renders. The secret never leaves Django.
+            "turnstileSiteKey": (
+                settings.TURNSTILE_SITE_KEY if turnstile.configured() else None
+            ),
+        }
+    )

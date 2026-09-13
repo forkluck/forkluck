@@ -84,6 +84,32 @@ class ProductionConfigGuardTests(SimpleTestCase):
             self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_ID, "client")
             self.assertEqual(configured.GOOGLE_SIGN_IN_CLIENT_SECRET, "secret")
 
+    def test_turnstile_pair_is_all_or_none_in_every_environment(self):
+        for environment in ("development", "production", "staging"):
+            for site_key, secret in (("site", ""), ("", "secret")):
+                with self.subTest(environment=environment, site_key=site_key):
+                    with self.assertRaisesMessage(ImproperlyConfigured, "Turnstile requires both"):
+                        reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_ENVIRONMENT": environment,
+                            "TURNSTILE_SITE_KEY": site_key, "TURNSTILE_SECRET_KEY": secret})
+            configured = reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_ENVIRONMENT": environment,
+                "TURNSTILE_SITE_KEY": "site", "TURNSTILE_SECRET_KEY": "secret"})
+            self.assertEqual(configured.TURNSTILE_SITE_KEY, "site")
+            self.assertEqual(configured.TURNSTILE_SECRET_KEY, "secret")
+        unset = reload_settings(GOOD_ENVIRONMENT)
+        self.assertEqual((unset.TURNSTILE_SITE_KEY, unset.TURNSTILE_SECRET_KEY), ("", ""))
+
+    def test_test_runner_clears_even_partial_turnstile_configuration(self):
+        with mock.patch.dict(os.environ, {**GOOD_ENVIRONMENT, "TURNSTILE_SECRET_KEY": "secret"}, clear=True):
+            with mock.patch.object(sys, "argv", ["manage.py", "test"]):
+                sys.modules.pop("config.settings", None)
+                try:
+                    configured = importlib.import_module("config.settings")
+                    self.assertEqual(configured.TURNSTILE_SITE_KEY, "")
+                    self.assertEqual(configured.TURNSTILE_SECRET_KEY, "")
+                    self.assertNotIn("TURNSTILE_SECRET_KEY", os.environ)
+                finally:
+                    sys.modules.pop("config.settings", None)
+
     def test_test_runner_clears_even_partial_google_configuration(self):
         with mock.patch.dict(os.environ, {**GOOD_ENVIRONMENT, "GOOGLE_SIGN_IN_CLIENT_ID": "client"}, clear=True):
             with mock.patch.object(sys, "argv", ["manage.py", "test"]):
@@ -370,6 +396,11 @@ class ReleasePackagingTests(SimpleTestCase):
     def test_provisioning_declares_optional_google_sign_in(self):
         provision = (REPO_ROOT / "deploy" / "provision-forkluck").read_text(encoding="utf-8")
         for key in ("GOOGLE_SIGN_IN_CLIENT_ID", "GOOGLE_SIGN_IN_CLIENT_SECRET"):
+            self.assertIn(f'ensure_backend_env {key} ""', provision)
+
+    def test_provisioning_declares_optional_turnstile(self):
+        provision = (REPO_ROOT / "deploy" / "provision-forkluck").read_text(encoding="utf-8")
+        for key in ("TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"):
             self.assertIn(f'ensure_backend_env {key} ""', provision)
 
     def test_provisioning_declares_the_complete_stripe_identity(self):
