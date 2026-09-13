@@ -732,10 +732,11 @@ function sameFoldedName(left: string, right: string): boolean {
  */
 function parsedFormulaLines(
   text: string,
-  identities: PriceListEntry[]
+  identities: PriceListEntry[],
+  savedMatches: RecipeLineMatch[] = []
 ): { lines: FormulaLineInput[]; title: string | null; skippedCount: number } {
-  const first = parseRecipeText(text, { identities })
-  const matches: RecipeLineMatch[] = []
+  const first = parseRecipeText(text, { identities, matches: savedMatches })
+  const matches: RecipeLineMatch[] = [...savedMatches]
   const matched = new Set<string>()
   for (const line of first.parsedLines) {
     if (line.identityMatched || matched.has(line.ingredientName)) continue
@@ -832,9 +833,10 @@ export function pastedFormulaInput(
   key: string,
   title: string,
   text: string,
-  identities: PriceListEntry[]
+  identities: PriceListEntry[],
+  matches: RecipeLineMatch[] = []
 ): FormulaInput {
-  const parsed = parsedFormulaLines(text, identities)
+  const parsed = parsedFormulaLines(text, identities, matches)
   return {
     key,
     title: title.trim() || parsed.title || "Pasted recipe",

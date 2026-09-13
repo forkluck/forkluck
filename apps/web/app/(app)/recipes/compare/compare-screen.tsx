@@ -11,6 +11,7 @@ import { getSession } from "@/lib/auth-session"
 import { singleSearchParam } from "@/lib/backend/pagination"
 import {
   browseRecipes,
+  getLineMatches,
   getPricingEntries,
   getRecipe,
   getRecipeNutrition,
@@ -104,9 +105,9 @@ export async function CompareScreen({
   // owner's, so it is read only when every column is one the reader may
   // cost, the way the recipe tab decides; a page of pasted columns alone is
   // the reader's own kitchen, and reads it.
-  const sources = loaded.every(({ recipe }) => recipe.canViewCost)
-    ? await getPricingEntries()
-    : { items: [], recipes: [] }
+  const [sources, matches] = loaded.every(({ recipe }) => recipe.canViewCost)
+    ? await Promise.all([getPricingEntries(), getLineMatches()])
+    : [{ items: [], recipes: [] }, { items: [] }]
   const identities = sources.items.filter((entry) => !entry.nonEdible)
   const formulas = loaded.map(({ recipe, nutrition }) =>
     savedFormulaInput(recipe, nutrition, identities)
@@ -147,6 +148,7 @@ export async function CompareScreen({
           formulas={formulas}
           missingCount={ids.length - loaded.length + (saved?.missingCount ?? 0)}
           identities={identities}
+          lineMatches={matches.items}
           view={view}
           baseId={baseId}
           saved={saved}

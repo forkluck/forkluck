@@ -682,6 +682,22 @@ describe("pastedFormulaInput", () => {
     expect(bare.lines[0]).toMatchObject({ grams: null, written: "4" })
   })
 
+  it("reads a saved line spelling the way the kitchen linked it", () => {
+    const pantry = [
+      entry({
+        id: "bourbon",
+        name: "Bourbon whiskey",
+        measureName: "Bourbon whiskey",
+      }),
+    ]
+    const alone = pastedFormulaInput("paste:6", "", "30 g bourbon\n", pantry)
+    expect(alone.lines[0]?.identityName).toBeUndefined()
+    const linked = pastedFormulaInput("paste:7", "", "30 g bourbon\n", pantry, [
+      { line: "bourbon", targetId: "bourbon", targetName: "Bourbon whiskey" },
+    ])
+    expect(linked.lines[0]?.identityName).toBe("Bourbon whiskey")
+  })
+
   it("keeps every line and counts what it could not read", () => {
     const input = pastedFormulaInput(
       "paste:2",

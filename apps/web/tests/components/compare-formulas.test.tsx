@@ -38,6 +38,34 @@ vi.mock("@/app/(app)/recipes/compare/actions", () => ({
   saveComparison: (...args: unknown[]) => saveComparison(...args),
   deleteComparison: (...args: unknown[]) => deleteComparison(...args),
 }))
+// The pantry dialog is the recipe page's; here it only has to report a link.
+const linkedEntry = vi.hoisted(() => ({ current: null as unknown }))
+vi.mock("@/components/ingredients/price-line-dialog", () => ({
+  PriceLineDialog: ({
+    lineName,
+    open,
+    onLinked,
+  }: {
+    lineName: string
+    open?: boolean
+    onLinked?: (match: { line: string; entry: unknown }) => void
+  }) =>
+    open ? (
+      <div role="dialog" aria-label={`Price ${lineName}`}>
+        <button
+          type="button"
+          onClick={() =>
+            onLinked?.({
+              line: lineName.toLowerCase(),
+              entry: linkedEntry.current,
+            })
+          }
+        >
+          Confirm link
+        </button>
+      </div>
+    ) : null,
+}))
 
 import { CompareChrome } from "@/components/recipes/compare-chrome"
 import {
@@ -428,6 +456,60 @@ describe("the compare page", () => {
     // 248 g of egg on 500 g of flour: no grams box, no "Recipe says".
     expect(await screen.findByTitle("Pasted recipe 1 · 49.6%")).toBeTruthy()
     expect(screen.queryByText(/Recipe says/)).toBeNull()
+  })
+
+  it("names the lines no profile describes and links a pasted one", async () => {
+    const bourbon: PriceListEntry = {
+      id: "bourbon",
+      name: "Bourbon whiskey",
+      normalizedName: "bourbon whiskey",
+      measureName: "Bourbon whiskey",
+      purchaseCostCents: 100,
+      nutritionPer100g: {
+        calories: 231,
+        fat: 0,
+        protein: 0,
+        carbs: 0,
+        sugars: 0,
+        fiber: 0,
+        salt: 0,
+        water: 60,
+      } as unknown as PriceListEntry["nutritionPer100g"],
+    }
+    linkedEntry.current = bourbon
+    page([LOAF], { identities: [bourbon], view: "spec" })
+    fireEvent.click(screen.getByRole("button", { name: "Paste recipe" }))
+    const dialog = await screen.findByRole("dialog")
+    fireEvent.change(within(dialog).getByLabelText("Ingredients"), {
+      target: { value: "500 g flour\n30 g bourbon" },
+    })
+    fireEvent.click(within(dialog).getByRole("button", { name: "Add" }))
+    // The spec sheet says which line it is, not just that there is one.
+    expect(
+      await screen.findByText(/Profiles cover .* · unmapped: bourbon/)
+    ).toBeTruthy()
+
+    // The formula view marks the row and offers the pantry.
+    fireEvent.click(screen.getByRole("button", { name: "Formula" }))
+    cleanup()
+    page([LOAF], { identities: [bourbon] })
+    fireEvent.click(screen.getByRole("button", { name: "Paste recipe" }))
+    const again = await screen.findByRole("dialog")
+    fireEvent.change(within(again).getByLabelText("Ingredients"), {
+      target: { value: "500 g flour\n30 g bourbon" },
+    })
+    fireEvent.click(within(again).getByRole("button", { name: "Add" }))
+    expect(await screen.findByText("No profile")).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Link to ingredient" }))
+    fireEvent.click(
+      within(
+        await screen.findByRole("dialog", { name: "Price bourbon" })
+      ).getByRole("button", { name: "Confirm link" })
+    )
+    // Linked, the line reads under the pantry's name with its profile.
+    await waitFor(() => {
+      expect(screen.queryByText("No profile")).toBeNull()
+    })
   })
 
   it("says how many selected recipes could not be opened", () => {

@@ -20,6 +20,7 @@ import type {
   MenuOverview,
   MenuOverviewSection,
   MenuSources,
+  LineMatchesPayload,
   MenusPayload,
   SavedComparisonDetail,
   SavedComparisonsPayload,
@@ -785,6 +786,11 @@ export async function getKitchenMembers() {
     "/internal/v1/kitchen-members/",
     kitchenMembersPayloadSchema
   )
+}
+
+/** The kitchen's saved line spellings, so a pasted line reads as linked. */
+export async function getLineMatches(): Promise<LineMatchesPayload> {
+  return djangoGet<LineMatchesPayload>("/internal/v1/matches/")
 }
 
 export async function getSavedComparisons(): Promise<SavedComparisonsPayload> {
