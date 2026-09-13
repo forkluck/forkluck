@@ -56,6 +56,8 @@ from ...models import (
     RecipeTagMembership,
     RecipeTiming,
     SalesProduct,
+    SavedComparison,
+    SavedComparisonColumn,
     User,
 )
 from ...integrations.emails import (
@@ -89,6 +91,7 @@ from ..shared.values import (
     uuid_value,
 )
 from ..shared.versioning import check_and_bump
+from .comparisons import owned_comparison, saved_comparison_payload
 from ..shared.vocabulary import unit_slugs
 from .guest_links import hash_guest_token
 from ...units import COUNT_YIELD_UNITS, MEASURE_UNIT_VALUES, unit_family
@@ -2326,6 +2329,124 @@ def action_save_menu(user: User, body: JsonObject) -> JsonObject:
     return menu_detail_payload(user, menu, model=model)
 
 
+COMPARISON_COLUMN_LIMIT = 4
+
+
+def _comparison_columns_from(user: User, body: JsonObject) -> list[JsonObject]:
+    items = body.get("columns")
+    if not isinstance(items, list):
+        raise ValueError("Columns must be a list")
+    if not items:
+        raise ValueError("A comparison needs at least one recipe")
+    if len(items) > COMPARISON_COLUMN_LIMIT:
+        raise ValueError(
+            f"A comparison can hold at most {COMPARISON_COLUMN_LIMIT} recipes"
+        )
+    rows: list[JsonObject] = []
+    refs: list[str] = []
+    for entry in items:
+        if not isinstance(entry, dict):
+            raise ValueError("Column must be an object")
+        ref = entry.get("recipeId")
+        if ref:
+            ref = text_value(ref, "Recipe id", max_length=40)
+            if ref in refs:
+                raise ValueError("Recipe listed twice")
+            refs.append(ref)
+            rows.append({"recipeRef": ref, "pastedTitle": "", "pastedText": ""})
+            continue
+        text = text_value(entry.get("pastedText"), "Pasted recipe", max_length=20000)
+        title = text_value(
+            entry.get("pastedTitle") or "",
+            "Pasted recipe title",
+            max_length=120,
+            allow_blank=True,
+        )
+        rows.append({"recipeRef": None, "pastedTitle": title, "pastedText": text})
+    # Only recipes the saver can open today go in; a share withdrawn later
+    # shows as a missing column when the comparison is read back.
+    recipes = {
+        recipe.public_id: recipe
+        for recipe in accessible_recipe_queryset(user, prefetch_shares=False).filter(
+            public_id__in=refs
+        )
+    }
+    for row in rows:
+        if row["recipeRef"] is not None and row["recipeRef"] not in recipes:
+            raise ValueError("Recipe not found")
+        row["recipe"] = recipes[row["recipeRef"]] if row["recipeRef"] else None
+    return rows
+
+
+def action_save_comparison(user: User, body: JsonObject) -> JsonObject:
+    comparison = None
+    if body.get("id"):
+        comparison = SavedComparison.objects.filter(
+            user=user, id=uuid_value(body["id"])
+        ).first()
+        if comparison is None:
+            raise ValueError("Comparison not found")
+    expected = (
+        int_value(
+            body["expectedEditVersion"],
+            "Edit version",
+            minimum=0,
+            maximum=2147483647,
+        )
+        if "expectedEditVersion" in body
+        else None
+    )
+    title = text_value(body.get("title"), "Comparison title", max_length=120)
+    view = body.get("view", SavedComparison.VIEW_FORMULA)
+    if view not in {SavedComparison.VIEW_FORMULA, SavedComparison.VIEW_SPEC}:
+        raise ValueError("View must be formula or spec")
+    rows = _comparison_columns_from(user, body)
+    baseline = body.get("baselinePosition")
+    if baseline is not None:
+        baseline = int_value(baseline, "Baseline", minimum=0, maximum=len(rows) - 1)
+
+    with transaction.atomic():
+        added = comparison is None
+        if comparison is None:
+            comparison = SavedComparison(user=user)
+        else:
+            comparison = SavedComparison.objects.select_for_update().get(
+                pk=comparison.pk
+            )
+            check_and_bump(comparison, expected)
+        comparison.title = title
+        comparison.view = view
+        comparison.baseline_position = baseline
+        comparison.save()
+        # Columns are the whole list every time: positions shift when one is
+        # removed, so replacing is simpler than reconciling.
+        if not added:
+            SavedComparisonColumn.objects.filter(comparison=comparison).delete()
+        SavedComparisonColumn.objects.bulk_create(
+            [
+                SavedComparisonColumn(
+                    comparison=comparison,
+                    position=position,
+                    recipe=row["recipe"],
+                    pasted_title=row["pastedTitle"],
+                    pasted_text=row["pastedText"],
+                )
+                for position, row in enumerate(rows)
+            ]
+        )
+    return saved_comparison_payload(user, owned_comparison(user, str(comparison.id)))
+
+
+def action_delete_comparison(user: User, body: JsonObject) -> JsonObject:
+    row = SavedComparison.objects.filter(
+        user=user, id=uuid_value(body.get("id"))
+    ).first()
+    if row is None:
+        raise ValueError("Comparison not found")
+    row.delete()
+    return {"ok": True}
+
+
 def action_delete_menu(user: User, body: JsonObject) -> JsonObject:
     row = Menu.objects.filter(user=user, id=uuid_value(body.get("id"))).first()
     if row is None:
@@ -2369,4 +2490,6 @@ ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "delete-recipe-comment": action_delete_recipe_comment,
     "save-menu": action_save_menu,
     "delete-menu": action_delete_menu,
+    "save-comparison": action_save_comparison,
+    "delete-comparison": action_delete_comparison,
 }

@@ -28,6 +28,7 @@ from .models import (
     Ingredient,
     Invoice,
     Menu,
+    SavedComparison,
     Recipe,
     RecipeGuestLink,
     SalesChannelConnection,
@@ -121,6 +122,7 @@ class CrossTenantReadTests(InternalApiTestCase):
             name="Acme Foods · INV-1",
         )
         menu = Menu.objects.create(user=cls.owner, name="Spring")
+        comparison = SavedComparison.objects.create(user=cls.owner, title="Loaves")
         ingredient = Ingredient.objects.create(
             user=cls.owner,
             name="Butter",
@@ -138,6 +140,9 @@ class CrossTenantReadTests(InternalApiTestCase):
             f"pos-sync-runs/{sync_run.id}/": {"error": "Not found"},
             f"invoices/{invoice.id}/lines/": {"error": "Invoice not found"},
             f"menu/{menu.public_id}/": {"error": "Menu not found"},
+            f"recipe-comparisons/{comparison.public_id}/": {
+                "error": "Comparison not found"
+            },
             # The id travels in the query string here, not the path, so the
             # loop's guard only holds if the view scopes what it reads there.
             f"menu-component-price/?ingredientId={ingredient.id}&unit=g": {
@@ -200,9 +205,7 @@ class RouteGuardTests(InternalApiTestCase):
                     HTTP_X_FORKLUCK_INTERNAL_SECRET=settings.FORKLUCK_INTERNAL_SECRET,
                 )
                 self.assertEqual(response.status_code, 401)
-                self.assertEqual(
-                    response.json(), {"error": "Authentication required"}
-                )
+                self.assertEqual(response.json(), {"error": "Authentication required"})
 
 
 class SystemRouteTests(InternalApiTestCase):
@@ -215,7 +218,8 @@ class SystemRouteTests(InternalApiTestCase):
     SYSTEM_ROUTES = [
         ("/internal/v1/auth-methods/", "GET", {}),
         (
-            "/internal/v1/system/invoice-ai-usage/", "POST",
+            "/internal/v1/system/invoice-ai-usage/",
+            "POST",
             {"userId": ANY_UUID, "operation": "reserve", "pages": 1, "attempts": 2},
         ),
         ("/internal/v1/system/drive-watch/", "GET", {}),

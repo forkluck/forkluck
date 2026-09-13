@@ -129,7 +129,9 @@ class User(AbstractUser):
     # New registrations (password or Google) notify on first verified sign-in.
     # Existing users and accounts created by admins never generate an owner alert.
     first_sign_in_notification_pending = models.BooleanField(default=False)
-    google_subject = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    google_subject = models.CharField(
+        max_length=255, null=True, blank=True, unique=True
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]
@@ -2531,7 +2533,9 @@ class ReceiptFeedback(UUIDTimestampModel):
         UP = "up", "Thumbs up"
         DOWN = "down", "Thumbs down"
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receipt_feedback")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="receipt_feedback"
+    )
     submission_id = models.UUIDField()
     rating = models.CharField(max_length=4, choices=Rating.choices)
     note = models.TextField(blank=True, default="")
@@ -2548,7 +2552,8 @@ class ReceiptFeedback(UUIDTimestampModel):
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "submission_id"], name="receipt_feedback_user_submission_unique"
+                fields=["user", "submission_id"],
+                name="receipt_feedback_user_submission_unique",
             )
         ]
 
@@ -3048,6 +3053,81 @@ class Menu(UUIDTimestampModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+# Serialized into the initial migration as a field default — do not rename.
+def generate_saved_comparison_public_id() -> str:
+    return generate_public_id("cmp")
+
+
+class SavedComparison(UUIDTimestampModel):
+    """A set of recipes read side by side, kept by name.
+
+    It belongs to the account that saved it, the way a menu does: a kitchen
+    member's comparisons live in the member's own tenant. The columns are
+    recipes the saver could open at the time, or text pasted from elsewhere,
+    which travels with the record so the page reads the same anywhere.
+    """
+
+    VIEW_FORMULA = "formula"
+    VIEW_SPEC = "spec"
+    VIEW_CHOICES = ((VIEW_FORMULA, "Formula"), (VIEW_SPEC, "Spec sheet"))
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="saved_comparisons"
+    )
+    edit_version = models.PositiveIntegerField(default=0)
+    public_id = models.CharField(
+        max_length=24, unique=True, default=generate_saved_comparison_public_id
+    )
+    title = models.CharField(max_length=120)
+    view = models.CharField(max_length=12, choices=VIEW_CHOICES, default=VIEW_FORMULA)
+    # The column the others are read against, by position; none when the
+    # page shows plain values.
+    baseline_position = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        indexes = [models.Index(fields=["user", "-updated_at"])]
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class SavedComparisonColumn(UUIDTimestampModel):
+    """One column: a recipe, or the title and text of a pasted one."""
+
+    comparison = models.ForeignKey(
+        SavedComparison, on_delete=models.CASCADE, related_name="columns"
+    )
+    position = models.PositiveSmallIntegerField(default=0)
+    # A deleted recipe takes its column with it; the page says how many
+    # columns are gone, as it does for a link that no longer opens.
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="comparison_columns",
+    )
+    pasted_title = models.CharField(max_length=120, blank=True, default="")
+    pasted_text = models.TextField(blank=True, default="")
+
+    class Meta:
+        ordering = ["position", "id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["comparison", "position"],
+                name="saved_comparison_column_position_unique",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(recipe__isnull=False, pasted_text="")
+                    | models.Q(recipe__isnull=True) & ~models.Q(pasted_text="")
+                ),
+                name="saved_comparison_column_recipe_or_pasted",
+            ),
+        ]
 
 
 class MenuItem(UUIDTimestampModel):

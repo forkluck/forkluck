@@ -72,6 +72,8 @@ from .models import (
     InvoiceLine,
     LaborImport,
     Menu,
+    SavedComparison,
+    SavedComparisonColumn,
     MenuItem,
     NutritionRequest,
     Preparation,
@@ -136,6 +138,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "update-kitchen-member": "action_update_kitchen_member",
     "remove-kitchen-member": "action_remove_kitchen_member",
     "remove-kitchen-invite": "action_remove_kitchen_invite",
+    "delete-comparison": "action_delete_comparison",
     "delete-menu": "action_delete_menu",
     "delete-recipe": "action_delete_recipe",
     "delete-recipe-category": "action_delete_recipe_category",
@@ -206,6 +209,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "set-ingredient-nutrition": "action_set_ingredient_nutrition",
     "update-ingredient-nutrition-settings": "action_update_ingredient_nutrition_settings",
     "request-custom-nutrition": "action_request_custom_nutrition",
+    "save-comparison": "action_save_comparison",
     "save-menu": "action_save_menu",
     "save-recipe": "action_save_recipe",
     "share-recipe": "action_share_recipe",
@@ -286,6 +290,8 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("cost-recipes/", None),
     ("cost-recipes/<str:recipe_ref>/", None),
     ("cost-for-recipe/<uuid:recipe_id>/", None),
+    ("recipe-comparisons/", None),
+    ("recipe-comparisons/<str:comparison_ref>/", None),
     ("menus/", None),
     ("menu/<str:menu_ref>/", None),
     ("menu/<str:menu_ref>/forecast/", None),
@@ -724,7 +730,9 @@ class SerializerContractTests(ShapeAssertions, TestCase):
     # --- account -----------------------------------------------------------
 
     def test_user_json(self):
-        self.assertShape(accounts.user_json(self.user), ["email", "hasPassword", "id", "name"])
+        self.assertShape(
+            accounts.user_json(self.user), ["email", "hasPassword", "id", "name"]
+        )
 
     def test_billing_json(self):
         self.assertShape(
@@ -1859,6 +1867,55 @@ class SerializerContractTests(ShapeAssertions, TestCase):
         "suffix",
         "title",
     ]
+
+    def test_saved_comparison_summary_json(self):
+        comparison = SavedComparison.objects.create(user=self.user, title="Loaves")
+        SavedComparisonColumn.objects.create(
+            comparison=comparison, position=0, recipe=self.recipe
+        )
+        row = SavedComparison.objects.prefetch_related("columns__recipe").get(
+            id=comparison.id
+        )
+        self.assertShape(
+            recipes.saved_comparison_summary_json(row),
+            [
+                "columnCount",
+                "columnTitles[]",
+                "id",
+                "publicId",
+                "title",
+                "updatedAt",
+                "view",
+            ],
+        )
+
+    def test_saved_comparison_json(self):
+        comparison = SavedComparison.objects.create(user=self.user, title="Loaves")
+        SavedComparisonColumn.objects.create(
+            comparison=comparison, position=0, recipe=self.recipe
+        )
+        row = SavedComparison.objects.prefetch_related("columns__recipe").get(
+            id=comparison.id
+        )
+        self.assertShape(
+            recipes.saved_comparison_json(row, {self.recipe.id}),
+            [
+                "baselinePosition",
+                "columns[].pastedText",
+                "columns[].pastedTitle",
+                "columns[].position",
+                "columns[].recipe.publicId",
+                "columns[].recipe.title",
+                "createdAt",
+                "editVersion",
+                "id",
+                "missingCount",
+                "publicId",
+                "title",
+                "updatedAt",
+                "view",
+            ],
+        )
 
     def test_menu_summary_json(self):
         row = (

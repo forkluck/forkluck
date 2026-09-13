@@ -28,6 +28,8 @@ import { convertAmount, unitDefinition } from "../unit-registry"
 
 export const MAX_COMPARE_RECIPES = 4
 export const COMPARE_PATH = "/recipes/compare"
+/** The column key a pasted column of a saved comparison reads under. */
+export const savedPastedKey = (position: number) => `paste:saved-${position}`
 
 export type PercentMode = "bakers" | "weight"
 

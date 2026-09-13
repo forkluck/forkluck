@@ -927,6 +927,43 @@ export type MenuRow = {
   updatedAt: Date
 }
 
+export type SavedComparisonView = "formula" | "spec"
+
+export type SavedComparisonRow = {
+  id: string
+  publicId: string
+  title: string
+  view: SavedComparisonView
+  columnTitles: string[]
+  columnCount: number
+  updatedAt: Date
+}
+
+export type SavedComparisonsPayload = {
+  comparisons: SavedComparisonRow[]
+}
+
+export type SavedComparisonColumn = {
+  position: number
+  /** Null when the reader can no longer open the recipe. */
+  recipe: { publicId: string; title: string } | null
+  pastedTitle: string
+  pastedText: string
+}
+
+export type SavedComparisonDetail = {
+  id: string
+  publicId: string
+  title: string
+  view: SavedComparisonView
+  baselinePosition: number | null
+  editVersion: number
+  columns: SavedComparisonColumn[]
+  missingCount: number
+  createdAt: Date
+  updatedAt: Date
+}
+
 export type MenusPayload = {
   menus: MenuRow[]
   hasAnyMenu: boolean
