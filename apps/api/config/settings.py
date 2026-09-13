@@ -276,6 +276,8 @@ if sys.argv[1:2] == ["test"]:
     os.environ.pop("FORKLUCK_TOKEN_ENCRYPTION_KEYS", None)
     os.environ.pop("GOOGLE_SIGN_IN_CLIENT_ID", None)
     os.environ.pop("GOOGLE_SIGN_IN_CLIENT_SECRET", None)
+    os.environ.pop("TURNSTILE_SITE_KEY", None)
+    os.environ.pop("TURNSTILE_SECRET_KEY", None)
 
 # Optional, dedicated confidential client; independent of the Drive picker.
 GOOGLE_SIGN_IN_CLIENT_ID = os.getenv("GOOGLE_SIGN_IN_CLIENT_ID", "")
@@ -286,6 +288,19 @@ if bool(GOOGLE_SIGN_IN_CLIENT_ID) != bool(GOOGLE_SIGN_IN_CLIENT_SECRET):
     raise ImproperlyConfigured(
         "Google sign-in requires both GOOGLE_SIGN_IN_CLIENT_ID and "
         "GOOGLE_SIGN_IN_CLIENT_SECRET."
+    )
+
+# Optional Cloudflare Turnstile on sign-up: both or neither. The site key is
+# public and reaches the signup page through auth-methods; the secret never
+# leaves Django. Unset leaves sign-up ungated, the self-hosted default.
+TURNSTILE_SITE_KEY = os.getenv("TURNSTILE_SITE_KEY", "")
+TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY", "")
+if bool(TURNSTILE_SITE_KEY) != bool(TURNSTILE_SECRET_KEY):
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        "Turnstile requires both TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY, "
+        "or neither."
     )
 
 if FORKLUCK_MAIL_BRIDGE_URL or FORKLUCK_MAIL_BRIDGE_API_KEY:

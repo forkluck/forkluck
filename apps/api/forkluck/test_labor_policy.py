@@ -11,7 +11,7 @@ Both default to off, and the first test in each group pins that: this feature
 is not allowed to move a number in a workspace that never opened it.
 """
 
-from datetime import date
+from datetime import UTC, date, datetime
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -419,10 +419,15 @@ class LaborPolicyApiTests(InternalApiTestCase):
         # $150.00 of wages plus 10% over 7.5 payable hours is $22/h — the
         # figure the "average labor rate" field is defined to hold. Dividing
         # by clocked hours instead would quote $20.63, an hour the kitchen
-        # never actually buys.
-        self.assertEqual(
-            self.get_internal("business-settings/").json()[
-                "payrollAverageRateCents"
-            ],
-            2200,
-        )
+        # never actually buys. The average looks back 90 days, so the read is
+        # pinned to the summer the fixture's shift happened in.
+        with patch(
+            "forkluck.domains.workspace.views.timezone.now",
+            return_value=datetime(2026, 7, 1, tzinfo=UTC),
+        ):
+            self.assertEqual(
+                self.get_internal("business-settings/").json()[
+                    "payrollAverageRateCents"
+                ],
+                2200,
+            )

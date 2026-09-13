@@ -188,7 +188,7 @@ class GoogleSignInTests(TestCase):
                 GOOGLE_SIGN_IN_CLIENT_SECRET="synthetic-secret" if enabled else "",
             ):
                 result = self.client.get("/internal/v1/auth-methods/", HTTP_X_FORKLUCK_INTERNAL_SECRET=settings.FORKLUCK_INTERNAL_SECRET)
-                self.assertEqual(result.json(), {"google": enabled})
+                self.assertEqual(result.json(), {"google": enabled, "turnstileSiteKey": None})
                 if not enabled:
                     self.assert_failure(self.client.get("/api/auth/google/start", {"next": "/recipes"}), "google-not-configured")
         self.assertEqual(self.client.get("/internal/v1/auth-methods/").status_code, 404)

@@ -32,6 +32,8 @@ os.environ.update(
         "SQUARE_APPLICATION_SECRET": "",
         "SHOPIFY_API_KEY": "",
         "SHOPIFY_API_SECRET": "",
+        "TURNSTILE_SITE_KEY": "",
+        "TURNSTILE_SECRET_KEY": "",
         # Billing off, as in CI: no trial clock, no gating, no Stripe calls.
         "STRIPE_SECRET_KEY": "",
         "STRIPE_WEBHOOK_SECRET": "",

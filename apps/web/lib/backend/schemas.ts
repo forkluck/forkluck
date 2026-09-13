@@ -37,7 +37,12 @@ const trendComparisonSchema = z.enum([
 /* session/                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export const authMethodsSchema = z.strictObject({ google: z.boolean() })
+export const authMethodsSchema = z.strictObject({
+  google: z.boolean(),
+  // Public by design: it only names the Turnstile widget the signup page
+  // renders. Null when the check is off.
+  turnstileSiteKey: z.string().nullable(),
+})
 
 export const sessionPayloadSchema = z.strictObject({
   user: z.strictObject({

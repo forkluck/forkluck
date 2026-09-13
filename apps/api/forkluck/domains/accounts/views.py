@@ -24,6 +24,7 @@ from ...integrations.emails import (
     EmailNotConfigured,
     send_new_user_notification,
 )
+from ...integrations import turnstile
 from ...integrations.ghost_members import (
     is_configured as newsletter_configured,
     newsletter_status,
@@ -158,6 +159,28 @@ def register(request: HttpRequest) -> JsonResponse:
     except (ValueError, ValidationError) as exc:
         messages = exc.messages if isinstance(exc, ValidationError) else [str(exc)]
         return error(messages[0])
+
+    # After field validation, so a bad password does not spend the single-use
+    # token, and before any row is written. Unset keys skip the check.
+    if turnstile.configured():
+        token = body.get("turnstileToken")
+        token = token.strip() if isinstance(token, str) else ""
+        try:
+            passed = (
+                0 < len(token) <= turnstile.MAX_TOKEN_LENGTH
+                and turnstile.verify(token, client_ip(request))
+            )
+        except turnstile.TurnstileUnavailable:
+            return error(
+                "Sign-up is temporarily unavailable. Try again shortly.",
+                503,
+                code="verification_unavailable",
+            )
+        if not passed:
+            return error(
+                "We couldn't confirm you're a person. Reload the page and try again.",
+                code="verification_failed",
+            )
 
     try:
         with transaction.atomic():

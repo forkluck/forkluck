@@ -38,7 +38,8 @@ server block; nothing in this repository renders it.
 `internal_user` in `apps/api/forkluck/http/auth.py` guards user-scoped internal
 views. The explicit `system_get`/`system_post` category requires only the
 internal secret; `auth-methods/` uses it so signed-out pages can discover
-Google sign-in availability. A missing or wrong secret answers **404** — the
+Google sign-in availability and the public Turnstile site key. A missing or
+wrong secret answers **404** — the
 route denies its own existence. A user-scoped view with a valid secret but no
 session answers **401**.
 
@@ -285,6 +286,7 @@ internal_urls.py / public_urls.py   route tables
                                     recipes sales search workspace
       integrations/                 square shopify pos_sync pos_oauth
                                     emails exchange_rates token_crypto
+                                    turnstile
         models.py                   every table
 ```
 
@@ -536,5 +538,9 @@ switches Django to PostgreSQL and marks the environment as production, which
 also disables the demo account and seed. `deploy/` carries the reference
 setup — nginx in front, Gunicorn, the Next.js standalone server, and the POS
 worker under systemd.
+
+Every third-party check is optional and off until configured: leave the five
+`STRIPE_*` variables unset and billing stays off, leave the Turnstile pair unset
+and sign-up is ungated.
 
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) covers releases and the server layout.
