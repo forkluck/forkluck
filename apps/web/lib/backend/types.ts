@@ -927,6 +927,17 @@ export type MenuRow = {
   updatedAt: Date
 }
 
+/** One saved spelling of a recipe line and what the kitchen says it is. */
+export type LineMatchRow = {
+  line: string
+  targetId: string
+  targetName: string
+  targetKind: "ingredient" | "recipe"
+  source: string
+}
+
+export type LineMatchesPayload = { items: LineMatchRow[] }
+
 export type SavedComparisonView = "formula" | "spec"
 
 export type SavedComparisonRow = {

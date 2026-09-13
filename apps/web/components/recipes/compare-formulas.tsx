@@ -3,12 +3,23 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Popover } from "@base-ui/react/popover"
-import { ChevronDown, ClipboardPaste, SquarePen, Trash2, X } from "lucide-react"
+import {
+  ChevronDown,
+  ClipboardPaste,
+  Link2,
+  SquarePen,
+  Trash2,
+  X,
+} from "lucide-react"
 
 import {
   GuardedLink,
   useGuardedNavigate,
 } from "@/components/navigation-blocker"
+import {
+  PriceLineDialog,
+  type PriceLineMatch,
+} from "@/components/ingredients/price-line-dialog"
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
@@ -45,15 +56,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/toast"
 import { useCompareEdit } from "@/components/recipes/compare-chrome"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
+import { useRefresh } from "@/hooks/use-refresh"
 import { comparisonDraft, type ComparisonDraft } from "@/lib/draft-store"
 import { toSaveFailure, type SaveFailure } from "@/lib/save-failure"
-import type { SavedComparisonOverrides } from "@/lib/backend/types"
+import type {
+  LineMatchRow,
+  SavedComparisonOverrides,
+} from "@/lib/backend/types"
 import {
   deleteComparison,
   saveComparison,
   type SaveComparisonInput,
 } from "@/app/(app)/recipes/compare/actions"
-import type { PriceListEntry } from "@/lib/pricing"
+import type { PriceListEntry, RecipeLineMatch } from "@/lib/pricing"
 import {
   COMPARE_NEW_PATH,
   COMPARE_PATH,
@@ -847,6 +862,8 @@ function FormulaView({
   onToggleBase,
   onEdit,
   onRemove,
+  canLink,
+  onLink,
 }: {
   columns: Formula[]
   groups: ComparisonGroup[]
@@ -863,6 +880,9 @@ function FormulaView({
   onToggleBase: (formula: Formula) => void
   onEdit: (formula: Formula) => void
   onRemove: (formula: Formula) => void
+  /** Whether this reader may link a pasted line to the pantry. */
+  canLink: boolean
+  onLink: (row: PlotRow) => void
 }) {
   const [scrolled, setScrolled] = React.useState(false)
   const groupRows = groups.map((group) => groupPlotRow(group, columns))
@@ -959,6 +979,8 @@ function FormulaView({
                   onExpandedChange={onExpandedChange}
                   onSetRole={onSetRole}
                   onSetGrams={onSetGrams}
+                  canLink={canLink}
+                  onLink={onLink}
                 />
                 {expanded[groupRow.role]
                   ? groupRow.group.rows.map((row) => (
@@ -976,6 +998,8 @@ function FormulaView({
                         onExpandedChange={onExpandedChange}
                         onSetRole={onSetRole}
                         onSetGrams={onSetGrams}
+                        canLink={canLink}
+                        onLink={onLink}
                       />
                     ))
                   : null}
@@ -1013,6 +1037,8 @@ function FormulaPlotRow({
   onExpandedChange,
   onSetRole,
   onSetGrams,
+  canLink,
+  onLink,
 }: {
   row: PlotRow
   columns: Formula[]
@@ -1026,8 +1052,18 @@ function FormulaPlotRow({
   onExpandedChange: (role: FormulaRole) => void
   onSetRole: (rowKey: string, role: FormulaRole) => void
   onSetGrams: (formulaKey: string, lineId: string, grams: number | null) => void
+  canLink: boolean
+  onLink: (row: PlotRow) => void
 }) {
   const canExpand = row.kind === "group" && row.group.rows.length > 1
+  // Which columns hold this line with no profile behind it: a pasted one
+  // can be linked here; a saved recipe's link lives on the recipe.
+  const unmappedIn = columns.filter((formula, index) => {
+    const line = row.values[index]?.line
+    return Boolean(line && !line.mapped && line.note !== "nonEdible")
+  })
+  const unmappedPasted = unmappedIn.some((one) => one.source === "pasted")
+  const unmappedSaved = unmappedIn.find((one) => one.source === "saved")
   const baseline = baseId
     ? (row.values[columns.findIndex((formula) => formula.key === baseId)]
         ?.percent ?? null)
@@ -1080,6 +1116,34 @@ function FormulaPlotRow({
               </span>
               {row.kind === "group" && note ? (
                 <span className="block text-xs text-faint">Hydration</span>
+              ) : null}
+              {unmappedIn.length > 0 &&
+              (row.kind === "ingredient" || row.group.rows.length === 1) ? (
+                <span className="flex items-center gap-1.5 text-xs text-faint">
+                  No profile
+                  {unmappedPasted && canLink ? (
+                    <button
+                      type="button"
+                      onClick={() => onLink(row)}
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
+                    >
+                      <Link2
+                        className="size-3"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                      />
+                      Link to ingredient
+                    </button>
+                  ) : null}
+                  {unmappedSaved?.href ? (
+                    <GuardedLink
+                      href={unmappedSaved.href}
+                      className="text-primary hover:underline"
+                    >
+                      Link on the recipe
+                    </GuardedLink>
+                  ) : null}
+                </span>
               ) : null}
             </span>
             {row.kind === "ingredient" && row.row ? (
@@ -1182,11 +1246,18 @@ export function specFigure(
   return Math.round((grams / basis) * 1000) / 10
 }
 
+/** The lines no profile describes, by name, so the gap can be closed. */
+function unmappedLabels(formula: Formula): string[] {
+  return formula.lines
+    .filter((line) => !line.mapped && line.note !== "nonEdible")
+    .map((line) => line.label)
+}
+
 function coverageLine(formula: Formula): string {
-  const { coveragePercent, unmappedCount } = formula.summary
-  const covered = `Profiles cover ${formatComparePercent(coveragePercent)} of the weight`
-  return unmappedCount > 0
-    ? `${covered} · ${plural(unmappedCount, "line")} unmapped`
+  const covered = `Profiles cover ${formatComparePercent(formula.summary.coveragePercent)} of the weight`
+  const names = unmappedLabels(formula)
+  return names.length > 0
+    ? `${covered} · unmapped: ${names.join(", ")}`
     : covered
 }
 
@@ -1410,6 +1481,7 @@ export function CompareFormulas({
   baseId,
   saved = null,
   currentUserId,
+  lineMatches = [],
 }: {
   /** The saved recipes in the URL, in order. */
   selected: string[]
@@ -1425,9 +1497,12 @@ export function CompareFormulas({
   saved?: SavedComparisonState | null
   /** The account editing, which owns the record and its recovery draft. */
   currentUserId: string
+  /** The kitchen's saved line spellings; empty where the pantry is not the reader's. */
+  lineMatches?: LineMatchRow[]
 }) {
   const { go } = useGuardedNavigate()
   const router = useRouter()
+  const { refresh } = useRefresh()
   // Moving between columns, views and baselines rewrites this page's own
   // address; it is not leaving, so it must not run the leave guard.
   const [pending, startMove] = React.useTransition()
@@ -1460,6 +1535,17 @@ export function CompareFormulas({
   const [pasteOpen, setPasteOpen] = React.useState(false)
   // The pasted column the dialog is editing, or null when pasting a new one.
   const [pasteEditing, setPasteEditing] = React.useState<string | null>(null)
+  // What the kitchen says a spelling is, plus what was linked on this page.
+  const [matches, setMatches] = React.useState<RecipeLineMatch[]>(() =>
+    lineMatches.map((one) => ({
+      line: one.line,
+      targetId: one.targetId,
+      targetName: one.targetName,
+      targetKind: one.targetKind,
+    }))
+  )
+  // The row whose line is being linked to the pantry, if any.
+  const [linkRow, setLinkRow] = React.useState<PlotRow | null>(null)
   const [deleteOpen, setDeleteOpen] = React.useState(false)
   const [deletePending, startDelete] = React.useTransition()
   // The control whose press started the navigation, so its wait shows there.
@@ -1468,9 +1554,15 @@ export function CompareFormulas({
   const pastedInputs = React.useMemo(
     () =>
       pasted.map((one) =>
-        pastedFormulaInput(`paste:${one.id}`, one.title, one.text, identities)
+        pastedFormulaInput(
+          `paste:${one.id}`,
+          one.title,
+          one.text,
+          identities,
+          matches
+        )
       ),
-    [pasted, identities]
+    [pasted, identities, matches]
   )
   const overrides = React.useMemo<FormulaOverrides>(
     () => ({ grams: gramOverrides, roles: roleOverrides }),
@@ -1734,6 +1826,21 @@ export function CompareFormulas({
       { id, title: name || `Pasted recipe ${pasted.length + 1}`, text },
     ])
   }
+  // A link is the kitchen's, saved by the dialog; the page reads it at
+  // once and re-reads the pantry, in case the ingredient is new.
+  const linked = (match: PriceLineMatch) => {
+    setMatches((current) => [
+      ...current.filter((one) => one.line !== match.line),
+      {
+        line: match.line,
+        targetId: match.entry.id,
+        targetName: match.entry.name,
+        measureName: match.entry.measureName,
+        targetKind: "ingredient",
+      },
+    ])
+    void refresh()
+  }
   const editPasted = (formula: Formula) => {
     setPasteEditing(formula.key.replace(/^paste:/, ""))
     setPasteOpen(true)
@@ -1921,10 +2028,27 @@ export function CompareFormulas({
               onToggleBase={toggleBase}
               onEdit={editPasted}
               onRemove={remove}
+              canLink={identities.length > 0}
+              onLink={setLinkRow}
             />
           )}
         </>
       )}
+      {linkRow ? (
+        <PriceLineDialog
+          lineName={linkRow.label}
+          priceList={identities}
+          trigger={null}
+          open
+          onOpenChange={(open) => {
+            if (!open) setLinkRow(null)
+          }}
+          onLinked={(match) => {
+            linked(match)
+            setLinkRow(null)
+          }}
+        />
+      ) : null}
       {columns.length === 0 && missingCount > 0 ? (
         <p className="mt-3 text-xs text-muted-foreground">
           {plural(missingCount, "selected recipe")} could not be opened.
