@@ -21,6 +21,8 @@ import type {
   MenuOverviewSection,
   MenuSources,
   MenusPayload,
+  SavedComparisonDetail,
+  SavedComparisonsPayload,
   NewsletterStatus,
   PosConnectionRow,
   PosSyncRun,
@@ -783,6 +785,24 @@ export async function getKitchenMembers() {
     "/internal/v1/kitchen-members/",
     kitchenMembersPayloadSchema
   )
+}
+
+export async function getSavedComparisons(): Promise<SavedComparisonsPayload> {
+  return djangoGet<SavedComparisonsPayload>("/internal/v1/recipe-comparisons/")
+}
+
+export async function getSavedComparison(
+  ref: string
+): Promise<SavedComparisonDetail | null> {
+  try {
+    return await djangoGet<SavedComparisonDetail>(
+      `/internal/v1/recipe-comparisons/${encodeURIComponent(ref)}/`
+    )
+  } catch (cause) {
+    if (cause instanceof BackendRequestError && cause.status === 404)
+      return null
+    throw cause
+  }
 }
 
 export async function getMenus(): Promise<MenusPayload> {

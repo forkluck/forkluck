@@ -2,7 +2,14 @@
 
 import * as React from "react"
 import { Popover } from "@base-ui/react/popover"
-import { ChevronDown, ClipboardPaste, X } from "lucide-react"
+import {
+  ChevronDown,
+  ClipboardPaste,
+  Save,
+  SquarePen,
+  Trash2,
+  X,
+} from "lucide-react"
 
 import {
   GuardedLink,
@@ -10,6 +17,7 @@ import {
 } from "@/components/navigation-blocker"
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { Button } from "@/components/ui/button"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import {
   Dialog,
   DialogContent,
@@ -22,6 +30,7 @@ import {
   Menu,
   MenuCheckItem,
   MenuContent,
+  MenuItem,
   MenuTrigger,
 } from "@/components/ui/menu"
 import { EmptyState, Toolbar, ToolbarSpacer } from "@/components/ui/page"
@@ -37,6 +46,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/toast"
+import { SavedComparisonsTable } from "@/components/recipes/saved-comparisons-table"
+import type { SavedComparisonRow } from "@/lib/backend/types"
+import {
+  deleteComparison,
+  saveComparison,
+  type SaveComparisonInput,
+} from "@/app/(app)/recipes/compare/actions"
 import type { PriceListEntry } from "@/lib/pricing"
 import {
   COMPARE_PATH,
@@ -74,6 +91,18 @@ export const COMPARE_MODE_KEY = "recipe.compare.percentMode"
 
 export type CompareView = "formula" | "spec"
 export type PastedRecipe = { id: string; title: string; text: string }
+
+/** The saved comparison the page is open on, as the component needs it. */
+export type SavedComparisonState = {
+  id: string
+  publicId: string
+  title: string
+  editVersion: number
+  /** Recipe columns the reader can no longer open. */
+  missingCount: number
+  /** Pasted columns kept with the record, keyed `saved-<position>`. */
+  pasted: PastedRecipe[]
+}
 
 type RecipeOption = {
   publicId: string
@@ -365,6 +394,88 @@ function PasteFormulaDialog({
   )
 }
 
+/** One field: what to call the comparison, on a save or a rename. */
+function SaveComparisonDialog({
+  open,
+  onOpenChange,
+  title,
+  initial,
+  confirmLabel,
+  pending,
+  onSubmit,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  initial: string
+  confirmLabel: string
+  pending: boolean
+  onSubmit: (name: string) => void
+}) {
+  const [name, setName] = React.useState(initial)
+  const [error, setError] = React.useState("")
+  React.useEffect(() => {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setName(initial)
+      setError("")
+    }
+  }, [open, initial])
+  const submit = () => {
+    if (!name.trim()) {
+      setError("Give the comparison a name.")
+      return
+    }
+    onSubmit(name.trim())
+  }
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        {error ? (
+          <p role="alert" className="text-base text-destructive">
+            {error}
+          </p>
+        ) : null}
+        <div className="grid gap-2">
+          <label htmlFor="save-comparison-name" className="text-sm font-medium">
+            Name
+          </label>
+          <input
+            id="save-comparison-name"
+            autoFocus
+            maxLength={120}
+            value={name}
+            placeholder="Loaves, spring"
+            onChange={(event) => setName(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault()
+                submit()
+              }
+            }}
+            className={inputClassName}
+          />
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </Button>
+          <Button type="button" pending={pending} onClick={submit}>
+            {confirmLabel}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function formulaBasisLine(formula: Formula): string {
   if (formula.basis === "none") return `${formula.title}: nothing weighed yet.`
   return `${formula.title}: 100% = ${formula.basisLabel}.`
@@ -382,12 +493,15 @@ function compareUrl({
   selected,
   view,
   baseId,
+  savedId = null,
 }: {
   selected: string[]
   view: CompareView
   baseId: string | null
+  savedId?: string | null
 }): string {
   const parts: string[] = []
+  if (savedId) parts.push(`c=${encodeURIComponent(savedId)}`)
   if (selected.length) {
     parts.push(`r=${selected.map(encodeURIComponent).join(",")}`)
   }
@@ -1338,6 +1452,8 @@ export function CompareFormulas({
   recipeOptions,
   view,
   baseId,
+  saved = null,
+  savedComparisons = [],
 }: {
   /** The saved recipes in the URL, in order. */
   selected: string[]
@@ -1349,10 +1465,25 @@ export function CompareFormulas({
   recipeOptions: RecipeOption[]
   view: CompareView
   baseId: string | null
+  /** The saved comparison the page is open on, if any. */
+  saved?: SavedComparisonState | null
+  /** This account's saved comparisons, shown when nothing is open. */
+  savedComparisons?: SavedComparisonRow[]
 }) {
   const { go, pending } = useGuardedNavigate()
+  const toast = useToast()
   const [mode, setMode] = React.useState<PercentMode>("bakers")
-  const [pasted, setPasted] = React.useState<PastedRecipe[]>([])
+  // Under a saved comparison the pasted columns are the record's, not this
+  // browser's.
+  const [pasted, setPasted] = React.useState<PastedRecipe[]>(
+    () => saved?.pasted ?? []
+  )
+  const [editVersion, setEditVersion] = React.useState(saved?.editVersion ?? 0)
+  const [saveDialog, setSaveDialog] = React.useState<
+    "create" | "rename" | null
+  >(null)
+  const [deleteOpen, setDeleteOpen] = React.useState(false)
+  const [savePending, startSave] = React.useTransition()
   const [showGrams, setShowGrams] = React.useState(false)
   const [gramOverrides, setGramOverrides] = React.useState<
     Record<string, number>
@@ -1375,12 +1506,14 @@ export function CompareFormulas({
         : "bakers"
     )
     setShowGrams(window.localStorage.getItem(COMPARE_GRAMS_KEY) === "shown")
-    setPasted(readPasted())
-  }, [])
+    if (!saved) setPasted(readPasted())
+  }, [saved])
 
   const savePasted = (next: PastedRecipe[]) => {
     setPasted(next)
-    window.localStorage.setItem(COMPARE_PASTED_KEY, JSON.stringify(next))
+    if (!saved) {
+      window.localStorage.setItem(COMPARE_PASTED_KEY, JSON.stringify(next))
+    }
   }
 
   const pastedInputs = React.useMemo(
@@ -1414,9 +1547,70 @@ export function CompareFormulas({
         selected: next.selected ?? selected,
         view: next.view ?? view,
         baseId: next.baseId === undefined ? selectedBase : next.baseId,
+        savedId: saved?.publicId ?? null,
       }),
       { replace: true }
     )
+  }
+
+  // What the record holds: the columns in the order they read, and which
+  // one is the baseline, by position.
+  const savePayload = (title: string): SaveComparisonInput => ({
+    id: saved?.id ?? null,
+    expectedEditVersion: saved ? editVersion : undefined,
+    title,
+    view,
+    baselinePosition: selectedBase
+      ? (() => {
+          const at = columns.findIndex((one) => one.key === selectedBase)
+          return at >= 0 ? at : null
+        })()
+      : null,
+    columns: columns.map((formula) => {
+      if (formula.source === "saved") return { recipeId: formula.key }
+      const one = pasted.find((entry) => `paste:${entry.id}` === formula.key)
+      return { pastedTitle: one?.title ?? "", pastedText: one?.text ?? "" }
+    }),
+  })
+  const runSave = (title: string, done: string) => {
+    startSave(async () => {
+      const result = await saveComparison(savePayload(title))
+      if ("error" in result) {
+        toast.add({ title: result.error, type: "error" })
+        return
+      }
+      startSave(() => {
+        setEditVersion(result.editVersion)
+        setSaveDialog(null)
+        toast.add({ title: done })
+        if (!saved) {
+          void go(
+            compareUrl({
+              selected,
+              view,
+              baseId: selectedBase,
+              savedId: result.publicId,
+            }),
+            { replace: true }
+          )
+        }
+      })
+    })
+  }
+  const confirmDelete = () => {
+    if (!saved) return
+    startSave(async () => {
+      const result = await deleteComparison(saved.id)
+      if ("error" in result) {
+        toast.add({ title: result.error, type: "error" })
+        return
+      }
+      startSave(() => {
+        setDeleteOpen(false)
+        toast.add({ title: `Deleted ${saved.title}` })
+        void go(COMPARE_PATH, { replace: true })
+      })
+    })
   }
 
   const addRecipe = (publicId: string) => {
@@ -1490,10 +1684,21 @@ export function CompareFormulas({
 
   return (
     <>
-      {columns.length === 0 ? (
+      {columns.length === 0 && savedComparisons.length > 0 ? (
+        <>
+          <Toolbar>
+            <ToolbarSpacer />
+            <div className="flex flex-wrap items-center gap-2 md:contents">
+              {pasteButton}
+              {addPopover}
+            </div>
+          </Toolbar>
+          <SavedComparisonsTable rows={savedComparisons} />
+        </>
+      ) : columns.length === 0 ? (
         <EmptyState
           title="Compare recipes as baker's percentages"
-          description="Select recipes on the Recipes list and choose Compare from Actions, or paste a recipe from anywhere to read it beside one of yours, or on its own."
+          description="Add recipes from your list to read them side by side, or paste a recipe from anywhere to read it beside one of yours, or on its own. A comparison can be saved by name and opened again here."
         >
           {pasteButton}
           {addPopover}
@@ -1523,6 +1728,33 @@ export function CompareFormulas({
             <div className="flex flex-wrap items-center gap-2 md:contents">
               {pasteButton}
               <ActionsMenu>
+                {/* Commands first, each with its icon; the check items that
+                    pick a value follow. */}
+                <MenuItem
+                  onClick={() =>
+                    saved
+                      ? runSave(saved.title, "Saved changes")
+                      : setSaveDialog("create")
+                  }
+                >
+                  <Save strokeWidth={1.8} aria-hidden="true" />
+                  {saved ? "Save changes" : "Save comparison"}
+                </MenuItem>
+                {saved ? (
+                  <>
+                    <MenuItem onClick={() => setSaveDialog("rename")}>
+                      <SquarePen strokeWidth={1.8} aria-hidden="true" />
+                      Rename
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => setDeleteOpen(true)}
+                      className="text-destructive data-highlighted:text-destructive"
+                    >
+                      <Trash2 strokeWidth={1.8} aria-hidden="true" />
+                      Delete
+                    </MenuItem>
+                  </>
+                ) : null}
                 {MODE_OPTIONS.map((option) => (
                   <MenuCheckItem
                     key={option.value}
@@ -1588,6 +1820,34 @@ export function CompareFormulas({
         open={pasteOpen}
         onOpenChange={setPasteOpen}
         onAdd={addPasted}
+      />
+      <SaveComparisonDialog
+        open={saveDialog !== null}
+        onOpenChange={(open) => {
+          if (!open && !savePending) setSaveDialog(null)
+        }}
+        title={
+          saveDialog === "rename" ? "Rename comparison" : "Save comparison"
+        }
+        initial={saved?.title ?? ""}
+        confirmLabel={
+          savePending ? "Saving…" : saveDialog === "rename" ? "Rename" : "Save"
+        }
+        pending={savePending}
+        onSubmit={(name) =>
+          runSave(name, saveDialog === "rename" ? "Renamed" : "Saved")
+        }
+      />
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          if (!open && !savePending) setDeleteOpen(false)
+        }}
+        title="Delete this comparison?"
+        description={`${saved?.title ?? "This comparison"} is removed. The recipes are untouched.`}
+        confirmLabel={savePending ? "Deleting…" : "Delete comparison"}
+        pending={savePending}
+        onConfirm={confirmDelete}
       />
     </>
   )

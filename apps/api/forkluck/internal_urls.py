@@ -136,6 +136,11 @@ urlpatterns = [
         "cost-for-recipe/<uuid:recipe_id>/",
         internal_get(recipe_views.cost_recipe_for_recipe),
     ),
+    path("recipe-comparisons/", internal_get(recipe_views.saved_comparisons)),
+    path(
+        "recipe-comparisons/<str:comparison_ref>/",
+        internal_get(recipe_views.saved_comparison_detail),
+    ),
     path("menus/", internal_get(recipe_views.menus)),
     path("menu/<str:menu_ref>/", internal_get(recipe_views.menu_detail)),
     path(

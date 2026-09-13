@@ -346,6 +346,8 @@ recipe-categories/
 cost-recipes/
 cost-recipes/<str:recipe_ref>/
 cost-for-recipe/<uuid:recipe_id>/
+recipe-comparisons/
+recipe-comparisons/<str:comparison_ref>/
 menus/
 menu/<str:menu_ref>/
 menu/<str:menu_ref>/forecast/
@@ -989,6 +991,17 @@ correcting an invoice cannot leave a stale duplicate price on the ingredient.
 The measure is nullable only for historical matches created before Forkluck
 could identify the pack; those rows stay visible but cannot be chosen for
 costing until a complete measure is connected.
+
+`recipe-comparisons/` returns `{comparisons}`: one row per saved comparison of
+the authenticated user, newest first, each with `columnTitles` and
+`columnCount` read from a prefetch so the list stays two queries.
+`recipe-comparisons/<comparison_ref>/` takes either the `cmp_` public id or the
+row's UUID, is always scoped to the authenticated user, and answers 404
+`{"error": "Comparison not found"}` otherwise. It returns the comparison with
+its `columns[]` in position order: each is a recipe `{publicId, title}` or, when
+the column is text pasted from elsewhere, `pastedTitle` and `pastedText`. A
+recipe the reader can no longer open (a share withdrawn since the save) comes
+back with `recipe: null` and is counted in `missingCount`.
 
 `menus/` returns `{menus, hasAnyMenu}`: one row per menu-engineering
 worksheet, newest first, with `itemCount` annotated so the list stays a single
@@ -2220,6 +2233,20 @@ update may carry it; the row is locked and checked against it inside the
 transaction, so a save written against an older read answers 409 `stale_write`
 rather than overwriting. A create omits it and starts at 0. `delete-menu` takes
 `{id}`, cascades to the rows, and returns `{ok: true}`.
+
+**Saved comparisons (2)**
+`save-comparison` takes
+`{id|null, expectedEditVersion?, title, view, baselinePosition|null, columns[]}`
+and replaces the whole column list. `view` is `formula` or `spec`. Each column
+is `{recipeId}` (a `rcp_` public id the caller can open: their own, shared in,
+or through a kitchen membership) or `{pastedTitle?, pastedText}`; one to four
+columns, a recipe at most once, and `baselinePosition` must index one of them.
+A recipe outside the caller's reach is refused with "Recipe not found". The
+record belongs to the caller's own tenant, the way a menu does. It returns the
+same payload as `recipe-comparisons/<comparison_ref>/`, whose `editVersion` an
+update sends back as `expectedEditVersion` for the same 409 `stale_write`
+check as `save-menu`. `delete-comparison` takes `{id}`, cascades to the
+columns, and returns `{ok: true}`.
 
 **POS / integrations and sync jobs (7)**
 `pos-connections-status`, `enqueue-pos-sync`, `retry-pos-sync`,
