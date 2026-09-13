@@ -325,6 +325,40 @@ must stay intact. Automated acceptance tests use synthetic OAuth settings and
 inspect the links without contacting Google; real consent requires the dev
 client pair.
 
+## Cloudflare Turnstile
+
+The sign-up bot check is optional. Set both values in `/etc/forkluck/backend.env`
+on chefclaw, or leave both empty:
+
+```env
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+```
+
+A partial pair refuses startup in every environment. With both empty the
+signup form renders no widget and register ignores the token field, which is
+how self-hosted installs, unit tests and the browser suite run. With both set,
+`auth-methods/` hands the public site key to the signup page, the form loads
+Cloudflare's script and sends a single-use token with each sign-up, and
+register verifies it with Cloudflare before writing anything. A token that is
+missing, spent or rejected answers `400 verification_failed`; a Cloudflare
+outage answers `503 verification_unavailable` rather than letting sign-ups
+through unchecked. Google sign-in is a separate path and is not gated.
+
+In the Cloudflare dashboard, under Turnstile, add a widget named **Forkluck
+signup** with hostname `app.forkluck.com`, widget mode **Invisible** and
+pre-clearance off. Put the pair in `/etc/forkluck/backend.env` after the code
+release and restart `forkluck-django.service`. The POS and connector workers
+read the same file and refuse their next boot on a half-set pair, exactly like
+the Google pair. Sites that use the invisible mode reference Cloudflare's
+[Turnstile Privacy Addendum](https://www.cloudflare.com/turnstile-privacy-policy/)
+in their privacy policy; forkluck.com does.
+
+For local work Cloudflare's test pair always passes without a dashboard
+widget: site key `1x00000000000000000000BB` (invisible) with secret
+`1x0000000000000000000000000000000AA`. Secret `2x0000000000000000000000000000000AA`
+always fails, which shows the refusal copy. Put the pair in `apps/api/.env`.
+
 ## Google Drive receipts folder
 
 Importing receipts straight from a Drive folder is optional and configured in

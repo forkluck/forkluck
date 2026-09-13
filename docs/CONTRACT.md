@@ -214,12 +214,16 @@ Failures redirect to `/login?error=<code>` and retain the session's known
 | `google-inactive` | The resolved account is inactive |
 | `google-rate-limited` | The route's IP budget was exhausted |
 
-`GET /internal/v1/auth-methods/` returns `{google: boolean}`. This is a
+`GET /internal/v1/auth-methods/` returns
+`{google: boolean, turnstileSiteKey: string | null}`. This is a
 `system_get` read: the internal secret is required (missing/wrong is 404),
-but no user session is required, because login and signup need the flag.
-It returns only feature availability, never credentials or user data.
-Both client settings must be populated to enable the feature. A partial pair
-refuses Django startup in every environment.
+but no user session is required, because login and signup need the flags.
+It returns only feature availability, never credentials or user data: the
+Turnstile site key is public by design and only names the widget the signup
+page renders; the secret never leaves Django. Both client settings must be
+populated to enable Google sign-in, and both Turnstile settings to enable the
+sign-up bot check. A partial pair of either refuses Django startup in every
+environment.
 
 | Google sign-in invariant | Required behavior |
 | --- | --- |
@@ -235,6 +239,24 @@ refuses Django startup in every environment.
 | Browser memory | `fl.last-sign-in-method` stores only `google` or `password`; read after mount, tolerate blocked storage, and show the caption on login only. Failed password attempts do not overwrite it |
 | Persisted identity lifecycle | The nullable unique subject belongs to the user row and is read only for sign-in. Name/password updates preserve it; account deletion removes it. There is no account merge, user import/undo or settings relink path |
 | Downstream behavior | Existing workspace ownership, billing, pricing, health and invitation access use the resolved user as before; no new unresolved/review state is introduced |
+
+### Sign-up bot check
+
+When `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` are both set, the signup
+form loads Cloudflare Turnstile and `POST /api/auth/register` requires a
+`turnstileToken` string in the body beside `name`, `email` and `password`.
+Register checks it after field validation, so a bad password does not spend
+the single-use token, and before any row is written. The token is verified
+with Cloudflare over Django's TLS connection with a 10-second timeout,
+naming the visitor by the same client IP the registration throttle uses.
+With either setting empty the field is ignored entirely.
+
+| Response | Meaning |
+| --- | --- |
+| `400 {"error": "We couldn't confirm you're a person. Reload the page and try again.", "code": "verification_failed"}` | The token is missing, malformed, expired, already spent or rejected |
+| `503 {"error": "Sign-up is temporarily unavailable. Try again shortly.", "code": "verification_unavailable"}` | Cloudflare could not answer; the check fails closed |
+
+Google sign-in creates accounts through its own callback and is not gated.
 
 ### Passwords and sessions
 
