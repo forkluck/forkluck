@@ -159,7 +159,6 @@ describe("signup Create account", () => {
     expect(readLastSignInMethod()).toBe("password")
   })
 
-
   it("stays enabled while empty and guards before calling the action", () => {
     render(<SignupForm />)
     const button = screen.getByRole("button", { name: "Create account" })
