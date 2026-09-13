@@ -22,7 +22,6 @@ import {
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { SaveBanner } from "@/components/ui/save-banner"
-import { Separator } from "@/components/ui/separator"
 import {
   Menu,
   MenuCheckItem,
@@ -1820,9 +1819,10 @@ export function CompareFormulas({
           setTitle(event.target.value)
           if (event.target.value.trim()) setTitleMissing(false)
         }}
-        className="mb-5"
+        className="mb-7"
       />
-      <Separator className="mb-5" />
+      {/* The band the recipe and product editors put between sections. */}
+      <div className="border-t-[6px] border-secondary pt-7" />
       {columns.length === 0 ? (
         <EmptyState
           title="Compare recipes as baker's percentages"
