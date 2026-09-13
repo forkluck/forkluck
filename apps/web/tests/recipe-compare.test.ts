@@ -681,9 +681,9 @@ describe("the compare URL", () => {
   })
 
   it("writes the page's href with or without a selection", () => {
-    expect(compareHref([])).toBe("/recipes/compare")
+    expect(compareHref([])).toBe("/recipes/compare/new")
     expect(compareHref(["rcp_a", "rcp_b"])).toBe(
-      "/recipes/compare?r=rcp_a,rcp_b"
+      "/recipes/compare/new?r=rcp_a,rcp_b"
     )
   })
 })
