@@ -1,6 +1,6 @@
 """Optimistic concurrency for the aggregate roots. A leaf: knows only models."""
 
-from ...models import Ingredient, Invoice, Menu, Recipe
+from ...models import Ingredient, Invoice, Menu, Recipe, SavedComparison
 
 
 class StaleWriteError(Exception):
@@ -11,7 +11,8 @@ class StaleWriteError(Exception):
 
 
 def check_and_bump(
-    row: Ingredient | Invoice | Menu | Recipe, expected: int | None
+    row: Ingredient | Invoice | Menu | Recipe | SavedComparison,
+    expected: int | None,
 ) -> int:
     # Call inside transaction.atomic() after select_for_update() on the row.
     if expected is not None and expected != row.edit_version:

@@ -5,7 +5,6 @@ import { undoableToast, useToast } from "@/components/ui/toast"
 import {
   Archive,
   ArchiveRestore,
-  Columns2,
   Copy,
   SquarePen,
   Trash2,
@@ -38,7 +37,6 @@ import { csvCell } from "@/lib/csv"
 import { formatCents } from "@/lib/money"
 import type { CurrencyCode } from "@/lib/business-settings"
 import { recipeCategoryLabel } from "@/lib/recipe/categories"
-import { compareHref, MAX_COMPARE_RECIPES } from "@/lib/recipe/compare"
 import { describeRecipeIssues, type RecipeHealth } from "@/lib/recipe/health"
 import { toSaveFailure } from "@/lib/save-failure"
 import { cn } from "@/lib/utils"
@@ -414,8 +412,7 @@ export function RecipesTable({
           }
           return (
             <>
-              {/* 208px: "Compare 2 recipes" wraps at the 184px default. */}
-              <ActionsMenu className="w-52">
+              <ActionsMenu>
                 <MenuItem
                   // A share sends the whole selection or none of it: a row
                   // someone else owns is not the owner's to pass on.
@@ -435,26 +432,6 @@ export function RecipesTable({
                 >
                   <Users strokeWidth={1.8} aria-hidden="true" />
                   {selectedRows.length === 1 ? "Share recipe" : "Share recipes"}
-                </MenuItem>
-                <MenuItem
-                  // Side by side in baker's percentages. With nothing
-                  // selected the page opens empty, for recipes pasted from
-                  // elsewhere; the navigation itself is the menu's answer.
-                  disabled={selectedRows.length > MAX_COMPARE_RECIPES}
-                  onClick={() =>
-                    void go(
-                      compareHref(selectedRows.map((recipe) => recipe.publicId))
-                    )
-                  }
-                >
-                  <Columns2 strokeWidth={1.8} aria-hidden="true" />
-                  {selectedRows.length > MAX_COMPARE_RECIPES
-                    ? `Compare up to ${MAX_COMPARE_RECIPES}`
-                    : selectedRows.length
-                      ? `Compare ${selectedRows.length} recipe${
-                          selectedRows.length === 1 ? "" : "s"
-                        }`
-                      : "Compare recipes"}
                 </MenuItem>
                 <MenuItem
                   disabled={owned.length === 0 || statusPending}

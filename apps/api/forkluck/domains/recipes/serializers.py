@@ -5,6 +5,7 @@ from typing import Any
 from django.db.models import Q
 
 from ...models import (
+    SavedComparison,
     BenchCostRecipe,
     BenchCostStep,
     BenchCostTiming,
@@ -479,6 +480,65 @@ def cost_recipe_json(row: BenchCostRecipe) -> JsonObject:
         "createdAt": iso(row.created_at),
         "updatedAt": iso(row.updated_at),
         "steps": [step_json(step) for step in row.steps.all()],
+    }
+
+
+def _comparison_column_title(column) -> str:
+    return column.recipe.title if column.recipe_id else column.pasted_title
+
+
+def saved_comparison_summary_json(row: SavedComparison) -> JsonObject:
+    """Expects `columns` prefetched with their recipes."""
+    columns = list(row.columns.all())
+    return {
+        "id": str(row.id),
+        "publicId": row.public_id,
+        "title": row.title,
+        "view": row.view,
+        "columnTitles": [_comparison_column_title(column) for column in columns],
+        "columnCount": len(columns),
+        "updatedAt": iso(row.updated_at),
+    }
+
+
+def saved_comparison_json(row: SavedComparison, accessible_recipe_ids) -> JsonObject:
+    """Expects `columns` prefetched with their recipes.
+
+    A recipe the reader can no longer open (a share withdrawn since the save)
+    comes back as a column with no recipe, and is counted, so the page says
+    how many are gone instead of quietly reading fewer.
+    """
+    columns = []
+    missing = 0
+    for column in row.columns.all():
+        recipe = None
+        if column.recipe_id:
+            if column.recipe_id in accessible_recipe_ids:
+                recipe = {
+                    "publicId": column.recipe.public_id,
+                    "title": column.recipe.title,
+                }
+            else:
+                missing += 1
+        columns.append(
+            {
+                "position": column.position,
+                "recipe": recipe,
+                "pastedTitle": column.pasted_title,
+                "pastedText": column.pasted_text,
+            }
+        )
+    return {
+        "id": str(row.id),
+        "publicId": row.public_id,
+        "title": row.title,
+        "view": row.view,
+        "baselinePosition": row.baseline_position,
+        "editVersion": row.edit_version,
+        "columns": columns,
+        "missingCount": missing,
+        "createdAt": iso(row.created_at),
+        "updatedAt": iso(row.updated_at),
     }
 
 

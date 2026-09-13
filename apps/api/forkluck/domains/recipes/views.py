@@ -16,6 +16,7 @@ from django.utils import timezone
 
 from ...http.request import error
 from ...models import (
+    SavedComparison,
     BenchCostRecipe,
     Menu,
     Recipe,
@@ -43,6 +44,11 @@ from ..shared.recipe_access import (
 from ..shared.search import recipe_search, relevance_order, search_tokens
 from ..shared.values import uuid_value
 from ..shared.vocabulary import unit_slugs
+from .comparisons import (
+    comparison_columns,
+    owned_comparison,
+    saved_comparison_payload,
+)
 from .guest_links import resolve_book_link, resolve_guest_link
 from .nutrition import recipe_nutrition_payload
 from .health import (
@@ -55,6 +61,7 @@ from .health import (
     recipe_cost_diff_payload,
 )
 from .serializers import (
+    saved_comparison_summary_json,
     cost_recipe_json,
     guest_recipe_json,
     menu_summary_json,
@@ -74,17 +81,36 @@ _CATEGORY_SORT = Lower(
         output_field=CharField(),
     )
 )
-RECIPE_FILTERS = frozenset({"status", "kind", "category", "attention", "tags", "allergens", "ingredients", "ownership", "kitchen"})
+RECIPE_FILTERS = frozenset(
+    {
+        "status",
+        "kind",
+        "category",
+        "attention",
+        "tags",
+        "allergens",
+        "ingredients",
+        "ownership",
+        "kitchen",
+    }
+)
 
 
 def _csv(value: str | None) -> set[str]:
     return {part.strip() for part in (value or "").split(",") if part.strip()}
 
 
-def _recipe_facets(rows: list[Recipe], viewer: User) -> dict[str, list[dict[str, object]]]:
+def _recipe_facets(
+    rows: list[Recipe], viewer: User
+) -> dict[str, list[dict[str, object]]]:
     """Stable counts for the already-filtered, tenant-accessible rows."""
     status_keys = [key for key, _ in Recipe.STATUS_CHOICES]
-    attention_keys = ["missingYield", "unresolvedItem", "missingQuantity", "unpricedIngredient"]
+    attention_keys = [
+        "missingYield",
+        "unresolvedItem",
+        "missingQuantity",
+        "unpricedIngredient",
+    ]
     statuses = {key: 0 for key in status_keys}
     attention = {key: 0 for key in attention_keys}
     ownership = {"owned": 0, "shared": 0}
@@ -119,73 +145,100 @@ def _recipe_facets(rows: list[Recipe], viewer: User) -> dict[str, list[dict[str,
             elif item.subrecipe_id:
                 row_targets[str(item.subrecipe_id)] = f"Recipe · {item.subrecipe.title}"
         for key, name in row_targets.items():
-            target = ingredients.setdefault(
-                key, {"id": key, "name": name, "count": 0}
-            )
+            target = ingredients.setdefault(key, {"id": key, "name": name, "count": 0})
             target["count"] = int(target["count"]) + 1
         for key in row_attention:
             attention[key] += 1
         if row.category_id and row.category.user_id == row.user_id:
             key = str(row.category_id)
-            category = categories.setdefault(key, {"id": key, "name": row.category.name, "count": 0})
+            category = categories.setdefault(
+                key, {"id": key, "name": row.category.name, "count": 0}
+            )
             category["count"] = int(category["count"]) + 1
         for membership in getattr(row, "_facet_tags", []):
             key = str(membership.tag_id)
-            tag = tags.setdefault(key, {"id": key, "name": membership.tag.name, "count": 0})
+            tag = tags.setdefault(
+                key, {"id": key, "name": membership.tag.name, "count": 0}
+            )
             tag["count"] = int(tag["count"]) + 1
         for key in allergen_sets.get(row.id, {}):
             allergens[key] = allergens.get(key, 0) + 1
     return {
         "status": [{"key": key, "count": statuses[key]} for key in status_keys],
         "attention": [{"key": key, "count": attention[key]} for key in attention_keys],
-        "category": sorted(categories.values(), key=lambda value: (str(value["name"]).lower(), str(value["id"]))),
-        "tags": sorted(tags.values(), key=lambda value: (str(value["name"]).lower(), str(value["id"]))),
-        "ingredients": sorted(ingredients.values(), key=lambda value: (str(value["name"]).lower(), str(value["id"]))),
-        "allergens": [{"key": key, "count": allergens[key]} for key in sorted(allergens)],
-        "ownership": [{"key": key, "count": ownership[key]} for key in ("owned", "shared")],
+        "category": sorted(
+            categories.values(),
+            key=lambda value: (str(value["name"]).lower(), str(value["id"])),
+        ),
+        "tags": sorted(
+            tags.values(),
+            key=lambda value: (str(value["name"]).lower(), str(value["id"])),
+        ),
+        "ingredients": sorted(
+            ingredients.values(),
+            key=lambda value: (str(value["name"]).lower(), str(value["id"])),
+        ),
+        "allergens": [
+            {"key": key, "count": allergens[key]} for key in sorted(allergens)
+        ],
+        "ownership": [
+            {"key": key, "count": ownership[key]} for key in ("owned", "shared")
+        ],
     }
 
 
 def _recipe_detail_queryset(user: User):
-    visible_parent_ids = accessible_recipe_queryset(
-        user, prefetch_shares=False
-    ).values("id")
-    return accessible_recipe_queryset(user).select_related("category", "user").prefetch_related(
-        "external_refs",
-        # A linked recipe's own lines ride along with the parent's items, so
-        # expanding a sub-recipe row costs one more query, not one per row.
-        Prefetch(
-            "items",
-            queryset=RecipeItem.objects.select_related("ingredient", "subrecipe").prefetch_related(
-                "subrecipe__items"
+    visible_parent_ids = accessible_recipe_queryset(user, prefetch_shares=False).values(
+        "id"
+    )
+    return (
+        accessible_recipe_queryset(user)
+        .select_related("category", "user")
+        .prefetch_related(
+            "external_refs",
+            # A linked recipe's own lines ride along with the parent's items, so
+            # expanding a sub-recipe row costs one more query, not one per row.
+            Prefetch(
+                "items",
+                queryset=RecipeItem.objects.select_related(
+                    "ingredient", "subrecipe"
+                ).prefetch_related("subrecipe__items"),
             ),
-        ),
-        Prefetch("steps", queryset=RecipeStep.objects.prefetch_related("timings", "media")),
-        "batch_sizes",
-        "equivalency",
-        Prefetch("tag_memberships", queryset=RecipeTagMembership.objects.select_related("tag")),
-        Prefetch("comments", queryset=RecipeComment.objects.select_related("author")),
-        "media",
-        "guest_links",
-        # The books this recipe was shared inside, for the owner's Share
-        # dialog. Scoped to the owner's own books, and carrying the size of
-        # each so the row can name an untitled one.
-        Prefetch(
-            "book_items",
-            queryset=RecipeBookRecipe.objects.filter(book__user=user)
-            .select_related("book")
-            .annotate(_book_recipe_count=Count("book__items"))
-            .order_by("book__created_at", "book_id"),
-            to_attr="_book_items",
-        ),
-        # The parent lines that link this recipe, for the "used in" list.
-        Prefetch(
-            "parent_items",
-            queryset=RecipeItem.objects.filter(
-                recipe_id__in=visible_parent_ids
-            ).select_related("recipe"),
-            to_attr="_parent_items",
-        ),
+            Prefetch(
+                "steps",
+                queryset=RecipeStep.objects.prefetch_related("timings", "media"),
+            ),
+            "batch_sizes",
+            "equivalency",
+            Prefetch(
+                "tag_memberships",
+                queryset=RecipeTagMembership.objects.select_related("tag"),
+            ),
+            Prefetch(
+                "comments", queryset=RecipeComment.objects.select_related("author")
+            ),
+            "media",
+            "guest_links",
+            # The books this recipe was shared inside, for the owner's Share
+            # dialog. Scoped to the owner's own books, and carrying the size of
+            # each so the row can name an untitled one.
+            Prefetch(
+                "book_items",
+                queryset=RecipeBookRecipe.objects.filter(book__user=user)
+                .select_related("book")
+                .annotate(_book_recipe_count=Count("book__items"))
+                .order_by("book__created_at", "book_id"),
+                to_attr="_book_items",
+            ),
+            # The parent lines that link this recipe, for the "used in" list.
+            Prefetch(
+                "parent_items",
+                queryset=RecipeItem.objects.filter(
+                    recipe_id__in=visible_parent_ids
+                ).select_related("recipe"),
+                to_attr="_parent_items",
+            ),
+        )
     )
 
 
@@ -216,15 +269,15 @@ def _browse_recipes(request: HttpRequest):
         ):
             raise ValueError("Invalid kitchen")
 
-    rows = accessible_recipe_queryset(
-        request.user, kitchens=kitchen_owner_id is not None
-    ).select_related(
-        "category", "user", "equivalency"
-    ).annotate(
-        _has_normalized_items=Exists(
-            RecipeItem.objects.filter(recipe_id=OuterRef("pk"))
+    rows = (
+        accessible_recipe_queryset(request.user, kitchens=kitchen_owner_id is not None)
+        .select_related("category", "user", "equivalency")
+        .annotate(
+            _has_normalized_items=Exists(
+                RecipeItem.objects.filter(recipe_id=OuterRef("pk"))
+            )
+            | Exists(RecipeStep.objects.filter(recipe_id=OuterRef("pk")))
         )
-        | Exists(RecipeStep.objects.filter(recipe_id=OuterRef("pk")))
     )
     if kitchen_owner_id is not None:
         rows = rows.filter(user_id=kitchen_owner_id)
@@ -252,7 +305,10 @@ def _browse_recipes(request: HttpRequest):
         rows = rows.exclude(user=request.user)
     tags = _csv(request.GET.get("tags") or request.GET.get("tag"))
     if tags:
-        rows = rows.filter(Q(tag_memberships__tag_id__in=tags) | Q(tag_memberships__tag__normalized_name__in=tags)).distinct()
+        rows = rows.filter(
+            Q(tag_memberships__tag_id__in=tags)
+            | Q(tag_memberships__tag__normalized_name__in=tags)
+        ).distinct()
     ingredients = _csv(request.GET.get("ingredients") or request.GET.get("ingredient"))
     if ingredients:
         rows = rows.filter(
@@ -288,7 +344,12 @@ def _browse_recipes(request: HttpRequest):
         ]
         rows = rows.filter(id__in=matching_ids)
     attention = _csv(request.GET.get("attention"))
-    allowed_attention = {"missingYield", "unresolvedItem", "missingQuantity", "unpricedIngredient"}
+    allowed_attention = {
+        "missingYield",
+        "unresolvedItem",
+        "missingQuantity",
+        "unpricedIngredient",
+    }
     if attention - allowed_attention:
         raise ValueError("Invalid attention filter")
     if attention:
@@ -296,9 +357,16 @@ def _browse_recipes(request: HttpRequest):
         if "missingYield" in attention:
             q |= Q(yield_amount__isnull=True)
         if "unresolvedItem" in attention:
-            q |= Q(items__kind__in={"ingredient", "subrecipe"}, items__ingredient__isnull=True, items__subrecipe__isnull=True)
+            q |= Q(
+                items__kind__in={"ingredient", "subrecipe"},
+                items__ingredient__isnull=True,
+                items__subrecipe__isnull=True,
+            )
         if "missingQuantity" in attention:
-            q |= Q(items__kind__in={"ingredient", "subrecipe"}, items__quantity__isnull=True)
+            q |= Q(
+                items__kind__in={"ingredient", "subrecipe"},
+                items__quantity__isnull=True,
+            )
         if "unpricedIngredient" in attention:
             q |= (
                 Q(items__ingredient__purchase_cost_cents__lte=0)
@@ -311,8 +379,7 @@ def _browse_recipes(request: HttpRequest):
     if tokens:
         rows = rows.filter(recipe_search(request.user.id, tokens))
     facet_rows = list(
-        rows.select_related("category", "user")
-        .prefetch_related(
+        rows.select_related("category", "user").prefetch_related(
             Prefetch(
                 "items",
                 queryset=RecipeItem.objects.select_related(
@@ -365,8 +432,18 @@ def recipes(request: HttpRequest) -> JsonResponse:
     except ValueError as exc:
         return error(str(exc))
     payload = paginated_payload(
-            [recipe_json(row, full=False, viewer_user=request.user, include_costs=recipe_permission(row, request.user) == "owner") for row in page], browse, total
-        )
+        [
+            recipe_json(
+                row,
+                full=False,
+                viewer_user=request.user,
+                include_costs=recipe_permission(row, request.user) == "owner",
+            )
+            for row in page
+        ],
+        browse,
+        total,
+    )
     payload["queryCount"] = total
     payload["facets"] = facets
     payload["hasAnyRecipe"] = has_any_recipe
@@ -413,22 +490,23 @@ def recipe_health(request: HttpRequest) -> JsonResponse:
             }
         )
         if permission != "owner":
-            row.update({
-                "ingredientCents": None,
-                "menuPriceCents": None,
-                "foodCost": None,
-                "labor": None,
-                "overTarget": False,
-                "issues": (
-                    ["no yield"]
-                    if recipe.yield_amount is None or recipe.yield_amount <= 0
-                    else []
-                ),
-            })
+            row.update(
+                {
+                    "ingredientCents": None,
+                    "menuPriceCents": None,
+                    "foodCost": None,
+                    "labor": None,
+                    "overTarget": False,
+                    "issues": (
+                        ["no yield"]
+                        if recipe.yield_amount is None or recipe.yield_amount <= 0
+                        else []
+                    ),
+                }
+            )
     payload = paginated_payload(health_rows, browse, total)
     payload["categories"] = [
-        {"id": str(row["id"]), "label": str(row["name"])}
-        for row in facets["category"]
+        {"id": str(row["id"]), "label": str(row["name"])} for row in facets["category"]
     ]
     payload["hasAnyRecipe"] = has_any_recipe
     payload["currencyCode"] = model.settings.currency_code
@@ -464,9 +542,7 @@ def recipe_detail(request: HttpRequest, recipe_ref: str) -> JsonResponse:
         include_costs=permission == "owner",
     )
     if permission == "owner":
-        row._has_normalized_items = bool(
-            list(row.items.all()) or list(row.steps.all())
-        )
+        row._has_normalized_items = bool(list(row.items.all()) or list(row.steps.all()))
         row._normalized_items = list(row.items.all())
         row._normalized_steps = list(row.steps.all())
         model = RecipeHealthReadModel(request.user)
@@ -638,9 +714,7 @@ def recipe_categories(request: HttpRequest) -> JsonResponse:
     """Every category in this tenant's recipe vocabulary, empty ones included."""
     rows = (
         RecipeCategory.objects.filter(user=request.user)
-        .annotate(
-            usage_count=Count("recipes", filter=Q(recipes__user=request.user))
-        )
+        .annotate(usage_count=Count("recipes", filter=Q(recipes__user=request.user)))
         .order_by(Lower("name").asc(), "id")
     )
     return JsonResponse(
@@ -681,9 +755,7 @@ def recipes_export(request: HttpRequest) -> JsonResponse:
         }
         for recipe, row in zip(recipes, model.rows(recipes))
     ]
-    return JsonResponse(
-        {"currencyCode": model.settings.currency_code, "items": items}
-    )
+    return JsonResponse({"currencyCode": model.settings.currency_code, "items": items})
 
 
 def cost_queryset(user: User):
@@ -702,9 +774,7 @@ def cost_recipe_detail(request: HttpRequest, recipe_ref: str) -> JsonResponse:
     # entry, mirroring the short /recipes/ URLs; UUIDs still address the cost
     # entry directly.
     if recipe_ref.startswith("rcp_"):
-        recipe = Recipe.objects.filter(
-            user=request.user, public_id=recipe_ref
-        ).first()
+        recipe = Recipe.objects.filter(user=request.user, public_id=recipe_ref).first()
         row = queryset.filter(recipe=recipe).first() if recipe else None
     else:
         try:
@@ -718,9 +788,7 @@ def cost_recipe_detail(request: HttpRequest, recipe_ref: str) -> JsonResponse:
 
 
 def cost_recipe_for_recipe(request: HttpRequest, recipe_id: uuid.UUID) -> JsonResponse:
-    row = BenchCostRecipe.objects.filter(
-        user=request.user, recipe_id=recipe_id
-    ).first()
+    row = BenchCostRecipe.objects.filter(user=request.user, recipe_id=recipe_id).first()
     return JsonResponse({"id": str(row.id) if row else None})
 
 
@@ -734,6 +802,24 @@ def menus(request: HttpRequest) -> JsonResponse:
             "hasAnyMenu": bool(rows),
         }
     )
+
+
+def saved_comparisons(request: HttpRequest) -> JsonResponse:
+    rows = list(
+        SavedComparison.objects.filter(user=request.user).prefetch_related(
+            comparison_columns()
+        )
+    )
+    return JsonResponse(
+        {"comparisons": [saved_comparison_summary_json(row) for row in rows]}
+    )
+
+
+def saved_comparison_detail(request: HttpRequest, comparison_ref: str) -> JsonResponse:
+    row = owned_comparison(request.user, comparison_ref)
+    if row is None:
+        return error("Comparison not found", 404)
+    return JsonResponse(saved_comparison_payload(request.user, row))
 
 
 def _owned_menu(user: User, menu_ref: str) -> Menu | None:

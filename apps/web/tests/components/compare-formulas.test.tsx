@@ -22,6 +22,19 @@ vi.mock("next/navigation", () => ({
 }))
 
 const go = vi.hoisted(() => vi.fn())
+const toastAdd = vi.hoisted(() => vi.fn())
+const saveComparison = vi.hoisted(() => vi.fn())
+const deleteComparison = vi.hoisted(() => vi.fn())
+vi.mock("@/components/ui/toast", () => ({
+  useToast: () => ({ add: toastAdd }),
+}))
+vi.mock("@/components/business-settings-provider", () => ({
+  useBusinessSettings: () => ({ currencyCode: "USD", timezone: "UTC" }),
+}))
+vi.mock("@/app/(app)/recipes/compare/actions", () => ({
+  saveComparison,
+  deleteComparison,
+}))
 vi.mock("@/components/navigation-blocker", () => ({
   useGuardedNavigate: () => ({ go, pending: false }),
   GuardedLink: ({
@@ -51,6 +64,7 @@ import {
   formulaAxisMax,
 } from "@/components/recipes/compare-formulas"
 import type { FormulaInput } from "@/lib/recipe/compare"
+import type { SavedComparisonRow } from "@/lib/backend/types"
 
 const LOAF: FormulaInput = {
   key: "rcp_loaf",
@@ -356,5 +370,139 @@ describe("the compare page", () => {
     expect(
       screen.getByText("2 selected recipes could not be opened.")
     ).toBeTruthy()
+  })
+
+  it("saves a comparison by name and opens it under its id", async () => {
+    saveComparison.mockResolvedValue({
+      id: "uuid-1",
+      publicId: "cmp_loaves",
+      editVersion: 0,
+    })
+    page([LOAF, BRIOCHE], { baseId: "rcp_brioche" })
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Save comparison" })
+    )
+    const dialog = await screen.findByRole("dialog")
+    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }))
+    expect(within(dialog).getByRole("alert").textContent).toContain(
+      "Give the comparison a name."
+    )
+    fireEvent.change(within(dialog).getByLabelText("Name"), {
+      target: { value: "Loaves" },
+    })
+    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }))
+    await waitFor(() => {
+      expect(saveComparison).toHaveBeenCalledWith({
+        id: null,
+        expectedEditVersion: undefined,
+        title: "Loaves",
+        view: "formula",
+        baselinePosition: 1,
+        columns: [{ recipeId: "rcp_loaf" }, { recipeId: "rcp_brioche" }],
+      })
+    })
+    await waitFor(() => {
+      expect(go).toHaveBeenLastCalledWith(
+        "/recipes/compare?c=cmp_loaves&r=rcp_loaf,rcp_brioche&view=formula&base=rcp_brioche",
+        { replace: true }
+      )
+    })
+    expect(toastAdd).toHaveBeenCalledWith({ title: "Saved" })
+  })
+
+  it("opens a saved comparison with its pasted columns and saves changes", async () => {
+    saveComparison.mockResolvedValue({
+      id: "uuid-1",
+      publicId: "cmp_loaves",
+      editVersion: 3,
+    })
+    page([LOAF], {
+      saved: {
+        id: "uuid-1",
+        publicId: "cmp_loaves",
+        title: "Loaves",
+        editVersion: 2,
+        missingCount: 0,
+        pasted: [
+          { id: "saved-1", title: "From the book", text: "500 g flour" },
+        ],
+      },
+      baseId: "paste:saved-1",
+    })
+    // The pasted column is the record's, so it is there at once.
+    expect(
+      screen.getByRole("button", { name: "From the book baseline" })
+    ).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Save changes" })
+    )
+    await waitFor(() => {
+      expect(saveComparison).toHaveBeenCalledWith({
+        id: "uuid-1",
+        expectedEditVersion: 2,
+        title: "Loaves",
+        view: "formula",
+        baselinePosition: 1,
+        columns: [
+          { recipeId: "rcp_loaf" },
+          { pastedTitle: "From the book", pastedText: "500 g flour" },
+        ],
+      })
+    })
+    expect(toastAdd).toHaveBeenCalledWith({ title: "Saved changes" })
+    // Moving within a saved comparison keeps its id in the URL.
+    fireEvent.click(screen.getByRole("button", { name: "Spec sheet" }))
+    expect(go).toHaveBeenLastCalledWith(
+      "/recipes/compare?c=cmp_loaves&r=rcp_loaf&view=spec&base=paste%3Asaved-1",
+      { replace: true }
+    )
+  })
+
+  it("deletes an open comparison after confirming", async () => {
+    deleteComparison.mockResolvedValue({ ok: true })
+    page([LOAF], {
+      saved: {
+        id: "uuid-1",
+        publicId: "cmp_loaves",
+        title: "Loaves",
+        editVersion: 0,
+        missingCount: 0,
+        pasted: [],
+      },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Delete comparison" })
+    )
+    await waitFor(() => {
+      expect(deleteComparison).toHaveBeenCalledWith("uuid-1")
+    })
+    await waitFor(() => {
+      expect(go).toHaveBeenLastCalledWith("/recipes/compare", { replace: true })
+    })
+  })
+
+  it("lists saved comparisons when nothing is open", () => {
+    const rows: SavedComparisonRow[] = [
+      {
+        id: "uuid-1",
+        publicId: "cmp_loaves",
+        title: "Loaves",
+        view: "formula",
+        columnTitles: ["Country loaf", "Brioche"],
+        columnCount: 2,
+        updatedAt: new Date("2026-09-12T10:00:00Z"),
+      },
+    ]
+    page([], { savedComparisons: rows })
+    const link = screen.getByRole("link", { name: "Loaves" })
+    expect(link.getAttribute("href")).toBe("/recipes/compare?c=cmp_loaves")
+    expect(screen.getByText("Country loaf, Brioche")).toBeTruthy()
+    expect(
+      screen.queryByText("Compare recipes as baker's percentages")
+    ).toBeNull()
   })
 })
