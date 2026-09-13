@@ -6,7 +6,11 @@ import { z } from "zod"
 import { actionErrorMessage } from "@/lib/backend/action-error"
 import { BackendRequestError, djangoAction } from "@/lib/backend/client"
 import type { SavedComparisonDetail } from "@/lib/backend/types"
-import { COMPARE_PATH, MAX_COMPARE_RECIPES } from "@/lib/recipe/compare"
+import {
+  COMPARE_PATH,
+  MAX_COMPARE_RECIPES,
+  savedComparisonPath,
+} from "@/lib/recipe/compare"
 
 const columnSchema = z.union([
   z.object({ recipeId: z.string().min(1) }),
@@ -40,6 +44,7 @@ export async function saveComparison(
       parsed.data
     )
     revalidatePath(COMPARE_PATH)
+    revalidatePath(savedComparisonPath(result.publicId))
     return result
   } catch (cause) {
     if (cause instanceof BackendRequestError && cause.code === "stale_write") {

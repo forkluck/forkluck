@@ -47,8 +47,6 @@ import {
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/toast"
-import { SavedComparisonsTable } from "@/components/recipes/saved-comparisons-table"
-import type { SavedComparisonRow } from "@/lib/backend/types"
 import {
   deleteComparison,
   saveComparison,
@@ -56,8 +54,10 @@ import {
 } from "@/app/(app)/recipes/compare/actions"
 import type { PriceListEntry } from "@/lib/pricing"
 import {
+  COMPARE_NEW_PATH,
   COMPARE_PATH,
   compareFormulas,
+  savedComparisonPath,
   FORMULA_ROLE_LABELS,
   FORMULA_ROLES,
   gramOverrideKey,
@@ -500,14 +500,15 @@ function compareUrl({
   baseId: string | null
   savedId?: string | null
 }): string {
+  // A saved comparison has its own address; a new one is worked on at /new.
+  const path = savedId ? savedComparisonPath(savedId) : COMPARE_NEW_PATH
   const parts: string[] = []
-  if (savedId) parts.push(`c=${encodeURIComponent(savedId)}`)
   if (selected.length) {
     parts.push(`r=${selected.map(encodeURIComponent).join(",")}`)
   }
   parts.push(`view=${view}`)
   if (baseId) parts.push(`base=${encodeURIComponent(baseId)}`)
-  return `${COMPARE_PATH}?${parts.join("&")}`
+  return `${path}?${parts.join("&")}`
 }
 
 function lineOverrideId(
@@ -799,7 +800,9 @@ function FormulaValue({
           onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
         />
         {value.line.written ? (
-          <span className="text-2xs text-faint">{value.line.written}</span>
+          <span className="text-2xs text-faint">
+            Recipe says {value.line.written}
+          </span>
         ) : null}
       </div>
     )
@@ -1453,7 +1456,6 @@ export function CompareFormulas({
   view,
   baseId,
   saved = null,
-  savedComparisons = [],
 }: {
   /** The saved recipes in the URL, in order. */
   selected: string[]
@@ -1467,8 +1469,6 @@ export function CompareFormulas({
   baseId: string | null
   /** The saved comparison the page is open on, if any. */
   saved?: SavedComparisonState | null
-  /** This account's saved comparisons, shown when nothing is open. */
-  savedComparisons?: SavedComparisonRow[]
 }) {
   const { go, pending } = useGuardedNavigate()
   const toast = useToast()
@@ -1684,21 +1684,10 @@ export function CompareFormulas({
 
   return (
     <>
-      {columns.length === 0 && savedComparisons.length > 0 ? (
-        <>
-          <Toolbar>
-            <ToolbarSpacer />
-            <div className="flex flex-wrap items-center gap-2 md:contents">
-              {pasteButton}
-              {addPopover}
-            </div>
-          </Toolbar>
-          <SavedComparisonsTable rows={savedComparisons} />
-        </>
-      ) : columns.length === 0 ? (
+      {columns.length === 0 ? (
         <EmptyState
           title="Compare recipes as baker's percentages"
-          description="Add recipes from your list to read them side by side, or paste a recipe from anywhere to read it beside one of yours, or on its own. A comparison can be saved by name and opened again here."
+          description="Add recipes from your list to read them side by side, or paste a recipe from anywhere to read it beside one of yours, or on its own. Save the comparison by name to find it again on the Compare list."
         >
           {pasteButton}
           {addPopover}

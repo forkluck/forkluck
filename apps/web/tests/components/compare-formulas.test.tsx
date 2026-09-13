@@ -64,7 +64,6 @@ import {
   formulaAxisMax,
 } from "@/components/recipes/compare-formulas"
 import type { FormulaInput } from "@/lib/recipe/compare"
-import type { SavedComparisonRow } from "@/lib/backend/types"
 
 const LOAF: FormulaInput = {
   key: "rcp_loaf",
@@ -198,7 +197,7 @@ describe("the compare page", () => {
     page([LOAF, BRIOCHE])
     fireEvent.click(screen.getByRole("button", { name: "Country loaf" }))
     expect(go).toHaveBeenCalledWith(
-      "/recipes/compare?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_loaf",
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_loaf",
       { replace: true }
     )
 
@@ -214,7 +213,7 @@ describe("the compare page", () => {
       screen.getByRole("button", { name: "Country loaf baseline" })
     )
     expect(go).toHaveBeenLastCalledWith(
-      "/recipes/compare?r=rcp_loaf,rcp_brioche&view=formula",
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche&view=formula",
       { replace: true }
     )
   })
@@ -223,7 +222,7 @@ describe("the compare page", () => {
     page([LOAF])
     expect(screen.getByRole("table")).toBeTruthy()
     fireEvent.click(screen.getByRole("button", { name: "Remove Country loaf" }))
-    expect(go).toHaveBeenCalledWith("/recipes/compare?view=formula", {
+    expect(go).toHaveBeenCalledWith("/recipes/compare/new?view=formula", {
       replace: true,
     })
   })
@@ -242,7 +241,7 @@ describe("the compare page", () => {
     expect(screen.queryByText("Pastry")).toBeNull()
     fireEvent.click(screen.getByRole("button", { name: /Focaccia/ }))
     expect(go).toHaveBeenCalledWith(
-      "/recipes/compare?r=rcp_loaf,rcp_brioche,rcp_focaccia&view=formula",
+      "/recipes/compare/new?r=rcp_loaf,rcp_brioche,rcp_focaccia&view=formula",
       { replace: true }
     )
   })
@@ -428,7 +427,7 @@ describe("the compare page", () => {
     })
     await waitFor(() => {
       expect(go).toHaveBeenLastCalledWith(
-        "/recipes/compare?c=cmp_loaves&r=rcp_loaf,rcp_brioche&view=formula&base=rcp_brioche",
+        "/recipes/compare/cmp_loaves?r=rcp_loaf,rcp_brioche&view=formula&base=rcp_brioche",
         { replace: true }
       )
     })
@@ -479,7 +478,7 @@ describe("the compare page", () => {
     // Moving within a saved comparison keeps its id in the URL.
     fireEvent.click(screen.getByRole("button", { name: "Spec sheet" }))
     expect(go).toHaveBeenLastCalledWith(
-      "/recipes/compare?c=cmp_loaves&r=rcp_loaf&view=spec&base=paste%3Asaved-1",
+      "/recipes/compare/cmp_loaves?r=rcp_loaf&view=spec&base=paste%3Asaved-1",
       { replace: true }
     )
   })
@@ -507,26 +506,5 @@ describe("the compare page", () => {
     await waitFor(() => {
       expect(go).toHaveBeenLastCalledWith("/recipes/compare", { replace: true })
     })
-  })
-
-  it("lists saved comparisons when nothing is open", () => {
-    const rows: SavedComparisonRow[] = [
-      {
-        id: "uuid-1",
-        publicId: "cmp_loaves",
-        title: "Loaves",
-        view: "formula",
-        columnTitles: ["Country loaf", "Brioche"],
-        columnCount: 2,
-        updatedAt: new Date("2026-09-12T10:00:00Z"),
-      },
-    ]
-    page([], { savedComparisons: rows })
-    const link = screen.getByRole("link", { name: "Loaves" })
-    expect(link.getAttribute("href")).toBe("/recipes/compare?c=cmp_loaves")
-    expect(screen.getByText("Country loaf, Brioche")).toBeTruthy()
-    expect(
-      screen.queryByText("Compare recipes as baker's percentages")
-    ).toBeNull()
   })
 })
