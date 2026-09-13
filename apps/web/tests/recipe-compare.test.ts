@@ -654,6 +654,34 @@ describe("pastedFormulaInput", () => {
     )
   })
 
+  it("weighs a count by the pantry's own piece size before any guess", () => {
+    const pantry = [
+      entry({
+        id: "egg",
+        name: "Whole egg",
+        measureName: "Whole egg",
+        conversion: {
+          usesStandardConversion: false,
+          weight: { amount: 62, unit: "g" },
+          volume: null,
+          each: { amount: 1, unit: "pcs" },
+        },
+      }),
+    ]
+    const input = pastedFormulaInput("paste:3", "", "4 whole eggs\n", pantry)
+    // The kitchen says one of its eggs is 62 g: four of them, not 4 g and
+    // not the vocabulary's 50 g.
+    expect(input.lines[0]?.grams).toBe(248)
+    expect(input.lines[0]?.written).toBe("4")
+    const plain = pastedFormulaInput("paste:5", "", "4 eggs\n", [
+      { ...pantry[0]!, name: "Egg", normalizedName: "egg", measureName: "Egg" },
+    ])
+    expect(plain.lines[0]?.grams).toBe(248)
+    // Nothing in the pantry: the count stays a count, with its box.
+    const bare = pastedFormulaInput("paste:4", "", "4 widgets\n", [])
+    expect(bare.lines[0]).toMatchObject({ grams: null, written: "4" })
+  })
+
   it("keeps every line and counts what it could not read", () => {
     const input = pastedFormulaInput(
       "paste:2",

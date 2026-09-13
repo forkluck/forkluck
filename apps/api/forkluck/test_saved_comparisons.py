@@ -71,6 +71,30 @@ class SavedComparisonTests(InternalApiTestCase):
         )
         self.assertEqual(detail, payload)
 
+    def test_keeps_how_the_page_read_it(self):
+        payload = self.save(
+            percentMode="weight",
+            showGrams=True,
+            overrides={
+                "grams": {"rcp_x|paste-3": 200},
+                "roles": {"honey": "sweetener"},
+            },
+        )
+        self.assertEqual(payload["percentMode"], "weight")
+        self.assertTrue(payload["showGrams"])
+        self.assertEqual(payload["overrides"]["grams"], {"rcp_x|paste-3": 200})
+        self.assertEqual(payload["overrides"]["roles"], {"honey": "sweetener"})
+        plain = self.save(title="Plain")
+        self.assertEqual(plain["percentMode"], "bakers")
+        self.assertFalse(plain["showGrams"])
+        self.assertEqual(plain["overrides"], {"grams": {}, "roles": {}})
+        with self.assertRaisesMessage(ValueError, "Unknown group"):
+            self.save(overrides={"roles": {"honey": "candy"}})
+        with self.assertRaisesMessage(ValueError, "outside the allowed range"):
+            self.save(overrides={"grams": {"a|b": -1}})
+        with self.assertRaisesMessage(ValueError, "Percent mode"):
+            self.save(percentMode="volume")
+
     def test_a_later_save_replaces_the_columns_and_bumps_the_version(self):
         first = self.save()
         second = action_save_comparison(

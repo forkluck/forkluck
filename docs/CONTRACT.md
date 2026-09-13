@@ -1020,7 +1020,8 @@ the authenticated user, newest first, each with `columnTitles` and
 `recipe-comparisons/<comparison_ref>/` takes either the `cmp_` public id or the
 row's UUID, is always scoped to the authenticated user, and answers 404
 `{"error": "Comparison not found"}` otherwise. It returns the comparison with
-its `columns[]` in position order: each is a recipe `{publicId, title}` or, when
+how the page read it (`percentMode`, `showGrams`, `overrides`) and its
+`columns[]` in position order: each is a recipe `{publicId, title}` or, when
 the column is text pasted from elsewhere, `pastedTitle` and `pastedText`. A
 recipe the reader can no longer open (a share withdrawn since the save) comes
 back with `recipe: null` and is counted in `missingCount`.
@@ -2258,8 +2259,12 @@ rather than overwriting. A create omits it and starts at 0. `delete-menu` takes
 
 **Saved comparisons (2)**
 `save-comparison` takes
-`{id|null, expectedEditVersion?, title, view, baselinePosition|null, columns[]}`
-and replaces the whole column list. `view` is `formula` or `spec`. Each column
+`{id|null, expectedEditVersion?, title, view, baselinePosition|null,
+percentMode?, showGrams?, overrides?, columns[]}`
+and replaces the whole column list. `percentMode` is `bakers` (default) or
+`weight`; `showGrams` defaults to false; `overrides` is
+`{grams: {"<column>|<line>": g}, roles: {"<row>": group}}`, at most 500 keys
+each, grams positive, groups one of the eight formula roles. `view` is `formula` or `spec`. Each column
 is `{recipeId}` (a `rcp_` public id the caller can open: their own, shared in,
 or through a kitchen membership) or `{pastedTitle?, pastedText}`; one to four
 columns, a recipe at most once, and `baselinePosition` must index one of them.

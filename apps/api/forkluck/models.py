@@ -3085,6 +3085,17 @@ class SavedComparison(UUIDTimestampModel):
     # The column the others are read against, by position; none when the
     # page shows plain values.
     baseline_position = models.PositiveSmallIntegerField(null=True, blank=True)
+    # How the page read it when it was saved, so it reopens the same.
+    PERCENT_BAKERS = "bakers"
+    PERCENT_WEIGHT = "weight"
+    PERCENT_CHOICES = ((PERCENT_BAKERS, "Baker's %"), (PERCENT_WEIGHT, "Weight %"))
+    percent_mode = models.CharField(
+        max_length=8, choices=PERCENT_CHOICES, default=PERCENT_BAKERS
+    )
+    show_grams = models.BooleanField(default=False)
+    # Grams typed for lines nothing could weigh, keyed "<column>|<line>", and
+    # the group a row was moved to, keyed by row: {"grams": {}, "roles": {}}.
+    overrides = models.JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = ["-updated_at"]

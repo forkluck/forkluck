@@ -26,6 +26,12 @@ const saveComparisonSchema = z.object({
   title: z.string().trim().min(1).max(120),
   view: z.enum(["formula", "spec"]),
   baselinePosition: z.number().int().min(0).nullable(),
+  percentMode: z.enum(["bakers", "weight"]),
+  showGrams: z.boolean(),
+  overrides: z.object({
+    grams: z.record(z.string(), z.number().positive()),
+    roles: z.record(z.string(), z.string()),
+  }),
   columns: z.array(columnSchema).min(1).max(MAX_COMPARE_RECIPES),
 })
 

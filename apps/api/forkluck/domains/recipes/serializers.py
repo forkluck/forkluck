@@ -534,6 +534,12 @@ def saved_comparison_json(row: SavedComparison, accessible_recipe_ids) -> JsonOb
         "title": row.title,
         "view": row.view,
         "baselinePosition": row.baseline_position,
+        "percentMode": row.percent_mode,
+        "showGrams": row.show_grams,
+        "overrides": {
+            "grams": dict(row.overrides.get("grams") or {}),
+            "roles": dict(row.overrides.get("roles") or {}),
+        },
         "editVersion": row.edit_version,
         "columns": columns,
         "missingCount": missing,

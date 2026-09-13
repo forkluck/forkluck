@@ -1,17 +1,12 @@
 import { cookies } from "next/headers"
 import { notFound, redirect } from "next/navigation"
 
+import { CompareChrome } from "@/components/recipes/compare-chrome"
 import {
   CompareFormulas,
   type SavedComparisonState,
 } from "@/components/recipes/compare-formulas"
-import {
-  Page,
-  PageHeader,
-  PageParent,
-  PageParents,
-  PageTitle,
-} from "@/components/ui/page"
+import { Page } from "@/components/ui/page"
 import { getSession } from "@/lib/auth-session"
 import { singleSearchParam } from "@/lib/backend/pagination"
 import {
@@ -23,7 +18,6 @@ import {
 } from "@/lib/backend/queries"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import {
-  COMPARE_PATH,
   parseCompareIds,
   savedFormulaInput,
   savedPastedKey,
@@ -108,11 +102,11 @@ export async function CompareScreen({
   )
   // The pantry weighs pasted lines and names what is in them. It is the
   // owner's, so it is read only when every column is one the reader may
-  // cost, the way the recipe tab decides.
-  const sources =
-    loaded.length > 0 && loaded.every(({ recipe }) => recipe.canViewCost)
-      ? await getPricingEntries()
-      : { items: [], recipes: [] }
+  // cost, the way the recipe tab decides; a page of pasted columns alone is
+  // the reader's own kitchen, and reads it.
+  const sources = loaded.every(({ recipe }) => recipe.canViewCost)
+    ? await getPricingEntries()
+    : { items: [], recipes: [] }
   const identities = sources.items.filter((entry) => !entry.nonEdible)
   const formulas = loaded.map(({ recipe, nutrition }) =>
     savedFormulaInput(recipe, nutrition, identities)
@@ -124,6 +118,9 @@ export async function CompareScreen({
         title: record.title,
         editVersion: record.editVersion,
         missingCount: record.missingCount,
+        percentMode: record.percentMode,
+        showGrams: record.showGrams,
+        overrides: record.overrides,
         pasted: record.columns.flatMap((column) =>
           column.recipe
             ? []
@@ -140,29 +137,27 @@ export async function CompareScreen({
 
   return (
     <Page>
-      <PageHeader>
-        <div className="flex min-w-0 flex-col gap-1">
-          <PageParents>
-            <PageParent href="/recipes">Recipes</PageParent>
-            <PageParent href={COMPARE_PATH}>Compare</PageParent>
-          </PageParents>
-          <PageTitle>{saved ? saved.title : "New comparison"}</PageTitle>
-        </div>
-      </PageHeader>
-      <CompareFormulas
-        selected={loaded.map(({ recipe }) => recipe.publicId)}
-        formulas={formulas}
-        missingCount={ids.length - loaded.length + (saved?.missingCount ?? 0)}
-        identities={identities}
-        view={view}
-        baseId={baseId}
-        saved={saved}
-        recipeOptions={browse.items.map(({ publicId, title, category }) => ({
-          publicId,
-          title,
-          category,
-        }))}
-      />
+      <CompareChrome
+        title={saved ? saved.title : "New comparison"}
+        publicId={saved?.publicId}
+      >
+        <CompareFormulas
+          key={saved?.id ?? "new"}
+          selected={loaded.map(({ recipe }) => recipe.publicId)}
+          formulas={formulas}
+          missingCount={ids.length - loaded.length + (saved?.missingCount ?? 0)}
+          identities={identities}
+          view={view}
+          baseId={baseId}
+          saved={saved}
+          currentUserId={session.user.id}
+          recipeOptions={browse.items.map(({ publicId, title, category }) => ({
+            publicId,
+            title,
+            category,
+          }))}
+        />
+      </CompareChrome>
     </Page>
   )
 }
