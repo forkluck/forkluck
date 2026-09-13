@@ -4441,6 +4441,8 @@ class StripeCheckoutAttempt(UUIDTimestampModel):
         choices=Status.choices,
         default=Status.PENDING,
     )
+    # Legacy: Stripe-side trials predate the calendar trial in
+    # domains/shared/billing.py. Nothing sets it and Checkout never reads it.
     with_trial = models.BooleanField(default=False)
 
     class Meta:

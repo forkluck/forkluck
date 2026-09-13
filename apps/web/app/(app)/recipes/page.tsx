@@ -8,11 +8,9 @@ import { cn } from "@/lib/utils"
 import { EmptyState, PageHeader, PageTitle, Page } from "@/components/ui/page"
 import { RecipesBrowser } from "@/components/recipes/recipes-browser"
 import { RECIPE_BROWSE_ORDERS } from "@/components/recipes/types"
-import { NoticeBanner, NoticeBannerAction } from "@/components/ui/notice-banner"
 import { getSession } from "@/lib/auth-session"
 import { redirectOnInvalidPage } from "@/lib/backend/client"
 import { browseRecipeHealth } from "@/lib/backend/queries"
-import { recipeCapNotice } from "@/lib/billing"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import {
   archiveStatusParam,
@@ -36,9 +34,6 @@ export default async function RecipesPage({
     session,
     (await cookies()).get(KITCHEN_COOKIE)?.value
   )
-  // The cap is the owner's business; a member never sees it, and the recipes
-  // they create count against the owner's plan, not their own.
-  const capNotice = kitchen ? null : recipeCapNotice(session.billing)
   const canCreate = !kitchen || kitchen.role === "editor"
   const params = await searchParams
   const { query, page, order } = parseBrowseParams(params, RECIPE_BROWSE_ORDERS)
@@ -67,21 +62,6 @@ export default async function RecipesPage({
       <PageHeader>
         <PageTitle>Recipes</PageTitle>
       </PageHeader>
-
-      {capNotice ? (
-        <NoticeBanner
-          action={
-            <NoticeBannerAction
-              nativeButton={false}
-              render={<Link href="/subscribe" />}
-            >
-              Upgrade
-            </NoticeBannerAction>
-          }
-        >
-          {capNotice}
-        </NoticeBanner>
-      ) : null}
 
       {!result.hasAnyRecipe ? (
         <EmptyState

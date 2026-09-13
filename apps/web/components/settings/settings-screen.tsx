@@ -47,11 +47,7 @@ import {
 } from "@/app/(app)/settings/actions"
 import type { SessionUser } from "@/lib/auth-session"
 import type { AiKeyStatus, NewsletterStatus } from "@/lib/backend/types"
-import {
-  billingStatusLabel,
-  onFreePlan,
-  type BillingState,
-} from "@/lib/billing"
+import { billingStatusLabel, type BillingState } from "@/lib/billing"
 import type { BusinessSettings } from "@/lib/business-settings"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
 
@@ -332,15 +328,15 @@ export function SettingsScreen({
                   />
                 </button>
               )}
-              {onFreePlan(billing) ? (
+              {billing.plan === "paid" ? null : (
                 <Link href="/subscribe" className={rowClassName}>
                   <RowBody
                     icon={CircleArrowUp}
-                    title="Upgrade"
-                    note={`${billingStatusLabel(billing)}. $7 a month for unlimited recipes.`}
+                    title="Subscribe"
+                    note={`${billingStatusLabel(billing)}. $7 a month. Cancel any time.`}
                   />
                 </Link>
-              ) : null}
+              )}
             </SettingsGroup>
             {portalError ? (
               <p role="alert" className="mt-2 text-base text-destructive">

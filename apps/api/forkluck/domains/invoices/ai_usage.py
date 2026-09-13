@@ -7,12 +7,12 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from ...models import InvoiceAiRead, User
-from ..shared.billing import EntitlementError, billing_json
+from ..shared.billing import EntitlementError, billing_json, write_refusal_for
 from ..shared.locking import lock_workspace
 from ..shared.values import uuid_value
 
-FREE_AI_PAGES = 10
 PAID_AI_PAGES = 100
+TRIAL_AI_PAGES = 25
 # Detection, extraction, escalation and transport retries all consume this
 # budget. Each attempt is separately bounded to 16,000 output tokens in Next.
 ATTEMPTS_PER_PAGE = 8
@@ -29,7 +29,9 @@ def next_period(start: date) -> date:
 def page_limit(billing: dict) -> int | None:
     if billing["status"] == "disabled":
         return None
-    return PAID_AI_PAGES if billing["plan"] == "paid" else FREE_AI_PAGES
+    # Expired is read-only, so its allowance is nothing rather than a number
+    # that would invite a read the action funnel refuses anyway.
+    return {"paid": PAID_AI_PAGES, "trial": TRIAL_AI_PAGES}.get(billing["plan"], 0)
 
 
 def invoice_ai_usage(user: User, billing: dict | None = None) -> dict:
@@ -85,10 +87,9 @@ def action_invoice_ai_usage(user: User, body: dict) -> dict:
     with transaction.atomic():
         lock_workspace(user)
         billing = billing_json(user)
-        if billing["locked"]:
-            raise EntitlementError(
-                "This kitchen is unavailable.", "subscription_required"
-            )
+        refusal = write_refusal_for(billing)
+        if refusal is not None:
+            raise EntitlementError(refusal, "subscription_required")
         limit = page_limit(billing)
         if limit is None:
             return {"readId": None}
@@ -111,8 +112,8 @@ def action_invoice_ai_usage(user: User, body: dict) -> dict:
         ) + attempts > limit * ATTEMPTS_PER_PAGE:
             reset = next_period(start).strftime("%B %-d")
             ending = (
-                "Enter invoices manually or upgrade."
-                if billing["plan"] == "free"
+                "Enter invoices manually or subscribe."
+                if billing["plan"] == "trial"
                 else "You can still enter invoices manually."
             )
             raise EntitlementError(

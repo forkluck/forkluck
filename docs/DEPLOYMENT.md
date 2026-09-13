@@ -444,8 +444,8 @@ the environment instead of the workspace — and writes its report under
 any of this.
 
 **Hosted AI allowance rollout.** Apply migration `0051_invoice_ai_read` and
-restart Django before restarting Next (including its Drive reader). Free
-workspaces receive 10 AI pages and paid workspaces 100 per UTC calendar month;
+restart Django before restarting Next (including its Drive reader). Trial
+workspaces receive 25 AI pages and paid workspaces 100 per UTC calendar month;
 an additional attempt budget covers detection, escalation and SDK retries.
 Both upload and automatic Drive reads reserve against the same owner ledger
 before calling Qwen. A missing/unavailable reservation endpoint refuses AI
@@ -513,9 +513,9 @@ before enabling it in another jurisdiction.
 Treat [`deploy/`](../deploy/) as a reference, not a turnkey universal installer.
 Supply unique production values for every secret documented in the example
 environment files, use PostgreSQL, terminate TLS, disable the demo account, and
-expose the Django endpoints through the same origin as Next.js. Leave the three
-`STRIPE_*` variables unset and billing stays off entirely — no trial, no
-lockout, no webhook route.
+expose the Django endpoints through the same origin as Next.js. Leave the five
+`STRIPE_*` variables unset and billing stays off entirely: no trial clock, no
+gating, no webhook route.
 
 ### Compare menu forecasts without writing data
 

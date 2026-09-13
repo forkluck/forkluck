@@ -70,19 +70,9 @@ export type SavedRecipe = {
   items?: RecipeDetail["items"]
 }
 
-/** The recipe cap refuses a create with a code the caller turns into the
- * upgrade dialog; unlike a lapsed subscription it must not redirect, which
- * would discard the editor state the user is mid-save on. */
-function atRecipeLimit(cause: unknown): cause is BackendRequestError {
-  return (
-    cause instanceof BackendRequestError &&
-    cause.code === "recipe_limit_reached"
-  )
-}
-
 export async function saveRecipe(
   input: z.input<typeof saveRecipeSchema>
-): Promise<SavedRecipe | { error: string; code?: string }> {
+): Promise<SavedRecipe | { error: string }> {
   const parsed = saveRecipeSchema.safeParse(input)
   if (!parsed.success) return { error: "Recipe details look malformed." }
   try {
@@ -90,9 +80,7 @@ export async function saveRecipe(
     revalidateRecipeReads()
     return result
   } catch (cause) {
-    const error = actionErrorMessage(cause, "Couldn’t save the recipe.")
-    if (atRecipeLimit(cause)) return { error, code: cause.code }
-    return { error }
+    return { error: actionErrorMessage(cause, "Couldn’t save the recipe.") }
   }
 }
 
@@ -100,7 +88,7 @@ export async function saveRecipe(
  * supplies every durable ingredient identity at confirmation time. */
 export async function createPrimoRecipe(
   input: unknown
-): Promise<SavedRecipe | { error: string; code?: string }> {
+): Promise<SavedRecipe | { error: string }> {
   const parsed = primoRecipeDraftSchema.safeParse(input)
   if (!parsed.success) return { error: "That recipe draft is malformed." }
   try {
@@ -159,9 +147,7 @@ export async function createPrimoRecipe(
     revalidateRecipeReads()
     return result
   } catch (cause) {
-    const error = actionErrorMessage(cause, "Couldn’t create the recipe.")
-    if (atRecipeLimit(cause)) return { error, code: cause.code }
-    return { error }
+    return { error: actionErrorMessage(cause, "Couldn’t create the recipe.") }
   }
 }
 
@@ -250,9 +236,7 @@ export async function saveRecipeAggregate(
         editVersion: cause.editVersion,
       }
     }
-    const error = actionErrorMessage(cause, "Couldn’t save the recipe.")
-    if (atRecipeLimit(cause)) return { error, code: cause.code }
-    return { error }
+    return { error: actionErrorMessage(cause, "Couldn’t save the recipe.") }
   }
 }
 
@@ -574,9 +558,9 @@ export async function duplicateRecipe(
     revalidateRecipeReads()
     return result
   } catch (cause) {
-    const error = actionErrorMessage(cause, "Couldn’t duplicate the recipe.")
-    if (atRecipeLimit(cause)) return { error, code: cause.code }
-    return { error }
+    return {
+      error: actionErrorMessage(cause, "Couldn’t duplicate the recipe."),
+    }
   }
 }
 

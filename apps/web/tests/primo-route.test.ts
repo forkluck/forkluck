@@ -84,7 +84,7 @@ function session(primo: boolean) {
   return {
     user: { id: "user-1" },
     billing: {
-      plan: primo ? "paid" : "free",
+      plan: primo ? "paid" : "expired",
       entitlements: { primo },
     },
   }

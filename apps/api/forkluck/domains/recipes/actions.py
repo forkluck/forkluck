@@ -67,7 +67,7 @@ from ...integrations.emails import (
 )
 from ..sales.bundles import BundleIndex
 from ..shared.activity import activity_event, record_event
-from ..shared.billing import EntitlementError, billing_json, write_blocked
+from ..shared.billing import write_blocked
 from ..shared.locking import lock_workspace
 from ..shared.ingredient_identity import save_line_match
 from ..shared.preparations import seeded_preparation_yield
@@ -351,7 +351,7 @@ def action_save_recipe(user: User, body: JsonObject) -> JsonObject:
             )
         _require_open_kitchen(existing.user)
     # Everything a create writes belongs to the kitchen it lands in: its
-    # category, its code, its cap and its lock are the owner's, not the
+    # category, its code and its lock are the owner's, not the
     # editor's. The two are the same user unless `ownerId` names a kitchen.
     owner = _editable_kitchen(user, owner_id) if owner_id is not None else user
     values = recipe_values(owner, body)
@@ -452,25 +452,7 @@ def action_save_recipe(user: User, body: JsonObject) -> JsonObject:
             raise ValueError(f"Code {explicit_code!r} is already in use")
     else:
         explicit_code = values.pop("code", "")
-        limit = billing_json(owner)["entitlements"]["maxRecipes"]
         with transaction.atomic():
-            if limit is not None:
-                # Serialized so concurrent creates cannot both read a count
-                # below the cap; only a capped plan pays for the lock.
-                lock_workspace(owner)
-                if Recipe.objects.filter(user=owner).count() >= limit:
-                    # The cap belongs to the kitchen, so a member is told
-                    # whose plan to blame rather than offered an upgrade.
-                    raise EntitlementError(
-                        "This kitchen has reached its recipe limit. Ask the "
-                        "owner to upgrade."
-                        if owner.id != user.id
-                        else (
-                            f"You've reached the {limit}-recipe limit on the "
-                            "Free plan. Upgrade to create unlimited recipes."
-                        ),
-                        code="recipe_limit_reached",
-                    )
             try:
                 with transaction.atomic():
                     row = Recipe(

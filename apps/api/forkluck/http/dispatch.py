@@ -19,7 +19,7 @@ from django.views.decorators.http import require_POST
 from ..domains.accounts.actions import ACTIONS as ACCOUNT_ACTIONS
 from ..domains.accounts.billing import ACTIONS as BILLING_ACTIONS
 from ..domains.accounts.billing_configuration import BillingNotReady
-from ..domains.shared.billing import EntitlementError, write_blocked
+from ..domains.shared.billing import EntitlementError, write_refusal
 from ..domains.shared.versioning import StaleWriteError
 from ..domains.ingredients.actions import ACTIONS as INGREDIENT_ACTIONS
 from ..domains.invoices.actions import ACTIONS as INVOICE_ACTIONS
@@ -90,15 +90,13 @@ def action(request: HttpRequest, action_name: str) -> JsonResponse:
     handler = ACTIONS.get(action_name)
     if handler is None:
         return error("Not found", 404)
-    # A lapsed subscription may still run the billing actions that fix it, and
-    # nothing else. Inert when billing is disabled: write_blocked answers
+    # A read-only account may still run the billing actions that fix it, and
+    # nothing else. Inert when billing is disabled: write_refusal answers
     # without a query then.
-    if action_name not in BILLING_ACTIONS and write_blocked(request.user):
-        return error(
-            "Subscribe to continue using Forkluck.",
-            403,
-            code="subscription_required",
-        )
+    if action_name not in BILLING_ACTIONS:
+        refusal = write_refusal(request.user)
+        if refusal is not None:
+            return error(refusal, 403, code="subscription_required")
     try:
         result = handler(request.user, read_json(request))
         return JsonResponse(result)

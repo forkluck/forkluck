@@ -74,7 +74,7 @@ import { splitRecipeDocument } from "@/lib/recipe/split-document"
 import { fuzzyMatches } from "@/lib/fuzzy"
 import { KNOWN_UNITS, convertAmount, countedAsEach } from "@/lib/unit-registry"
 import { UnitOptions } from "@/components/recipes/unit-options"
-import { useRecipeLimitDialog } from "@/components/recipes/recipe-limit-dialog"
+import { useToast } from "@/components/ui/toast"
 import { cn } from "@/lib/utils"
 import { useHydrated } from "@/hooks/use-hydrated"
 
@@ -622,7 +622,7 @@ async function createTarget(
   name: string
 ): Promise<
   | { patch: Partial<RecipeItemState>; activated: Target | null }
-  | { error: string; code?: string }
+  | { error: string }
   | null
 > {
   if (kind === "recipe") {
@@ -955,7 +955,7 @@ function TargetPicker({
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState<string | null>(null)
   const [highlighted, setHighlighted] = React.useState(-1)
-  const recipeLimit = useRecipeLimitDialog()
+  const toast = useToast()
   const { preparation } = splitPreparationNote(item, ingredientTargets)
   const composed = preparation
     ? `${item.displayName}, ${preparation}`
@@ -985,7 +985,7 @@ function TargetPicker({
     setHighlighted(-1)
     const created = await createTarget(kind, name)
     if (created && "error" in created) {
-      recipeLimit.show(created)
+      toast.add({ title: created.error, type: "error" })
       return
     }
     apply(created)
@@ -1112,7 +1112,6 @@ function TargetPicker({
           onCreate={(kind, name) => void create(kind, name)}
         />
       ) : null}
-      {recipeLimit.dialog}
     </div>
   )
 }

@@ -12,11 +12,11 @@ Forkluck reads a recipe the way a cook writes it, one ingredient per line, and g
 
 ## Hosted
 
-The quickest way in is [app.forkluck.com](https://app.forkluck.com). Sign up and paste a recipe.
+The quickest way in is [app.forkluck.com](https://app.forkluck.com). Sign up and paste a recipe. Every feature is free for 14 days with no card, then it is $7 a month per kitchen.
 
 ## Self-hosting
 
-Forkluck is a Next.js app in front of a Django API, with a worker for POS syncs and an optional supplier connector service. [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) covers putting it on a server of your own.
+Forkluck is a Next.js app in front of a Django API, with a worker for POS syncs and an optional supplier connector service. It is free to run yourself, with no limits, under the AGPL-3.0. [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) covers putting it on a server of your own.
 
 ## Contributing
 
