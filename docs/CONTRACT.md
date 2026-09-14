@@ -520,6 +520,58 @@ at both boundaries. `fromAt`, `toAt`, and price-history timestamps remain
 ISO strings on the TypeScript side, while `fromDate` and `toDate` are date
 keys.
 
+### Private Primo inference boundary
+
+This service boundary is separate from the unchanged Next.js/Django contract.
+Next.js uses server-only `PRIMO_API_KEY` and `PRIMO_BASE_URL` (default
+`https://primo.forkluck.com/v1`). A missing credential hides Primo and redirects
+Home to Analytics; an invoice `QWEN_API_KEY` does not enable it. Requests with
+Primo unconfigured return 503 before inference. The browser never sees either
+credential and never calls the service directly.
+
+`POST /v1/chat/completions` accepts OpenAI-compatible messages, tools,
+`tool_choice: "auto"`, `max_tokens`, `stream`, `stream_options`, model alias
+`"primo"`, and the required `primo_context` extension below. It returns standard
+chat-completion JSON or SSE with tool-call deltas, finish reason, usage and
+`[DONE]`. The private service owns system/developer instructions, model choice
+and provider options; the caller cannot supply or override them.
+
+| Context field | Source and meaning |
+| --- | --- |
+| `version: 1`, `task: "chat" \| "title" \| "vision"` | Explicit protocol and task |
+| `userId` | Authenticated Next.js session; never accepted from the browser body |
+| `conversationId`, `turnId` | Validated owner-scoped conversation and server-generated response id; vision uses the server-reserved attachment id as its turn id |
+| `deadlineAt` | Absolute milliseconds; the service clamps remaining time to its task ceiling |
+| Chat: `today`, `recipeRef`, `productRef`, `mentions`, `attachments` | Kitchen date, validated refs/mentions and authoritative admitted attachment manifest (`id`, `name`, `mediaType`, `coverage`) |
+| Vision: `attachmentId`, optional `page` | Reserved attachment UUID and 1-based scanned PDF page; one rasterized inline PNG |
+
+Each SDK retry and tool step makes a separate, metered provider attempt. The
+installation comes from the credential, never a request field. User identity
+is trusted only from that installation's authenticated server; existing Django
+user/plan/ownership checks remain authoritative. The service checks the active
+installation and credential before each provider call. It retains metadata and
+known provider token counts, with missing usage recorded as unknown, and does
+not store conversation content or attachments. Chat/title/vision share this
+boundary; invoice extraction is independent.
+
+Task ceilings are chat 45 seconds/1,800 output tokens per step, chat with
+attachments 90 seconds/6,000, title 10 seconds/40, vision 40 seconds/3,000.
+The public tool-loop step limits remain unchanged. The gateway accepts at most
+16 MiB per HTTP body, 2,000,000 characters for non-vision bodies and 1,000,000 for
+context; only vision accepts image data and never a remote image URL.
+`GET /v1/models` authenticates the installation and lists `primo` without a paid
+provider call; deployment uses it before switching the app release.
+`GET /healthz` reports service/database readiness, not provider availability.
+401 means invalid/revoked/disabled access, 429 admission/provider rate limiting,
+400 invalid protocol, 502 invalid/failed upstream and 504 deadline exceeded.
+An interrupted stream emits a generic error and does not invent a successful
+`[DONE]` or zero token usage.
+
+Home rendering does not probe the service. During an outage, history and the
+next draft remain available; the response shows a retryable error, Retry and
+Open Analytics. There is no fallback to a public prompt/provider. Failed image
+extraction follows the existing attachment cleanup and retry lifecycle.
+
 ### Primo chat route
 
 Primo compares the explicit `Origin` against the public `Host` header and the
@@ -548,9 +600,9 @@ full. Mention identity is collected from all 200 accepted messages before that
 fit. Validated model messages retain only non-empty
 user/assistant text. Previous tool output, reasoning, file, and data parts are
 discarded, but prior assistant prose remains so an offered full date can
-support “since then.” The route separately renders the open refs and each
-validated user mention's label-to-ref mapping into the model instructions as
-untrusted identity data. This is how the model can call an exact-ref tool even
+support “since then.” The route sends the open refs and each validated user mention's label-to-ref
+mapping as versioned context; the private service inserts it into its model
+instructions as untrusted identity data. This is how the model can call an exact-ref tool even
 though message metadata itself is removed from model messages.
 
 The route exposes the shared kitchen tools `find_recipes`, `find_products`,
@@ -565,7 +617,7 @@ from a user mention, the open page, or a `find_*` result earlier in the same
 request. The cost tool projects the 40 largest absolute line deltas without
 removing totals, coverage, empty-window context, or omitted-line count.
 
-The last user message is persisted before Qwen is called. The response is
+The last user message is persisted before the gateway is called. The response is
 assembled with the AI SDK UI-message stream: assistant parts are upserted as
 complete, aborted, or error when the stream finishes, so terminal tool parts
 and stopped partial answers survive reload. On a first turn, a six-word title
@@ -609,7 +661,7 @@ draft before execution. It never interprets free text, changes quantities/units,
 or repairs other malformed fields. Separate source recipes retain separate yields
 and draft cards. Document draft descriptions identify the filename and available
 page, and source conflicts remain visible for review. Creation still requires the
-user's Create recipe action. The opt-in `apps/web/scripts/eval-primo-attachments.ts` uses
+user's Create recipe action. The opt-in private `forkluck-primo/eval/eval-primo-attachments.ts` uses
 only synthetic documents and in-memory read/draft tools with the configured model;
 it cannot query or mutate kitchen data.
 

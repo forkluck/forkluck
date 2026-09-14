@@ -17,12 +17,16 @@ Next.js `.env.local` or retrieve credentials from a workspace.
 
 | Command | Inputs and provider |
 | --- | --- |
-| `pnpm eval:primo` | Synthetic kitchen questions and tool responses; uses `QWEN_API_KEY` and the Primo model |
-| `pnpm eval:primo:attachments` | Synthetic recipe/document content and draft assertions; uses the Primo model |
 | `pnpm eval:extraction --dir /path/to/local-cases` | Your chosen PDF/image files and expected JSON; uses the configured invoice engine |
 
 These runs can incur provider charges and send their inputs to that provider.
-Primo's cases are checked in as synthetic examples. Invoice goldens remain
+The two Primo eval scripts now live in the private
+[`forkluck-primo`](https://github.com/forkluck/forkluck-primo) repository beside
+the prompt they import: `pnpm eval:primo` and `pnpm eval:primo:attachments`.
+They use synthetic kitchen/document cases and public tool/draft contracts from
+a pinned public checkout; the private README documents setup. They remain
+opt-in live model-quality checks. Public CI uses a synthetic gateway and needs
+neither private source nor inference credentials. Invoice goldens remain
 outside Git: use fabricated documents for shareable results. The extraction
 script never reads Django; `--engine anthropic` uses the shell's
 `ANTHROPIC_API_KEY`, while Qwen uses `QWEN_API_KEY`.

@@ -594,7 +594,7 @@ export function PrimoConversation({
           {status === "submitted" || awaitingReply ? <WorkingMarker /> : null}
           {error ? (
             <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive">
-              <p>Primo couldn&apos;t answer that. Try again.</p>
+              <p>Primo is temporarily unavailable. Your chat is still here.</p>
               <Button
                 type="button"
                 size="xs"
@@ -605,6 +605,16 @@ export function PrimoConversation({
                 <RotateCcw data-icon="inline-start" aria-hidden="true" />
                 Retry
               </Button>
+              {home ? (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="mt-1"
+                  render={<GuardedLink href="/analytics" />}
+                >
+                  Open Analytics
+                </Button>
+              ) : null}
             </div>
           ) : null}
         </MessageScroller>

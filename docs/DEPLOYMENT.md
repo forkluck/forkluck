@@ -47,7 +47,7 @@ are root-owned infrastructure, installed deliberately rather than replaceable by
 the SSH deploy account; changes inside `deploy/` must be applied as an
 infrastructure update.
 
-Two nginx templates serve the two hosts: `forkluck.conf` is the application on
+The public repository carries two nginx templates: `forkluck.conf` is the application on
 `app.forkluck.com`, `forkluck-ghost.conf` is the public site on `forkluck.com`.
 Both replace temporary upstream failures with a static maintenance page and a
 `503 Service Unavailable` response. Install all three files, validate the
@@ -137,6 +137,7 @@ Routing:
   touches it.
 - `www.forkluck.com` → redirects to `forkluck.com`
 - `app.forkluck.com` → application
+- `primo.forkluck.com` → private inference gateway (its nginx template and release files live in `forkluck/forkluck-primo`)
 
 To create the first staff account, run Django's `createsuperuser` against the
 production environment, then sign in at
@@ -491,18 +492,59 @@ usage after provider timeouts remains charged against reserved attempts.
 
 ## Primo
 
-Primo is optional and shares the Qwen credential with invoice extraction above.
-It is configured in `/etc/forkluck/frontend.env`:
+Hosted Primo calls the private `forkluck/forkluck-primo` service. It is
+configured in `/etc/forkluck/frontend.env`:
 
 ```env
-QWEN_API_KEY=
-QWEN_BASE_URL=https://dashscope-us.aliyuncs.com/compatible-mode/v1
-QWEN_MODEL=qwen3.7-plus
+PRIMO_API_KEY=
+PRIMO_BASE_URL=https://primo.forkluck.com/v1
 ```
 
-An empty key hides the Primo trigger. After changing these values, restart
-`forkluck-next.service`. The key is server-only and must never use a
-`NEXT_PUBLIC_` name.
+The key is a per-installation service credential, never a Qwen key and never a
+`NEXT_PUBLIC_` variable. Empty means Primo is hidden and Home opens Analytics.
+Invoice `QWEN_API_KEY`/`QWEN_BASE_URL` remain independent. After changing the
+credential, restart `forkluck-next.service`. A configured service outage leaves
+Home/history/drafts usable with Retry and Open Analytics; there is no direct
+Qwen fallback and no health call during page rendering.
+
+The private service runs as `primo.service` on the existing host, bound to
+`127.0.0.1:8011`, behind a separate TLS nginx virtual host. Its provider key
+lives in `/etc/primo/primo.env`; its metadata-only SQLite usage ledger lives
+in `/var/lib/primo/usage.sqlite`. It has no access to Forkluck's database or
+private document store. Chat, titles and attachment vision all pass through it.
+The private repository contains its release workflow, systemd/nginx files,
+credential administration, backup and rollback instructions in `OPERATIONS.md`.
+Nginx limits the new hostname to 5 requests/second per source IP (burst 20)
+and 16 concurrent requests; Next.js is the caller, so all hosted users share
+its source-IP budget. Tune from observed 429s/latency without changing app limits.
+
+Cutover order:
+
+1. Merge the public kitchen-tool/draft refactor independently.
+2. Provision the private service account, DNS/TLS hostname, separate deployment
+   SSH credentials and Qwen key using the private operations guide. Deploy its
+   immutable release and issue the hosted installation credential.
+3. Verify `/healthz` and authenticated `/v1/models`. Run a synthetic chat/tool,
+   title and photo check through the service; live inference is a separate,
+   explicitly configured smoke/eval run. Preserve the usage ledger.
+4. Apply the public deployment infrastructure update (`deploy-forkluck` version
+   7), then install `PRIMO_API_KEY`/`PRIMO_BASE_URL` in the frontend environment.
+   Release the public gateway route change. The deployment command checks the
+   configured credential against `/v1/models` before stopping the current app;
+   failed admission keeps the current release serving. This is not a provider
+   health guarantee. No Django migration or table handover is required.
+5. Verify Home, a tool question, attachment extraction, explicit recipe creation,
+   history and the service's per-user usage report. Check logs contain metadata
+   only. Public builds and browser acceptance also run with Primo unconfigured.
+
+Rollback the private service to its previous immutable release using its
+`deploy-primo <sha>` command; code, prompt and model selection move together,
+active calls drain first, and the current ledger is preserved. Protocol v1 must
+remain compatible across the app/service rollback window. Keep the public app
+on the gateway-capable release during service rollback. Rolling the app back
+past this cutover restores its old direct-Qwen behavior if an invoice Qwen key
+is still present; that is not the normal rollback path. Prefer temporarily
+clearing `PRIMO_API_KEY` to disable Primo while the rest of Forkluck operates.
 
 Primo conversations and their UI-message parts are stored in Forkluck's own
 database per user. They remain until the user deletes the conversation or the
@@ -519,7 +561,8 @@ FDC_API_KEY=
 Without that key, recipe drafting and cost questions still work, while USDA
 search returns the same configured error as the Nutrition screen.
 
-The Virginia endpoint stores requests in Virginia; Alibaba performs inference
+The private service forwards model inputs to the Virginia endpoint, which
+stores requests in Virginia; Alibaba performs inference
 under its Global processing scope. Each request contains the conversation's
 retained user/assistant prose, stable public refs for the open page and bound
 mentions, and whichever server-executed tool result the request needs: recipe
@@ -535,9 +578,9 @@ browser-supplied historical tool payloads and does not log prompts, tool
 results, supplier data, or recipe data. Invoice extraction crosses the same
 boundary, sending the document itself: a receipt photo, or a PDF rasterized to
 page images. A self-host that cannot accept this external data boundary
-should leave `QWEN_API_KEY` empty and set
-`INVOICE_EXTRACTION_ENGINE=anthropic`, which hides the Primo trigger and moves
-extraction onto each workspace's own Anthropic key.
+leaves `PRIMO_API_KEY` empty. Invoice extraction is a separate choice: leaving
+`QWEN_API_KEY` empty and setting `INVOICE_EXTRACTION_ENGINE=anthropic` uses each
+workspace's Anthropic key. Neither choice provides Primo code to a self-hoster.
 See Alibaba's [endpoint documentation](https://www.alibabacloud.com/help/en/model-studio/base-url)
 and [processing-scope documentation](https://www.alibabacloud.com/help/en/model-studio/regions/)
 before enabling it in another jurisdiction.

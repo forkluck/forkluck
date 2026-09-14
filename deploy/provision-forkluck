@@ -135,7 +135,8 @@ if [[ ! -f /etc/forkluck/frontend.env ]]; then
         printf '# Primo — server-only key; leaving it empty hides the feature.\n'
         printf 'QWEN_API_KEY=\n'
         printf 'QWEN_BASE_URL=https://dashscope-us.aliyuncs.com/compatible-mode/v1\n'
-        printf 'QWEN_MODEL=qwen3.7-plus\n'
+        printf 'PRIMO_API_KEY=\n'
+        printf 'PRIMO_BASE_URL=https://primo.forkluck.com/v1\n'
     } > /etc/forkluck/frontend.env
     chown root:forkluck /etc/forkluck/frontend.env
     chmod 640 /etc/forkluck/frontend.env
@@ -149,7 +150,8 @@ ensure_frontend_env() {
 }
 ensure_frontend_env QWEN_API_KEY ""
 ensure_frontend_env QWEN_BASE_URL https://dashscope-us.aliyuncs.com/compatible-mode/v1
-ensure_frontend_env QWEN_MODEL qwen3.7-plus
+ensure_frontend_env PRIMO_API_KEY ""
+ensure_frontend_env PRIMO_BASE_URL https://primo.forkluck.com/v1
 
 install -m 755 "$provision_files/deploy-forkluck" /usr/local/sbin/deploy-forkluck
 install -m 644 "$provision_files/forkluck-django.service" \

@@ -23,14 +23,12 @@
     "verify": "pnpm test && pnpm typecheck && pnpm lint && pnpm format:check && pnpm build",
     "test": "vitest run",
     "eval:extraction": "tsx --tsconfig scripts/tsconfig.json scripts/eval-extraction.ts",
-    "eval:primo": "tsx --tsconfig scripts/tsconfig.json scripts/eval-primo.ts",
     "test:components": "vitest run tests/components",
     "test:acceptance": "playwright test",
     "test:acceptance:ui": "playwright test --ui",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit",
-    "eval:primo:attachments": "tsx --tsconfig scripts/tsconfig.json scripts/eval-primo-attachments.ts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.47",

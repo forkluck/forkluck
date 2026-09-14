@@ -76,14 +76,16 @@ identical in every environment.
 
 ## AI boundaries
 
-AI runs inside the Next.js server. Each task owns its model, prompt, limits,
-and output handling; shared provider configuration lives in `apps/web/lib/ai/`.
+The public application still has two processes: Next.js and Django. Primo
+inference uses a separately deployed private service; self-hosted Forkluck
+needs neither its code nor a credential. Invoice inference stays in Next.js.
 
 | Responsibility | Entry point |
 | --- | --- |
-| Shared Qwen endpoint | `apps/web/lib/ai/providers.ts` |
-| Primo chat model and generation limits | `apps/web/lib/primo/model.ts` |
-| Primo instructions, tool adapter, and model wire repair | `apps/web/lib/primo/prompt.ts`, `tools.ts`, `recipe.ts` |
+| Invoice Qwen endpoint | `apps/web/lib/ai/providers.ts` |
+| Primo gateway client, context contract and generation deadlines | `apps/web/lib/primo/model.ts` |
+| Primo public tool adapter and model wire repair | `apps/web/lib/primo/tools.ts`, `recipe.ts` |
+| Primo prompts, model choice, provider key, installation access and metering | Private `forkluck/forkluck-primo` service |
 | Public kitchen tools | `apps/web/lib/kitchen-tools/catalog.ts`, `results.ts`, `client.ts`, `server.ts` |
 | Public recipe draft schema and confirmed creation | `apps/web/lib/recipe/draft.ts`, `createRecipeFromDraft` in `apps/web/app/(app)/recipes/actions.ts` |
 | Attachment admission and extraction | `apps/web/app/api/primo/attachments/route.ts`, `apps/web/lib/primo/attachment-server.ts` |
@@ -91,10 +93,13 @@ and output handling; shared provider configuration lives in `apps/web/lib/ai/`.
 | Invoice validation, escalation findings, and usage budget | `apps/web/lib/invoice-import.ts`, `invoice-escalation.ts`, `invoice-ai-usage.ts` |
 | Authenticated reads and writes | `apps/web/lib/backend/` and Django `domains/` |
 
-The shared provider module has no dependency on Primo, invoice logic, Django,
-or request state. A provider change must preserve each caller's structured
-output settings, deadlines, and key selection. There is no shared agent
-framework or separate AI service to run locally.
+Next.js sends authenticated user identity and versioned context to the private
+OpenAI-compatible `/v1/chat/completions` endpoint. Chat, title generation and
+attachment vision all use this boundary. The service prepends its instructions
+and chooses the upstream model on every call; the public app still executes
+tools and owns the loop. The service has its own SQLite usage ledger and no
+Django/database/document-store credentials. Public client entry points remain
+separate from `server-only` model, extraction and kitchen execution modules.
 
 Model output is untrusted input. Recipe drafts require explicit confirmation;
 invoice extraction goes through deterministic validation and review. Django
@@ -104,7 +109,10 @@ of a model provider.
 
 | Invariant | Verification |
 | --- | --- |
-| Changing the shared endpoint preserves task-specific models and limits | Primo route/stream and invoice extraction tests |
+| Invoice Qwen configuration cannot enable Primo or bypass the gateway | Gateway client tests; unconfigured build and browser acceptance |
+| Chat, title and vision carry server-derived identity and task-specific deadlines | Route/extraction tests and private real-SDK integration tests |
+| Each paid attempt is recorded; missing token usage remains unknown | Private ledger, cancellation, interrupted-stream and retry/tool-loop tests |
+| Home, history and drafts remain usable during a gateway outage | Gateway browser acceptance |
 | Credentials stay on the server | `server-only` imports and mocked provider tests |
 | A model cannot grant access to another user's records | Primo access/tool tests and Django owner-scoped queries |
 | Attachment cancellation and partial reads remain visible | Primo extraction and browser acceptance tests |
@@ -118,8 +126,9 @@ The normal test suites run without paid AI calls.
 ```
 Home Chat / Primo rail             one useChat survives client navigation
   POST /api/primo/chat             conversation id + messages + bound context
-    Django save-turn               user message persisted before Qwen
+    Django save-turn               user message persisted before inference
     24k-character context fit      newest whole turns; newest user always kept
+    private gateway → Qwen         prompt + model + access + usage per attempt
     Qwen chooses tools by intent   eight tools; at most four model/tool steps
       find_recipes / find_products owner-scoped discovery of stable public refs
       get_product_sales            exact product + period; as-sold accounting
@@ -209,10 +218,15 @@ unlinked; query order never chooses among duplicates. The action then calls the
 existing `save-recipe` action. USDA ids are never used as pantry ids, and no
 draft supplies a trusted object identity.
 
-Primo is presence-enabled by `QWEN_API_KEY`. Requests use the Virginia
-DashScope-compatible endpoint and the moving `qwen3.7-plus` alias by default.
+Primo is presence-enabled by the server-only `PRIMO_API_KEY`, an installation
+credential for `PRIMO_BASE_URL` (default `https://primo.forkluck.com/v1`). A
+Qwen invoice key does not enable it. An unconfigured Home redirects to Analytics;
+an unavailable configured service leaves Home, history and the next draft
+usable, with Retry and Open Analytics. Rendering never waits for service health.
+There is no direct-provider fallback. The service owns the provider key and
+model identifiers; the app requests only the stable `primo` alias.
 Sanitized conversation prose and the data used in the model loop leave
-Forkluck for Alibaba: tool inputs, recipe titles, product names and SKUs, USDA
+Forkluck through its private service to Alibaba: tool inputs, recipe titles, product names and SKUs, USDA
 candidate metadata, the proposed recipe draft, sales units and revenue, batch
 and labor figures, and, for a cost request, at most the 40 largest absolute line
 deltas plus totals and coverage. Request storage is in Virginia and inference uses
@@ -220,7 +234,10 @@ Alibaba's Global processing scope. A USDA search separately sends its query and
 the server-only `FDC_API_KEY` to `api.nal.usda.gov`; the key is never sent to
 the browser or Qwen. The active-pantry index, the identities selected at
 confirmation, and the confirmed `save-recipe` call remain server-side and
-outside the model loop. Forkluck request logs contain only request id, model,
+outside the model loop. The private service retains only installation/user/turn
+identifiers, task, release, model/prompt version, timings, status and provider
+token counts. It stores no conversations, document bytes, prompts or tool
+payloads. Unknown usage is explicitly unknown. Forkluck request logs contain only request id, model,
 duration, and finish reason; they do not contain prompts, tool payloads,
 supplier data, or recipe data.
 
@@ -229,8 +246,8 @@ The user can list, rename, archive, restore, and delete them; deleting the
 account cascades through both conversations and messages. They are retained
 until the user deletes them. Persistence is not a new data-egress path: only
 the fitted prose and existing tool loop data cross the already documented
-Alibaba boundary. Primo attachments additionally send images/scanned pages to
-the existing Qwen vision provider and bounded extracted document content to
+Alibaba boundary. Primo attachments additionally send images/scanned pages through the private service to
+its Qwen vision provider and bounded extracted document content to
 the chat model. Attachment references and feedback are owner-scoped in Django;
 files use the shared private document store. See the attachment lifecycle and
 experience matrix in `docs/CONTRACT.md`.
@@ -395,7 +412,7 @@ root `package.json` scripts delegate to them.
 
 | Path                   | What lives there                                                                                                                                                     |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/web/`            | The Next.js app (`@forkluck/web`): `app/` routes ((app) pages and their `"use server"` actions, (auth), `shared/`, `api/`), `components/` (with `components/ui` the shadcn/Base UI primitives), `hooks/`, `lib/` (the `lib/backend/` Django seam plus framework-free parsing, costing, and import modules), `tests/` (Vitest suites and real-stack Playwright acceptance tests), `scripts/` (the acceptance harness and the extraction and Primo evals: `pnpm eval:extraction`, `pnpm eval:primo`) |
+| `apps/web/`            | The Next.js app (`@forkluck/web`): `app/` routes ((app) pages and their `"use server"` actions, (auth), `shared/`, `api/`), `components/` (with `components/ui` the shadcn/Base UI primitives), `hooks/`, `lib/` (the `lib/backend/` Django seam plus framework-free parsing, costing, and import modules), `tests/` (Vitest suites and real-stack Playwright acceptance tests), `scripts/` (the acceptance harness and the public extraction eval: `pnpm eval:extraction`; Primo evals live with the private prompt) |
 | `apps/api/`            | The Django project; `apps/api/forkluck/` is the app. `forkluck/paths.py` locates `data/` by walking up, so the same code runs from a checkout and from a release tree |
 | `services/connectors/` | The supplier connector service: its own Django project, worker, Dockerfile, `deploy/`, and operations guide. It talks to the app only over the protocol in `docs/CONNECTOR_PROTOCOL.md` |
 | `data/`                | Shared data read by both sides: `parser-vocabulary.json`, `volume-measures.json`, and the open CC0 ingredient catalog under `data/catalog/`                          |

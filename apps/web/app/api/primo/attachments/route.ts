@@ -129,7 +129,12 @@ export async function POST(request: Request) {
           let failed = false
           try {
             const extracted = await Promise.race([
-              extractAttachment(bytes, mediaType, signal),
+              extractAttachment(bytes, mediaType, signal, {
+                userId: session.user.id,
+                conversationId: conversationId!,
+                turnId: attachmentId!,
+                attachmentId: attachmentId!,
+              }),
               new Promise<never>((_, reject) => {
                 abortRead = () => reject(signal.reason)
                 if (signal.aborted) abortRead()
