@@ -4,6 +4,13 @@ The normal Vitest, Django, and Playwright suites use mocks and synthetic data.
 They verify authorization, tool contracts, extraction handling, accounting,
 cancellation, and persisted state without paid inference.
 
+Browser acceptance uses a fresh synthetic database per invocation:
+`pnpm test:acceptance` runs the general suite,
+`FORKLUCK_ACCEPTANCE_PRIMO=gateway pnpm test:acceptance` runs photo/draft and
+outage flows, and `FORKLUCK_ACCEPTANCE_PRIMO=0 pnpm test:acceptance` runs the
+unconfigured public app. CI runs all three. This keeps unrelated test logins
+from accumulating against the shared loopback IP's production auth quota.
+
 Live evaluations answer a different question: does a configured model still
 choose the right tools and read documents usefully? Run them when changing
 prompts, model selection, extraction schemas, or provider behavior. A passing
