@@ -1,6 +1,9 @@
 import { generateText, isStepCount, tool } from "ai"
 
-import { KITCHEN_TOOLS, type KitchenToolName } from "@/lib/primo/kitchen-tools"
+import {
+  KITCHEN_TOOLS,
+  type KitchenToolName,
+} from "@/lib/kitchen-tools/catalog"
 import { primoModel } from "@/lib/primo/model"
 import { primoInstructions } from "@/lib/primo/prompt"
 

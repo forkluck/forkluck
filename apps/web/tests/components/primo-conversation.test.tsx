@@ -31,7 +31,7 @@ vi.mock("@/components/primo/primo-provider", () => ({
 }))
 vi.mock("@/app/(app)/actions", () => ({ runKitchenToolAction: vi.fn() }))
 vi.mock("@/app/(app)/recipes/actions", () => ({
-  createPrimoRecipe: vi.fn(),
+  createRecipeFromDraft: vi.fn(),
 }))
 
 import { PrimoConversation } from "@/components/primo/primo-conversation"

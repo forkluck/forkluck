@@ -83,7 +83,9 @@ and output handling; shared provider configuration lives in `apps/web/lib/ai/`.
 | --- | --- |
 | Shared Qwen endpoint | `apps/web/lib/ai/providers.ts` |
 | Primo chat model and generation limits | `apps/web/lib/primo/model.ts` |
-| Primo instructions, tools, and draft schemas | `apps/web/lib/primo/prompt.ts`, `tools.ts`, `recipe.ts` |
+| Primo instructions, tool adapter, and model wire repair | `apps/web/lib/primo/prompt.ts`, `tools.ts`, `recipe.ts` |
+| Public kitchen tools | `apps/web/lib/kitchen-tools/catalog.ts`, `results.ts`, `client.ts`, `server.ts` |
+| Public recipe draft schema and confirmed creation | `apps/web/lib/recipe/draft.ts`, `createRecipeFromDraft` in `apps/web/app/(app)/recipes/actions.ts` |
 | Attachment admission and extraction | `apps/web/app/api/primo/attachments/route.ts`, `apps/web/lib/primo/attachment-server.ts` |
 | Invoice model calls and extraction limits | `apps/web/lib/invoice-extract.ts` |
 | Invoice validation, escalation findings, and usage budget | `apps/web/lib/invoice-import.ts`, `invoice-escalation.ts`, `invoice-ai-usage.ts` |
@@ -135,7 +137,7 @@ Home Chat / Primo rail             one useChat survives client navigation
       save-recipe                  explicit owner-scoped persistence
 ```
 
-The five kitchen tools are declared once in `apps/web/lib/primo/kitchen-tools.ts` as a
+The five kitchen tools are declared once in `apps/web/lib/kitchen-tools/catalog.ts` as a
 name, description, strict zod input schema, and read-only annotations. Primo's
 server adapter and the browser's WebMCP adapter both consume that registry and
 both call `runKitchenTool`; there is no second input contract or kitchen
@@ -143,6 +145,24 @@ calculation. Primo also exposes the existing USDA search and draft tool, plus a 
 conversation attachment reader. A batched manifest resolves all user-bound
 sources before history trimming can hide them; bounded sections are read on
 demand with the same ownership checks. The reader is not a WebMCP tool.
+
+The public kitchen core has separate client and server entry points. The
+catalog, result types and client execution helper import neither Primo nor a
+model SDK; `server.ts` is server-only and owns authenticated reads, the kitchen
+clock and result projections. `components/kitchen-tools-webmcp.tsx` mounts
+outside the Primo provider, uses the app's unsaved-change navigation guard,
+and reports progress, completion and failures through its own toast. Disabling
+Primo does not disable these browser tools. The recipe draft schema is also
+public core; only Qwen's tool-call wire repair lives in Primo.
+
+| Public core invariant | Verification |
+| --- | --- |
+| Both adapters use the same strict input syntax and deterministic results | Kitchen registry/client and Primo tool tests |
+| Session ownership is checked before reads; Primo's allowed refs add conversation context without replacing ownership | Primo tool tests and Django owner-scoped query tests |
+| Explicit bound refs take precedence; ambiguous pantry names never select an arbitrary row | Primo tool and recipe draft action tests |
+| Cancelled browser reads do not navigate; cancelled guarded navigation clears progress; server failures end progress with an error | Kitchen client and provider-free WebMCP component tests |
+| Recipe drafts require confirmation and full validation before the existing save action; no schema or persisted relation changes | Recipe draft action and draft-card tests |
+| WebMCP and public draft validation work without a Primo provider or model SDK | Kitchen core boundary and WebMCP component tests |
 
 The model never invents or prints ids. Its allowed refs begin with the current
 recipe, current product, and exact refs bound by user `@` mentions, then widen

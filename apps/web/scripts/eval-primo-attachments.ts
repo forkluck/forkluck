@@ -5,11 +5,8 @@ import { z } from "zod"
 
 import { primoModel, primoGenerationLimits } from "@/lib/primo/model"
 import { primoInstructions } from "@/lib/primo/prompt"
-import {
-  primoRecipeDraftSchema,
-  repairPrimoRecipeToolCall,
-  type PrimoRecipeDraft,
-} from "@/lib/primo/recipe"
+import { recipeDraftSchema, type RecipeDraft } from "@/lib/recipe/draft"
+import { repairPrimoRecipeToolCall } from "@/lib/primo/recipe"
 
 const recipes = [
   {
@@ -90,7 +87,7 @@ const context = {
   attachments: [attachment],
 }
 let wasRead = false
-const drafts: PrimoRecipeDraft[] = []
+const drafts: RecipeDraft[] = []
 const tools = {
   read_attachment: tool({
     description:
@@ -122,10 +119,10 @@ const tools = {
   draft_recipe: tool({
     description:
       "Prepare a structured recipe draft for review. This does not save anything. Use canonical unit slugs and leave unmeasured quantities null.",
-    inputSchema: primoRecipeDraftSchema,
+    inputSchema: recipeDraftSchema,
     execute: async (input) => {
       assert.ok(wasRead, "The source must be read before drafting")
-      const draft = primoRecipeDraftSchema.parse(input)
+      const draft = recipeDraftSchema.parse(input)
       drafts.push(draft)
       return draft
     },
@@ -196,7 +193,7 @@ for (const source of recipes) {
   assert.deepEqual(draft.yield, source.yield)
   assert.equal(draft.ingredients.length, source.ingredients.length)
   for (const [quantity, unit, name] of source.ingredients) {
-    const ingredient: PrimoRecipeDraft["ingredients"][number] | undefined =
+    const ingredient: RecipeDraft["ingredients"][number] | undefined =
       draft.ingredients.find(
         (row) => row.name.toLowerCase() === String(name).toLowerCase()
       )

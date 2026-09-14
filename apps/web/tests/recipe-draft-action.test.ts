@@ -25,7 +25,7 @@ vi.mock("@/lib/backend/queries", () => ({
   getRecipe: (...args: unknown[]) => mocks.getRecipe(...args),
 }))
 
-const { createPrimoRecipe } = await import("@/app/(app)/recipes/actions")
+const { createRecipeFromDraft } = await import("@/app/(app)/recipes/actions")
 
 const draft = {
   title: "Cream biscuits",
@@ -70,7 +70,7 @@ beforeEach(() => {
   mocks.revalidatePath.mockReset()
 })
 
-describe("createPrimoRecipe", () => {
+describe("createRecipeFromDraft", () => {
   it("links normalized exact active names, leaves other lines unresolved, and writes once", async () => {
     mocks.getPricingEntries.mockResolvedValue({
       items: [
@@ -86,7 +86,7 @@ describe("createPrimoRecipe", () => {
     }
     mocks.djangoAction.mockResolvedValue(saved)
 
-    await expect(createPrimoRecipe(draft)).resolves.toEqual(saved)
+    await expect(createRecipeFromDraft(draft)).resolves.toEqual(saved)
 
     expect(mocks.getPricingEntries).toHaveBeenCalledTimes(1)
     expect(mocks.djangoAction).toHaveBeenCalledTimes(1)
@@ -181,7 +181,7 @@ describe("createPrimoRecipe", () => {
       editVersion: 1,
     })
 
-    await createPrimoRecipe({
+    await createRecipeFromDraft({
       ...draft,
       ingredients: [
         {
@@ -221,7 +221,7 @@ describe("createPrimoRecipe", () => {
       editVersion: 1,
     })
 
-    await createPrimoRecipe({
+    await createRecipeFromDraft({
       ...draft,
       ingredients: [
         { name: "Takeout box", quantity: 1, unit: "each", preparation: "" },
@@ -245,10 +245,10 @@ describe("createPrimoRecipe", () => {
 
   it("rejects malformed or identity-bearing drafts before any read or write", async () => {
     await expect(
-      createPrimoRecipe({ ...draft, ingredients: [] })
+      createRecipeFromDraft({ ...draft, ingredients: [] })
     ).resolves.toEqual({ error: "That recipe draft is malformed." })
     await expect(
-      createPrimoRecipe({
+      createRecipeFromDraft({
         ...draft,
         ingredients: [
           {
@@ -268,7 +268,7 @@ describe("createPrimoRecipe", () => {
     mocks.getPricingEntries.mockResolvedValue({ items: [] })
     mocks.djangoAction.mockRejectedValue({ status: 500 })
 
-    await expect(createPrimoRecipe(draft)).resolves.toEqual({
+    await expect(createRecipeFromDraft(draft)).resolves.toEqual({
       error: "Couldn’t create the recipe.",
     })
     expect(mocks.djangoAction).toHaveBeenCalledTimes(1)

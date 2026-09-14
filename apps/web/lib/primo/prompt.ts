@@ -1,5 +1,5 @@
 import type { PrimoAttachment } from "./attachments"
-import { PERIOD_TEXT } from "@/lib/primo/kitchen-tools"
+import { PERIOD_TEXT } from "@/lib/kitchen-tools/catalog"
 import type { PrimoMention } from "@/lib/primo/messages"
 
 export function primoInstructions(

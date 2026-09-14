@@ -56,7 +56,7 @@ vi.mock("@/components/navigation-blocker", () => ({
 vi.mock("@/components/ui/toast", () => ({
   ToastProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
-vi.mock("@/components/primo/kitchen-tools-webmcp", () => ({
+vi.mock("@/components/kitchen-tools-webmcp", () => ({
   KitchenToolsWebMcp: () => null,
 }))
 

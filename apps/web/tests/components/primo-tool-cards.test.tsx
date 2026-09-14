@@ -9,20 +9,20 @@ import {
   waitFor,
 } from "@testing-library/react"
 
-const { createPrimoRecipe } = vi.hoisted(() => ({
-  createPrimoRecipe: vi.fn(),
+const { createRecipeFromDraft } = vi.hoisted(() => ({
+  createRecipeFromDraft: vi.fn(),
 }))
 
-vi.mock("@/app/(app)/recipes/actions", () => ({ createPrimoRecipe }))
+vi.mock("@/app/(app)/recipes/actions", () => ({ createRecipeFromDraft }))
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }))
 
 import { PrimoRecipeDraftCard } from "@/components/primo/primo-recipe-draft-card"
 import { PrimoUsdaResultCard } from "@/components/primo/primo-usda-result-card"
-import type { PrimoRecipeDraft } from "@/lib/primo/recipe"
+import type { RecipeDraft } from "@/lib/recipe/draft"
 
-const draft: PrimoRecipeDraft = {
+const draft: RecipeDraft = {
   title: "Garlic soup",
   description: "A simple pantry soup.",
   yield: { amount: 4, unit: "pcs" },
@@ -44,7 +44,7 @@ const draft: PrimoRecipeDraft = {
 }
 
 beforeEach(() => {
-  createPrimoRecipe.mockReset()
+  createRecipeFromDraft.mockReset()
 })
 
 afterEach(cleanup)
@@ -95,7 +95,7 @@ describe("Primo tool cards", () => {
   })
 
   it("does not write before confirmation and links from the saved public id", async () => {
-    createPrimoRecipe.mockResolvedValue({
+    createRecipeFromDraft.mockResolvedValue({
       id: "42",
       publicId: "rcp_0123456789ab",
       code: "R-42",
@@ -107,18 +107,20 @@ describe("Primo tool cards", () => {
       "Total yield: 4 pieces"
     )
     expect(screen.getByText("Unmeasured")).toBeDefined()
-    expect(createPrimoRecipe).not.toHaveBeenCalled()
+    expect(createRecipeFromDraft).not.toHaveBeenCalled()
 
     fireEvent.click(screen.getByRole("button", { name: "Create recipe" }))
 
-    await waitFor(() => expect(createPrimoRecipe).toHaveBeenCalledWith(draft))
+    await waitFor(() =>
+      expect(createRecipeFromDraft).toHaveBeenCalledWith(draft)
+    )
     const link = await screen.findByRole("link", { name: "Open recipe" })
     expect(link.getAttribute("href")).toBe("/recipes/rcp_0123456789ab/recipe")
     expect(screen.getByRole("status").textContent).toContain("Recipe created")
   })
 
   it("keeps the review card actionable when creation fails", async () => {
-    createPrimoRecipe.mockResolvedValue({
+    createRecipeFromDraft.mockResolvedValue({
       error: "Couldn’t create the recipe.",
     })
     render(<PrimoRecipeDraftCard draft={draft} />)

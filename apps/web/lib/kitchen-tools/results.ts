@@ -1,5 +1,5 @@
 import type { RecipeCostDiff } from "@/lib/backend/types"
-import type { KitchenToolName } from "@/lib/primo/kitchen-tools"
+import type { KitchenToolName } from "@/lib/kitchen-tools/catalog"
 
 export type KitchenToolFailure = {
   ok: false

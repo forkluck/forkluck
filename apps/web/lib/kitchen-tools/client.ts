@@ -1,5 +1,5 @@
-import type { KitchenToolResult } from "@/lib/primo/kitchen-tool-results"
-import type { KitchenToolName } from "@/lib/primo/kitchen-tools"
+import type { KitchenToolResult } from "@/lib/kitchen-tools/results"
+import type { KitchenToolName } from "@/lib/kitchen-tools/catalog"
 
 export const KITCHEN_TOOL_ACTION_LINES: Record<KitchenToolName, string> = {
   find_recipes: "Finding recipes…",

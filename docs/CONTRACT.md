@@ -595,6 +595,13 @@ older saved partial tools display interruption and an explicit regenerate action
 including legacy messages incorrectly stored as complete. No background draft
 continues after its response ends.
 
+The shared recipe draft schema lives in `apps/web/lib/recipe/draft.ts`.
+After explicit confirmation, `createRecipeFromDraft` in the recipe Server
+Actions validates it again and calls the existing `save-recipe` action. This
+public core path does not require Primo configuration; Django still enforces
+the caller's ownership and write entitlement. No additional HTTP action or
+persisted relation is introduced.
+
 `draft_recipe.yield` remains a strict `{amount,unit}` object or null; count yields
 use `pcs` or `slice`, with the existing accepted mass/volume slugs. A Primo-only
 tool-call repair decodes a JSON-encoded yield string and revalidates the entire

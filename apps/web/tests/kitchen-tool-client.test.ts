@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest"
 
-import { executeKitchenTool } from "@/lib/primo/kitchen-tool-client"
-import type { KitchenToolResult } from "@/lib/primo/kitchen-tool-results"
+import { executeKitchenTool } from "@/lib/kitchen-tools/client"
+import type { KitchenToolResult } from "@/lib/kitchen-tools/results"
 
 const result = {
   ok: false,

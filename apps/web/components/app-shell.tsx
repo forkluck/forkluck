@@ -9,7 +9,7 @@ import {
   NavigationBlockerProvider,
   useNavigationBlocker,
 } from "@/components/navigation-blocker"
-import { KitchenToolsWebMcp } from "@/components/primo/kitchen-tools-webmcp"
+import { KitchenToolsWebMcp } from "@/components/kitchen-tools-webmcp"
 import { PrimoProvider, usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRail } from "@/components/primo/primo-rail"
 import { ReadOnlyBanner } from "@/components/billing/read-only-banner"
@@ -17,7 +17,7 @@ import { LoadingRegion } from "@/components/ui/loading-region"
 import { ToastProvider } from "@/components/ui/toast"
 import type { SessionUser } from "@/lib/auth-session"
 import type { ActiveKitchen } from "@/lib/kitchen"
-import type { KitchenToolDescriptor } from "@/lib/primo/kitchen-tools"
+import type { KitchenToolDescriptor } from "@/lib/kitchen-tools/catalog"
 import { useVisualViewport } from "@/hooks/use-visual-viewport"
 import { cn } from "@/lib/utils"
 
@@ -27,7 +27,6 @@ function AppShellContents({
   kitchens,
   children,
   primoEnabled,
-  webmcpTools,
   readOnlyNotice,
 }: {
   user: SessionUser
@@ -35,7 +34,6 @@ function AppShellContents({
   kitchens: ActiveKitchen[]
   children: React.ReactNode
   primoEnabled: boolean
-  webmcpTools: KitchenToolDescriptor[]
   readOnlyNotice: string | null
 }) {
   const [navOpen, setNavOpen] = React.useState(false)
@@ -75,7 +73,6 @@ function AppShellContents({
 
   return (
     <>
-      <KitchenToolsWebMcp tools={webmcpTools} />
       <div data-app-shell="" className="flex min-h-svh bg-background">
         <div
           style={viewport ? { height: viewport.height } : undefined}
@@ -163,13 +160,13 @@ export function AppShell({
   return (
     <NavigationBlockerProvider>
       <ToastProvider>
+        <KitchenToolsWebMcp key={user.id} tools={webmcpTools} />
         <PrimoProvider key={user.id} userId={user.id}>
           <AppShellContents
             user={user}
             kitchen={kitchen}
             kitchens={kitchens}
             primoEnabled={primoEnabled}
-            webmcpTools={webmcpTools}
             readOnlyNotice={readOnlyNotice}
           >
             {children}

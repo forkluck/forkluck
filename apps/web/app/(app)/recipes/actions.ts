@@ -9,7 +9,7 @@ import { BackendRequestError, djangoAction } from "@/lib/backend/client"
 import { getPricingEntries, getRecipe } from "@/lib/backend/queries"
 import type { RecipeDetail } from "@/lib/backend/types"
 import { normalizeIngredientName } from "@/lib/pricing"
-import { primoRecipeDraftSchema } from "@/lib/primo/recipe"
+import { recipeDraftSchema } from "@/lib/recipe/draft"
 import { MAX_RECIPE_CATEGORY_LENGTH } from "@/lib/recipe/categories"
 import { RECIPE_KINDS } from "@/lib/recipe/kinds"
 import { RECIPE_STATUSES, type RecipeStatus } from "@/lib/recipe/status"
@@ -84,12 +84,12 @@ export async function saveRecipe(
   }
 }
 
-/** Primo proposes only names and measurements. The signed-in tenant's pantry
+/** A recipe draft supplies only names and measurements. The signed-in tenant's pantry
  * supplies every durable ingredient identity at confirmation time. */
-export async function createPrimoRecipe(
+export async function createRecipeFromDraft(
   input: unknown
 ): Promise<SavedRecipe | { error: string }> {
-  const parsed = primoRecipeDraftSchema.safeParse(input)
+  const parsed = recipeDraftSchema.safeParse(input)
   if (!parsed.success) return { error: "That recipe draft is malformed." }
   try {
     // Pricing entries are the read that says which pantry rows are supplies;

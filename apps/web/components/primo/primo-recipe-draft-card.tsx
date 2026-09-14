@@ -3,16 +3,16 @@
 import * as React from "react"
 import { Check, ClipboardList, ExternalLink } from "lucide-react"
 
-import { createPrimoRecipe } from "@/app/(app)/recipes/actions"
+import { createRecipeFromDraft } from "@/app/(app)/recipes/actions"
 import { GuardedLink } from "@/components/navigation-blocker"
 import { Button } from "@/components/ui/button"
 import { useFormSave } from "@/hooks/use-form-save"
-import type { PrimoRecipeDraft } from "@/lib/primo/recipe"
+import type { RecipeDraft } from "@/lib/recipe/draft"
 import { formatKitchenAmount } from "@/lib/recipe/scale"
 import { toSaveFailure } from "@/lib/save-failure"
 import { unitShort, unitWord } from "@/lib/unit-registry"
 
-function yieldLabel(draftYield: NonNullable<PrimoRecipeDraft["yield"]>) {
+function yieldLabel(draftYield: NonNullable<RecipeDraft["yield"]>) {
   const unit =
     draftYield.unit === "pcs"
       ? draftYield.amount === 1
@@ -26,15 +26,13 @@ function yieldLabel(draftYield: NonNullable<PrimoRecipeDraft["yield"]>) {
   return `${formatKitchenAmount(draftYield.amount)} ${unit}`
 }
 
-function ingredientMeasure(
-  ingredient: PrimoRecipeDraft["ingredients"][number]
-) {
+function ingredientMeasure(ingredient: RecipeDraft["ingredients"][number]) {
   if (ingredient.quantity === null) return "Unmeasured"
   const unit = unitShort(ingredient.unit)
   return `${formatKitchenAmount(ingredient.quantity)}${unit ? ` ${unit}` : ""}`
 }
 
-export function PrimoRecipeDraftCard({ draft }: { draft: PrimoRecipeDraft }) {
+export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
   const [createdPublicId, setCreatedPublicId] = React.useState<string | null>(
     null
   )
@@ -42,7 +40,7 @@ export function PrimoRecipeDraftCard({ draft }: { draft: PrimoRecipeDraft }) {
     snapshot: JSON.stringify(draft),
     saved: false,
     save: async () => {
-      const result = await createPrimoRecipe(draft)
+      const result = await createRecipeFromDraft(draft)
       if ("error" in result) return toSaveFailure(result)
       setCreatedPublicId(result.publicId)
       return null
