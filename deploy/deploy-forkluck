@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ "${1:-}" == "--version" ]]; then
-    echo "6"
+    echo "7"
     exit 0
 fi
 
@@ -81,6 +81,29 @@ runuser -u forkluck -- env \
     /usr/local/bin/uv pip install \
     --python /opt/forkluck/shared/venv/bin/python \
     -r "$release_dir/backend/requirements.txt"
+
+# Validate configured Primo access before stopping the current app. This is
+# an authenticated model-list read, never paid inference or a render-time check.
+(
+    set -a
+    # shellcheck disable=SC1091
+    source /etc/forkluck/frontend.env
+    set +a
+    if [[ -n "${PRIMO_API_KEY:-}" ]]; then
+        runuser -u forkluck --preserve-environment -- /usr/bin/node --input-type=module <<'NODE'
+const base = new URL(process.env.PRIMO_BASE_URL || "https://primo.forkluck.com/v1");
+const secure = base.protocol === "https:" || (base.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(base.hostname));
+if (!secure || base.username || base.password || base.search || base.hash || base.pathname.replace(/\/$/, "") !== "/v1") throw new Error("Invalid Primo gateway configuration");
+try {
+  const response = await fetch(base.toString().replace(/\/$/, "") + "/models", {
+    headers: { Authorization: "Bearer " + process.env.PRIMO_API_KEY.trim() },
+    signal: AbortSignal.timeout(8000), redirect: "error",
+  });
+  if (!response.ok || !(await response.json()).data?.some(model => model.id === "primo")) throw new Error();
+} catch { throw new Error("Primo gateway access check failed; keeping the current release"); }
+NODE
+    fi
+)
 
 set -a
 # shellcheck disable=SC1091

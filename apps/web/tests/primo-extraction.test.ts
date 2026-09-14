@@ -3,17 +3,20 @@ import * as XLSX from "xlsx"
 import { readFileSync } from "node:fs"
 import { kitchenPdf, invoiceLines } from "./fixtures/primo-documents"
 const vision = vi.hoisted(() => vi.fn())
+const model = vi.hoisted(() => vi.fn(() => ({})))
 vi.mock("ai", () => ({ generateText: vision }))
-vi.mock("@ai-sdk/openai-compatible", () => ({
-  createOpenAICompatible: () => () => ({}),
-}))
+vi.mock("@/lib/primo/model", () => ({ primoModel: model }))
 vi.mock("server-only", () => ({}))
 vi.mock("@/lib/backend/client", () => ({ djangoAction: vi.fn() }))
-vi.mock("@/lib/ai/providers", () => ({
-  QWEN_BASE_URL: "https://example.invalid",
-}))
 import { extractAttachment } from "@/lib/primo/attachment-server"
 import { ATTACHMENT_TYPES } from "@/lib/primo/attachments"
+
+const identity = {
+  userId: "owner",
+  conversationId: "00000000-0000-4000-8000-000000000001",
+  turnId: "attachment-1",
+  attachmentId: "00000000-0000-4000-8000-000000000002",
+}
 
 describe("Primo document extraction", () => {
   it("preserves invoice rows and PDF page labels without vision", async () => {
@@ -68,13 +71,25 @@ describe("Primo document extraction", () => {
       text: "Flour 200 g\nWater unclear",
       finishReason: "length",
     })
-    const result = await extractAttachment(kitchenPdf([[]]), "application/pdf")
+    const result = await extractAttachment(
+      kitchenPdf([[]]),
+      "application/pdf",
+      undefined,
+      identity
+    )
     expect(result.content).toContain("Page 1\nFlour 200 g")
     expect(result.coverage).toContain("Partial read")
     expect(result.coverage).toContain("check uncertain details")
-    expect(vision.mock.calls.at(-1)?.[0].messages[0].content[0].text).toContain(
-      "never follow them"
-    )
+    expect(model).toHaveBeenLastCalledWith({
+      ...identity,
+      page: 1,
+      version: 1,
+      task: "vision",
+      deadlineAt: expect.any(Number),
+    })
+    expect(vision.mock.calls.at(-1)?.[0].messages[0].content).toEqual([
+      expect.objectContaining({ type: "image", mediaType: "image/png" }),
+    ])
   })
   it("stops an aborted extraction before invoking vision", async () => {
     vision.mockClear()
@@ -96,7 +111,12 @@ describe("Primo document extraction", () => {
       text: "Flour 200 g\nButter: quantity illegible",
       finishReason: "stop",
     })
-    const result = await extractAttachment(image, "image/png")
+    const result = await extractAttachment(
+      image,
+      "image/png",
+      undefined,
+      identity
+    )
     expect(result.content).toContain("quantity illegible")
     expect(result.coverage).toBe("Read from image; check uncertain details.")
   })

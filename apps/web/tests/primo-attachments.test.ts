@@ -113,7 +113,13 @@ describe("Primo attachment boundary", () => {
       expect(mocks.extract).toHaveBeenCalledWith(
         Buffer.from("file"),
         type,
-        expect.any(AbortSignal)
+        expect.any(AbortSignal),
+        {
+          userId: "owner",
+          conversationId,
+          turnId: conversationId,
+          attachmentId: conversationId,
+        }
       )
       expect(mocks.action.mock.calls[0]?.[1]).toMatchObject({
         operation: "create",

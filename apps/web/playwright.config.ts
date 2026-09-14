@@ -8,6 +8,9 @@ function port(name: string, fallback: string) {
 
 process.env.FORKLUCK_ACCEPTANCE_GUEST_TOKEN ??= "acceptance-guest-token"
 
+const primoScenario = process.env.FORKLUCK_ACCEPTANCE_PRIMO
+const primoEnabled = primoScenario !== "0"
+const primoPort = port("FORKLUCK_ACCEPTANCE_PRIMO_PORT", "9124")
 const nextPort = port("FORKLUCK_ACCEPTANCE_NEXT_PORT", "3100")
 const backendPort = port("FORKLUCK_ACCEPTANCE_BACKEND_PORT", "8101")
 const connectorPort = port("FORKLUCK_ACCEPTANCE_CONNECTOR_PORT", "9123")
@@ -17,6 +20,18 @@ const connectorURL = `http://127.0.0.1:${connectorPort}`
 
 export default defineConfig({
   testDir: "./tests/acceptance",
+  // Each gateway scenario gets a fresh synthetic database. The general suite
+  // already approaches the production login quota for its shared loopback IP.
+  ...(primoScenario === "0"
+    ? { testMatch: "**/primo-unconfigured.acceptance.spec.ts" }
+    : primoScenario === "gateway"
+      ? { testMatch: "**/primo-gateway.acceptance.spec.ts" }
+      : {
+          testIgnore: [
+            "**/primo-unconfigured.acceptance.spec.ts",
+            "**/primo-gateway.acceptance.spec.ts",
+          ],
+        }),
   outputDir: "output/playwright/test-results",
   fullyParallel: false,
   workers: 1,
@@ -32,6 +47,13 @@ export default defineConfig({
     video: "retain-on-failure",
   },
   webServer: [
+    {
+      name: "synthetic Primo gateway",
+      command: "node scripts/start-acceptance-primo.mjs",
+      url: `http://127.0.0.1:${primoPort}/healthz`,
+      reuseExistingServer: false,
+      env: { FORKLUCK_ACCEPTANCE_PRIMO_PORT: primoPort },
+    },
     {
       name: "synthetic HTTP connector service",
       command:
@@ -76,7 +98,9 @@ export default defineConfig({
         GOOGLE_SERVICE_ACCOUNT_EMAIL: "acceptance-drive@example.test",
         NEXT_TELEMETRY_DISABLED: "1",
         // Enable Primo without allowing acceptance runs to use real inference or blob credentials.
-        QWEN_API_KEY: "synthetic-acceptance-only",
+        PRIMO_API_KEY: primoEnabled ? "synthetic-acceptance-only" : "",
+        PRIMO_BASE_URL: `http://127.0.0.1:${primoPort}/v1`,
+        QWEN_API_KEY: "synthetic-invoice-only",
         QWEN_BASE_URL: "https://primo.example.invalid/v1",
         AZURE_STORAGE_CONNECTION_STRING: "",
         DOCUMENT_STORE_DIR: "./.forkluck/acceptance-documents",

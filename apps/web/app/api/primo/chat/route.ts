@@ -21,11 +21,7 @@ import { z } from "zod"
 import { getSession } from "@/lib/auth-session"
 import { BackendRequestError, djangoAction } from "@/lib/backend/client"
 import { primoAvailable } from "@/lib/primo/access"
-import {
-  primoModel,
-  primoGenerationLimits,
-  QWEN_MODEL,
-} from "@/lib/primo/model"
+import { primoModel, primoGenerationLimits } from "@/lib/primo/model"
 import {
   fitPrimoMessages,
   primoMessageCharacters,
@@ -35,7 +31,6 @@ import {
   sanitizePrimoMessages,
   type PrimoUIMessage,
 } from "@/lib/primo/messages"
-import { primoInstructions } from "@/lib/primo/prompt"
 import { repairPrimoRecipeToolCall } from "@/lib/primo/recipe"
 import { createPrimoTools } from "@/lib/primo/tools"
 import { kitchenToday } from "@/lib/kitchen-tools/server"
@@ -270,14 +265,29 @@ export async function POST(request: Request) {
   const deadline = AbortSignal.timeout(limits.timeoutMs)
   const needsTitle =
     validatedMessages.filter((message) => message.role === "user").length === 1
+  const identity = {
+    version: 1 as const,
+    userId: session.user.id,
+    conversationId: parsed.data.conversationId,
+    turnId: responseMessageId,
+  }
+  const deadlineAt = Date.now() + limits.timeoutMs
   try {
     const result = streamText({
-      model: primoModel(),
-      instructions: primoInstructions(await kitchenToday(), {
+      model: primoModel({
+        ...identity,
+        task: "chat",
+        deadlineAt,
+        today: await kitchenToday(),
         recipeRef: parsed.data.recipeRef,
         productRef: parsed.data.productRef,
         mentions,
-        attachments,
+        attachments: attachments.map(({ id, name, mediaType, coverage }) => ({
+          id,
+          name,
+          mediaType,
+          coverage,
+        })),
       }),
       messages: await convertToModelMessages(modelMessages, {
         tools,
@@ -289,13 +299,10 @@ export async function POST(request: Request) {
       stopWhen: isStepCount(limits.maxSteps),
       maxOutputTokens: limits.maxOutputTokens,
       abortSignal: AbortSignal.any([request.signal, deadline]),
-      providerOptions: {
-        qwen: { enable_thinking: false },
-      },
       onEnd: ({ finishReason }) => {
         console.info("primo_request", {
           requestId,
-          model: QWEN_MODEL,
+          model: "primo",
           durationMs: Date.now() - startedAt,
           finishReason,
           timedOut: deadline.aborted,
@@ -313,6 +320,7 @@ export async function POST(request: Request) {
           result
             .toUIMessageStream<PrimoUIMessage>({
               generateMessageId: () => responseMessageId,
+              onError: () => "Primo is temporarily unavailable. Try again.",
               messageMetadata: ({ part }) =>
                 part.type === "start"
                   ? { createdAt: new Date().toISOString() }
@@ -341,13 +349,17 @@ export async function POST(request: Request) {
         const fallback = primoMessageText(lastUserMessage)
         try {
           const titleResult = await generateText({
-            model: primoModel(),
-            prompt:
-              "Name this kitchen conversation in at most six words, no quotes, no trailing period.\n\n" +
-              fallback,
+            model: primoModel({
+              ...identity,
+              task: "title",
+              deadlineAt: Date.now() + 10_000,
+            }),
+            prompt: fallback,
             maxOutputTokens: 40,
-            abortSignal: AbortSignal.timeout(10_000),
-            providerOptions: { qwen: { enable_thinking: false } },
+            abortSignal: AbortSignal.any([
+              request.signal,
+              AbortSignal.timeout(10_000),
+            ]),
           })
           generatedTitle = cleanTitle(titleResult.text, fallback)
         } catch {
@@ -386,12 +398,12 @@ export async function POST(request: Request) {
           console.error("primo_save_failed", { requestId })
         }
       },
-      onError: () => "Primo couldn't answer that. Try again.",
+      onError: () => "Primo is temporarily unavailable. Try again.",
     })
     return createUIMessageStreamResponse({ stream })
   } catch {
     return NextResponse.json(
-      { error: "Primo couldn't answer that. Try again." },
+      { error: "Primo is temporarily unavailable. Try again." },
       { status: 502 }
     )
   }

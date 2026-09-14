@@ -23,8 +23,6 @@
     "verify": "pnpm --filter @forkluck/web verify",
     "test": "pnpm --filter @forkluck/web test",
     "eval:extraction": "pnpm --filter @forkluck/web eval:extraction",
-    "eval:primo": "pnpm --filter @forkluck/web eval:primo",
-    "eval:primo:attachments": "pnpm --filter @forkluck/web eval:primo:attachments",
     "test:components": "pnpm --filter @forkluck/web test:components",
     "test:acceptance": "pnpm --filter @forkluck/web test:acceptance",
     "test:acceptance:ui": "pnpm --filter @forkluck/web test:acceptance:ui",
