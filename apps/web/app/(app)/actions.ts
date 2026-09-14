@@ -11,9 +11,9 @@ import type { PrimoConversationSummary } from "@/lib/backend/types"
 import {
   KITCHEN_TOOL_NAMES,
   type KitchenToolName,
-} from "@/lib/primo/kitchen-tools"
-import type { KitchenToolResult } from "@/lib/primo/kitchen-tool-results"
-import { runKitchenTool } from "@/lib/primo/tools"
+} from "@/lib/kitchen-tools/catalog"
+import type { KitchenToolResult } from "@/lib/kitchen-tools/results"
+import { runKitchenTool } from "@/lib/kitchen-tools/server"
 
 export async function loadIngredientOptions() {
   await requireUser()

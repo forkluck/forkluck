@@ -8,7 +8,7 @@ import { getBusinessSettings } from "@/lib/backend/queries"
 import { billingLocked, readOnlyNotice } from "@/lib/billing"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import { primoAvailable } from "@/lib/primo/access"
-import { kitchenToolDescriptors } from "@/lib/primo/kitchen-tools"
+import { kitchenToolDescriptors } from "@/lib/kitchen-tools/catalog"
 
 export default async function AppLayout({
   children,

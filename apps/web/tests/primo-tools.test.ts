@@ -39,8 +39,9 @@ vi.mock("@/lib/backend/queries", () => ({
     mocks.getProductDetail(productRef, start, end),
 }))
 
-const { createPrimoTools, projectCostDiff, runKitchenTool } =
-  await import("@/lib/primo/tools")
+const { createPrimoTools } = await import("@/lib/primo/tools")
+const { projectCostDiff, runKitchenTool } =
+  await import("@/lib/kitchen-tools/server")
 
 const recipeRef = "rcp_0123456789ab"
 const productRef = "prd_0123456789ab"
@@ -239,7 +240,7 @@ beforeEach(() => {
 
 afterEach(() => vi.useRealTimers())
 
-describe("Primo kitchen tools", () => {
+describe("Kitchen tools and Primo adapter", () => {
   it("keeps one projected cost-diff shape", () => {
     const value = costDiff()
     value.lines = Array.from({ length: 45 }, (_, index) => ({

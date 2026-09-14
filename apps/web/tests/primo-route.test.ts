@@ -30,6 +30,8 @@ vi.mock("@/lib/primo/model", async (importOriginal) => ({
 }))
 vi.mock("@/lib/primo/tools", () => ({
   createPrimoTools: (context: unknown) => mocks.createTools(context),
+}))
+vi.mock("@/lib/kitchen-tools/server", () => ({
   kitchenToday: () => mocks.kitchenToday(),
 }))
 vi.mock("ai", async (importOriginal) => {

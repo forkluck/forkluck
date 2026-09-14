@@ -39,16 +39,16 @@ import {
   MessageScrollerItem,
 } from "@/components/ui/message-scroller"
 import type { RecipeCostDiff } from "@/lib/backend/types"
-import { KITCHEN_TOOL_ACTION_LINES } from "@/lib/primo/kitchen-tool-client"
+import { KITCHEN_TOOL_ACTION_LINES } from "@/lib/kitchen-tools/client"
 import type {
   FindProductsResult,
   FindRecipesResult,
   KitchenToolFailure,
   ProductSalesResult,
   RecipeBatchResult,
-} from "@/lib/primo/kitchen-tool-results"
+} from "@/lib/kitchen-tools/results"
 import { primoMessageText, type PrimoMention } from "@/lib/primo/messages"
-import type { PrimoRecipeDraft } from "@/lib/primo/recipe"
+import type { RecipeDraft } from "@/lib/recipe/draft"
 import { formatCents, quantityFormat } from "@/lib/money"
 import { cn } from "@/lib/utils"
 import { useBusinessSettings } from "@/components/business-settings-provider"
@@ -467,7 +467,7 @@ export function PrimoConversation({
                       return (
                         <PrimoRecipeDraftCard
                           key={part.toolCallId}
-                          draft={output as PrimoRecipeDraft}
+                          draft={output as RecipeDraft}
                         />
                       )
                     }

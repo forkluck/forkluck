@@ -4,7 +4,7 @@ import {
   KITCHEN_TOOLS,
   KITCHEN_TOOL_NAMES,
   kitchenToolDescriptors,
-} from "@/lib/primo/kitchen-tools"
+} from "@/lib/kitchen-tools/catalog"
 
 function schemaDescriptions(value: unknown): string[] {
   if (!value || typeof value !== "object") return []

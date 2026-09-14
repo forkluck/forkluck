@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest"
 import { MockLanguageModelV4 } from "ai/test"
 import { tool } from "ai"
 import { z } from "zod"
-import { primoRecipeDraftSchema } from "@/lib/primo/recipe"
+import { recipeDraftSchema } from "@/lib/recipe/draft"
 
 // Exercise the real AI SDK and SSE lifecycle; only the provider and persistence
 // are fake. Mocking streamText itself cannot reproduce a mid-tool interruption.
@@ -26,8 +26,10 @@ vi.mock("@/lib/primo/model", async (original) => ({
 vi.mock("@/lib/primo/attachment-server", () => ({
   primoAttachmentManifest: async () => [],
 }))
-vi.mock("@/lib/primo/tools", () => ({
+vi.mock("@/lib/kitchen-tools/server", () => ({
   kitchenToday: async () => "2026-09-05",
+}))
+vi.mock("@/lib/primo/tools", () => ({
   createPrimoTools: () => ({
     read_attachment: tool({
       inputSchema: z.object({}),
@@ -37,7 +39,7 @@ vi.mock("@/lib/primo/tools", () => ({
       }),
     }),
     draft_recipe: tool({
-      inputSchema: primoRecipeDraftSchema,
+      inputSchema: recipeDraftSchema,
       execute: async (input) => input,
     }),
   }),

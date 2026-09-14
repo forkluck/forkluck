@@ -37,8 +37,9 @@ import {
 } from "@/lib/primo/messages"
 import { primoInstructions } from "@/lib/primo/prompt"
 import { repairPrimoRecipeToolCall } from "@/lib/primo/recipe"
-import { createPrimoTools, kitchenToday } from "@/lib/primo/tools"
-import { PRODUCT_REF, RECIPE_REF } from "@/lib/primo/kitchen-tools"
+import { createPrimoTools } from "@/lib/primo/tools"
+import { kitchenToday } from "@/lib/kitchen-tools/server"
+import { PRODUCT_REF, RECIPE_REF } from "@/lib/kitchen-tools/catalog"
 
 export const maxDuration = 100
 

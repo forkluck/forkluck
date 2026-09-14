@@ -1,4 +1,4 @@
-import type { KitchenToolDescriptor } from "@/lib/primo/kitchen-tools"
+import type { KitchenToolDescriptor } from "@/lib/kitchen-tools/catalog"
 
 type ModelContextTool = KitchenToolDescriptor & {
   execute: (
