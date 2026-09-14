@@ -183,7 +183,7 @@ function BatchLine({ result }: { result: RecipeBatchResult }) {
       : `${quantityFormat.format(result.portions)} portions`,
     result.cost
       ? `${formatCents(result.cost.ingredientTotalCents, result.cost.currencyCode)} batch`
-      : null,
+      : "cost unavailable",
     result.cost?.portionCostCents === null || !result.cost
       ? null
       : `${formatCents(result.cost.portionCostCents, result.cost.currencyCode)} per portion`,
