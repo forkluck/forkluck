@@ -194,6 +194,7 @@ describe("Primo conversation", () => {
     expect(screen.getByText(/Mooncake · Aug 1/)).toBeDefined()
     expect(screen.getByText(/Mooncake at 50x/)).toBeDefined()
     expect(screen.getByText(/preview ready/)).toBeDefined()
+    expect(screen.getByText(/cost unavailable/)).toBeDefined()
     expect(
       screen
         .getByRole("link", { name: "View batch preview" })

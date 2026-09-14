@@ -2740,7 +2740,7 @@ Conversation list `q` searches titles with existing page/limit semantics.
 | Conversation lifecycle | Loading, missing and failed chats cannot submit; stale loads cannot replace the selected chat |
 | History reads | Stable authenticated HTTP reads survive deployment action-ID changes; dates revive without mutating source/tool data; 401/404/backend/network errors stay distinct from empty lists, with retry on desktop and mobile |
 | Navigation | New and restored tool results never navigate; only explicit guarded links leave the page |
-| Batch previews | Primo prepares a preview and offers “View batch preview”; it cannot claim the open page changed. WebMCP retains its explicit navigation behavior. Portion and multiplier inputs keep the same precedence and owner-scoped cost visibility |
+| Batch previews | Primo prepares a preview and offers “View batch preview”; it cannot claim the open page changed. A null cost always displays “cost unavailable” in the result, independently of model prose. WebMCP retains its explicit navigation behavior. Portion and multiplier inputs keep the same precedence and owner-scoped cost visibility |
 | Cost delta precision | Complete and comparable totals, and individual cost-history lines, retain cents and the kitchen currency, including positive/negative changes below one dollar and unsigned zero. Menu summary deltas keep whole-money formatting |
 | Persistence | Ready attachments bind atomically with the user message; incomplete files cannot send; feedback survives transcript retries |
 | Deletion | Conversation deletion invalidates file access immediately; persisted cleanup records retry blob deletion outside the transaction |
