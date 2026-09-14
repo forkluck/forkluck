@@ -8,7 +8,7 @@
  * screen's "−1.4%" and another's "-1.4%" did not match.
  */
 
-import { formatWholeCents } from "@/lib/money"
+import { formatCents, formatWholeCents } from "@/lib/money"
 
 const MINUS = "−"
 
@@ -38,8 +38,17 @@ export function formatSignedPoints(points: number): string {
   return `${withRealMinus(signedPoints.format(points))} pt`
 }
 
-/** `+$1,204` / `−$38` / `$0` — a money delta beside the figure it moved. */
-export function formatSignedCents(cents: number, currencyCode = "USD"): string {
-  const formatted = withRealMinus(formatWholeCents(cents, currencyCode))
-  return cents > 0 ? `+${formatted}` : formatted
+/** Whole money for summary cards; cents for exact cost comparisons. */
+export function formatSignedCents(
+  cents: number,
+  currencyCode = "USD",
+  precision: "whole" | "cents" = "whole"
+): string {
+  const amount = Math.round(cents) || 0
+  const formatted = withRealMinus(
+    precision === "cents"
+      ? formatCents(amount, currencyCode)
+      : formatWholeCents(amount, currencyCode)
+  )
+  return amount > 0 ? `+${formatted}` : formatted
 }

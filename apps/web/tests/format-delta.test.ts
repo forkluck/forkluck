@@ -19,4 +19,16 @@ describe("formatSignedCents", () => {
   it("follows the workspace currency", () => {
     expect(formatSignedCents(120400, "EUR")).toBe("+€1,204")
   })
+
+  it.each([
+    [1, "USD", "+$0.01"],
+    [-1, "USD", "−$0.01"],
+    [-38, "USD", "−$0.38"],
+    [0, "USD", "$0.00"],
+    [-0, "USD", "$0.00"],
+    [120438, "EUR", "+€1,204.38"],
+    [-38, "EUR", "−€0.38"],
+  ])("preserves exact cost delta %s in %s", (cents, currency, expected) => {
+    expect(formatSignedCents(cents, currency, "cents")).toBe(expected)
+  })
 })

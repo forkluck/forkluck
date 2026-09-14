@@ -47,6 +47,58 @@ function emptyResult(
 }
 
 describe("Primo result card", () => {
+  it.each([
+    [true, -1, "USD", "−$0.01"],
+    [false, -38, "USD", "−$0.38"],
+    [true, 38, "EUR", "+€0.38"],
+    [false, 1, "EUR", "+€0.01"],
+  ])(
+    "preserves cents in complete=%s totals and lines",
+    (complete, delta, currency, expected) => {
+      const result = emptyResult(null)
+      result.currencyCode = currency
+      result.priceChangesInWindow = 1
+      result.totals.fromComplete = complete
+      result.totals.toComplete = complete
+      result.totals.deltaCents = complete ? delta : null
+      result.totals.comparableDeltaCents = delta
+      result.lines = [
+        {
+          itemId: "synthetic-line",
+          kind: "ingredient",
+          name: "Synthetic flour",
+          ingredientPublicId: null,
+          status: "comparable",
+          basis: { quantity: 100, unit: "g", efficiency: 1, preparation: null },
+          from: {
+            status: "priced",
+            costCents: 100,
+            unitCostCents: 1,
+            effectiveAt: null,
+            source: null,
+            supplier: null,
+          },
+          to: {
+            status: "priced",
+            costCents: 100 + delta,
+            unitCostCents: 1,
+            effectiveAt: null,
+            source: null,
+            supplier: null,
+          },
+          deltaCents: delta,
+        },
+      ]
+      render(<PrimoResultCard result={result} onSuggestion={vi.fn()} />)
+      expect(screen.getAllByText(expected)).toHaveLength(2)
+      expect(
+        screen.getByText(
+          complete ? "Recipe cost change" : "Comparable-line change"
+        )
+      ).toBeDefined()
+    }
+  )
+
   it("makes the resolved default period and current-recipe basis explicit", () => {
     render(
       <PrimoResultCard result={emptyResult(null)} onSuggestion={vi.fn()} />
