@@ -177,7 +177,7 @@ function SalesLine({ result }: { result: ProductSalesResult }) {
 
 function BatchLine({ result }: { result: RecipeBatchResult }) {
   const details = [
-    `${result.recipe.title} at ${result.label}`,
+    `${result.recipe.title} at ${result.label} · preview ready`,
     result.portions === null
       ? null
       : `${quantityFormat.format(result.portions)} portions`,
@@ -378,15 +378,17 @@ export function PrimoConversation({
                         )
                       }
                       let line =
-                        toolName in KITCHEN_TOOL_ACTION_LINES
-                          ? KITCHEN_TOOL_ACTION_LINES[
-                              toolName as keyof typeof KITCHEN_TOOL_ACTION_LINES
-                            ]
-                          : toolName === "search_usda_foods"
-                            ? "Searching USDA FoodData Central…"
-                            : toolName === "read_attachment"
-                              ? "Reading attachment…"
-                              : "Preparing a recipe draft…"
+                        toolName === "show_recipe_batch"
+                          ? "Preparing batch preview…"
+                          : toolName in KITCHEN_TOOL_ACTION_LINES
+                            ? KITCHEN_TOOL_ACTION_LINES[
+                                toolName as keyof typeof KITCHEN_TOOL_ACTION_LINES
+                              ]
+                            : toolName === "search_usda_foods"
+                              ? "Searching USDA FoodData Central…"
+                              : toolName === "read_attachment"
+                                ? "Reading attachment…"
+                                : "Preparing a recipe draft…"
                       if (
                         toolName === "show_recipe_batch" &&
                         "input" in part &&
@@ -395,7 +397,7 @@ export function PrimoConversation({
                         "portions" in part.input &&
                         typeof part.input.portions === "number"
                       ) {
-                        line = `Scaling to ${quantityFormat.format(part.input.portions)} portions…`
+                        line = `Preparing a preview for ${quantityFormat.format(part.input.portions)} portions…`
                       }
                       return (
                         <Marker key={part.toolCallId} live>
@@ -505,9 +507,11 @@ export function PrimoConversation({
                         className="inline-flex h-8 items-center gap-2 rounded-lg border border-border px-3 text-sm"
                       >
                         <ArrowUpRight className="size-4" aria-hidden="true" />
-                        {output.view.startsWith("/recipes/")
-                          ? "Open recipe"
-                          : "Open product"}
+                        {getToolName(part) === "show_recipe_batch"
+                          ? "View batch preview"
+                          : output.view.startsWith("/recipes/")
+                            ? "Open recipe"
+                            : "Open product"}
                       </GuardedLink>
                     )
                   })}

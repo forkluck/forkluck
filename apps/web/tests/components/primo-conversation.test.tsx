@@ -33,6 +33,9 @@ vi.mock("@/app/(app)/actions", () => ({ runKitchenToolAction: vi.fn() }))
 vi.mock("@/app/(app)/recipes/actions", () => ({
   createRecipeFromDraft: vi.fn(),
 }))
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}))
 
 import { PrimoConversation } from "@/components/primo/primo-conversation"
 
@@ -169,6 +172,7 @@ describe("Primo conversation", () => {
               label: "50x",
               portions: 600,
               cost: null,
+              view: "/recipes/rcp_0123456789ab/cost?batch=50",
             },
           },
           {
@@ -189,6 +193,12 @@ describe("Primo conversation", () => {
     render(<PrimoConversation userName="Ada" />)
     expect(screen.getByText(/Mooncake · Aug 1/)).toBeDefined()
     expect(screen.getByText(/Mooncake at 50x/)).toBeDefined()
+    expect(screen.getByText(/preview ready/)).toBeDefined()
+    expect(
+      screen
+        .getByRole("link", { name: "View batch preview" })
+        .getAttribute("href")
+    ).toBe("/recipes/rcp_0123456789ab/cost?batch=50")
     expect(
       screen.getByText("Only the recipe's owner can compare its cost history.")
     ).toBeDefined()
@@ -218,7 +228,9 @@ describe("Primo conversation", () => {
     ]
     render(<PrimoConversation userName="Ada" />)
     expect(screen.getByText("Reading sales…")).toBeDefined()
-    expect(screen.getByText("Scaling to 600 portions…")).toBeDefined()
+    expect(
+      screen.getByText("Preparing a preview for 600 portions…")
+    ).toBeDefined()
   })
 
   it("sends ambiguity choices as a bound mention", () => {

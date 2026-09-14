@@ -92,7 +92,7 @@ export function PrimoResultCard({
               <p className="mt-1 font-heading text-2xl leading-8 font-semibold tracking-tight text-foreground">
                 {delta === null
                   ? "Incomplete"
-                  : formatSignedCents(delta, result.currencyCode)}
+                  : formatSignedCents(delta, result.currencyCode, "cents")}
               </p>
             </div>
             {complete &&
@@ -139,7 +139,11 @@ export function PrimoResultCard({
                     </p>
                   </div>
                   <span className="shrink-0 text-md leading-5 font-medium text-foreground tabular-nums">
-                    {formatSignedCents(line.deltaCents!, result.currencyCode)}
+                    {formatSignedCents(
+                      line.deltaCents!,
+                      result.currencyCode,
+                      "cents"
+                    )}
                   </span>
                 </div>
               </div>

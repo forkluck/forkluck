@@ -58,7 +58,10 @@ export function createPrimoTools(context: {
   const kitchenTool = (name: KitchenToolName) => {
     const entry = KITCHEN_TOOLS[name]
     return tool({
-      description: entry.description,
+      description:
+        name === "show_recipe_batch"
+          ? "Prepare a temporary batch preview for one exact recipe at a requested portion count or multiplier. Return its preview link; the user must open it. This does not navigate or save anything."
+          : entry.description,
       inputSchema: entry.inputSchema,
       execute: async (input: Record<string, unknown>) => {
         if (
