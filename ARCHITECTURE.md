@@ -60,8 +60,8 @@ History is shown only when the user opens Recents. Home and rail use the same
 named header; expand
 navigates to Home without replacing the shared provider or interrupting work.
 Read-only results are explained once in the assistant answer, with guarded
-report links and a collapsed execution receipt. Recipe drafts retain their
-explicit review/create panel. A completed read without a following answer
+report links. Recipe drafts retain their explicit review/create panel.
+A completed read without a following answer
 shows response recovery instead of a second data display.
 
 ## A read
