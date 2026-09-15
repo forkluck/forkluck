@@ -49,9 +49,7 @@ for (const width of [1280, 390]) {
             : { items: [conversation], meta: { pagination: { next: null } } },
       })
     })
-    await page
-      .getByRole("button", { name: "Recent chats", exact: true })
-      .click()
+    await page.getByRole("button", { name: /^Recent chats/ }).click()
     const recent = page.getByRole("dialog", {
       name: "Recent chats",
       exact: true,
@@ -82,9 +80,7 @@ for (const width of [1280, 390]) {
     await expect(
       other.getByRole("heading", { name: "How can I help in the kitchen?" })
     ).toBeVisible()
-    await other
-      .getByRole("button", { name: "Recent chats", exact: true })
-      .click()
+    await other.getByRole("button", { name: /^Recent chats/ }).click()
     await expect(
       other
         .getByRole("dialog", { name: "Recent chats", exact: true })

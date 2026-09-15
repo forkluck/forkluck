@@ -367,7 +367,7 @@ export function PrimoRecent({ title }: { title?: string }) {
     <>
       <Button
         variant="ghost"
-        aria-label="Recent chats"
+        aria-label={title ? `Recent chats: ${title}` : "Recent chats"}
         className={
           title
             ? "mr-auto min-w-0 justify-start text-foreground"

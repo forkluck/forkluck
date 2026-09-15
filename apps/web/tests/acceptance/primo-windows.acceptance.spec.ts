@@ -20,9 +20,7 @@ test("fresh windows share saved Recents but keep selection and unfinished drafts
   await expect(calculation).toBeVisible()
   await expect(page.getByRole("button", { name: "Stop Primo" })).toHaveCount(0)
   const title = (
-    await page
-      .getByRole("button", { name: "Recent chats", exact: true })
-      .innerText()
+    await page.getByRole("button", { name: /^Recent chats/ }).innerText()
   ).trim()
   expect(title).not.toBe("Primo")
   await composer.fill("Only window A")
@@ -90,7 +88,7 @@ test("the rail expands into Home with its named conversation and composer intact
   ).toBeVisible()
   await expect(page.getByRole("button", { name: "Stop Primo" })).toHaveCount(0)
   const title = await page
-    .getByRole("button", { name: "Recent chats", exact: true })
+    .getByRole("button", { name: /^Recent chats/ })
     .innerText()
   await page
     .getByRole("textbox", { name: "Message Primo" })
@@ -98,9 +96,9 @@ test("the rail expands into Home with its named conversation and composer intact
   await page.getByRole("link", { name: "Ingredients", exact: true }).click()
   await page.getByRole("button", { name: "Open Primo", exact: true }).click()
   const rail = page.getByRole("complementary", { name: "Primo" })
-  await expect(
-    rail.getByRole("button", { name: "Recent chats", exact: true })
-  ).toHaveText(title)
+  await expect(rail.getByRole("button", { name: /^Recent chats/ })).toHaveText(
+    title
+  )
   await expect(
     rail.getByRole("textbox", { name: "Message Primo" })
   ).toHaveValue("Draft follows the surface")

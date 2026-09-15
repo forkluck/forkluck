@@ -96,3 +96,11 @@ it("keeps delete confirmation pending, shows failure inside it, and removes the 
   expect(screen.queryByRole("button", { name: row.title })).toBeNull()
   expect(screen.getByText("Chat deleted")).toBeDefined()
 })
+
+it("announces the visible active title together with the history action", () => {
+  render(<PrimoRecent title="Chocolate cookie costs" />)
+  expect(
+    screen.getByRole("button", { name: "Recent chats: Chocolate cookie costs" })
+      .textContent
+  ).toBe("Chocolate cookie costs")
+})
