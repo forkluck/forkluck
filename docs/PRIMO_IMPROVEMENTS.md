@@ -61,3 +61,7 @@ The generation token is stored in existing message metadata; no table or schema
 migration. Deploy the additive private allowlist first, public app second;
 rollback in reverse order. Live model evaluations are outcome checks, while
 synthetic browser fixtures independently verify routing, persistence and UI.
+Browser acceptance runs the general app, Primo (`FORKLUCK_ACCEPTANCE_PRIMO=gateway`),
+and unconfigured app (`FORKLUCK_ACCEPTANCE_PRIMO=0`) in separate fresh databases.
+All scenarios retain the production login limits; this keeps unrelated test
+sign-ins from exhausting one shared loopback IP's quota.

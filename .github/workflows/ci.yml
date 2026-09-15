@@ -261,7 +261,7 @@ jobs:
             next-acceptance-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm --filter @forkluck/web exec playwright install --with-deps chromium
       - run: pnpm test:acceptance
-      - name: Primo gateway photo, draft and outage flows
+      - name: Primo conversations, kitchen tools, photos and outage flows
         run: FORKLUCK_ACCEPTANCE_PRIMO=gateway pnpm test:acceptance
       - name: Public app without Primo (invoice AI still configured)
         run: FORKLUCK_ACCEPTANCE_PRIMO=0 pnpm test:acceptance

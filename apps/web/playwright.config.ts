@@ -20,17 +20,17 @@ const connectorURL = `http://127.0.0.1:${connectorPort}`
 
 export default defineConfig({
   testDir: "./tests/acceptance",
-  // Each gateway scenario gets a fresh synthetic database. The general suite
-  // already approaches the production login quota for its shared loopback IP.
+  // Run Primo in its own fresh synthetic database so independent browser cases
+  // do not exhaust the production login quota for their shared loopback IP.
   ...(primoScenario === "0"
     ? { testMatch: "**/primo-unconfigured.acceptance.spec.ts" }
     : primoScenario === "gateway"
-      ? { testMatch: "**/primo-gateway.acceptance.spec.ts" }
+      ? {
+          testMatch: "**/primo*.acceptance.spec.ts",
+          testIgnore: "**/primo-unconfigured.acceptance.spec.ts",
+        }
       : {
-          testIgnore: [
-            "**/primo-unconfigured.acceptance.spec.ts",
-            "**/primo-gateway.acceptance.spec.ts",
-          ],
+          testIgnore: "**/primo*.acceptance.spec.ts",
         }),
   outputDir: "output/playwright/test-results",
   fullyParallel: false,
