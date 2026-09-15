@@ -75,7 +75,7 @@ import {
   NavigationBlockerProvider,
   useNavigationBlocker,
 } from "@/components/navigation-blocker"
-import { PrimoResultCard } from "@/components/primo/primo-result-card"
+import { PrimoCostLinks } from "@/components/primo/primo-cost-links"
 import { RecipeEditor } from "@/components/recipe-editor"
 import { RecipeChrome } from "@/components/recipes/recipe-chrome"
 import type { RecipeCostDiff, RecipeDetail } from "@/lib/backend/types"
@@ -187,7 +187,7 @@ function dirtyRecipeScreen() {
           tagOptions={[]}
         />
       </RecipeChrome>
-      <PrimoResultCard result={COST_DIFF} onSuggestion={vi.fn()} />
+      <PrimoCostLinks result={COST_DIFF} onSuggestion={vi.fn()} />
     </NavigationBlockerProvider>
   )
   fireEvent.change(screen.getByLabelText("Description"), {

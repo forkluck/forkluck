@@ -61,7 +61,7 @@ import {
   NavigationBlockerProvider,
   useNavigationBlocker,
 } from "@/components/navigation-blocker"
-import { PrimoResultCard } from "@/components/primo/primo-result-card"
+import { PrimoCostLinks } from "@/components/primo/primo-cost-links"
 import type { InvoiceDetail } from "@/lib/backend/schemas"
 import type { RecipeCostDiff } from "@/lib/backend/types"
 
@@ -167,7 +167,7 @@ function dirtyInvoiceScreen() {
           currentUserId="user-1"
         />
       </InvoiceChrome>
-      <PrimoResultCard result={COST_DIFF} onSuggestion={vi.fn()} />
+      <PrimoCostLinks result={COST_DIFF} onSuggestion={vi.fn()} />
     </NavigationBlockerProvider>
   )
   fireEvent.change(screen.getByLabelText("Number"), {

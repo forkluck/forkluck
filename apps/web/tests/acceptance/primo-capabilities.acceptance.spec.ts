@@ -57,7 +57,7 @@ test("reopened drafts preserve their method and notes across real server tool re
   ).toHaveCount(3)
 })
 
-test("batch calculations and Home starters return inspectable cards and report links", async ({
+test("batch calculations and Home starters show one answer with report links", async ({
   page,
 }) => {
   await signIn(page)
@@ -66,19 +66,21 @@ test("batch calculations and Home starters return inspectable cards and report l
     .fill("Calculate batch fixture")
   await page.getByRole("button", { name: "Send message" }).click()
   await expect(
-    page.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    page.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
-  await expect(page.getByText("$2.875", { exact: true })).toBeVisible()
-  await expect(page.getByText("$2.88", { exact: true })).toBeVisible()
+  await expect(
+    page.getByRole("heading", { name: /Hypothetical batch costs/ })
+  ).toHaveCount(0)
   await page.getByRole("button", { name: "New chat", exact: true }).click()
   await page
     .getByRole("button", {
       name: "Which three products had the most net sales last month?",
     })
     .click()
-  await expect(
-    page.getByRole("heading", { name: /Top products/ })
-  ).toBeVisible()
+  await expect(page.getByText(/^Top products for /)).toBeVisible()
   await expect(
     page.getByRole("link", { name: "View sales report" })
   ).toHaveAttribute("href", "/analytics?start=2026-08-01&end=2026-08-31")
@@ -87,7 +89,7 @@ test("batch calculations and Home starters return inspectable cards and report l
     .getByRole("button", { name: "What changed in ingredient costs?" })
     .click()
   await expect(
-    page.getByRole("heading", { name: /Ingredient price changes/ })
+    page.getByText(/^Ingredient price observations for /)
   ).toBeVisible()
   await expect(
     page.getByRole("link", { name: "Open ingredients" })
@@ -124,7 +126,10 @@ test("editing an earlier question replaces the saved tail and preserves an unsen
     .fill("Calculate batch fixture")
   await page.getByRole("button", { name: "Save and resend" }).click()
   await expect(
-    page.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    page.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
   await expect(
     page.getByRole("textbox", { name: "Edit question" })
@@ -138,7 +143,10 @@ test("editing an earlier question replaces the saved tail and preserves an unsen
   ).toBeVisible()
   await page.reload()
   await expect(
-    page.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    page.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
   await expect(
     page.getByRole("heading", { name: "Synthetic butter cookies" })

@@ -15,7 +15,8 @@ live checks do not save business records.
   in two windows and verify both independent drafts after reload.
 - Home and rail share a named history header. Expanding the rail into Home keeps
   the conversation and draft. Loading saved history does not flash a new-chat
-  greeting. Fresh Home offers recent shortcuts and refreshes on window focus.
+  greeting. Saved conversations are available through the explicitly opened
+  Recents dialog. Fresh Home has no history shortcuts.
 - Rename, archive and delete show pending state until acceptance. Failed deletion
   keeps its confirmation open and shows the error there; successful mutation
   updates rows, closes the editor/confirmation, then reports completion.
@@ -28,7 +29,7 @@ live checks do not save business records.
 | Boundary | Expected behavior | Verification |
 | --- | --- | --- |
 | HTTP rejection before save | Restore unsent text, mentions and files; remove optimistic message; composer is the recovery path | Provider/composer tests and browser acceptance |
-| Save succeeds; later HTTP or SSE failure | Acknowledge the user ID; keep the question and successful result cards; do not restore it as unsent | Route, real SDK stream, provider and browser tests |
+| Save succeeds; later HTTP or SSE failure | Acknowledge the user ID; keep the question, recipe drafts and report links; do not restore it as unsent | Route, real SDK stream, provider and browser tests |
 | Lost response / unknown save outcome | Keep the question for retry with the same ID; do not claim it was unsent | Provider transport matrix; stable response identity route tests |
 | Retry | Same user/answer identity; a newly typed draft is preserved | Browser acceptance and route identity tests |
 | Repaired tool | A successful retry of the same input replaces its earlier failed status; a different recipe or period cannot mask it | Tool status matrix, real SDK repair and component tests |
@@ -83,3 +84,17 @@ Browser acceptance runs the general app, Primo (`FORKLUCK_ACCEPTANCE_PRIMO=gatew
 and unconfigured app (`FORKLUCK_ACCEPTANCE_PRIMO=0`) in separate fresh databases.
 All scenarios retain the production login limits; this keeps unrelated test
 sign-ins from exhausting one shared loopback IP's quota.
+
+## Answer presentation
+
+- Sales, cost comparisons, ingredient prices, calculations and USDA reads appear
+  once in the written answer, without a second bordered data box. The private
+  service supplies the requested figures, period, units and coverage in prose.
+- Report links and comparison follow-ups stay usable; recipe drafts retain the
+  explicit Create recipe action. A read without a following answer stays retryable.
+- Component cases cover every read type with a complete answer and a preamble-only
+  interruption. Browser acceptance covers saved/reopened answers, editing,
+  window isolation and access through Recents.
+- Deploy the private answer instructions and public presentation change together.
+  No protocol, persistence or migration changes. Live verification is left to the
+  owner for this release, as requested.

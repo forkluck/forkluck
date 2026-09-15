@@ -8,7 +8,6 @@ import {
   Plus,
   Check,
   ChevronDown,
-  ArrowUpRight,
 } from "lucide-react"
 import { listPrimoConversations } from "@/lib/primo/conversations"
 import { usePrimo } from "@/components/primo/primo-provider"
@@ -402,95 +401,5 @@ export function PrimoRecent({ title }: { title?: string }) {
         </DialogContent>
       </Dialog>
     </>
-  )
-}
-
-export function PrimoRecentPreview() {
-  const { selectConversation, conversationId } = usePrimo()
-  const [rows, setRows] = React.useState<PrimoConversationSummary[]>([])
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState(false)
-  const [revision, reload] = React.useReducer((n) => n + 1, 0)
-  React.useEffect(() => {
-    let current = true
-    void listPrimoConversations()
-      .then((result) => {
-        if (!current) return
-        setError("error" in result)
-        if (!("error" in result)) setRows(result.items.slice(0, 3))
-      })
-      .catch(() => {
-        if (current) setError(true)
-      })
-      .finally(() => {
-        if (current) setLoading(false)
-      })
-    return () => {
-      current = false
-    }
-  }, [conversationId, revision])
-  React.useEffect(() => {
-    const refresh = () => {
-      if (document.visibilityState === "visible") {
-        setLoading(true)
-        reload()
-      }
-    }
-    window.addEventListener("focus", refresh)
-    document.addEventListener("visibilitychange", refresh)
-    return () => {
-      window.removeEventListener("focus", refresh)
-      document.removeEventListener("visibilitychange", refresh)
-    }
-  }, [])
-  if (!loading && !error && !rows.length) return null
-  return (
-    <section
-      aria-label="Recent conversations"
-      className="mx-4 mb-6 border-t border-border pt-3 max-md:group-has-[textarea:focus]/primo:hidden"
-    >
-      <h2 className="mb-1 text-xs font-medium text-muted-foreground">
-        Pick up where you left off
-      </h2>
-      {error ? (
-        <Button
-          variant="ghost"
-          size="sm"
-          pending={loading}
-          onClick={() => {
-            setLoading(true)
-            reload()
-          }}
-        >
-          Couldn’t load recent chats. Retry
-        </Button>
-      ) : loading && !rows.length ? (
-        <Spinner delayed size="sm" label="Loading recent chats" />
-      ) : (
-        <ul>
-          {rows.map((row) => (
-            <li key={row.id}>
-              <button
-                type="button"
-                className="flex min-h-9 w-full items-center gap-2 rounded-lg px-1 py-2 text-left text-sm text-ink-soft hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground"
-                onClick={() => selectConversation(row.id)}
-              >
-                <Clock
-                  className="size-4 shrink-0 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span className="flex-1 truncate">
-                  {row.title || "New chat"}
-                </span>
-                <ArrowUpRight
-                  className="size-4 shrink-0 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
   )
 }

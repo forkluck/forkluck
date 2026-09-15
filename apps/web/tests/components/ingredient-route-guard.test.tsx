@@ -78,7 +78,7 @@ import {
   NavigationBlockerProvider,
   useNavigationBlocker,
 } from "@/components/navigation-blocker"
-import { PrimoResultCard } from "@/components/primo/primo-result-card"
+import { PrimoCostLinks } from "@/components/primo/primo-cost-links"
 import type { RecipeCostDiff } from "@/lib/backend/types"
 
 const BUTTER: IngredientFormValues = {
@@ -172,7 +172,7 @@ function dirtyIngredientScreen() {
       <IngredientChrome id="ing-1" name="Butter" publicId="ing_1">
         <Panel />
       </IngredientChrome>
-      <PrimoResultCard result={COST_DIFF} onSuggestion={vi.fn()} />
+      <PrimoCostLinks result={COST_DIFF} onSuggestion={vi.fn()} />
     </NavigationBlockerProvider>
   )
   fireEvent.change(screen.getByLabelText("Name (required)"), {
