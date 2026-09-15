@@ -558,6 +558,13 @@ it.each([
 
     // A preamble before the tool is not a finished answer, including in restored history.
     state.chat.messages[0]!.parts = parts.slice(0, -1)
+    state.chat.status = "streaming"
+    view.rerender(<PrimoConversation userName="Ada" />)
+    expect(screen.getByText("Primo is working on that…")).toBeDefined()
+    expect(
+      screen.queryByText("Results loaded; response interrupted. Try again.")
+    ).toBeNull()
+    state.chat.status = "ready"
     view.rerender(<PrimoConversation userName="Ada" />)
     expect(
       screen.getByText("Results loaded; response interrupted. Try again.")

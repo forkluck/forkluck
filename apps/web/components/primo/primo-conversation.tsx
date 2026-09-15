@@ -212,7 +212,7 @@ function missingReadAnswer(message: PrimoUIMessage) {
   if (message.status === "aborted") return false
   const lastToolIndex = message.parts.findLastIndex(isToolUIPart)
   const part = message.parts[lastToolIndex]
-  if (!part || !isToolUIPart(part)) return false
+  if (!part || !isToolUIPart(part) || !primoToolSucceeded(part)) return false
   return (
     [
       "get_product_sales",
@@ -833,7 +833,13 @@ export function PrimoConversation({
               )}
             </MessageScrollerItem>
           ))}
-          {status === "submitted" || awaitingReply ? <WorkingMarker /> : null}
+          {status === "submitted" ||
+          awaitingReply ||
+          (busy &&
+            lastMessage?.role === "assistant" &&
+            missingReadAnswer(lastMessage)) ? (
+            <WorkingMarker />
+          ) : null}
           {error && lastMessage?.role !== "assistant" ? (
             <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive">
               <p>Primo couldn’t finish this question. Retry to continue.</p>
