@@ -33,7 +33,7 @@ live checks do not save business records.
 | Lost response / unknown save outcome | Keep the question for retry with the same ID; do not claim it was unsent | Provider transport matrix; stable response identity route tests |
 | Retry | Same user/answer identity; a newly typed draft is preserved | Browser acceptance and route identity tests |
 | Repaired tool | A successful retry of the same input replaces its earlier failed status; a different recipe or period cannot mask it | Tool status matrix, real SDK repair and component tests |
-| Terminal tool failure | One response status/retry; safe execution detail under What Primo checked | Component and browser tests |
+| Terminal tool failure | One response status/retry; no execution checklist | Component and browser tests |
 | User Stop / timeout / disconnect | Distinct stopped vs failed status in the UI and persisted history; successful tools retained | Real SDK lifecycle matrix and component tests |
 | Restored conversation | No terminal tool remains animated; recovery matches the live turn | Desktop/mobile/reopened browser acceptance |
 | Conversation switch | A failed send cannot replace the selected conversation's messages; composer drafts remain scoped | Provider guard and existing draft lifetime tests |
