@@ -105,12 +105,12 @@ describe("KitchenToolsWebMcp", () => {
       const result = { ok: true, view: "/recipes/rcp_0123456789ab" }
       mocks.run.mockResolvedValue(result)
       let settled = false
-      const execution = tools[3]
-        .execute({}, { signal: new AbortController().signal })
-        .then((value) => {
-          settled = true
-          return value
-        })
+      const execution = Promise.resolve(
+        tools[3].execute({}, { signal: new AbortController().signal })
+      ).then((value) => {
+        settled = true
+        return value
+      })
       await vi.advanceTimersByTimeAsync(2_900)
       expect(mocks.go).toHaveBeenCalledWith("/recipes/rcp_0123456789ab")
       expect(settled).toBe(false)
