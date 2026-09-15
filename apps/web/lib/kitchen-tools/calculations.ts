@@ -3,9 +3,19 @@ import { z } from "zod"
 const money = z.number().finite().nonnegative().max(1_000_000_000)
 export const batchCalculationSchema = z.strictObject({
   portions: z.number().finite().min(0.000001).max(1_000_000),
-  ingredientCostPerBatch: money,
-  packagingCostPerPortion: money.default(0),
-  otherCostPerBatch: money.default(0),
+  ingredientCostPerBatch: money.describe(
+    "Total ingredient cost for the whole batch. A stated per-portion ingredient cost is the same cost on another basis, not another expense."
+  ),
+  packagingCostPerPortion: money
+    .default(0)
+    .describe(
+      "Only a separately stated packaging cost per portion. Omit if packaging was not mentioned; do not put ingredient/per-portion cost here."
+    ),
+  otherCostPerBatch: money
+    .default(0)
+    .describe(
+      "Only separately stated additional costs, excluding ingredients and packaging. Omit when no additional costs were supplied."
+    ),
   sellingPricePerPortion: money
     .min(0.000001)
     .optional()
