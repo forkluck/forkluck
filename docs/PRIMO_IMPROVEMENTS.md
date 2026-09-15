@@ -1,10 +1,27 @@
 # Primo product improvement acceptance
 
-The September 14 comparison is the baseline. Infrastructure separation and
-exact-cent/preview fixes are already deployed. Remaining delivery is sequenced
-as recovery, draft continuity and calculations, aggregate kitchen reads, then
-prompt editing. Each change uses synthetic fixtures; live checks do not save
-business records.
+The September 14 comparison is the baseline. The implemented behavior covers
+recovery, draft continuity, calculations, aggregate kitchen reads, prompt editing
+and independent conversation windows. Each change uses synthetic fixtures;
+live checks do not save business records.
+
+## Window and surface acceptance
+
+- Fresh browser windows start fresh. The legacy shared active-chat pointer is
+  ignored. Reload restores the same tab, and valid explicit history links win
+  over remembered selection. Stale/missing links recover to a fresh chat.
+- Saved history remains authenticated and shared; unfinished text, mentions and
+  file summaries belong to one tab/user/conversation. Open the same saved chat
+  in two windows and verify both independent drafts after reload.
+- Home and rail share a named history header. Expanding the rail into Home keeps
+  the conversation and draft. Loading saved history does not flash a new-chat
+  greeting. Fresh Home offers recent shortcuts and refreshes on window focus.
+- Rename, archive and delete show pending state until acceptance. Failed deletion
+  keeps its confirmation open and shows the error there; successful mutation
+  updates rows, closes the editor/confirmation, then reports completion.
+- Browser checks cover desktop and mobile recovery, explicit recent selection,
+  independent windows and surface expansion. Component tests cover the storage
+  ownership/precedence matrix and failed/successful history mutations.
 
 ## Turn recovery invariants
 

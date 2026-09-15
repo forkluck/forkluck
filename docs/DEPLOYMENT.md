@@ -518,6 +518,15 @@ Nginx limits the new hostname to 5 requests/second per source IP (burst 20)
 and 16 concurrent requests; Next.js is the caller, so all hosted users share
 its source-IP budget. Tune from observed 429s/latency without changing app limits.
 
+Conversation-window releases only update the public app. No gateway restart,
+credential change or database migration is needed. Reload an existing browser
+tab to use the new bundle. Verify that a new window starts fresh, the previous
+chat is in Recents, each window retains its own unfinished draft on reload, and
+rail expansion keeps the active chat. Server-saved history and attachments keep
+their existing contract. Rolling back the app restores its older window behavior;
+there is no conversation data conversion to undo. Unsent tab-local drafts are
+not migrated into the old shared browser store.
+
 Cutover order:
 
 1. Merge the public kitchen-tool/draft refactor independently.
