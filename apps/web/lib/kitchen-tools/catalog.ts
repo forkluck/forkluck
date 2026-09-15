@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { batchCalculationSchema } from "./calculations"
 
 export const RECIPE_REF = /^rcp_[0-9abcdefghjkmnpqrstvwxyz]{12}$/
 export const PRODUCT_REF = /^prd_[0-9abcdefghjkmnpqrstvwxyz]{12}$/
@@ -11,6 +12,9 @@ export const KITCHEN_TOOL_NAMES = [
   "get_product_sales",
   "show_recipe_batch",
   "get_recipe_cost_change",
+  "calculate_batch_cost",
+  "get_top_products",
+  "get_ingredient_price_changes",
 ] as const
 
 export type KitchenToolName = (typeof KITCHEN_TOOL_NAMES)[number]
@@ -32,6 +36,41 @@ const annotations = {
 } as const
 
 export const KITCHEN_TOOLS: Record<KitchenToolName, KitchenToolEntry> = {
+  get_ingredient_price_changes: {
+    name: "get_ingredient_price_changes",
+    title: "Read ingredient price changes",
+    description:
+      "Compare recorded ingredient prices before a kitchen calendar period with its last recorded prices. Reports normalized unit prices, missing earlier history and incompatible units; never adds per-unit costs across ingredients. Defaults to the last 30 days.",
+    inputSchema: z.strictObject({
+      period: z
+        .string()
+        .trim()
+        .min(4)
+        .max(22)
+        .default("last_30_days")
+        .describe(PERIOD_TEXT),
+    }),
+    annotations,
+  },
+  get_top_products: {
+    name: "get_top_products",
+    title: "Rank product sales",
+    description:
+      "Rank products by net sales for a calendar period using Analytics' including-bundles view. Bundle revenue is allocated to members, never added twice. Products with missing revenue are disclosed and excluded from ranking. This is a read, not a forecast.",
+    inputSchema: z.strictObject({
+      period: z.string().trim().min(4).max(22).describe(PERIOD_TEXT),
+      limit: z.number().int().min(1).max(10).default(3),
+    }),
+    annotations,
+  },
+  calculate_batch_cost: {
+    name: "calculate_batch_cost",
+    title: "Calculate batch costs",
+    description:
+      "Calculate hypothetical batch costs, contribution, margin, markup and a target-margin selling price from explicit assumptions. Monetary amounts are major currency units, ingredient and other costs per batch, packaging and selling price per portion. Without an explicit target margin, preserve the baseline margin. This reads no saved prices and saves nothing.",
+    inputSchema: batchCalculationSchema,
+    annotations,
+  },
   find_recipes: {
     name: "find_recipes",
     title: "Find recipes",

@@ -5,16 +5,20 @@ const currencyFormatters = new Map<string, Intl.NumberFormat>()
 /** `null` for a currency code Intl rejects; the callers then print it plainly. */
 function currencyFormatter(
   currencyCode: string,
-  whole: boolean
+  precision: "whole" | "normal" | "precise"
 ): Intl.NumberFormat | null {
-  const key = whole ? `${currencyCode} whole` : currencyCode
+  const key = `${currencyCode} ${precision}`
   let formatter = currencyFormatters.get(key)
   if (!formatter) {
     try {
       formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: currencyCode,
-        ...(whole ? { maximumFractionDigits: 0 } : {}),
+        ...(precision === "whole"
+          ? { maximumFractionDigits: 0 }
+          : precision === "precise"
+            ? { maximumFractionDigits: 6 }
+            : {}),
       })
     } catch (error) {
       // An unrecognised code is data, not a bug — do not take the screen down.
@@ -27,7 +31,7 @@ function currencyFormatter(
 }
 
 export function formatCents(cents: number, currencyCode = "USD"): string {
-  const formatter = currencyFormatter(currencyCode, false)
+  const formatter = currencyFormatter(currencyCode, "normal")
   if (!formatter)
     return `${currencyCode} ${(Math.round(cents) / 100).toFixed(2)}`
   return formatter.format(Math.round(cents) / 100)
@@ -39,7 +43,7 @@ export function formatCents(cents: number, currencyCode = "USD"): string {
  * totals a user reconciles against.
  */
 export function formatWholeCents(cents: number, currencyCode = "USD"): string {
-  const formatter = currencyFormatter(currencyCode, true)
+  const formatter = currencyFormatter(currencyCode, "whole")
   if (!formatter) return `${currencyCode} ${Math.round(cents / 100)}`
   return formatter.format(Math.round(cents) / 100)
 }
@@ -71,3 +75,14 @@ export const percentFormat = new Intl.NumberFormat("en-US", {
   style: "percent",
   maximumFractionDigits: 1,
 })
+
+/** Unit prices and exact scenario prices can contain fractions of a cent. */
+export function formatPreciseCents(
+  cents: number,
+  currencyCode = "USD"
+): string {
+  return (
+    currencyFormatter(currencyCode, "precise")?.format(cents / 100) ??
+    `${currencyCode} ${cents / 100}`
+  )
+}

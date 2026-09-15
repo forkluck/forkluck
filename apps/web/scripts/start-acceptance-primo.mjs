@@ -89,30 +89,128 @@ const server = createServer(async (request, reply) => {
     const finishedTool = body.messages.some(
       (message) => message.role === "tool"
     )
-    const events = finishedTool
+    const prompt = String(
+      body.messages.findLast((message) => message.role === "user")?.content ??
+        ""
+    )
+    const results = body.messages
+      .filter((message) => message.role === "tool")
+      .map((message) => JSON.parse(message.content))
+    let requestedTool
+    if (prompt.includes("Draft revision fixture") && !finishedTool)
+      requestedTool = {
+        name: "draft_recipe",
+        input: {
+          title: "Synthetic butter cookies",
+          description: "Source: Synthetic.txt. Check the oven temperature.",
+          yield: { amount: 24, unit: "pcs" },
+          ingredients: [
+            { name: "Flour", quantity: 300, unit: "g", preparation: "sifted" },
+            {
+              name: "Butter",
+              quantity: 200,
+              unit: "g",
+              preparation: "softened",
+            },
+            { name: "Sugar", quantity: 100, unit: "g", preparation: "" },
+            {
+              name: "Salt",
+              quantity: 2,
+              unit: "g",
+              preparation: "check amount",
+            },
+          ],
+          steps: [
+            "Cream butter and sugar.",
+            "Mix in flour.",
+            "Stir in salt.",
+            "Bake at 175 C for 12 minutes.",
+          ],
+        },
+      }
+    if (
+      prompt.includes("Halve revision fixture") ||
+      prompt.includes("Salt revision fixture")
+    ) {
+      if (!finishedTool)
+        requestedTool = { name: "read_recipe_draft", input: {} }
+      else if (!results.at(-1)?.changes)
+        requestedTool = {
+          name: "revise_recipe_draft",
+          input: {
+            draftId: results.at(-1)?.draftId,
+            ...(prompt.includes("Halve")
+              ? { yieldAmount: 12 }
+              : { ingredientChanges: [{ index: 3, quantity: 1.5 }] }),
+          },
+        }
+    }
+    if (!finishedTool && prompt.includes("Calculate batch fixture"))
+      requestedTool = {
+        name: "calculate_batch_cost",
+        input: {
+          portions: 24,
+          ingredientCostPerBatch: 18,
+          packagingCostPerPortion: 0.25,
+          sellingPricePerPortion: 2.5,
+          ingredientChangePercent: 20,
+          currencyCode: "USD",
+        },
+      }
+    if (!finishedTool && prompt.includes("Which three products"))
+      requestedTool = {
+        name: "get_top_products",
+        input: { period: "2026-08", limit: 3 },
+      }
+    if (!finishedTool && prompt.includes("What changed in ingredient costs?"))
+      requestedTool = {
+        name: "get_ingredient_price_changes",
+        input: { period: "2026-08" },
+      }
+    const fixtureEvents = requestedTool
       ? [
-          chunk({
-            content:
-              "The recipe draft is ready to review. Nothing has been saved.",
-          }),
-          chunk({}, "stop"),
-        ]
-      : [
           chunk({
             tool_calls: [
               {
                 index: 0,
-                id: "draft-gateway-1",
+                id: `fixture-${requestedTool.name}`,
                 type: "function",
                 function: {
-                  name: "draft_recipe",
-                  arguments: JSON.stringify(draft),
+                  name: requestedTool.name,
+                  arguments: JSON.stringify(requestedTool.input),
                 },
               },
             ],
           }),
           chunk({}, "tool_calls"),
         ]
+      : null
+    const events =
+      fixtureEvents ??
+      (finishedTool
+        ? [
+            chunk({
+              content:
+                "The recipe draft is ready to review. Nothing has been saved.",
+            }),
+            chunk({}, "stop"),
+          ]
+        : [
+            chunk({
+              tool_calls: [
+                {
+                  index: 0,
+                  id: "draft-gateway-1",
+                  type: "function",
+                  function: {
+                    name: "draft_recipe",
+                    arguments: JSON.stringify(draft),
+                  },
+                },
+              ],
+            }),
+            chunk({}, "tool_calls"),
+          ])
     events.push({ ...chunk({}), choices: [], usage })
     reply.writeHead(200, {
       "Content-Type": "text/event-stream",

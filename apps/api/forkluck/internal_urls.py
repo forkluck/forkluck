@@ -81,6 +81,7 @@ urlpatterns = [
     path("newsletter/", internal_get(account_views.internal_newsletter)),
     path("search-index/", internal_get(search_views.search_index)),
     path("ingredients/", internal_get(ingredient_views.ingredients)),
+    path("ingredient-price-changes/", internal_get(ingredient_views.ingredient_price_changes)),
     path(
         "ingredients/<str:ingredient_ref>/",
         internal_get(ingredient_views.ingredient_detail),

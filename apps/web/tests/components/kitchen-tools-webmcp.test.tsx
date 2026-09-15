@@ -125,7 +125,7 @@ describe("KitchenToolsWebMcp", () => {
     expect(mocks.toast.close).toHaveBeenCalledWith("read-toast")
   })
 
-  it("registers five strict read-only tools and aborts them on unmount", () => {
+  it("registers eight strict read-only tools and aborts them on unmount", () => {
     const registrations: Array<{
       tool: Record<string, unknown>
       signal: AbortSignal
@@ -149,6 +149,9 @@ describe("KitchenToolsWebMcp", () => {
       "get_product_sales",
       "show_recipe_batch",
       "get_recipe_cost_change",
+      "calculate_batch_cost",
+      "get_top_products",
+      "get_ingredient_price_changes",
     ])
     for (const { tool, signal } of registrations) {
       expect(tool.annotations).toEqual({
@@ -181,6 +184,6 @@ describe("KitchenToolsWebMcp", () => {
     })
     render(<KitchenToolsWebMcp tools={kitchenToolDescriptors()} />)
     await Promise.resolve()
-    expect(registerTool).toHaveBeenCalledTimes(5)
+    expect(registerTool).toHaveBeenCalledTimes(8)
   })
 })

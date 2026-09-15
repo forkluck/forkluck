@@ -347,6 +347,7 @@ primo/conversations/<uuid:conversation_id>/
 newsletter/
 search-index/
 ingredients/
+ingredient-price-changes/
 ingredient-options/
 ingredient-tags/
 ingredient-categories/
@@ -598,7 +599,7 @@ sit under “What Primo checked”; Stop, interruption and completion have disti
 announcements and persisted statuses.
 
 `POST /api/primo/chat` accepts
-`{conversationId, parentMessageId, recipeRef, productRef, messages}`. The
+`{conversationId, parentMessageId, recipeRef, productRef, messages, edit?}`. The
 conversation id is a client-minted UUID and the parent id is the preceding AI
 SDK message id (or an empty string). Page refs
 are nullable stable public refs. User messages may carry
@@ -618,8 +619,10 @@ instructions as untrusted identity data. This is how the model can call an exact
 though message metadata itself is removed from model messages.
 
 The route exposes the shared kitchen tools `find_recipes`, `find_products`,
-`get_product_sales`, `show_recipe_batch`, and `get_recipe_cost_change`, plus
-`search_usda_foods`, `draft_recipe`, and the conversation-scoped `read_attachment`. Tool choice is automatic, the loop
+`get_product_sales`, `show_recipe_batch`, `get_recipe_cost_change`,
+`calculate_batch_cost`, `get_top_products`, and `get_ingredient_price_changes`,
+plus `search_usda_foods`, `draft_recipe`, `read_recipe_draft`,
+`revise_recipe_draft`, and the conversation-scoped `read_attachment`. Tool choice is automatic, the loop
 stops after four steps, output is capped at 1,800 tokens per step, and generation
 aborts after 45 seconds. A turn with admitted attachments instead allows six
 steps, 6,000 output tokens per step and 90 seconds for complete recipe drafts.
@@ -628,6 +631,41 @@ An exact recipe or product ref is usable only when it came
 from a user mention, the open page, or a `find_*` result earlier in the same
 request. The cost tool projects the 40 largest absolute line deltas without
 removing totals, coverage, empty-window context, or omitted-line count.
+
+Optional `edit` is `{messageId, expectedText, expectedLastMessageId}`: the target
+user ID, its previous text (at most 4,000 characters), and the last displayed
+message ID. Save-and-resend retains the target ID and attachments, atomically
+replaces its text/mentions, and deletes the following messages. An outdated
+snapshot returns 409 before acknowledgement; the editor retains its text.
+Cancel never writes. The independent composer draft is preserved.
+
+`read_recipe_draft` reads validated draft/revision outputs from this owner's
+conversation before the current user turn, optionally by exact title. Ambiguous
+drafts return choices. `revise_recipe_draft` takes the returned draft ID and a
+patch: multiplier OR target yield amount, optional title/description/steps, and
+zero-based ingredient patches. Unspecified fields are retained exactly; nothing
+is created until the existing explicit Create recipe action.
+
+`get_top_products` accepts a period and limit (1–10, default 3), groups Analytics'
+including-bundles product/channel rows by product, and ranks recorded net sales.
+Allocated bundle revenue is counted once. Any missing revenue excludes that
+product with a disclosed count; no records is distinct from zero. Its report
+link uses the same dates. `calculate_batch_cost` uses only supplied assumptions,
+returns margin separately from markup and exact vs minimum currency-unit price,
+and never reads or changes saved costs.
+
+`GET ingredient-price-changes/?start=YYYY-MM-DD&end=YYYY-MM-DD` requires each
+query key once, a nonfuture ordered window of at most 366 inclusive days, and
+uses the kitchen timezone. It compares the last recorded price before the
+window against the last price in it, per active owned ingredient. Pack sizes
+and compatible mass/volume units normalize to kg/l; incompatible or missing
+baselines remain explicit. One snapshot query plus timezone/currency reads
+returns `{startDate,endDate,currencyCode,items,omitted,observedIngredients,
+missingBaseline,incomparableUnits}`. Each of at most 20 items contains
+`{ingredientRef,name,unit,fromUnitCostCents,toUnitCostCents,deltaUnitCostCents,
+percent}`; these are fractional cents, and percent is null for a zero baseline.
+Items sort by absolute percentage change, with zero baselines first. No write
+or new table is involved.
 
 The last user message is persisted before the gateway is called. The response is
 assembled with the AI SDK UI-message stream: assistant parts are upserted as
@@ -1396,7 +1434,15 @@ one per-domain registry each:
 `primo-delete-conversation`. Save-turn creates or owner-scopes the supplied
 conversation UUID, upserts messages by conversation plus AI SDK message id,
 sets a generated title only while the title is blank, and advances
-`lastMessageAt`. Rename trims a 1–200 character title. Archive/unarchive changes
+`lastMessageAt`. The chat route supplies `generationId` with its single user
+message, then `replyTo:{messageId,generationId}` with its single assistant save.
+The internal generation marker is stripped from serialized history. A stale,
+deleted or superseded parent returns `{superseded:true}` without a write. Optional
+`edit` uses the same snapshot shape as the public route, under the conversation
+lock; mismatch is an action 400 translated to public HTTP 409. Validation failure
+rolls back message truncation and file cleanup markers together. Delete takes
+the same lock, so a late guarded save cannot recreate the conversation.
+Rename trims a 1–200 character title. Archive/unarchive changes
 the archive fields without changing `updatedAt` or `lastMessageAt`, preserving
 the conversation's list position. Delete cascades through its messages.
 

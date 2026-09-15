@@ -234,54 +234,57 @@ describe("Primo conversation", () => {
     ).toBeDefined()
   })
 
-  it("sends ambiguity choices as a bound mention", () => {
-    state.chat.messages = [
-      {
-        id: "assistant-choice",
-        role: "assistant",
-        parts: [
-          {
-            type: "tool-find_products",
-            toolCallId: "products-1",
-            state: "output-available",
-            input: { query: "moon" },
-            output: {
-              ok: true,
-              tool: "find_products",
-              query: "moon",
-              more: false,
-              ambiguous: ["mooncake"],
-              products: [
-                {
-                  productRef: "prd_0123456789ab",
-                  name: "Mooncake",
-                  sku: "MOON-1",
-                  baseUnit: "each",
-                  recipes: [],
-                },
-                {
-                  productRef: "prd_bbbbbbbbbbbb",
-                  name: "Mooncake",
-                  sku: "MOON-2",
-                  baseUnit: "each",
-                  recipes: [],
-                },
-              ],
+  it.each([{ ambiguous: [] }, { ambiguous: ["mooncake"] }])(
+    "sends ordinary and ambiguous choices as bound mentions (%s)",
+    ({ ambiguous }) => {
+      state.chat.messages = [
+        {
+          id: "assistant-choice",
+          role: "assistant",
+          parts: [
+            {
+              type: "tool-find_products",
+              toolCallId: "products-1",
+              state: "output-available",
+              input: { query: "moon" },
+              output: {
+                ok: true,
+                tool: "find_products",
+                query: "moon",
+                more: false,
+                ambiguous,
+                products: [
+                  {
+                    productRef: "prd_0123456789ab",
+                    name: "Mooncake",
+                    sku: "MOON-1",
+                    baseUnit: "each",
+                    recipes: [],
+                  },
+                  {
+                    productRef: "prd_bbbbbbbbbbbb",
+                    name: "Mooncake",
+                    sku: "MOON-2",
+                    baseUnit: "each",
+                    recipes: [],
+                  },
+                ],
+              },
             },
-          },
-        ],
-      },
-    ]
-    render(<PrimoConversation userName="Ada" />)
-    fireEvent.click(screen.getByRole("button", { name: "Mooncake (MOON-1)" }))
-    expect(state.send).toHaveBeenCalledWith("@Mooncake (MOON-1)", [
-      {
-        kind: "product",
-        label: "Mooncake (MOON-1)",
-        ref: "prd_0123456789ab",
-      },
-    ])
-  })
+          ],
+        },
+      ]
+      render(<PrimoConversation userName="Ada" />)
+      fireEvent.click(screen.getByRole("button", { name: "Mooncake (MOON-1)" }))
+      expect(state.send).toHaveBeenCalledWith("@Mooncake (MOON-1)", [
+        {
+          kind: "product",
+          label: "Mooncake (MOON-1)",
+          ref: "prd_0123456789ab",
+        },
+      ])
+    }
+  )
 
   it("removes response actions while streaming and offers copy and last-response regenerate after", () => {
     state.chat.messages = [
@@ -432,4 +435,157 @@ it("collapses a repaired schema failure after a valid final draft", () => {
   ).toBeNull()
   expect(screen.getByText(/Recipe draft · completed/)).toBeDefined()
   expect(screen.getByRole("button", { name: "Create recipe" })).toBeDefined()
+})
+
+it("edits a question with its original files and only still-present mentions, leaving the composer draft separate", async () => {
+  const file = {
+    id: "00000000-0000-4000-8000-000000000002",
+    name: "Recipe.txt",
+    mediaType: "text/plain",
+    size: 25,
+    coverage: "Complete",
+  }
+  const mention = { kind: "recipe", ref: "rcp_0123456789ab", label: "Cookies" }
+  state.chat.messages = [
+    {
+      id: "question",
+      role: "user",
+      parts: [{ type: "text", text: "Read @Cookies and @Cake" }],
+      metadata: {
+        mentions: [
+          mention,
+          { ...mention, label: "Cake", ref: "rcp_bbbbbbbbbbbb" },
+        ],
+        attachments: [file],
+        attachmentIds: [file.id],
+      },
+    },
+    {
+      id: "answer",
+      role: "assistant",
+      parts: [{ type: "text", text: "Earlier answer" }],
+    },
+  ]
+  render(<PrimoConversation userName="Ada" />)
+  fireEvent.change(screen.getByRole("textbox", { name: "Message Primo" }), {
+    target: { value: "Unsent next question" },
+  })
+  fireEvent.click(screen.getByRole("button", { name: "Edit question" }))
+  expect(screen.getByText(/removes all later messages/)).toBeDefined()
+  fireEvent.change(screen.getByRole("textbox", { name: "Edit question" }), {
+    target: { value: "Compare @Cookies" },
+  })
+  state.send.mockRejectedValueOnce(
+    new Error("This chat changed. Reload it before editing.")
+  )
+  await act(async () =>
+    fireEvent.click(screen.getByRole("button", { name: "Save and resend" }))
+  )
+  expect(screen.getByRole("alert").textContent).toContain("This chat changed")
+  expect(screen.getByRole("textbox", { name: "Edit question" })).toHaveProperty(
+    "value",
+    "Compare @Cookies"
+  )
+  state.send.mockResolvedValueOnce(undefined)
+  await act(async () =>
+    fireEvent.click(screen.getByRole("button", { name: "Save and resend" }))
+  )
+  expect(state.send).toHaveBeenLastCalledWith(
+    "Compare @Cookies",
+    [mention],
+    [file],
+    "question"
+  )
+  expect(screen.queryByRole("textbox", { name: "Edit question" })).toBeNull()
+  expect(screen.getByRole("textbox", { name: "Message Primo" })).toHaveProperty(
+    "value",
+    "Unsent next question"
+  )
+})
+
+it("renders fractional-cent calculations and incomplete aggregate results without inventing zeroes", async () => {
+  const { calculateBatchCost, batchCalculationSchema } =
+    await import("@/lib/kitchen-tools/calculations")
+  const calculation = calculateBatchCost(
+    batchCalculationSchema.parse({
+      portions: 24,
+      ingredientCostPerBatch: 18,
+      packagingCostPerPortion: 0.25,
+      sellingPricePerPortion: 2.5,
+      ingredientChangePercent: 20,
+      currencyCode: "USD",
+    })
+  )
+  state.chat.messages = [
+    {
+      id: "results",
+      role: "assistant",
+      parts: [
+        {
+          type: "tool-calculate_batch_cost",
+          toolCallId: "calc",
+          state: "output-available",
+          input: {},
+          output: calculation,
+        },
+        {
+          type: "tool-get_top_products",
+          toolCallId: "top",
+          state: "output-available",
+          input: {},
+          output: {
+            ok: true,
+            tool: "get_top_products",
+            period: { label: "August" },
+            products: [],
+            hasRecordedProducts: true,
+            unrankedProducts: 2,
+            more: false,
+            currencyCode: "USD",
+            coverage: "Recorded net sales only.",
+            view: "/analytics?start=2026-08-01&end=2026-08-31",
+          },
+        },
+        {
+          type: "tool-get_ingredient_price_changes",
+          toolCallId: "costs",
+          state: "output-available",
+          input: {},
+          output: {
+            ok: true,
+            tool: "get_ingredient_price_changes",
+            period: { label: "August" },
+            items: [
+              {
+                ingredientRef: "ing_0123456789ab",
+                name: "Flour",
+                unit: "kg",
+                fromUnitCostCents: 44,
+                toUnitCostCents: 26,
+                deltaUnitCostCents: -18,
+                percent: -40.909,
+              },
+            ],
+            currencyCode: "USD",
+            observedIngredients: 3,
+            missingBaseline: 1,
+            incomparableUnits: 1,
+            omitted: 0,
+            view: "/ingredients",
+          },
+        },
+      ],
+    },
+  ]
+  render(<PrimoConversation userName="Ada" />)
+  expect(screen.getByText("$2.875")).toBeDefined()
+  expect(screen.getByText("$2.88")).toBeDefined()
+  expect(
+    screen.getByText("No products with complete revenue to rank.")
+  ).toBeDefined()
+  expect(screen.getByText(/ranking is incomplete/)).toBeDefined()
+  expect(screen.getByText(/\$0.44/).textContent).toContain("$0.26")
+  expect(
+    screen.getByRole("link", { name: "View sales report" }).getAttribute("href")
+  ).toBe("/analytics?start=2026-08-01&end=2026-08-31")
 })

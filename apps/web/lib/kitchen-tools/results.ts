@@ -1,4 +1,7 @@
 import type { RecipeCostDiff } from "@/lib/backend/types"
+import type { calculateBatchCost } from "./calculations"
+import type { z } from "zod"
+import type { ingredientPriceChangesSchema } from "@/lib/backend/schemas"
 import type { KitchenToolName } from "@/lib/kitchen-tools/catalog"
 
 export type KitchenToolFailure = {
@@ -87,10 +90,36 @@ export type RecipeCostChangeResult = {
   omittedLines: number
 } & RecipeCostDiff
 
+export type TopProductsResult = {
+  ok: true
+  tool: "get_top_products"
+  period: { startDate: string; endDate: string; label: string }
+  currencyCode: string
+  salesView: "including_bundles"
+  products: Array<{ name: string; netSalesCents: number }>
+  hasRecordedProducts: boolean
+  unrankedProducts: number
+  more: boolean
+  coverage: string
+  view: string
+}
+
 export type KitchenToolResult =
+  | ReturnType<typeof calculateBatchCost>
+  | TopProductsResult
+  | IngredientPriceChangesResult
   | KitchenToolFailure
   | FindRecipesResult
   | FindProductsResult
   | ProductSalesResult
   | RecipeBatchResult
   | RecipeCostChangeResult
+
+export type IngredientPriceChangesResult = z.infer<
+  typeof ingredientPriceChangesSchema
+> & {
+  ok: true
+  tool: "get_ingredient_price_changes"
+  period: { startDate: string; endDate: string; label: string }
+  view: string
+}

@@ -19,6 +19,9 @@ const mocks = vi.hoisted(() => ({
   getRecipeCostDiff: vi.fn(),
   getRecipe: vi.fn(),
   getProductDetail: vi.fn(),
+  getPrimoConversation: vi.fn(),
+  getSalesOverview: vi.fn(),
+  getIngredientPriceChanges: vi.fn(),
 }))
 
 vi.mock("next/headers", () => ({ cookies: () => mocks.cookies() }))
@@ -29,6 +32,10 @@ vi.mock("@/lib/backend/client", () => ({
   djangoAction: (slug: string, body: unknown) => mocks.djangoAction(slug, body),
 }))
 vi.mock("@/lib/backend/queries", () => ({
+  getSalesOverview: (...args: unknown[]) => mocks.getSalesOverview(...args),
+  getIngredientPriceChanges: (...args: unknown[]) =>
+    mocks.getIngredientPriceChanges(...args),
+  getPrimoConversation: (id: string) => mocks.getPrimoConversation(id),
   getBusinessSettings: () => mocks.getBusinessSettings(),
   browseRecipes: (input: unknown) => mocks.browseRecipes(input),
   browseMenuItems: (input: unknown) => mocks.browseMenuItems(input),
@@ -489,4 +496,260 @@ describe("Kitchen tools and Primo adapter", () => {
       message: "Only the recipe's owner can compare its cost history.",
     })
   })
+})
+
+describe("authorized recipe draft continuity", () => {
+  const draft = {
+    title: "Synthetic soup",
+    description: "Source: recipe.txt. Check salt.",
+    yield: { amount: 4, unit: "pcs" },
+    ingredients: [
+      { name: "Carrots", quantity: 200, unit: "g", preparation: "diced" },
+    ],
+    steps: ["Simmer for 20 minutes."],
+  }
+  const stored = (id: string, value: unknown = draft) => ({
+    id,
+    role: "assistant",
+    parts: [
+      {
+        type: "tool-draft_recipe",
+        state: "output-available",
+        toolCallId: "draft",
+        output: value,
+      },
+    ],
+  })
+  const user = {
+    id: "new-user",
+    role: "user",
+    parts: [{ type: "text", text: "Halve the recipe" }],
+  }
+  const tools = () =>
+    createPrimoTools(
+      context({
+        conversationId: "00000000-0000-4000-8000-000000000001",
+        userMessageId: user.id,
+      })
+    )
+  it("reads the stored draft, excludes the answer being regenerated and preserves source notes", async () => {
+    mocks.getPrimoConversation.mockResolvedValue({
+      messages: [
+        stored("original"),
+        user,
+        stored("old-reply", {
+          ...draft,
+          steps: ["Wrong method from the answer being retried."],
+        }),
+      ],
+    })
+    const value = tools()
+    const read = await value.read_recipe_draft.execute!({}, executionOptions)
+    expect(read).toMatchObject({ ok: true, draftId: "original/draft", draft })
+    const revised = await value.revise_recipe_draft.execute!(
+      { draftId: "original/draft", yieldAmount: 2 },
+      { ...executionOptions, toolCallId: "revision" }
+    )
+    expect(revised).toMatchObject({
+      ok: true,
+      draft: {
+        ...draft,
+        yield: { amount: 2, unit: "pcs" },
+        ingredients: [{ ...draft.ingredients[0], quantity: 100 }],
+      },
+      changes: [
+        "Scaled yield and measured ingredients by 0.5×.",
+        "Method preserved exactly.",
+      ],
+    })
+    expect(mocks.getPrimoConversation).toHaveBeenCalledOnce()
+  })
+  it("reopens persisted revisions as structured drafts", async () => {
+    mocks.getPrimoConversation.mockResolvedValue({
+      messages: [
+        {
+          id: "revision",
+          role: "assistant",
+          parts: [
+            {
+              type: "tool-revise_recipe_draft",
+              state: "output-available",
+              toolCallId: "edited",
+              output: {
+                ok: true,
+                draft,
+                changes: ["Method preserved exactly."],
+              },
+            },
+          ],
+        },
+        user,
+      ],
+    })
+    expect(
+      await tools().read_recipe_draft.execute!({}, executionOptions)
+    ).toMatchObject({ ok: true, draftId: "revision/edited", draft })
+  })
+  it("does not use foreign, missing, invalid or later drafts", async () => {
+    for (const messages of [
+      [user, stored("later")],
+      [stored("invalid", { title: "Malformed" }), user],
+    ]) {
+      mocks.getPrimoConversation.mockResolvedValue({ messages })
+      const value = tools()
+      expect(
+        await value.read_recipe_draft.execute!({}, executionOptions)
+      ).toMatchObject({ ok: false })
+      expect(
+        await value.revise_recipe_draft.execute!(
+          { draftId: "foreign/draft", multiplier: 2 },
+          executionOptions
+        )
+      ).toMatchObject({ ok: false })
+    }
+    mocks.getPrimoConversation.mockResolvedValue(null)
+    await expect(
+      tools().read_recipe_draft.execute!({}, executionOptions)
+    ).rejects.toThrow("Conversation unavailable")
+  })
+  it("asks for a title when the latest answer contains several recipes", async () => {
+    const row = stored("original")
+    row.parts.push({
+      ...row.parts[0]!,
+      toolCallId: "second",
+      output: { ...draft, title: "Synthetic sauce" },
+    })
+    mocks.getPrimoConversation.mockResolvedValue({ messages: [row, user] })
+    const value = tools()
+    expect(
+      await value.read_recipe_draft.execute!({}, executionOptions)
+    ).toMatchObject({
+      ok: false,
+      choices: ["Synthetic soup", "Synthetic sauce"],
+    })
+    expect(
+      await value.read_recipe_draft.execute!(
+        { title: "Synthetic sauce" },
+        executionOptions
+      )
+    ).toMatchObject({ ok: true, draftId: "original/second" })
+  })
+})
+
+describe("kitchen-wide report reads", () => {
+  it("ranks the report's allocated revenue once across channels and excludes unknown totals", async () => {
+    mocks.getSalesOverview.mockResolvedValue({
+      summary: { currencyCode: "USD" },
+      topProducts: [
+        {
+          productId: "bundle",
+          productName: "Lunch bundle",
+          netSalesCents: 0,
+          quantity: 3,
+          sharedToMembers: true,
+        },
+        {
+          productId: "soup",
+          productName: "Soup",
+          channel: "square",
+          netSalesCents: 600,
+          quantity: 3,
+        },
+        {
+          productId: "soup",
+          productName: "Soup",
+          channel: "manual",
+          netSalesCents: 400,
+          quantity: 2,
+        },
+        {
+          productId: "bread",
+          productName: "Bread",
+          netSalesCents: 800,
+          quantity: 30,
+        },
+        {
+          productId: "unknown",
+          productName: "Unknown",
+          netSalesCents: 5000,
+          quantity: 2,
+        },
+        {
+          productId: "unknown",
+          productName: "Unknown",
+          netSalesCents: null,
+          quantity: 1,
+        },
+        {
+          productId: "zero",
+          productName: "Free sample",
+          netSalesCents: 0,
+          quantity: 10,
+        },
+      ],
+    })
+    const result = await runKitchenTool("get_top_products", {
+      period: "2026-08",
+      limit: 3,
+    })
+    expect(result).toMatchObject({
+      ok: true,
+      salesView: "including_bundles",
+      hasRecordedProducts: true,
+      unrankedProducts: 1,
+      products: [
+        { name: "Soup", netSalesCents: 1000 },
+        { name: "Bread", netSalesCents: 800 },
+        { name: "Free sample", netSalesCents: 0 },
+      ],
+      view: "/analytics?start=2026-08-01&end=2026-08-31",
+    })
+    expect(mocks.getSalesOverview).toHaveBeenCalledWith(
+      "2026-08-01",
+      "2026-08-31"
+    )
+    expect(JSON.stringify(result)).not.toContain('"quantity"')
+  })
+  it("distinguishes no recorded products from zero revenue", async () => {
+    mocks.getSalesOverview.mockResolvedValue({
+      summary: { currencyCode: "USD" },
+      topProducts: [],
+    })
+    expect(
+      await runKitchenTool("get_top_products", { period: "2026-08" })
+    ).toMatchObject({ ok: true, hasRecordedProducts: false, products: [] })
+  })
+  it("resolves the ingredient starter's default window using the kitchen clock", async () => {
+    mocks.getIngredientPriceChanges.mockResolvedValue({
+      startDate: "2026-08-04",
+      endDate: "2026-09-02",
+      currencyCode: "USD",
+      items: [],
+      omitted: 0,
+      observedIngredients: 0,
+      missingBaseline: 0,
+      incomparableUnits: 0,
+    })
+    const result = await runKitchenTool("get_ingredient_price_changes", {})
+    expect(result).toMatchObject({
+      ok: true,
+      view: "/ingredients",
+      observedIngredients: 0,
+    })
+    expect(mocks.getIngredientPriceChanges).toHaveBeenCalledWith(
+      "2026-08-04",
+      "2026-09-02"
+    )
+  })
+  it.each(["get_top_products", "get_ingredient_price_changes"] as const)(
+    "rejects a future %s request before reading data",
+    async (name) => {
+      expect(await runKitchenTool(name, { period: "2027-01" })).toMatchObject({
+        ok: false,
+        reason: "bad_period",
+      })
+      expect(mocks.getSalesOverview).not.toHaveBeenCalled()
+      expect(mocks.getIngredientPriceChanges).not.toHaveBeenCalled()
+    }
+  )
 })

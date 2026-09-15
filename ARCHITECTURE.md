@@ -146,12 +146,13 @@ Home Chat / Primo rail             one useChat survives client navigation
       save-recipe                  explicit owner-scoped persistence
 ```
 
-The five kitchen tools are declared once in `apps/web/lib/kitchen-tools/catalog.ts` as a
+The eight kitchen tools are declared once in `apps/web/lib/kitchen-tools/catalog.ts` as a
 name, description, strict zod input schema, and read-only annotations. Primo's
 server adapter and the browser's WebMCP adapter both consume that registry and
 both call `runKitchenTool`; there is no second input contract or kitchen
-calculation. Primo also exposes the existing USDA search and draft tool, plus a private
-conversation attachment reader. A batched manifest resolves all user-bound
+calculation. The registry includes hypothetical batch calculations, top products
+from Analytics, and ingredient price changes. Primo also exposes USDA search,
+recipe drafting, conversation-scoped draft reading/revision, and attachment reading. A batched manifest resolves all user-bound
 sources before history trimming can hide them; bounded sections are read on
 demand with the same ownership checks. The reader is not a WebMCP tool.
 
@@ -241,6 +242,19 @@ payloads. Unknown usage is explicitly unknown. Forkluck request logs contain onl
 duration, and finish reason; they do not contain prompts, tool payloads,
 supplier data, or recipe data.
 
+Structured drafts are read from owner-scoped saved tool results before the current
+user turn; regeneration never reads the answer it is replacing. Public draft
+revision applies only supplied fields and scales quantities deterministically,
+preserving method and source/review notes. Recipe creation remains explicit.
+
+Editing a question replaces that question and removes its following messages in
+one locked Django transaction. A snapshot check rejects stale edits; its files
+stay bound, while files attached to removed messages are marked for cleanup.
+A server-generated generation UUID fences assistant saves against retries,
+edits, later turns and conversation deletion. The token remains internal to
+Django message metadata and is omitted from history responses. No migration is
+needed. The acceptance matrix is in `docs/PRIMO_IMPROVEMENTS.md`.
+
 Primo transcripts live in Forkluck's database, scoped to the signed-in user.
 The user can list, rename, archive, restore, and delete them; deleting the
 account cascades through both conversations and messages. They are retained
@@ -282,7 +296,7 @@ The invariant matrix for both adapters is:
 | batch       | portions with a saved portion size, or explicit multiplier | no scale returns `needs_scale`; factor clamps to the lens limits |
 | accounting  | product's as-sold units and net sales                      | allocated bundle revenue is not added again                      |
 | lifecycle   | one chat in the app shell; Primo navigates only on a user click    | closing/docking does not stop or duplicate a stream              |
-| persistence | all five kitchen tools are reads                           | batch and navigation never update the recipe or product          |
+| persistence | all eight kitchen tools are reads or calculations                           | batch and navigation never update the recipe or product          |
 | trust       | returned names are rendered as data                        | returned prose cannot direct another tool call                   |
 
 ## A write

@@ -1,5 +1,4 @@
 import { cache } from "react"
-
 import type {
   ActivityEventKind,
   ActivityPayload,
@@ -57,6 +56,7 @@ import {
   driveFolderPayloadSchema,
   driveWatchPayloadSchema,
   ingredientPayloadSchema,
+  ingredientPriceChangesSchema,
   ingredientCategoriesPayloadSchema,
   productCategoriesPayloadSchema,
   ingredientTagsPayloadSchema,
@@ -115,6 +115,13 @@ import {
   resolveUnpaidBreakPerHours,
   type BusinessSettings,
 } from "@/lib/business-settings"
+
+export async function getIngredientPriceChanges(start: string, end: string) {
+  return djangoGetParsed(
+    `/internal/v1/ingredient-price-changes/?${new URLSearchParams({ start, end })}`,
+    ingredientPriceChangesSchema
+  )
+}
 
 export async function getAuthMethods() {
   return djangoGetParsed("/internal/v1/auth-methods/", authMethodsSchema)

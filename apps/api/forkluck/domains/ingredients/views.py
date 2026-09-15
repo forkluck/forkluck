@@ -594,3 +594,130 @@ def matches(request: HttpRequest) -> JsonResponse:
                 }
             )
     return JsonResponse({"items": items})
+
+
+def ingredient_price_changes(request: HttpRequest) -> JsonResponse:
+    """Compare recorded prices across one kitchen calendar window in one read."""
+    from datetime import date, datetime, time, timedelta
+
+    from django.db.models import Subquery
+    from django.utils import timezone
+
+    from ...models import BenchCostSettings, IngredientPrice
+    from ...units import MASS_UNITS, VOLUME_UNITS, unit_ratio
+    from ..shared.workspace_timezone import workspace_zone
+
+    try:
+        if set(request.GET) != {"start", "end"} or any(
+            len(request.GET.getlist(key)) != 1 for key in ("start", "end")
+        ):
+            raise ValueError("Supply start and end once")
+        start, end = (date.fromisoformat(request.GET[key]) for key in ("start", "end"))
+        if (
+            start.isoformat() != request.GET["start"]
+            or end.isoformat() != request.GET["end"]
+        ):
+            raise ValueError("Dates must be YYYY-MM-DD")
+        zone = workspace_zone(request.user)
+        now = timezone.now()
+        if start > end or end > now.astimezone(zone).date() or (end - start).days > 365:
+            raise ValueError("Choose a past or current window of at most 366 days")
+    except ValueError as exc:
+        return error(str(exc), 400)
+    start_at = datetime.combine(start, time.min, tzinfo=zone)
+    end_at = min(datetime.combine(end + timedelta(days=1), time.min, tzinfo=zone), now)
+    prices = IngredientPrice.objects.filter(ingredient_id=OuterRef("pk")).order_by(
+        "-effective_at", "-created_at", "-id"
+    )
+    before = prices.filter(effective_at__lt=start_at)
+    after = prices.filter(effective_at__lt=end_at)
+    fields = {
+        "cost": "purchase_cost_cents",
+        "size": "purchase_size",
+        "unit": "purchase_unit",
+    }
+    rows = (
+        Ingredient.objects.filter(user=request.user, status="active")
+        .annotate(
+            activity=Exists(
+                prices.filter(effective_at__gte=start_at, effective_at__lt=end_at)
+            ),
+            **{
+                f"{side}_{key}": Subquery(query.values(field)[:1])
+                for side, query in (("before", before), ("after", after))
+                for key, field in fields.items()
+            },
+        )
+        .filter(activity=True)
+        .values(
+            "public_id",
+            "name",
+            *[f"{side}_{key}" for side in ("before", "after") for key in fields],
+        )
+    )
+    changes = []
+    missing = incomparable = observed = 0
+    for row in rows:
+        observed += 1
+        if row["before_cost"] is None:
+            missing += 1
+            continue
+        unit = (
+            "kg"
+            if row["after_unit"] in MASS_UNITS
+            else "l"
+            if row["after_unit"] in VOLUME_UNITS
+            else row["after_unit"]
+        )
+        values = []
+        for side in ("before", "after"):
+            ratio = unit_ratio(row[f"{side}_unit"], unit)
+            size = row[f"{side}_size"]
+            cost = row[f"{side}_cost"]
+            values.append(
+                cost / (float(size) * ratio)
+                if ratio and size and size > 0 and cost is not None and cost >= 0
+                else None
+            )
+        previous, current = values
+        if previous is None or current is None:
+            incomparable += 1
+            continue
+        delta = current - previous
+        if abs(delta) < 0.000001:
+            continue
+        changes.append(
+            {
+                "ingredientRef": row["public_id"],
+                "name": row["name"],
+                "unit": unit,
+                "fromUnitCostCents": previous,
+                "toUnitCostCents": current,
+                "deltaUnitCostCents": delta,
+                "percent": delta / previous * 100 if previous > 0 else None,
+            }
+        )
+    changes.sort(
+        key=lambda row: (
+            -(abs(row["percent"]) if row["percent"] is not None else float("inf")),
+            row["name"].casefold(),
+            row["ingredientRef"],
+        )
+    )
+    settings = (
+        BenchCostSettings.objects.filter(user=request.user)
+        .values("currency_code")
+        .first()
+    )
+    return JsonResponse(
+        {
+            "startDate": start.isoformat(),
+            "endDate": end.isoformat(),
+            "currencyCode": settings["currency_code"] if settings else "USD",
+            "items": changes[:20],
+            "omitted": max(0, len(changes) - 20),
+            "observedIngredients": observed,
+            "missingBaseline": missing,
+            "incomparableUnits": incomparable,
+        }
+    )

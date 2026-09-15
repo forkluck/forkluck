@@ -1,4 +1,5 @@
 import "server-only"
+import { calculateBatchCost, type BatchCalculationInput } from "./calculations"
 
 import { cookies } from "next/headers"
 
@@ -10,6 +11,8 @@ import {
   getProductDetail,
   getRecipe,
   getRecipeCostDiff,
+  getSalesOverview,
+  getIngredientPriceChanges,
 } from "@/lib/backend/queries"
 import type { RecipeCostDiff } from "@/lib/backend/types"
 import { scaleBatchCost } from "@/lib/benchcost/math"
@@ -91,6 +94,78 @@ export async function runKitchenTool(
     )
   }
   const value = parsed.data as Record<string, unknown>
+
+  if (name === "calculate_batch_cost")
+    return calculateBatchCost(parsed.data as BatchCalculationInput)
+
+  if (name === "get_ingredient_price_changes") {
+    const period = resolvePeriod(String(value.period), await kitchenToday())
+    if (!period)
+      return kitchenToolFailure(
+        name,
+        "bad_period",
+        "Choose a past or current calendar period."
+      )
+    return {
+      ...(await getIngredientPriceChanges(period.startDate, period.endDate)),
+      ok: true,
+      tool: name,
+      period,
+      view: "/ingredients",
+    }
+  }
+
+  if (name === "get_top_products") {
+    const period = resolvePeriod(String(value.period), await kitchenToday())
+    if (!period)
+      return kitchenToolFailure(
+        name,
+        "bad_period",
+        "Choose a past or current calendar period."
+      )
+    const overview = await getSalesOverview(period.startDate, period.endDate)
+    const products = new Map<
+      string,
+      { name: string; netSalesCents: number; incomplete: boolean }
+    >()
+    for (const row of overview.topProducts) {
+      // Analytics has already allocated bundle revenue. Its bundle shell
+      // rows carry units only and do not belong in a revenue ranking.
+      if (row.sharedToMembers) continue
+      const product = products.get(row.productId) ?? {
+        name: row.productName,
+        netSalesCents: 0,
+        incomplete: false,
+      }
+      product.netSalesCents += row.netSalesCents ?? 0
+      product.incomplete ||= row.netSalesCents === null
+      products.set(row.productId, product)
+    }
+    const ranked = [...products.values()]
+      .filter((row) => !row.incomplete)
+      .sort(
+        (a, b) =>
+          b.netSalesCents - a.netSalesCents || a.name.localeCompare(b.name)
+      )
+    const limit = Number(value.limit)
+    return {
+      ok: true,
+      tool: name,
+      period,
+      currencyCode: overview.summary.currencyCode,
+      salesView: "including_bundles",
+      products: ranked
+        .slice(0, limit)
+        .map(({ name, netSalesCents }) => ({ name, netSalesCents })),
+      hasRecordedProducts: overview.topProducts.length > 0,
+      unrankedProducts: [...products.values()].filter((row) => row.incomplete)
+        .length,
+      more: ranked.length > limit,
+      coverage:
+        "Analytics including-bundles view: allocated bundle and modifier revenue is counted once. Only tracked products in the kitchen currency are included; this does not establish complete sales coverage.",
+      view: `/analytics?${new URLSearchParams({ start: period.startDate, end: period.endDate })}`,
+    }
+  }
 
   if (name === "find_recipes") {
     const query = String(value.query)

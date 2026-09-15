@@ -25,7 +25,7 @@ No persistence shape, Django action contract, or deployment configuration change
 are required for turn recovery. The additive HTTP header is ignored by older
 clients, so public app rollback remains compatible.
 
-## Remaining acceptance
+## Capability and editing invariants
 
 - Authorized structured draft context survives real multi-turn and restored
   conversations. Scaling preserves instructions, source notes and review flags;
@@ -43,3 +43,21 @@ clients, so public app rollback remains compatible.
 - Run frontend/backend checks appropriate to the boundaries, private service
   tests/evaluations, public unconfigured acceptance, deploy to chefclaw, and replay
   the audit prompts in Chrome before declaring the product work complete.
+
+
+| Boundary | Expected behavior | Verification |
+| --- | --- | --- |
+| Calculations | Missing yield is requested; supplied costs produce exact margin/markup and conservative currency rounding; zero costs stay finite | Public calculation matrix and private real-model follow-ups |
+| Draft identity | Only stored owner-scoped results before the user turn; no browser tool-result authority; multi-draft choice; retries exclude replaced answer | Public tool tests and reopened browser draft sequence |
+| Draft patch | Scaling and one-line edits preserve all other quantities, method, preparation/source/review notes; limits and duplicate indexes reject | Pure revision matrix and private live evaluation |
+| Sales | Same Analytics period and bundle allocation, aggregate channels once; missing product revenue is excluded and disclosed; empty differs from zero | Public tool matrix and real report browser link |
+| Prices | Tenant/active scope, kitchen midnight, pack changes, mass/volume units, zero baseline, missing/incompatible history, bounded output | Django endpoint and query-count tests, schema/route contract pins |
+| Question edit | Same user ID/files; truncated following messages; stale snapshot rejected; unsent composer retained; Cancel does not write | Django transaction tests and component/real-stack browser tests |
+| Generation lifecycle | Older retry/edit/follow-up/deleted-conversation stream cannot write a stale answer | Django generation guard matrix and route pairing tests |
+| File lifecycle | Target files survive edit; discarded-tail files are marked deleted; invalid/foreign files roll back truncation | Django attachment/edit transaction tests |
+| Unconfigured app | Public kitchen tools remain available and Home redirects to Analytics without gateway credentials | Existing unconfigured browser/build checks |
+
+The generation token is stored in existing message metadata; no table or schema
+migration. Deploy the additive private allowlist first, public app second;
+rollback in reverse order. Live model evaluations are outcome checks, while
+synthetic browser fixtures independently verify routing, persistence and UI.

@@ -570,7 +570,7 @@ titles, product names and SKUs, sales units and revenue, batch and labor
 figures, an exact recipe's deterministic cost projection, public USDA candidate
 metadata, or the structured recipe draft the model just proposed. Cost
 projections can include recipe and ingredient names, prices, supplier labels,
-coverage, and price-history dates. Those same five kitchen reads are available
+coverage, and price-history dates. Those same eight kitchen reads/calculations are available
 to whichever browser agent drives an authenticated WebMCP
 session; unlike Primo, WebMCP does not send them to Alibaba unless that agent's
 own implementation does so. Forkluck does not send
@@ -618,3 +618,23 @@ level is judged on holding coverage and cutting over-production by at least 2
 points. `current` sizes its busy from the origins before each one, as the page
 does; `--stretch` adds `spread-busy` for the unscaled spread rule beside it.
 Record any accepted change in the forecast ADR; ties keep the current basis.
+
+
+### Primo capability and editing rollout (September 15)
+
+Deploy the private service with the additive thirteen-tool allowlist and prompt
+`2026-09-15.1` first; it still accepts the previous eight-tool app. Then deploy
+public Forkluck through its normal main-branch workflow on chefclaw. This adds
+no database migration or infrastructure. Chat, vision, credentials, nginx limits
+and usage metering keep their existing service configuration.
+
+Verify gateway health, both public processes, the deployed commit links, the
+unconfigured public build, and Chrome chat/reload/edit/read-only report flows.
+Run private reasoning evaluations with synthetic inputs and the provider key
+remaining on the server. The public browser suite uses a synthetic gateway and
+throwaway data; it checks transport/persistence independently of model behavior.
+
+If rollback is necessary, roll public Forkluck back first, then the private
+service. A previous app cannot send the new tool names to an old allowlist.
+Keep the usage ledger and transcript tables. The internal generation metadata
+is omitted from history responses and does not require a schema rollback.
