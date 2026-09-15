@@ -52,6 +52,7 @@ clients, so public app rollback remains compatible.
 | Draft patch | Scaling and one-line edits preserve all other quantities, method, preparation/source/review notes; limits and duplicate indexes reject | Pure revision matrix and private live evaluation |
 | Sales | Same Analytics period and bundle allocation, aggregate channels once; missing product revenue is excluded and disclosed; empty differs from zero | Public tool matrix and real report browser link |
 | Prices | Tenant/active scope, kitchen midnight, pack changes, mass/volume units, zero baseline, missing/incompatible history, bounded output | Django endpoint and query-count tests, schema/route contract pins |
+| Model tool output | Revived backend timestamps serialize to ISO strings before the next model step; cards retain structured results | Real SDK streaming regression with dated and missing-baseline timestamps |
 | Question edit | Same user ID/files; truncated following messages; stale snapshot rejected; unsent composer retained; Cancel does not write | Django transaction tests and component/real-stack browser tests |
 | Generation lifecycle | Older retry/edit/follow-up/deleted-conversation stream cannot write a stale answer | Django generation guard matrix and route pairing tests |
 | File lifecycle | Target files survive edit; discarded-tail files are marked deleted; invalid/foreign files roll back truncation | Django attachment/edit transaction tests |

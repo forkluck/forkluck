@@ -125,6 +125,12 @@ export function createPrimoTools(context: {
           ? "Prepare a temporary batch preview for one exact recipe at a requested portion count or multiplier. Return its preview link; the user must open it. This does not navigate or save anything."
           : entry.description,
       inputSchema: entry.inputSchema,
+      // Django revives timestamps as Dates. Serialize them before the SDK
+      // validates the next model step; the UI keeps the structured result.
+      toModelOutput: ({ output }) => ({
+        type: "text",
+        value: JSON.stringify(output),
+      }),
       execute: async (input: Record<string, unknown>) => {
         if (
           typeof input.recipeRef === "string" &&

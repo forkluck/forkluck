@@ -728,7 +728,7 @@ const recipeCostDiffSideSchema = z.strictObject({
   status: z.enum(["priced", "noHistory", "unpriceable"]),
   costCents: z.number().nullable(),
   unitCostCents: z.number().nullable(),
-  effectiveAt: z.string().nullable(),
+  effectiveAt: z.date().nullable(),
   source: z.string().nullable(),
   supplier: z.string().nullable(),
 })

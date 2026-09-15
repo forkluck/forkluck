@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { isStepCount, streamText } from "ai"
+import { MockLanguageModelV4 } from "ai/test"
+import { recipeCostDiffPayloadSchema } from "@/lib/backend/schemas"
 
 import type {
   ProductDetail,
@@ -248,6 +251,114 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers())
 
 describe("Kitchen tools and Primo adapter", () => {
+  it.each([null, new Date("2026-08-01T00:00:00Z")])(
+    "finishes the model response after a cost result with timestamp %s",
+    async (effectiveAt) => {
+      const value = costDiff()
+      value.lines = [
+        {
+          itemId: "synthetic-line",
+          kind: "ingredient",
+          name: "Egg",
+          ingredientPublicId: null,
+          status: "comparable",
+          basis: { quantity: 1, unit: "pcs", efficiency: 1, preparation: null },
+          from: {
+            status: "priced",
+            costCents: 44,
+            unitCostCents: 44,
+            effectiveAt,
+            source: null,
+            supplier: null,
+          },
+          to: {
+            status: "priced",
+            costCents: 26,
+            unitCostCents: 26,
+            effectiveAt: new Date("2026-09-01T00:00:00Z"),
+            source: null,
+            supplier: null,
+          },
+          deltaCents: -18,
+        },
+      ]
+      recipeCostDiffPayloadSchema.parse({ item: value })
+      mocks.getRecipeCostDiff.mockResolvedValue(value)
+      const usage = {
+        inputTokens: { total: 1, noCache: 1, cacheRead: 0, cacheWrite: 0 },
+        outputTokens: { total: 1, text: 1, reasoning: 0 },
+      }
+      const model = new MockLanguageModelV4({
+        doStream: [
+          {
+            stream: new ReadableStream({
+              start(controller) {
+                controller.enqueue({
+                  type: "tool-call",
+                  toolCallId: "cost",
+                  toolName: "get_recipe_cost_change",
+                  input: JSON.stringify({ recipeRef }),
+                })
+                controller.enqueue({
+                  type: "finish",
+                  finishReason: { unified: "tool-calls", raw: "tool_calls" },
+                  usage,
+                })
+                controller.close()
+              },
+            }),
+          },
+          {
+            stream: new ReadableStream({
+              start(controller) {
+                controller.enqueue({ type: "text-start", id: "answer" })
+                controller.enqueue({
+                  type: "text-delta",
+                  id: "answer",
+                  delta: "Comparable cost decreased by 18 cents.",
+                })
+                controller.enqueue({ type: "text-end", id: "answer" })
+                controller.enqueue({
+                  type: "finish",
+                  finishReason: { unified: "stop", raw: "stop" },
+                  usage,
+                })
+                controller.close()
+              },
+            }),
+          },
+        ],
+      })
+      const result = streamText({
+        model,
+        tools: createPrimoTools(context({ recipeRef })),
+        prompt: "Compare the open recipe cost.",
+        stopWhen: isStepCount(4),
+      })
+      const errors = []
+      for await (const part of result.fullStream) {
+        if (part.type === "error") errors.push(part.error)
+      }
+      expect(errors).toEqual([])
+      expect(await result.text).toBe("Comparable cost decreased by 18 cents.")
+      expect(await result.finishReason).toBe("stop")
+      expect(model.doStreamCalls).toHaveLength(2)
+      const sent = model.doStreamCalls[1]!.prompt.find(
+        (message) => message.role === "tool"
+      )
+      expect(sent).toMatchObject({ content: [{ output: { type: "text" } }] })
+      const output = sent?.content[0]
+      if (output?.type !== "tool-result" || output.output.type !== "text")
+        throw new Error("Missing cost output")
+      const serialized = JSON.parse(output.output.value)
+      expect(serialized.lines[0]).toMatchObject({
+        from: { effectiveAt: effectiveAt?.toISOString() ?? null },
+        to: { effectiveAt: "2026-09-01T00:00:00.000Z" },
+        deltaCents: -18,
+      })
+    }
+  )
+
   it("keeps one projected cost-diff shape", () => {
     const value = costDiff()
     value.lines = Array.from({ length: 45 }, (_, index) => ({
