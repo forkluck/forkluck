@@ -89,10 +89,16 @@ const server = createServer(async (request, reply) => {
     const finishedTool = body.messages.some(
       (message) => message.role === "tool"
     )
-    const prompt = String(
+    const userContent =
       body.messages.findLast((message) => message.role === "user")?.content ??
-        ""
-    )
+      ""
+    const prompt =
+      typeof userContent === "string"
+        ? userContent
+        : userContent
+            .filter((part) => part.type === "text")
+            .map((part) => part.text)
+            .join("\n")
     const results = body.messages
       .filter((message) => message.role === "tool")
       .map((message) => JSON.parse(message.content))
