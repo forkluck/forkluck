@@ -187,6 +187,12 @@ export async function POST(request: Request) {
     )
   }
 
+  // This acknowledgement follows the durable save. It also travels on HTTP
+  // errors before streaming starts; generation failure cannot unsend a turn.
+  const acceptedHeaders = {
+    "x-primo-accepted-message": encodeURIComponent(lastUserMessage.id),
+  }
+
   // Collect references from all accepted user turns, before history fitting can
   // hide their messages. Server summaries, never browser summaries, form the manifest.
   let attachments: PrimoAttachment[]
@@ -209,7 +215,7 @@ export async function POST(request: Request) {
           error:
             "This chat has too many attachments. Start a new chat to continue.",
         },
-        { status: 400 }
+        { status: 400, headers: acceptedHeaders }
       )
   } catch {
     return NextResponse.json(
@@ -217,7 +223,7 @@ export async function POST(request: Request) {
         error:
           "An attachment is no longer available. Attach it again or start a new chat.",
       },
-      { status: 400 }
+      { status: 400, headers: acceptedHeaders }
     )
   }
   const tools = createPrimoTools({
@@ -400,11 +406,11 @@ export async function POST(request: Request) {
       },
       onError: () => "Primo is temporarily unavailable. Try again.",
     })
-    return createUIMessageStreamResponse({ stream })
+    return createUIMessageStreamResponse({ stream, headers: acceptedHeaders })
   } catch {
     return NextResponse.json(
       { error: "Primo is temporarily unavailable. Try again." },
-      { status: 502 }
+      { status: 502, headers: acceptedHeaders }
     )
   }
 }

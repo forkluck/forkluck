@@ -1,4 +1,4 @@
-import { isToolUIPart, type UIMessage } from "ai"
+import { getToolName, isToolUIPart, type UIMessage } from "ai"
 import { z } from "zod"
 import { attachmentSchema, type PrimoAttachment } from "./attachments"
 
@@ -34,6 +34,48 @@ export type PrimoUIMessage = UIMessage<PrimoMessageMetadata, PrimoDataTypes> & {
   feedbackComment?: string
 }
 
+export function primoToolSucceeded(part: UIMessage["parts"][number]) {
+  return (
+    isToolUIPart(part) &&
+    part.state === "output-available" &&
+    !(
+      part.output &&
+      typeof part.output === "object" &&
+      "ok" in part.output &&
+      part.output.ok === false
+    )
+  )
+}
+
+/** A repair replaces only its own operation, never another recipe or period. */
+export function primoToolParts(message: UIMessage) {
+  const parts = message.parts.filter(isToolUIPart)
+  const operation = (part: (typeof parts)[number]) => {
+    const name = getToolName(part)
+    if (name === "draft_recipe") return name
+    return (
+      name +
+      JSON.stringify(part.input, (_key, value) =>
+        value && typeof value === "object" && !Array.isArray(value)
+          ? Object.fromEntries(
+              Object.entries(value).sort(([a], [b]) => a.localeCompare(b))
+            )
+          : value
+      )
+    )
+  }
+  return parts.filter(
+    (part, index) =>
+      primoToolSucceeded(part) ||
+      !parts
+        .slice(index + 1)
+        .some(
+          (later) =>
+            primoToolSucceeded(later) && operation(later) === operation(part)
+        )
+  )
+}
+
 /** A transport ending is not proof that every requested step finished. */
 export function primoTurnStatus(
   message: UIMessage,
@@ -48,12 +90,11 @@ export function primoTurnStatus(
   if (
     finishReason === "length" ||
     finishReason === "error" ||
-    (finishReason === "tool-calls" &&
-      message.parts.findLast(isToolUIPart)?.state === "output-error") ||
-    message.parts.some(
+    primoToolParts(message).some(
       (part) =>
-        isToolUIPart(part) &&
-        (part.state === "input-streaming" || part.state === "input-available")
+        part.state === "output-error" ||
+        part.state === "input-streaming" ||
+        part.state === "input-available"
     )
   )
     return "error"

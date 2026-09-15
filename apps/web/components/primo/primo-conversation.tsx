@@ -47,7 +47,14 @@ import type {
   ProductSalesResult,
   RecipeBatchResult,
 } from "@/lib/kitchen-tools/results"
-import { primoMessageText, type PrimoMention } from "@/lib/primo/messages"
+import {
+  primoMessageText,
+  primoToolParts,
+  primoToolSucceeded,
+  primoTurnStatus,
+  type PrimoMention,
+  type PrimoUIMessage,
+} from "@/lib/primo/messages"
 import type { RecipeDraft } from "@/lib/recipe/draft"
 import { formatCents, quantityFormat } from "@/lib/money"
 import { cn } from "@/lib/utils"
@@ -192,6 +199,72 @@ function BatchLine({ result }: { result: RecipeBatchResult }) {
   return <Marker>{details.join(" · ")}</Marker>
 }
 
+const checkedLabels: Record<string, string> = {
+  find_recipes: "Recipe search",
+  find_products: "Product search",
+  get_product_sales: "Product sales",
+  get_recipe_cost_change: "Recipe cost comparison",
+  show_recipe_batch: "Batch preview",
+  search_usda_foods: "USDA food search",
+  read_attachment: "Attachment read",
+  draft_recipe: "Recipe draft",
+}
+
+function TurnReceipt({
+  message,
+  transportError,
+}: {
+  message: PrimoUIMessage
+  transportError: boolean
+}) {
+  const tools = primoToolParts(message)
+  const status = primoTurnStatus(message, {
+    errored: transportError || message.status === "error",
+    aborted: message.status === "aborted",
+    finishReason: message.metadata?.finishReason,
+  })
+  const loaded = tools.some(primoToolSucceeded)
+  return (
+    <>
+      {status === "aborted" ? (
+        <p className="text-xs text-muted-foreground">Response stopped</p>
+      ) : status === "error" ? (
+        <p className="text-xs text-destructive">
+          {loaded
+            ? "Results loaded; response interrupted. Try again."
+            : tools.some((part) => getToolName(part) === "draft_recipe")
+              ? "Recipe draft interrupted. Try again."
+              : "Response interrupted. Try again."}
+        </p>
+      ) : null}
+      {tools.length ? (
+        <details className="text-xs text-muted-foreground">
+          <summary className="cursor-pointer">What Primo checked</summary>
+          <ul className="mt-2 space-y-1">
+            {tools.map((part) => (
+              <li key={part.toolCallId}>
+                {checkedLabels[getToolName(part)] ?? "Kitchen read"} ·{" "}
+                {primoToolSucceeded(part)
+                  ? "completed"
+                  : status === "aborted"
+                    ? "stopped"
+                    : "not completed"}
+                {part.state === "output-available" &&
+                part.output &&
+                typeof part.output === "object" &&
+                "ok" in part.output &&
+                part.output.ok === false
+                  ? ` — ${(part.output as KitchenToolFailure).message}`
+                  : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </>
+  )
+}
+
 export function PrimoConversation({
   userName,
   className,
@@ -239,9 +312,19 @@ export function PrimoConversation({
   const copyTimer = React.useRef<number | null>(null)
   const announcement = busy
     ? "Primo is answering"
-    : messages.length
-      ? "Primo answered"
-      : ""
+    : error ||
+        (lastMessage?.role === "assistant" &&
+          primoTurnStatus(lastMessage, {
+            errored: lastMessage.status === "error",
+            aborted: lastMessage.status === "aborted",
+            finishReason: lastMessage.metadata?.finishReason,
+          }) === "error")
+      ? "Primo’s response was interrupted"
+      : lastMessage?.status === "aborted"
+        ? "Primo stopped"
+        : lastMessage?.role === "assistant"
+          ? "Primo answered"
+          : ""
   React.useEffect(
     () => () => {
       if (copyTimer.current !== null) window.clearTimeout(copyTimer.current)
@@ -350,33 +433,9 @@ export function PrimoConversation({
                     }
                     if (!isToolUIPart(part)) return null
                     const toolName = getToolName(part)
-                    if (part.state === "output-error") {
-                      return (
-                        <Marker key={part.toolCallId}>
-                          {toolName === "draft_recipe"
-                            ? "Primo couldn’t prepare that recipe draft."
-                            : "Primo couldn’t complete that kitchen read."}
-                        </Marker>
-                      )
-                    }
+                    if (part.state === "output-error") return null
                     if (part.state !== "output-available") {
-                      if (message.status === "aborted") {
-                        return <Marker key={part.toolCallId}>Stopped</Marker>
-                      }
-                      if (
-                        !busy ||
-                        message.id !== messages.at(-1)?.id ||
-                        message.status === "error" ||
-                        message.status === "complete"
-                      ) {
-                        return (
-                          <Marker key={part.toolCallId}>
-                            {toolName === "draft_recipe"
-                              ? "Recipe draft interrupted. Regenerate the response to try again."
-                              : "This step was interrupted. Regenerate the response to try again."}
-                          </Marker>
-                        )
-                      }
+                      if (!busy || message.id !== lastMessage?.id) return null
                       let line =
                         toolName === "show_recipe_batch"
                           ? "Preparing batch preview…"
@@ -412,11 +471,7 @@ export function PrimoConversation({
                       "ok" in output &&
                       output.ok === false
                     ) {
-                      return (
-                        <Marker key={part.toolCallId}>
-                          {(output as KitchenToolFailure).message}
-                        </Marker>
-                      )
+                      return null
                     }
                     if (
                       toolName === "find_recipes" ||
@@ -515,14 +570,14 @@ export function PrimoConversation({
                       </GuardedLink>
                     )
                   })}
-                  {message.status === "aborted" ? (
-                    <p className="text-xs text-muted-foreground">
-                      Response stopped
-                    </p>
-                  ) : message.status === "error" ? (
-                    <p className="text-xs text-destructive">
-                      Response interrupted. Try again.
-                    </p>
+                  {message.role === "assistant" &&
+                  !(busy && message.id === lastMessage?.id) ? (
+                    <TurnReceipt
+                      message={message}
+                      transportError={Boolean(
+                        error && message.id === lastMessage?.id
+                      )}
+                    />
                   ) : null}
                   <div
                     className={cn(
@@ -577,15 +632,34 @@ export function PrimoConversation({
                           />
                         ) : null}
                         {message.role === "assistant" &&
-                        message.id === lastAssistantId ? (
+                        message.id === lastAssistantId &&
+                        message.id === lastMessage?.id ? (
                           <Button
                             type="button"
                             size="icon-sm"
                             variant="ghost"
-                            aria-label="Regenerate response"
+                            aria-label={
+                              error ||
+                              primoTurnStatus(message, {
+                                errored: message.status === "error",
+                                aborted: message.status === "aborted",
+                                finishReason: message.metadata?.finishReason,
+                              }) === "error"
+                                ? "Retry response"
+                                : "Regenerate response"
+                            }
                             onClick={() => void regenerate()}
                           >
                             <RotateCcw aria-hidden="true" />
+                          </Button>
+                        ) : null}
+                        {home && error && message.id === lastMessage?.id ? (
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            render={<GuardedLink href="/analytics" />}
+                          >
+                            Open Analytics
                           </Button>
                         ) : null}
                       </>
@@ -596,9 +670,9 @@ export function PrimoConversation({
             </MessageScrollerItem>
           ))}
           {status === "submitted" || awaitingReply ? <WorkingMarker /> : null}
-          {error ? (
+          {error && lastMessage?.role !== "assistant" ? (
             <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive">
-              <p>Primo is temporarily unavailable. Your chat is still here.</p>
+              <p>Primo couldn’t finish this question. Retry to continue.</p>
               <Button
                 type="button"
                 size="xs"

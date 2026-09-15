@@ -150,10 +150,33 @@ export function PrimoProvider({
   const [conversationError, setConversationError] = React.useState("")
   const [loadVersion, reloadConversation] = React.useReducer((n) => n + 1, 0)
   const [conversationLoading, setConversationLoading] = React.useState(true)
+  const [delivery] = React.useState(() =>
+    valueCell<{
+      messageId: string
+      state: "unknown" | "accepted" | "rejected"
+    } | null>(null)
+  )
   const [transport] = React.useState(
     () =>
       new DefaultChatTransport<PrimoUIMessage>({
         api: "/api/primo/chat",
+        fetch: async (input, init) => {
+          const attempt = delivery.get()
+          const response = await fetch(input, init)
+          if (attempt) {
+            if (
+              response.headers.get("x-primo-accepted-message") ===
+              encodeURIComponent(attempt.messageId)
+            ) {
+              attempt.state = "accepted"
+            } else if (
+              [400, 401, 403, 404, 413, 429, 503].includes(response.status)
+            ) {
+              attempt.state = "rejected"
+            }
+          }
+          return response
+        },
         prepareSendMessagesRequest: ({ messages }) => ({
           body: {
             messages,
@@ -399,9 +422,17 @@ export function PrimoProvider({
           ? previous.id
           : undefined
       sendError.current = null
+      const messageId = retryId ?? crypto.randomUUID()
+      const attempt = {
+        messageId,
+        state: "unknown" as "unknown" | "accepted" | "rejected",
+      }
+      delivery.set(attempt)
       await chat.sendMessage({
+        id: messageId,
         ...(retryId ? { messageId: retryId } : {}),
-        text,
+        role: "user",
+        parts: [{ type: "text", text }],
         metadata: {
           mentions,
           attachments,
@@ -409,9 +440,24 @@ export function PrimoProvider({
           createdAt: new Date().toISOString(),
         },
       })
-      if (sendError.current) throw sendError.current
+      if (sendError.current && attempt.state === "rejected") {
+        // Only a definite rejection restores the composer. A lost response may
+        // already have committed; leave that turn in place for an idempotent retry.
+        if (conversationContext.get() === conversationId) {
+          chat.setMessages(chat.messages)
+          chat.clearError?.()
+        }
+        throw sendError.current
+      }
     },
-    [chat, conversationId, conversationLoading, conversationError]
+    [
+      chat,
+      conversationId,
+      conversationLoading,
+      conversationError,
+      conversationContext,
+      delivery,
+    ]
   )
 
   const newChat = React.useCallback(() => {
