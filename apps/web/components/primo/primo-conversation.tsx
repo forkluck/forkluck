@@ -18,7 +18,6 @@ import {
   TrendingUp,
 } from "lucide-react"
 
-import { PrimoRecentPreview } from "./primo-recent"
 import { Spinner } from "@/components/ui/spinner"
 import { PrimoMarkdown } from "./primo-markdown"
 import { PrimoAttachmentPreview } from "./primo-attachment-preview"
@@ -28,11 +27,7 @@ import { GuardedLink } from "@/components/navigation-blocker"
 import { PrimoComposer } from "@/components/primo/primo-composer"
 import { usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRecipeDraftCard } from "@/components/primo/primo-recipe-draft-card"
-import { PrimoResultCard } from "@/components/primo/primo-result-card"
-import {
-  PrimoUsdaResultCard,
-  type PrimoUsdaSearchResult,
-} from "@/components/primo/primo-usda-result-card"
+import { PrimoCostLinks } from "@/components/primo/primo-cost-links"
 import { Bubble } from "@/components/ui/bubble"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
@@ -48,10 +43,7 @@ import type {
   FindProductsResult,
   FindRecipesResult,
   KitchenToolFailure,
-  ProductSalesResult,
   RecipeBatchResult,
-  TopProductsResult,
-  IngredientPriceChangesResult,
 } from "@/lib/kitchen-tools/results"
 import {
   primoMessageText,
@@ -61,14 +53,8 @@ import {
   type PrimoMention,
   type PrimoUIMessage,
 } from "@/lib/primo/messages"
-import type { calculateBatchCost } from "@/lib/kitchen-tools/calculations"
 import type { RecipeDraft } from "@/lib/recipe/draft"
-import {
-  formatCents,
-  formatPreciseCents,
-  percentFormat,
-  quantityFormat,
-} from "@/lib/money"
+import { formatCents, quantityFormat } from "@/lib/money"
 import { cn } from "@/lib/utils"
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { formatDayMonthTime } from "@/lib/datetime"
@@ -189,16 +175,6 @@ function AmbiguityChoices({
   )
 }
 
-function SalesLine({ result }: { result: ProductSalesResult }) {
-  return (
-    <Marker>
-      {result.product.name} · {result.period.label} ·{" "}
-      {quantityFormat.format(result.units)} {result.product.baseUnit} ·{" "}
-      {formatCents(result.netSalesCents, result.currencyCode)}
-    </Marker>
-  )
-}
-
 function BatchLine({ result }: { result: RecipeBatchResult }) {
   const details = [
     `${result.recipe.title} at ${result.label} · preview ready`,
@@ -214,216 +190,6 @@ function BatchLine({ result }: { result: RecipeBatchResult }) {
     "nothing saved",
   ].filter(Boolean)
   return <Marker>{details.join(" · ")}</Marker>
-}
-
-function TopProductsCard({ result }: { result: TopProductsResult }) {
-  return (
-    <section className="rounded-xl border border-border p-4 text-sm">
-      <h3 className="font-medium">Top products · {result.period.label}</h3>
-      {result.products.length ? (
-        <ol className="mt-3 space-y-2">
-          {result.products.map((row, index) => (
-            <li key={index} className="flex justify-between gap-3">
-              <span>
-                {index + 1}. {row.name}
-              </span>
-              <span className="tabular-nums">
-                {formatCents(row.netSalesCents, result.currencyCode)}
-              </span>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <p className="mt-2">
-          {result.hasRecordedProducts
-            ? "No products with complete revenue to rank."
-            : "No product sales recorded for this period."}
-        </p>
-      )}
-      {result.unrankedProducts > 0 ? (
-        <p className="mt-2">
-          {result.unrankedProducts} products have missing revenue and are
-          excluded; this ranking is incomplete.
-        </p>
-      ) : null}
-      {result.more ? (
-        <p className="mt-2">More products are in the report.</p>
-      ) : null}
-      <p className="mt-3 text-xs text-muted-foreground">{result.coverage}</p>
-    </section>
-  )
-}
-
-function IngredientPriceChangesCard({
-  result,
-}: {
-  result: IngredientPriceChangesResult
-}) {
-  return (
-    <section className="rounded-xl border border-border p-4 text-sm">
-      <h3 className="font-medium">
-        Ingredient price changes · {result.period.label}
-      </h3>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Recorded unit prices before the period compared with its last
-        observations.
-      </p>
-      {result.items.length ? (
-        <ul className="mt-3 space-y-3">
-          {result.items.map((row) => (
-            <li key={row.ingredientRef}>
-              <p className="font-medium">{row.name}</p>
-              <p>
-                {formatPreciseCents(row.fromUnitCostCents, result.currencyCode)}{" "}
-                → {formatPreciseCents(row.toUnitCostCents, result.currencyCode)}{" "}
-                / {row.unit}
-                {row.percent === null
-                  ? " · no percentage from a zero price"
-                  : ` · ${row.percent > 0 ? "+" : ""}${percentFormat.format(row.percent / 100)}`}
-              </p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-2">
-          {result.observedIngredients
-            ? "No comparable price changes in the recorded observations."
-            : "No ingredient price observations recorded in this period."}
-        </p>
-      )}
-      {result.missingBaseline || result.incomparableUnits || result.omitted ? (
-        <p className="mt-3 text-xs text-muted-foreground">
-          {result.missingBaseline} without an earlier price ·{" "}
-          {result.incomparableUnits} with incompatible units · {result.omitted}{" "}
-          additional changes
-        </p>
-      ) : null}
-    </section>
-  )
-}
-
-function BatchCalculationCard({
-  result,
-}: {
-  result: ReturnType<typeof calculateBatchCost>
-}) {
-  const rows = [
-    [
-      "Ingredient cost per portion",
-      result.baseline.ingredientCostPerPortion,
-      false,
-    ],
-    [
-      "Variable cost per portion",
-      result.baseline.variableCostPerPortion,
-      false,
-    ],
-    ["Contribution per portion", result.baseline.contributionPerPortion, false],
-    ["Margin", result.baseline.marginPercent, true],
-    ["Markup", result.baseline.markupPercent, true],
-    ...(result.assumptions.ingredientChangePercent !== 0
-      ? [
-          [
-            "New variable cost per portion",
-            result.scenario.variableCostPerPortion,
-            false,
-          ],
-        ]
-      : []),
-    ["Exact price for target margin", result.scenario.exactSellingPrice, false],
-    [
-      "Minimum price for target margin",
-      result.scenario.minimumSellingPrice,
-      false,
-    ],
-  ] as const
-  return (
-    <section className="rounded-xl border border-border p-4 text-sm">
-      <h3 className="font-medium">
-        Hypothetical batch costs · {result.currencyCode}
-      </h3>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {quantityFormat.format(result.assumptions.portions)} portions · supplied
-        assumptions · nothing saved
-      </p>
-      <details className="mt-3 text-xs">
-        <summary className="cursor-pointer font-medium">
-          Calculation inputs
-        </summary>
-        <dl className="mt-2 space-y-1">
-          {[
-            [
-              "Ingredients per batch",
-              formatPreciseCents(
-                result.assumptions.ingredientCostPerBatch * 100,
-                result.currencyCode
-              ),
-            ],
-            [
-              "Packaging per portion",
-              formatPreciseCents(
-                result.assumptions.packagingCostPerPortion * 100,
-                result.currencyCode
-              ),
-            ],
-            [
-              "Other costs per batch",
-              formatPreciseCents(
-                result.assumptions.otherCostPerBatch * 100,
-                result.currencyCode
-              ),
-            ],
-            [
-              "Selling price per portion",
-              result.assumptions.sellingPricePerPortion === undefined
-                ? "Not provided"
-                : formatPreciseCents(
-                    result.assumptions.sellingPricePerPortion * 100,
-                    result.currencyCode
-                  ),
-            ],
-            [
-              "Ingredient price change",
-              percentFormat.format(
-                result.assumptions.ingredientChangePercent / 100
-              ),
-            ],
-            [
-              "Target margin",
-              result.assumptions.targetMarginPercent === undefined
-                ? "Preserve original margin if a selling price is supplied"
-                : percentFormat.format(
-                    result.assumptions.targetMarginPercent / 100
-                  ),
-            ],
-          ].map(([label, value]) => (
-            <div key={label} className="flex justify-between gap-3">
-              <dt>{label}</dt>
-              <dd className="text-right tabular-nums">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </details>
-      <dl className="mt-3 space-y-1">
-        {rows
-          .filter(([, value]) => value !== null)
-          .map(([label, value, percent]) => (
-            <div key={String(label)} className="flex justify-between gap-3">
-              <dt>{label}</dt>
-              <dd className="tabular-nums">
-                {percent
-                  ? percentFormat.format(Number(value) / 100)
-                  : formatPreciseCents(
-                      Number(value) * 100,
-                      result.currencyCode
-                    )}
-              </dd>
-            </div>
-          ))}
-      </dl>
-      <p className="mt-3 text-xs text-muted-foreground">{result.exclusions}</p>
-    </section>
-  )
 }
 
 const checkedLabels: Record<string, string> = {
@@ -442,6 +208,26 @@ const checkedLabels: Record<string, string> = {
   get_ingredient_price_changes: "Ingredient price changes",
 }
 
+function missingReadAnswer(message: PrimoUIMessage) {
+  if (message.status === "aborted") return false
+  const lastToolIndex = message.parts.findLastIndex(isToolUIPart)
+  const part = message.parts[lastToolIndex]
+  if (!part || !isToolUIPart(part)) return false
+  return (
+    [
+      "get_product_sales",
+      "get_recipe_cost_change",
+      "get_top_products",
+      "get_ingredient_price_changes",
+      "calculate_batch_cost",
+      "search_usda_foods",
+    ].includes(getToolName(part)) &&
+    !message.parts
+      .slice(lastToolIndex + 1)
+      .some((part) => part.type === "text" && part.text.trim())
+  )
+}
+
 function TurnReceipt({
   message,
   transportError,
@@ -451,7 +237,10 @@ function TurnReceipt({
 }) {
   const tools = primoToolParts(message)
   const status = primoTurnStatus(message, {
-    errored: transportError || message.status === "error",
+    errored:
+      transportError ||
+      message.status === "error" ||
+      missingReadAnswer(message),
     aborted: message.status === "aborted",
     finishReason: message.metadata?.finishReason,
   })
@@ -586,7 +375,8 @@ export function PrimoConversation({
     : error ||
         (lastMessage?.role === "assistant" &&
           primoTurnStatus(lastMessage, {
-            errored: lastMessage.status === "error",
+            errored:
+              lastMessage.status === "error" || missingReadAnswer(lastMessage),
             aborted: lastMessage.status === "aborted",
             finishReason: lastMessage.metadata?.finishReason,
           }) === "error")
@@ -834,14 +624,6 @@ export function PrimoConversation({
                         />
                       )
                     }
-                    if (toolName === "get_product_sales") {
-                      return (
-                        <SalesLine
-                          key={part.toolCallId}
-                          result={output as ProductSalesResult}
-                        />
-                      )
-                    }
                     if (toolName === "show_recipe_batch") {
                       return (
                         <BatchLine
@@ -852,42 +634,10 @@ export function PrimoConversation({
                     }
                     if (toolName === "get_recipe_cost_change") {
                       return (
-                        <PrimoResultCard
+                        <PrimoCostLinks
                           key={part.toolCallId}
                           result={output as CostResult}
                           onSuggestion={sendSuggestion}
-                        />
-                      )
-                    }
-                    if (toolName === "search_usda_foods") {
-                      return (
-                        <PrimoUsdaResultCard
-                          key={part.toolCallId}
-                          result={output as PrimoUsdaSearchResult}
-                        />
-                      )
-                    }
-                    if (toolName === "get_top_products")
-                      return (
-                        <TopProductsCard
-                          key={part.toolCallId}
-                          result={output as TopProductsResult}
-                        />
-                      )
-                    if (toolName === "get_ingredient_price_changes")
-                      return (
-                        <IngredientPriceChangesCard
-                          key={part.toolCallId}
-                          result={output as IngredientPriceChangesResult}
-                        />
-                      )
-                    if (toolName === "calculate_batch_cost") {
-                      return (
-                        <BatchCalculationCard
-                          key={part.toolCallId}
-                          result={
-                            output as ReturnType<typeof calculateBatchCost>
-                          }
                         />
                       )
                     }
@@ -930,6 +680,7 @@ export function PrimoConversation({
                     const output =
                       part.state === "output-available" ? part.output : null
                     if (
+                      getToolName(part) === "get_recipe_cost_change" ||
                       !output ||
                       typeof output !== "object" ||
                       !("view" in output) ||
@@ -1051,6 +802,7 @@ export function PrimoConversation({
                             variant="ghost"
                             aria-label={
                               error ||
+                              missingReadAnswer(message) ||
                               primoTurnStatus(message, {
                                 errored: message.status === "error",
                                 aborted: message.status === "aborted",
@@ -1164,7 +916,6 @@ export function PrimoConversation({
           </ul>
         </div>
       ) : null}
-      {home && empty && !conversationError ? <PrimoRecentPreview /> : null}
     </div>
   )
 }

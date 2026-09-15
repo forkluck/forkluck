@@ -14,9 +14,10 @@ test("fresh windows share saved Recents but keep selection and unfinished drafts
   await composer.fill("Calculate batch fixture")
   await page.getByRole("button", { name: "Send message" }).click()
   const { conversationId } = (await accepted).postDataJSON()
-  const calculation = page.getByRole("heading", {
-    name: "Hypothetical batch costs · USD",
-  })
+  const calculation = page.getByText(
+    "The exact selling price is $2.875; the minimum price is $2.88.",
+    { exact: true }
+  )
   await expect(calculation).toBeVisible()
   await expect(page.getByRole("button", { name: "Stop Primo" })).toHaveCount(0)
   const title = (
@@ -33,16 +34,26 @@ test("fresh windows share saved Recents but keep selection and unfinished drafts
     other.getByRole("heading", { name: "How can I help in the kitchen?" })
   ).toBeVisible()
   await expect(
-    other.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    other.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toHaveCount(0)
+  await expect(
+    other.getByRole("region", { name: "Recent conversations" })
+  ).toHaveCount(0)
+  await other.getByRole("button", { name: /^Recent chats/ }).click()
   await other
-    .getByRole("region", { name: "Recent conversations" })
+    .getByRole("dialog", { name: "Recent chats" })
     .getByRole("button", { name: title, exact: true })
     // The synthetic gateway names every fixture identically; the new chat is first.
     .first()
     .click()
   await expect(
-    other.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    other.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
   await expect(other).toHaveURL(`/?c=${conversationId}`)
   await expect(otherComposer).toHaveValue("")
@@ -66,7 +77,10 @@ test("fresh windows share saved Recents but keep selection and unfinished drafts
   const linked = await context.newPage()
   await linked.goto(`/?c=${conversationId}`)
   await expect(
-    linked.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    linked.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
   await expect(
     linked.getByRole("textbox", { name: "Message Primo" })
@@ -84,7 +98,10 @@ test("the rail expands into Home with its named conversation and composer intact
     .fill("Calculate batch fixture")
   await page.getByRole("button", { name: "Send message" }).click()
   await expect(
-    page.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    page.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
   await expect(page.getByRole("button", { name: "Stop Primo" })).toHaveCount(0)
   const title = await page
@@ -108,6 +125,9 @@ test("the rail expands into Home with its named conversation and composer intact
     page.getByRole("textbox", { name: "Message Primo" })
   ).toHaveValue("Draft follows the surface")
   await expect(
-    page.getByRole("heading", { name: "Hypothetical batch costs · USD" })
+    page.getByText(
+      "The exact selling price is $2.875; the minimum price is $2.88.",
+      { exact: true }
+    )
   ).toBeVisible()
 })

@@ -56,9 +56,13 @@ current tab's `sessionStorage`; saved history lives in Django. A new window
 starts fresh, reload restores its own selection, and an explicit `?c=<uuid>`
 link reopens saved history. The legacy shared `localStorage` selection is no
 longer read. Opening Recents never imports another window's unfinished draft.
-Home's recent shortcuts refresh from the authenticated history API when the
-window becomes visible again. Home and rail use the same named header; expand
+History is shown only when the user opens Recents. Home and rail use the same
+named header; expand
 navigates to Home without replacing the shared provider or interrupting work.
+Read-only results are explained once in the assistant answer, with guarded
+report links and a collapsed execution receipt. Recipe drafts retain their
+explicit review/create panel. A completed read without a following answer
+shows response recovery instead of a second data display.
 
 ## A read
 

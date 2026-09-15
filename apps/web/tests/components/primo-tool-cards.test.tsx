@@ -19,7 +19,6 @@ vi.mock("next/navigation", () => ({
 }))
 
 import { PrimoRecipeDraftCard } from "@/components/primo/primo-recipe-draft-card"
-import { PrimoUsdaResultCard } from "@/components/primo/primo-usda-result-card"
 import type { RecipeDraft } from "@/lib/recipe/draft"
 
 const draft: RecipeDraft = {
@@ -50,50 +49,6 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe("Primo tool cards", () => {
-  it("shows USDA candidates and their authoritative identifiers", () => {
-    render(
-      <PrimoUsdaResultCard
-        result={{
-          query: "garlic",
-          scope: "common",
-          items: [
-            {
-              fdcId: 1104647,
-              description: "Garlic, raw",
-              dataType: "Foundation",
-              brand: "",
-            },
-            {
-              fdcId: 1999999,
-              description: "GARLIC SAUCE",
-              dataType: "Branded",
-              brand: "Example Foods",
-            },
-          ],
-        }}
-      />
-    )
-
-    expect(screen.getByText("USDA FoodData Central")).toBeDefined()
-    expect(screen.getByText("Garlic, raw")).toBeDefined()
-    expect(screen.getByText("Foundation · FDC 1104647")).toBeDefined()
-    expect(screen.getByText("Example Foods")).toBeDefined()
-  })
-
-  it("makes an empty USDA search explicit", () => {
-    render(
-      <PrimoUsdaResultCard
-        result={{ query: "unknown food", scope: "branded", items: [] }}
-      />
-    )
-
-    expect(
-      screen.getByText(
-        "No branded USDA foods matched “unknown food”. Try broader wording."
-      )
-    ).toBeDefined()
-  })
-
   it("does not write before confirmation and links from the saved public id", async () => {
     createRecipeFromDraft.mockResolvedValue({
       id: "42",

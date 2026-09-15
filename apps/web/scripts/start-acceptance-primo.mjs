@@ -191,13 +191,20 @@ const server = createServer(async (request, reply) => {
           chunk({}, "tool_calls"),
         ]
       : null
+    const result = results.at(-1)
+    const answer = prompt.includes("Calculate batch fixture")
+      ? `The exact selling price is $${result?.scenario?.exactSellingPrice}; the minimum price is $${result?.scenario?.minimumSellingPrice}.`
+      : prompt.includes("Which three products")
+        ? `Top products for ${result?.period?.label}: ${result?.products?.map((row) => `${row.name}: $${(row.netSalesCents / 100).toFixed(2)}`).join("; ") || "No recorded products to rank."}`
+        : prompt.includes("What changed in ingredient costs?")
+          ? `Ingredient price observations for ${result?.period?.label}: ${result?.items?.map((row) => `${row.name}: $${row.fromUnitCostCents / 100} to $${row.toUnitCostCents / 100} per ${row.unit}`).join("; ") || "No comparable changes recorded."}`
+          : "The recipe draft is ready to review. Nothing has been saved."
     const events =
       fixtureEvents ??
       (finishedTool
         ? [
             chunk({
-              content:
-                "The recipe draft is ready to review. Nothing has been saved.",
+              content: answer,
             }),
             chunk({}, "stop"),
           ]

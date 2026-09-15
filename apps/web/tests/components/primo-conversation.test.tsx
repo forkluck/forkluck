@@ -191,7 +191,7 @@ describe("Primo conversation", () => {
       },
     ]
     render(<PrimoConversation userName="Ada" />)
-    expect(screen.getByText(/Mooncake · Aug 1/)).toBeDefined()
+    expect(screen.queryByText(/Mooncake · Aug 1/)).toBeNull()
     expect(screen.getByText(/Mooncake at 50x/)).toBeDefined()
     expect(screen.getByText(/preview ready/)).toBeDefined()
     expect(screen.getByText(/cost unavailable/)).toBeDefined()
@@ -503,92 +503,77 @@ it("edits a question with its original files and only still-present mentions, le
   )
 })
 
-it("renders fractional-cent calculations and incomplete aggregate results without inventing zeroes", async () => {
-  const { calculateBatchCost, batchCalculationSchema } =
-    await import("@/lib/kitchen-tools/calculations")
-  const calculation = calculateBatchCost(
-    batchCalculationSchema.parse({
-      portions: 24,
-      ingredientCostPerBatch: 18,
-      packagingCostPerPortion: 0.25,
-      sellingPricePerPortion: 2.5,
-      ingredientChangePercent: 20,
-      currencyCode: "USD",
-    })
-  )
-  state.chat.messages = [
-    {
-      id: "results",
-      role: "assistant",
-      parts: [
-        {
-          type: "tool-calculate_batch_cost",
-          toolCallId: "calc",
-          state: "output-available",
-          input: {},
-          output: calculation,
-        },
-        {
-          type: "tool-get_top_products",
-          toolCallId: "top",
-          state: "output-available",
-          input: {},
-          output: {
-            ok: true,
-            tool: "get_top_products",
-            period: { label: "August" },
-            products: [],
-            hasRecordedProducts: true,
-            unrankedProducts: 2,
-            more: false,
-            currencyCode: "USD",
-            coverage: "Recorded net sales only.",
-            view: "/analytics?start=2026-08-01&end=2026-08-31",
-          },
-        },
-        {
-          type: "tool-get_ingredient_price_changes",
-          toolCallId: "costs",
-          state: "output-available",
-          input: {},
-          output: {
-            ok: true,
-            tool: "get_ingredient_price_changes",
-            period: { label: "August" },
-            items: [
-              {
-                ingredientRef: "ing_0123456789ab",
-                name: "Flour",
-                unit: "kg",
-                fromUnitCostCents: 44,
-                toUnitCostCents: 26,
-                deltaUnitCostCents: -18,
-                percent: -40.909,
-              },
-            ],
-            currencyCode: "USD",
-            observedIngredients: 3,
-            missingBaseline: 1,
-            incomparableUnits: 1,
-            omitted: 0,
-            view: "/ingredients",
-          },
-        },
-      ],
-    },
-  ]
-  render(<PrimoConversation userName="Ada" />)
-  expect(screen.getByText("Calculation inputs")).toBeDefined()
-  expect(screen.getByText("Selling price per portion")).toBeDefined()
-  expect(screen.getByText("$2.50")).toBeDefined()
-  expect(screen.getByText("$2.875")).toBeDefined()
-  expect(screen.getByText("$2.88")).toBeDefined()
+it.each([
+  "get_product_sales",
+  "get_recipe_cost_change",
+  "get_top_products",
+  "get_ingredient_price_changes",
+  "calculate_batch_cost",
+  "search_usda_foods",
+])(
+  "shows one written answer for %s and keeps a missing answer retryable",
+  (tool) => {
+    const text =
+      "Synthetic flour fell from $0.44 to $0.26. The exact target price is $2.875, rounded up to $2.88."
+    const output = {
+      ok: true,
+      tool,
+      recipe: { publicId: "rcp_0123456789ab" },
+      lines: [],
+      priceChangesInWindow: 1,
+      view:
+        tool === "get_recipe_cost_change"
+          ? "/recipes/rcp_0123456789ab/cost"
+          : "/analytics?start=2026-08-01&end=2026-08-31",
+    }
+    const parts = [
+      { type: "text", text: "I’ll check that." },
+      {
+        type: `tool-${tool}`,
+        toolCallId: "read",
+        state: "output-available",
+        input: {},
+        output,
+      },
+      { type: "text", text },
+    ]
+    state.chat.messages = [{ id: "result", role: "assistant", parts }]
+    const view = render(<PrimoConversation userName="Ada" />)
+    expect(screen.getAllByText(text)).toHaveLength(1)
+    expect(
+      screen.queryByRole("heading", {
+        name: /Top products|Ingredient price changes|Hypothetical batch costs/,
+      })
+    ).toBeNull()
+    expect(document.querySelector("section.rounded-xl.border")).toBeNull()
+    expect(screen.queryByRole("button", { name: "Retry response" })).toBeNull()
+    expect(
+      screen.getByRole("link", {
+        name:
+          tool === "get_recipe_cost_change"
+            ? "Open Cost tab"
+            : "View sales report",
+      })
+    ).toBeDefined()
+
+    // A preamble before the tool is not a finished answer, including in restored history.
+    state.chat.messages[0]!.parts = parts.slice(0, -1)
+    view.rerender(<PrimoConversation userName="Ada" />)
+    expect(
+      screen.getByText("Results loaded; response interrupted. Try again.")
+    ).toBeDefined()
+    expect(screen.getByRole("button", { name: "Retry response" })).toBeDefined()
+    expect(screen.getByText("Primo’s response was interrupted")).toBeDefined()
+  }
+)
+
+it("keeps fresh Home free of conversation-history shortcuts", () => {
+  render(<PrimoConversation userName="Ada" home />)
   expect(
-    screen.getByText("No products with complete revenue to rank.")
+    screen.getByRole("heading", { name: "How can I help in the kitchen?" })
   ).toBeDefined()
-  expect(screen.getByText(/ranking is incomplete/)).toBeDefined()
-  expect(screen.getByText(/\$0.44/).textContent).toContain("$0.26")
   expect(
-    screen.getByRole("link", { name: "View sales report" }).getAttribute("href")
-  ).toBe("/analytics?start=2026-08-01&end=2026-08-31")
+    screen.queryByRole("region", { name: "Recent conversations" })
+  ).toBeNull()
+  expect(screen.queryByText("Pick up where you left off")).toBeNull()
 })
