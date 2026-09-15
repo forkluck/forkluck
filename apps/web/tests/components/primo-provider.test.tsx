@@ -24,6 +24,7 @@ const chatFns = vi.hoisted(() => ({
   stop: vi.fn(),
   sendMessage: vi.fn(),
   regenerate: vi.fn(),
+  clearError: vi.fn(),
 }))
 const primoActions = vi.hoisted(() => ({
   load: vi.fn(),
@@ -34,7 +35,12 @@ const primoActions = vi.hoisted(() => ({
 }))
 const chatInit = vi.hoisted(() => ({
   value: undefined as
-    undefined | { onData?: (part: { type: string; data: unknown }) => void },
+    | undefined
+    | {
+        onData?: (part: { type: string; data: unknown }) => void
+        onError: (error: Error) => void
+      },
+  fetch: undefined as typeof fetch | undefined,
 }))
 
 vi.mock("@/app/(app)/actions", () => ({
@@ -67,13 +73,14 @@ vi.mock("@ai-sdk/react", () => ({
       regenerate: chatFns.regenerate,
       stop: chatFns.stop,
       setMessages: chatFns.setMessages,
+      clearError: chatFns.clearError,
     }
   },
 }))
 vi.mock("ai", () => ({
   DefaultChatTransport: class {
     constructor(options: unknown) {
-      void options
+      chatInit.fetch = (options as { fetch: typeof fetch }).fetch
     }
   },
   isToolUIPart: (part: { type?: string }) =>
@@ -109,7 +116,10 @@ function Probe() {
   )
 }
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
 
 beforeEach(() => {
   state.pathname = "/ingredients"
@@ -195,7 +205,7 @@ describe("PrimoProvider", () => {
       expect(chatFns.sendMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           messageId: "failed-user",
-          text: "Read this recipe instead",
+          parts: [{ type: "text", text: "Read this recipe instead" }],
         })
       )
     }
@@ -413,3 +423,75 @@ describe("PrimoProvider", () => {
     )
   })
 })
+
+// The transport response, not the SDK's optimistic user row, acknowledges acceptance.
+it.each([
+  [400, false, true],
+  [401, false, true],
+  [503, false, true],
+  [400, true, false],
+  [502, true, false],
+  [200, true, false],
+  [502, false, false],
+  [0, false, false],
+])(
+  "restores only definitively rejected sends (HTTP %s, accepted %s)",
+  async (status, accepted, rejected) => {
+    const outcome = vi.fn()
+    const before = {
+      id: "earlier",
+      role: "user",
+      parts: [{ type: "text", text: "Earlier question" }],
+    }
+    state.messages = [before]
+    chatFns.sendMessage.mockImplementation(async (message) => {
+      vi.stubGlobal(
+        "fetch",
+        status === 0
+          ? vi.fn().mockRejectedValue(new TypeError("Network lost"))
+          : vi.fn().mockResolvedValue(
+              new Response("", {
+                status,
+                headers: accepted
+                  ? { "x-primo-accepted-message": message.id }
+                  : {},
+              })
+            )
+      )
+      try {
+        await chatInit.fetch!("/api/primo/chat")
+      } catch {}
+      chatInit.value!.onError(new Error("Answer failed"))
+    })
+    function Send() {
+      const { send, conversationLoading } = usePrimo()
+      return (
+        <button
+          disabled={conversationLoading}
+          onClick={() =>
+            void send("New question").then(
+              () => outcome("retained"),
+              () => outcome("rejected")
+            )
+          }
+        >
+          Send test
+        </button>
+      )
+    }
+    render(
+      <PrimoProvider>
+        <Send />
+      </PrimoProvider>
+    )
+    await waitFor(() =>
+      expect(screen.getByText("Send test")).toHaveProperty("disabled", false)
+    )
+    await act(async () => fireEvent.click(screen.getByText("Send test")))
+    expect(outcome).toHaveBeenCalledWith(rejected ? "rejected" : "retained")
+    if (rejected) {
+      expect(chatFns.setMessages).toHaveBeenCalledWith([before])
+      expect(chatFns.clearError).toHaveBeenCalledOnce()
+    } else expect(chatFns.clearError).not.toHaveBeenCalled()
+  }
+)

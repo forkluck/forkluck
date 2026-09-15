@@ -585,6 +585,18 @@ not be used as the public host. `X-Forwarded-Host` does not grant admission.
 | Identity and ownership | An accepted origin proceeds to the existing session, plan, and conversation ownership checks |
 | Lifecycle and downstream | Refused origins return 403 before a session lookup, saved turn, or model call; valid unauthenticated requests return 401 |
 
+After the user turn is durably saved, every chat response carries
+`X-Primo-Accepted-Message` with the URI-encoded user message ID, including HTTP
+errors that occur before SSE can start. A matching acknowledgement means the
+question was received even if generation fails. A definite HTTP rejection before
+save restores the draft and removes its optimistic row. A lost or ambiguous
+response retains the question for retry with the same ID; it never claims the
+question was unsent. Generation failures retain successful result cards and use
+one response recovery control. Completed repairs replace only the failed
+operation for the same input (or the recipe draft being repaired). Tool details
+sit under “What Primo checked”; Stop, interruption and completion have distinct
+announcements and persisted statuses.
+
 `POST /api/primo/chat` accepts
 `{conversationId, parentMessageId, recipeRef, productRef, messages}`. The
 conversation id is a client-minted UUID and the parent id is the preceding AI

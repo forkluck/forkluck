@@ -128,7 +128,7 @@ describe("Primo conversation", () => {
     ]
     render(<PrimoConversation userName="Ada" />)
     expect(
-      screen.getByText("Primo couldn’t prepare that recipe draft.")
+      screen.getByText("Recipe draft interrupted. Try again.")
     ).toBeDefined()
   })
   it("uses the persistent provider to send a normal kitchen question", () => {
@@ -201,7 +201,7 @@ describe("Primo conversation", () => {
         .getAttribute("href")
     ).toBe("/recipes/rcp_0123456789ab/cost?batch=50")
     expect(
-      screen.getByText("Only the recipe's owner can compare its cost history.")
+      screen.getByText(/Only the recipe.s owner can compare its cost history/)
     ).toBeDefined()
   })
 
@@ -329,7 +329,7 @@ describe("Primo conversation", () => {
       },
     ]
     render(<PrimoConversation userName="Ada" />)
-    expect(screen.getByText("Stopped")).toBeDefined()
+    expect(screen.getByText("Response stopped")).toBeDefined()
     expect(screen.queryByText("Reading sales…")).toBeNull()
   })
 
@@ -344,4 +344,92 @@ describe("Primo conversation", () => {
     expect(screen.getByText("3s")).toBeDefined()
     vi.useRealTimers()
   })
+})
+
+it("retains successful data, offers one retry, and announces interruption", () => {
+  state.chat.status = "error"
+  state.chat.error = new Error("Network lost")
+  state.chat.messages = [
+    {
+      id: "answer",
+      role: "assistant",
+      status: "error",
+      parts: [
+        {
+          type: "tool-show_recipe_batch",
+          toolCallId: "batch",
+          state: "output-available",
+          input: {},
+          output: {
+            ok: true,
+            tool: "show_recipe_batch",
+            recipe: { title: "Synthetic soup" },
+            label: "2×",
+            portions: 4,
+            cost: null,
+            view: "/recipes/rcp_0123456789ab/cost?batch=2",
+          },
+        },
+        {
+          type: "tool-draft_recipe",
+          toolCallId: "draft",
+          state: "input-streaming",
+          input: {},
+        },
+      ],
+    },
+  ]
+  render(<PrimoConversation userName="Ada" />)
+  expect(screen.getByText(/Synthetic soup at 2×/)).toBeDefined()
+  expect(
+    screen.getByText("Results loaded; response interrupted. Try again.")
+  ).toBeDefined()
+  expect(screen.getAllByRole("button", { name: /Retry/ })).toHaveLength(1)
+  expect(
+    screen.queryByRole("button", { name: "Regenerate response" })
+  ).toBeNull()
+  expect(screen.getByRole("status").textContent).toBe(
+    "Primo’s response was interrupted"
+  )
+  expect(screen.queryByText(/Couldn’t send/)).toBeNull()
+})
+
+it("collapses a repaired schema failure after a valid final draft", () => {
+  state.chat.messages = [
+    {
+      id: "answer",
+      role: "assistant",
+      status: "complete",
+      parts: [
+        {
+          type: "tool-draft_recipe",
+          toolCallId: "bad",
+          state: "output-error",
+          errorText: "yield must be object",
+          input: { yield: "2 servings" },
+        },
+        {
+          type: "tool-draft_recipe",
+          toolCallId: "good",
+          state: "output-available",
+          input: {},
+          output: {
+            title: "Synthetic soup",
+            description: "",
+            yield: { amount: 2, unit: "pcs" },
+            ingredients: [
+              { name: "Carrots", quantity: 200, unit: "g", preparation: "" },
+            ],
+            steps: ["Simmer."],
+          },
+        },
+      ],
+    },
+  ]
+  render(<PrimoConversation userName="Ada" />)
+  expect(
+    screen.queryByText(/interrupted|not completed|yield must be/)
+  ).toBeNull()
+  expect(screen.getByText(/Recipe draft · completed/)).toBeDefined()
+  expect(screen.getByRole("button", { name: "Create recipe" })).toBeDefined()
 })

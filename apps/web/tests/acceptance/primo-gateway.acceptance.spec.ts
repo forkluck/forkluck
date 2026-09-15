@@ -47,16 +47,16 @@ test("a gateway outage keeps Home, history, retry and the next draft usable", as
     .getByRole("textbox", { name: "Message Primo" })
     .fill("Gateway outage fixture")
   await page.getByRole("button", { name: "Send message" }).click()
-  await expect(
-    page.getByText("Primo is temporarily unavailable. Your chat is still here.")
-  ).toBeVisible({ timeout: 20_000 })
+  await expect(page.getByText("Response interrupted. Try again.")).toBeVisible({
+    timeout: 20_000,
+  })
   await expect(
     page
       .getByRole("region", { name: "Primo conversation" })
       .getByText("Gateway outage fixture", { exact: true })
   ).toBeVisible()
   await expect(
-    page.getByRole("button", { name: "Retry", exact: true })
+    page.getByRole("button", { name: "Retry response", exact: true })
   ).toBeVisible()
   await page
     .getByRole("textbox", { name: "Message Primo" })
