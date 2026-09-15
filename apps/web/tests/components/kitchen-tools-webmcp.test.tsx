@@ -98,6 +98,29 @@ describe("KitchenToolsWebMcp", () => {
     expect(mocks.toast.update).not.toHaveBeenCalled()
   })
 
+  it("returns an acting result only after the route transition, capped at three seconds", async () => {
+    vi.useFakeTimers()
+    try {
+      const tools = register()
+      const result = { ok: true, view: "/recipes/rcp_0123456789ab" }
+      mocks.run.mockResolvedValue(result)
+      let settled = false
+      const execution = tools[3]
+        .execute({}, { signal: new AbortController().signal })
+        .then((value) => {
+          settled = true
+          return value
+        })
+      await vi.advanceTimersByTimeAsync(2_900)
+      expect(mocks.go).toHaveBeenCalledWith("/recipes/rcp_0123456789ab")
+      expect(settled).toBe(false)
+      await vi.advanceTimersByTimeAsync(200)
+      expect(await execution).toBe(result)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it("reports a rejected server action and clears its permanent progress toast", async () => {
     const tools = register()
     mocks.run.mockRejectedValue(new Error("Offline"))

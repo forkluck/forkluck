@@ -1,0 +1,32 @@
+# Outside uptime check for the private Primo gateway's health page. There is
+# no other alerting: a failed run makes GitHub email the repository owner,
+# which is the whole mechanism. It lives here rather than in the private
+# repository because public repositories get free Actions minutes.
+name: Primo uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  healthz:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Check the gateway health page
+        run: |
+          for attempt in 1 2 3; do
+            if body="$(curl -fsS --max-time 10 https://primo.forkluck.com/healthz)" \
+              && [[ "$body" == *'"ok":true'* ]]; then
+              echo "Primo gateway healthy on attempt $attempt"
+              exit 0
+            fi
+            echo "Attempt $attempt failed" >&2
+            [[ "$attempt" -lt 3 ]] && sleep 20
+          done
+          echo "Primo gateway health check failed three times over 40 seconds: https://primo.forkluck.com/healthz is down or not returning ok:true." >&2
+          exit 1

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ "${1:-}" == "--version" ]]; then
-    echo "7"
+    echo "8"
     exit 0
 fi
 
@@ -89,8 +89,11 @@ runuser -u forkluck -- env \
     # shellcheck disable=SC1091
     source /etc/forkluck/frontend.env
     set +a
+    # FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK=1 turns a failed check into a warning so
+    # an unrelated fix can ship while the gateway is down. Run it as root on the
+    # host; the workflow's sudo call does not pass it through.
     if [[ -n "${PRIMO_API_KEY:-}" ]]; then
-        runuser -u forkluck --preserve-environment -- /usr/bin/node --input-type=module <<'NODE'
+        if ! runuser -u forkluck --preserve-environment -- /usr/bin/node --input-type=module <<'NODE'
 const base = new URL(process.env.PRIMO_BASE_URL || "https://primo.forkluck.com/v1");
 const secure = base.protocol === "https:" || (base.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(base.hostname));
 if (!secure || base.username || base.password || base.search || base.hash || base.pathname.replace(/\/$/, "") !== "/v1") throw new Error("Invalid Primo gateway configuration");
@@ -100,8 +103,16 @@ try {
     signal: AbortSignal.timeout(8000), redirect: "error",
   });
   if (!response.ok || !(await response.json()).data?.some(model => model.id === "primo")) throw new Error();
-} catch { throw new Error("Primo gateway access check failed; keeping the current release"); }
+} catch { throw new Error("Primo gateway access check failed"); }
 NODE
+        then
+            if [[ "${FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK:-}" == "1" ]]; then
+                echo "WARNING: Primo gateway access check failed; releasing anyway because FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK=1. Primo may be unavailable until the gateway recovers." >&2
+            else
+                echo "Primo gateway access check failed; keeping the current release. Set FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK=1 to release without it." >&2
+                exit 1
+            fi
+        fi
     fi
 )
 

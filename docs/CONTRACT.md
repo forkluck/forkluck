@@ -537,6 +537,12 @@ chat-completion JSON or SSE with tool-call deltas, finish reason, usage and
 `[DONE]`. The private service owns system/developer instructions, model choice
 and provider options; the caller cannot supply or override them.
 
+The gateway is tested against `ai` 7.0.77 and `@ai-sdk/openai-compatible`
+3.0.35, and `apps/web/package.json` pins those exact versions. A bump must be
+tested against the real gateway before merging: the synthetic acceptance
+gateway does not enforce the private request contract, so a new SDK field
+would pass CI and fail every live Primo request.
+
 | Context field | Source and meaning |
 | --- | --- |
 | `version: 1`, `task: "chat" \| "title" \| "vision"` | Explicit protocol and task |

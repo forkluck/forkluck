@@ -290,15 +290,17 @@ authenticated AppShell                 feature-detects document.modelContext
     executeKitchenTool                 progress line + cancellation checks
       runKitchenToolAction             requireUser first; same server runner
         runKitchenTool                 existing owner/kitchen-scoped Django reads
-      result.view                      confirmed navigation; await transition
+      result.view                      guarded navigation; await transition
     plain result object                returned to the browser agent
 ```
 
-The five tools register for the authenticated shell's lifetime with one
+The tools register for the authenticated shell's lifetime with one
 `AbortSignal`. Unsupported or permission-disabled browsers keep the ordinary
-app unchanged, and one rejected registration cannot stop the others. WebMCP
-returns the plain tool result: there is no content envelope and no toast. A
-successful acting result navigates to the normal recipe or product screen and
+app unchanged, and one rejected registration cannot stop the others. The
+adapter mounts outside the Primo provider and reports progress, completion and
+failure through its own toast; the browser agent receives the plain tool
+result with no content envelope. A successful acting result navigates through
+the app's unsaved-change guard to the normal recipe or product screen and
 resolves after the route transition, raced against a three-second timeout. No
 second Django route or business-logic implementation exists.
 

@@ -542,6 +542,11 @@ Cutover order:
    configured credential against `/v1/models` before stopping the current app;
    failed admission keeps the current release serving. This is not a provider
    health guarantee. No Django migration or table handover is required.
+   To ship an unrelated fix while the gateway is down, run the command as
+   root on the host with `FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK=1` (`deploy-forkluck`
+   version 8): the failed check becomes a warning and the release proceeds.
+   The workflow's `sudo` call does not pass the flag; use the archive it
+   already uploaded. Do not clear `PRIMO_API_KEY` just to get past the check.
 5. Verify Home, a tool question, attachment extraction, explicit recipe creation,
    history and the service's per-user usage report. Check logs contain metadata
    only. Public builds and browser acceptance also run with Primo unconfigured.
