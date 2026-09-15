@@ -152,33 +152,35 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
+  let conversationHasTitle = false
   let responseMessageId = createHash("sha256")
     .update(`${parsed.data.conversationId}:${lastUserMessage.id}`)
     .digest("hex")
   try {
-    const saved = await djangoAction<{ responseMessageId?: string }>(
-      "primo-save-turn",
-      {
-        conversationId: parsed.data.conversationId,
-        generationId: requestId,
-        ...(parsed.data.edit ? { edit: parsed.data.edit } : {}),
-        messages: [
-          {
-            id: lastUserMessage.id,
-            role: "user",
-            parts: lastUserMessage.parts.filter((part) => part.type === "text"),
-            text: primoMessageText(lastUserMessage),
-            status: "complete",
-            metadata: {
-              mentions: lastUserMessage.metadata?.mentions ?? [],
-              attachmentIds: lastUserMessage.metadata?.attachmentIds ?? [],
-            },
-            parentMessageId: parsed.data.parentMessageId,
+    const saved = await djangoAction<{
+      responseMessageId?: string
+      item?: { title?: string }
+    }>("primo-save-turn", {
+      conversationId: parsed.data.conversationId,
+      generationId: requestId,
+      ...(parsed.data.edit ? { edit: parsed.data.edit } : {}),
+      messages: [
+        {
+          id: lastUserMessage.id,
+          role: "user",
+          parts: lastUserMessage.parts.filter((part) => part.type === "text"),
+          text: primoMessageText(lastUserMessage),
+          status: "complete",
+          metadata: {
+            mentions: lastUserMessage.metadata?.mentions ?? [],
+            attachmentIds: lastUserMessage.metadata?.attachmentIds ?? [],
           },
-        ],
-      }
-    )
+          parentMessageId: parsed.data.parentMessageId,
+        },
+      ],
+    })
     responseMessageId = saved?.responseMessageId || responseMessageId
+    conversationHasTitle = Boolean(saved?.item?.title)
   } catch (cause) {
     const missing =
       cause instanceof BackendRequestError &&
@@ -285,6 +287,7 @@ export async function POST(request: Request) {
   const limits = primoGenerationLimits(attachments.length > 0)
   const deadline = AbortSignal.timeout(limits.timeoutMs)
   const needsTitle =
+    !conversationHasTitle &&
     validatedMessages.filter((message) => message.role === "user").length === 1
   const identity = {
     version: 1 as const,

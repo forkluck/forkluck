@@ -888,3 +888,22 @@ it("does not acknowledge a rejected attachment/edit transaction", async () => {
   expect(response.headers.has("x-primo-accepted-message")).toBe(false)
   expect(mocks.streamText).not.toHaveBeenCalled()
 })
+
+it("keeps the saved conversation title when editing or regenerating the first question", async () => {
+  mocks.djangoAction.mockResolvedValueOnce({ item: { title: "My named chat" } })
+  await POST(
+    request({ recipeRef, messages: [userMessage("Revised first question")] })
+  )
+  const options = mocks.streamOptions as {
+    execute: (value: {
+      writer: {
+        merge: (stream: ReadableStream) => void
+        write: (part: unknown) => void
+      }
+    }) => Promise<void>
+  }
+  const writer = { merge: vi.fn(), write: vi.fn() }
+  await options.execute({ writer })
+  expect(mocks.generateText).not.toHaveBeenCalled()
+  expect(writer.write).not.toHaveBeenCalled()
+})
