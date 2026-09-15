@@ -43,7 +43,7 @@ export function createPrimoDraftStore(scope: string) {
       if (!values.has(id)) {
         let value = EMPTY
         try {
-          const saved = JSON.parse(localStorage.getItem(key(id)) ?? "null")
+          const saved = JSON.parse(sessionStorage.getItem(key(id)) ?? "null")
           if (saved && typeof saved.text === "string")
             value = {
               text: saved.text.slice(0, 4000),
@@ -70,9 +70,9 @@ export function createPrimoDraftStore(scope: string) {
       const next = update(this.get(id))
       values.set(id, next)
       try {
-        if (!next.text && !next.files.length) localStorage.removeItem(key(id))
+        if (!next.text && !next.files.length) sessionStorage.removeItem(key(id))
         else
-          localStorage.setItem(
+          sessionStorage.setItem(
             key(id),
             JSON.stringify({
               ...next,

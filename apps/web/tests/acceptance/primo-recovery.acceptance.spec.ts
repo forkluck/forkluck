@@ -29,7 +29,7 @@ const message = {
 }
 
 for (const width of [1280, 390]) {
-  test(`Recent retries and reopens an interrupted draft in a new window at ${width}px`, async ({
+  test(`Recent retries and explicitly reopens an interrupted draft in a fresh window at ${width}px`, async ({
     page,
     context,
   }) => {
@@ -75,13 +75,26 @@ for (const width of [1280, 390]) {
     const other = await context.newPage()
     await other.setViewportSize({ width, height: 850 })
     await other.goto("/")
-    await expect(other.getByText(/Recipe draft interrupted/)).toBeVisible()
+    await expect(
+      other.getByRole("textbox", { name: "Message Primo" })
+    ).toBeEnabled()
+    await expect(other.getByText(/Recipe draft interrupted/)).toHaveCount(0)
+    await expect(
+      other.getByRole("heading", { name: "How can I help in the kitchen?" })
+    ).toBeVisible()
     await other
       .getByRole("button", { name: "Recent chats", exact: true })
       .click()
     await expect(
-      other.getByRole("button", { name: conversation.title, exact: true })
+      other
+        .getByRole("dialog", { name: "Recent chats", exact: true })
+        .getByRole("button", { name: conversation.title, exact: true })
     ).toBeVisible()
+    await other
+      .getByRole("dialog", { name: "Recent chats", exact: true })
+      .getByRole("button", { name: conversation.title, exact: true })
+      .click()
+    await expect(other.getByText(/Recipe draft interrupted/)).toBeVisible()
     await other.screenshot({
       path: `output/playwright/primo-recent-recovery-${width}.png`,
       fullPage: true,

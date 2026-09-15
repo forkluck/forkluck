@@ -18,6 +18,8 @@ import {
   TrendingUp,
 } from "lucide-react"
 
+import { PrimoRecentPreview } from "./primo-recent"
+import { Spinner } from "@/components/ui/spinner"
 import { PrimoMarkdown } from "./primo-markdown"
 import { PrimoAttachmentPreview } from "./primo-attachment-preview"
 import { PrimoFeedback } from "./primo-feedback"
@@ -633,6 +635,16 @@ export function PrimoConversation({
     }
   }
 
+  if (conversationLoading)
+    return (
+      <div
+        className="mx-auto grid min-h-0 w-full max-w-[760px] flex-1 place-items-center"
+        aria-busy="true"
+      >
+        <Spinner delayed label="Loading conversation" />
+      </div>
+    )
+
   return (
     <div
       className={cn(
@@ -640,10 +652,6 @@ export function PrimoConversation({
         empty && !conversationError && "justify-center",
         className
       )}
-      // A load holds the layout it is most likely to resolve to, the empty
-      // screen, with its controls held: nothing moves when the answer is
-      // "no messages", and messages arriving move things the same way a
-      // first send does.
       aria-busy={conversationLoading || undefined}
     >
       {conversationError ? (
@@ -1129,7 +1137,7 @@ export function PrimoConversation({
         conversationId={conversationId}
       />
       {empty && !conversationError ? (
-        <div className="mt-8 px-3 pb-8 max-md:group-has-[textarea:focus]/primo:hidden">
+        <div className="mt-6 px-3 pb-5 max-md:group-has-[textarea:focus]/primo:hidden">
           <p className="mb-2 px-1 text-xs text-muted-foreground">
             Try one of these
           </p>
@@ -1156,6 +1164,7 @@ export function PrimoConversation({
           </ul>
         </div>
       ) : null}
+      {home && empty && !conversationError ? <PrimoRecentPreview /> : null}
     </div>
   )
 }

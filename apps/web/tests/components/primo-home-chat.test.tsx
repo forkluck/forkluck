@@ -19,6 +19,7 @@ vi.mock("@/components/primo/primo-provider", () => ({
     send: mocks.send,
     newChat: mocks.newChat,
     conversationId: "conversation-1",
+    conversations: [],
   }),
 }))
 vi.mock("@/components/primo/primo-composer", () => ({

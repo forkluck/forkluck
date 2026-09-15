@@ -48,6 +48,18 @@ forwards the incoming cookie header, attaches the secret, revives the
 allowlisted timestamp keys into `Date`, and turns a 401 into
 `BackendUnauthorizedError`.
 
+## Primo conversation surfaces
+
+Home and the side panel share one authenticated-user-scoped `PrimoProvider`
+and draft store. The active conversation and unfinished composer live in the
+current tab's `sessionStorage`; saved history lives in Django. A new window
+starts fresh, reload restores its own selection, and an explicit `?c=<uuid>`
+link reopens saved history. The legacy shared `localStorage` selection is no
+longer read. Opening Recents never imports another window's unfinished draft.
+Home's recent shortcuts refresh from the authenticated history API when the
+window becomes visible again. Home and rail use the same named header; expand
+navigates to Home without replacing the shared provider or interrupting work.
+
 ## A read
 
 ```
