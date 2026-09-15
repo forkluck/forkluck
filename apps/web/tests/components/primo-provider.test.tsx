@@ -127,7 +127,9 @@ beforeEach(() => {
   state.desktop = true
   state.error = undefined
   vi.clearAllMocks()
+  window.sessionStorage.clear()
   window.localStorage.clear()
+  window.history.replaceState(null, "", "/")
   primoActions.load.mockResolvedValue({ error: "not found" })
   primoActions.list.mockResolvedValue({ items: [] })
   confirmNavigation.mockResolvedValue(true)
@@ -142,6 +144,71 @@ beforeEach(() => {
 })
 
 describe("PrimoProvider", () => {
+  it("starts fresh despite another window's legacy active pointer", async () => {
+    const id = "00000000-0000-4000-8000-000000000099"
+    window.localStorage.setItem("primo:active", id)
+    render(
+      <PrimoProvider>
+        <Probe />
+      </PrimoProvider>
+    )
+    await waitFor(() =>
+      expect(window.sessionStorage.getItem("primo:active")).toBe(
+        screen.getByLabelText("conversation id").textContent
+      )
+    )
+    expect(screen.getByLabelText("conversation id").textContent).not.toBe(id)
+    expect(primoActions.load).not.toHaveBeenCalled()
+    expect(window.localStorage.getItem("primo:active")).toBe(id)
+  })
+
+  it.each([
+    ["owner", "owner", "", true],
+    ["owner", "other", "", false],
+    ["owner", "owner", "?c=not-a-uuid", true],
+    ["owner", "owner", "?c=00000000-0000-4000-8000-000000000088", true],
+  ])(
+    "scopes remembered selection and gives valid links precedence (%s/%s/%s)",
+    async (user, scope, search, restored) => {
+      const stored = "00000000-0000-4000-8000-000000000099"
+      const expected =
+        search && !search.includes("not-a-uuid") ? search.slice(3) : stored
+      window.sessionStorage.setItem(`primo:active:${scope}`, stored)
+      window.history.replaceState(null, "", `/${search}`)
+      primoActions.load.mockResolvedValue({
+        item: {
+          conversation: { id: expected, title: "Saved title" },
+          messages: [],
+        },
+      })
+      render(
+        <PrimoProvider userId={user}>
+          <Probe />
+        </PrimoProvider>
+      )
+      await waitFor(() =>
+        expect(window.sessionStorage.getItem(`primo:active:${user}`)).toBe(
+          screen.getByLabelText("conversation id").textContent
+        )
+      )
+      if (restored) {
+        await waitFor(() =>
+          expect(primoActions.load).toHaveBeenCalledWith(expected)
+        )
+        await waitFor(() =>
+          expect(screen.getByLabelText("recent titles").textContent).toBe(
+            "Saved title"
+          )
+        )
+      } else {
+        expect(primoActions.load).not.toHaveBeenCalled()
+        expect(screen.getByLabelText("conversation id").textContent).not.toBe(
+          stored
+        )
+      }
+    }
+  )
+
   it.each([false, true])(
     "retries a revised failed prompt with its bound attachment and original message id (additional file: %s)",
     async (additional) => {
@@ -338,7 +405,7 @@ describe("PrimoProvider", () => {
 
   it("restores the active conversation and loads its persisted messages", async () => {
     const id = "00000000-0000-4000-8000-000000000099"
-    window.localStorage.setItem("primo:active", id)
+    window.sessionStorage.setItem("primo:active", id)
     primoActions.load.mockResolvedValue({
       item: {
         conversation: { id },
@@ -370,7 +437,7 @@ describe("PrimoProvider", () => {
 
   it("forgets a remembered conversation that no longer exists and starts fresh", async () => {
     const id = "00000000-0000-4000-8000-000000000098"
-    window.localStorage.setItem("primo:active", id)
+    window.sessionStorage.setItem("primo:active", id)
     primoActions.load.mockResolvedValue({ error: "Conversation not found" })
     render(
       <PrimoProvider>
@@ -381,7 +448,7 @@ describe("PrimoProvider", () => {
     await waitFor(() =>
       expect(screen.getByLabelText("conversation id").textContent).not.toBe(id)
     )
-    expect(window.localStorage.getItem("primo:active")).not.toBe(id)
+    expect(window.sessionStorage.getItem("primo:active")).not.toBe(id)
     expect(screen.queryByText("Conversation not found")).toBeNull()
   })
 
@@ -399,7 +466,7 @@ describe("PrimoProvider", () => {
     expect(after).not.toBe(before)
   })
 
-  it("optimistically renames a titled conversation and rolls back on failure", async () => {
+  it("keeps the saved title until rename succeeds and preserves it on failure", async () => {
     primoActions.rename.mockResolvedValueOnce({ error: "Nope" })
     render(
       <PrimoProvider>
@@ -415,7 +482,7 @@ describe("PrimoProvider", () => {
     })
     expect(screen.getByLabelText("recent titles").textContent).toBe("Original")
     fireEvent.click(screen.getByRole("button", { name: "Rename test chat" }))
-    expect(screen.getByLabelText("recent titles").textContent).toBe("Renamed")
+    expect(screen.getByLabelText("recent titles").textContent).toBe("Original")
     await waitFor(() =>
       expect(screen.getByLabelText("recent titles").textContent).toBe(
         "Original"

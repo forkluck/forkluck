@@ -298,9 +298,9 @@ export function PrimoComposer({
       <div className="group/composer relative">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-border opacity-0 blur-sm transition-opacity duration-500 ease-out group-focus-within/composer:opacity-80"
+          className="pointer-events-none absolute -inset-0.5 rounded-md bg-border opacity-0 blur-sm transition-opacity duration-500 ease-out group-focus-within/composer:opacity-80"
         />
-        <div className="relative flex items-end gap-1 rounded-2xl border border-line-strong bg-background py-2 pr-2 pl-4">
+        <div className="relative flex items-end gap-1 rounded-md border border-input bg-background py-2 pr-2 pl-4">
           {listOpen ? (
             <div
               id={listId}
@@ -524,9 +524,7 @@ export function PrimoComposer({
                 filesPending
               }
               aria-label="Send message"
-              // The one filled button that is brand blue rather than ink. Pale
-              // while there is nothing to send, full blue once there is.
-              className="mb-1 shrink-0 border-brand bg-brand text-brand-foreground hover:border-brand/85 hover:bg-brand/85 disabled:border-brand/40 disabled:bg-brand/40 disabled:text-brand-foreground"
+              className="mb-1 shrink-0"
             >
               <ArrowUp aria-hidden="true" />
             </Button>
@@ -546,7 +544,7 @@ export function PrimoComposer({
         </p>
       ) : null}
       <p className="mt-1.5 px-1 text-2xs leading-4 text-faint">
-        Primo can make mistakes. Forkluck cards come from your kitchen data.
+        Primo can make mistakes. Review important details.
       </p>
     </div>
   )

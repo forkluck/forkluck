@@ -21,7 +21,7 @@ import { PrimoComposer } from "@/components/primo/primo-composer"
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
-  window.localStorage.clear()
+  window.sessionStorage.clear()
 })
 
 beforeEach(() => {
@@ -234,7 +234,7 @@ describe("Primo composer", () => {
 
   it("saves, restores, and clears the per-conversation draft", () => {
     vi.useFakeTimers()
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       "primo:draft-v2:local:conversation-1",
       JSON.stringify({ text: "Saved prep note", mentions: [], files: [] })
     )
@@ -257,12 +257,12 @@ describe("Primo composer", () => {
     act(() => vi.advanceTimersByTime(300))
     expect(
       JSON.parse(
-        window.localStorage.getItem("primo:draft-v2:local:conversation-1")!
+        window.sessionStorage.getItem("primo:draft-v2:local:conversation-1")!
       ).text
     ).toBe("Updated prep note")
     fireEvent.click(screen.getByRole("button", { name: "Send message" }))
     expect(
-      window.localStorage.getItem("primo:draft-v2:local:conversation-1")
+      window.sessionStorage.getItem("primo:draft-v2:local:conversation-1")
     ).toBeNull()
     act(() => vi.runAllTimers())
     expect(document.activeElement).toBe(composer)

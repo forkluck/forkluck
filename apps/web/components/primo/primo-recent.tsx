@@ -1,6 +1,15 @@
 "use client"
 import * as React from "react"
-import { Archive, Clock, SquarePen, Trash2, Plus, Check } from "lucide-react"
+import {
+  Archive,
+  Clock,
+  SquarePen,
+  Trash2,
+  Plus,
+  Check,
+  ChevronDown,
+  ArrowUpRight,
+} from "lucide-react"
 import { listPrimoConversations } from "@/lib/primo/conversations"
 import { usePrimo } from "@/components/primo/primo-provider"
 import { Button } from "@/components/ui/button"
@@ -17,11 +26,13 @@ import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import { Switch } from "@/components/ui/switch"
 import { LoadingRegion } from "@/components/ui/loading-region"
+import { useToast } from "@/components/ui/toast"
 import { Spinner } from "@/components/ui/spinner"
 import { groupConversationsByDate } from "@/lib/primo/conversation-groups"
 import type { PrimoConversationSummary } from "@/lib/backend/types"
 
 function RecentList({ close }: { close: () => void }) {
+  const toast = useToast()
   const {
     conversationId,
     selectConversation,
@@ -82,7 +93,12 @@ function RecentList({ close }: { close: () => void }) {
       window.clearTimeout(timer)
     }
   }, [archived, query, page, revision])
-  async function mutate(id: string, operation: () => Promise<string | null>) {
+  async function mutate(
+    id: string,
+    operation: () => Promise<string | null>,
+    kind: "rename" | "archive" | "delete"
+  ) {
+    if (pending !== null) return
     setPending(id)
     setError("")
     try {
@@ -91,8 +107,25 @@ function RecentList({ close }: { close: () => void }) {
         setError(failure)
         return
       }
+      setRows((rows) =>
+        kind === "rename"
+          ? rows.map((row) =>
+              row.id === id ? { ...row, title: title.trim() } : row
+            )
+          : rows.filter((row) => row.id !== id)
+      )
       setRenaming(null)
       setDeleting(null)
+      toast.add({
+        title:
+          kind === "rename"
+            ? "Chat renamed"
+            : kind === "delete"
+              ? "Chat deleted"
+              : archived
+                ? "Chat restored"
+                : "Chat archived",
+      })
       setPage(1)
       reload()
     } catch {
@@ -106,6 +139,7 @@ function RecentList({ close }: { close: () => void }) {
       <div className="mb-4 flex items-center gap-2">
         <SearchInput
           value={query}
+          disabled={pending !== null}
           maxLength={200}
           onChange={(event) => {
             setQuery(event.target.value)
@@ -119,6 +153,7 @@ function RecentList({ close }: { close: () => void }) {
         />
         <Button
           variant="secondary"
+          disabled={pending !== null}
           onClick={() => {
             newChat()
             close()
@@ -159,12 +194,15 @@ function RecentList({ close }: { close: () => void }) {
                           value={title}
                           maxLength={200}
                           aria-label="Conversation title"
+                          disabled={pending !== null}
                           onChange={(event) => setTitle(event.target.value)}
                           onKeyDown={(event) => {
                             if (event.key === "Escape") setRenaming(null)
                             if (event.key === "Enter" && title.trim())
-                              void mutate(row.id, () =>
-                                renameConversation(row.id, title.trim())
+                              void mutate(
+                                row.id,
+                                () => renameConversation(row.id, title.trim()),
+                                "rename"
                               )
                           }}
                           className="h-8 flex-1 px-2"
@@ -176,8 +214,10 @@ function RecentList({ close }: { close: () => void }) {
                           pending={pending === row.id}
                           disabled={!title.trim() || pending !== null}
                           onClick={() =>
-                            void mutate(row.id, () =>
-                              renameConversation(row.id, title.trim())
+                            void mutate(
+                              row.id,
+                              () => renameConversation(row.id, title.trim()),
+                              "rename"
                             )
                           }
                         >
@@ -187,6 +227,7 @@ function RecentList({ close }: { close: () => void }) {
                     ) : (
                       <button
                         className="flex min-w-0 flex-1 items-center gap-2 py-2 text-left text-md"
+                        disabled={pending !== null}
                         aria-current={
                           row.id === conversationId ? "true" : undefined
                         }
@@ -219,8 +260,10 @@ function RecentList({ close }: { close: () => void }) {
                       <MenuItem
                         disabled={pending !== null}
                         onClick={() =>
-                          void mutate(row.id, () =>
-                            archiveConversation(row.id, !archived)
+                          void mutate(
+                            row.id,
+                            () => archiveConversation(row.id, !archived),
+                            "archive"
                           )
                         }
                       >
@@ -230,7 +273,10 @@ function RecentList({ close }: { close: () => void }) {
                       <MenuItem
                         disabled={pending !== null}
                         className="text-destructive"
-                        onClick={() => setDeleting(row)}
+                        onClick={() => {
+                          setError("")
+                          setDeleting(row)
+                        }}
                       >
                         <Trash2 aria-hidden="true" />
                         Delete
@@ -277,6 +323,7 @@ function RecentList({ close }: { close: () => void }) {
         Show archived chats
         <Switch
           checked={archived}
+          disabled={pending !== null}
           onCheckedChange={(value) => {
             setArchived(value)
             setPage(1)
@@ -290,28 +337,58 @@ function RecentList({ close }: { close: () => void }) {
           if (!open) setDeleting(null)
         }}
         title="Delete this chat?"
-        description={`“${deleting?.title || "New chat"}”, its messages and attachments will be permanently deleted.`}
+        description={
+          <>
+            {`“${deleting?.title || "New chat"}”, its messages and attachments will be permanently deleted.`}
+            {error ? (
+              <span role="alert" className="mt-2 block text-destructive">
+                {error}
+              </span>
+            ) : null}
+          </>
+        }
+        pending={pending !== null}
         confirmLabel="Delete"
         onConfirm={async () => {
           if (deleting)
-            await mutate(deleting.id, () => deleteConversation(deleting.id))
+            await mutate(
+              deleting.id,
+              () => deleteConversation(deleting.id),
+              "delete"
+            )
         }}
       />
     </>
   )
 }
-export function PrimoRecent() {
+export function PrimoRecent({ title }: { title?: string }) {
   const [open, setOpen] = React.useState(false)
   return (
     <>
       <Button
         variant="ghost"
-        aria-label="Recent chats"
-        className="text-ink-soft"
+        aria-label={title ? `Recent chats: ${title}` : "Recent chats"}
+        className={
+          title
+            ? "mr-auto min-w-0 justify-start text-foreground"
+            : "text-ink-soft"
+        }
+        title={title}
+        aria-haspopup="dialog"
+        aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <Clock aria-hidden="true" />
-        <span>Recent</span>
+        {title ? (
+          <>
+            <span className="truncate">{title}</span>
+            <ChevronDown aria-hidden="true" />
+          </>
+        ) : (
+          <>
+            <Clock aria-hidden="true" />
+            <span>Recent</span>
+          </>
+        )}
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent size="md" className="gap-0 pb-0">
@@ -325,5 +402,95 @@ export function PrimoRecent() {
         </DialogContent>
       </Dialog>
     </>
+  )
+}
+
+export function PrimoRecentPreview() {
+  const { selectConversation, conversationId } = usePrimo()
+  const [rows, setRows] = React.useState<PrimoConversationSummary[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState(false)
+  const [revision, reload] = React.useReducer((n) => n + 1, 0)
+  React.useEffect(() => {
+    let current = true
+    void listPrimoConversations()
+      .then((result) => {
+        if (!current) return
+        setError("error" in result)
+        if (!("error" in result)) setRows(result.items.slice(0, 3))
+      })
+      .catch(() => {
+        if (current) setError(true)
+      })
+      .finally(() => {
+        if (current) setLoading(false)
+      })
+    return () => {
+      current = false
+    }
+  }, [conversationId, revision])
+  React.useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === "visible") {
+        setLoading(true)
+        reload()
+      }
+    }
+    window.addEventListener("focus", refresh)
+    document.addEventListener("visibilitychange", refresh)
+    return () => {
+      window.removeEventListener("focus", refresh)
+      document.removeEventListener("visibilitychange", refresh)
+    }
+  }, [])
+  if (!loading && !error && !rows.length) return null
+  return (
+    <section
+      aria-label="Recent conversations"
+      className="mx-4 mb-6 border-t border-border pt-3 max-md:group-has-[textarea:focus]/primo:hidden"
+    >
+      <h2 className="mb-1 text-xs font-medium text-muted-foreground">
+        Pick up where you left off
+      </h2>
+      {error ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          pending={loading}
+          onClick={() => {
+            setLoading(true)
+            reload()
+          }}
+        >
+          Couldn’t load recent chats. Retry
+        </Button>
+      ) : loading && !rows.length ? (
+        <Spinner delayed size="sm" label="Loading recent chats" />
+      ) : (
+        <ul>
+          {rows.map((row) => (
+            <li key={row.id}>
+              <button
+                type="button"
+                className="flex min-h-9 w-full items-center gap-2 rounded-lg px-1 py-2 text-left text-sm text-ink-soft hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground"
+                onClick={() => selectConversation(row.id)}
+              >
+                <Clock
+                  className="size-4 shrink-0 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <span className="flex-1 truncate">
+                  {row.title || "New chat"}
+                </span>
+                <ArrowUpRight
+                  className="size-4 shrink-0 text-muted-foreground"
+                  aria-hidden="true"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   )
 }

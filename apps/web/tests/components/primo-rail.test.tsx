@@ -5,6 +5,7 @@ import { cleanup, render, screen } from "@testing-library/react"
 
 const state = vi.hoisted(() => ({
   open: true,
+  conversations: [],
   isDesktop: true,
   inlineCount: 0,
   setOpen: vi.fn(),

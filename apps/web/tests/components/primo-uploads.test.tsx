@@ -46,7 +46,7 @@ function store() {
   return value
 }
 beforeEach(() => {
-  localStorage.clear()
+  sessionStorage.clear()
   fetchMock.mockReset().mockImplementation(() => Promise.resolve(ready()))
   vi.stubGlobal("fetch", fetchMock)
   state.conversationLoading = false

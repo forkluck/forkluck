@@ -113,16 +113,18 @@ export function PrimoProvider({
   const [conversationId, setConversationId] = React.useState(
     initialConversation.id
   )
-  // The id this device remembered or the link carried, as opposed to one the
+  // The id this tab remembered or the link carried, as opposed to one the
   // user chose from Recent just now. A remembered chat that no longer exists
   // is forgotten rather than reported.
   const restoredId = React.useRef<string | null>(null)
   React.useEffect(() => {
     const linkedValue = new URLSearchParams(window.location.search).get("c")
     const linked = linkedValue && UUID.test(linkedValue) ? linkedValue : null
+    // Active selection belongs to this tab. Saved conversations remain shared
+    // through the authenticated history API; a new window starts fresh.
     let stored: string | null = null
     try {
-      const value = window.localStorage.getItem(
+      const value = window.sessionStorage.getItem(
         userId === "local" ? "primo:active" : `primo:active:${userId}`
       )
       stored = value && UUID.test(value) ? value : null
@@ -258,14 +260,14 @@ export function PrimoProvider({
     if (!restored) return
     conversationContext.set(conversationId)
     try {
-      window.localStorage.setItem(
+      window.sessionStorage.setItem(
         userId === "local" ? "primo:active" : `primo:active:${userId}`,
         conversationId
       )
     } catch {}
     if (newConversationIds.current.has(conversationId)) {
       try {
-        window.localStorage.setItem(`primo:unsent:${userId}`, conversationId)
+        window.sessionStorage.setItem(`primo:unsent:${userId}`, conversationId)
       } catch {}
       setConversationLoading(false)
       return
@@ -281,17 +283,22 @@ export function PrimoProvider({
         if ("item" in result && result.item) {
           try {
             if (
-              window.localStorage.getItem(`primo:unsent:${userId}`) ===
+              window.sessionStorage.getItem(`primo:unsent:${userId}`) ===
               conversationId
             )
-              window.localStorage.removeItem(`primo:unsent:${userId}`)
+              window.sessionStorage.removeItem(`primo:unsent:${userId}`)
           } catch {}
+          const saved = result.item.conversation
+          setConversations((rows) => [
+            saved,
+            ...rows.filter((row) => row.id !== saved.id),
+          ])
           chatRef.current.setMessages(result.item.messages as PrimoUIMessage[])
         } else {
           let unsent = false
           try {
             unsent =
-              window.localStorage.getItem(`primo:unsent:${userId}`) ===
+              window.sessionStorage.getItem(`primo:unsent:${userId}`) ===
                 conversationId &&
               "error" in result &&
               result.error === "Conversation not found"
@@ -532,50 +539,37 @@ export function PrimoProvider({
 
   const renameConversation = React.useCallback(
     async (id: string, title: string) => {
-      const before = conversations
-      setConversations((rows) =>
-        rows.map((row) => (row.id === id ? { ...row, title } : row))
-      )
       const result = await renamePrimoConversation(id, title)
-      if ("error" in result) {
-        setConversations(before)
-        return result.error
-      }
+      if ("error" in result) return result.error
       setConversations((rows) =>
         rows.map((row) => (row.id === id ? result.item : row))
       )
       return null
     },
-    [conversations]
+    []
   )
 
   const archiveConversation = React.useCallback(
     async (id: string, archived: boolean) => {
-      const before = conversations
-      setConversations((rows) => rows.filter((row) => row.id !== id))
       const result = await archivePrimoConversation(id, archived)
-      if ("error" in result) {
-        setConversations(before)
-        return result.error
-      }
+      if ("error" in result) return result.error
+      setConversations((rows) =>
+        rows.map((row) => (row.id === id ? result.item : row))
+      )
       return null
     },
-    [conversations]
+    []
   )
 
   const deleteConversation = React.useCallback(
     async (id: string) => {
-      const before = conversations
-      setConversations((rows) => rows.filter((row) => row.id !== id))
       const result = await deletePrimoConversation(id)
-      if ("error" in result) {
-        setConversations(before)
-        return result.error
-      }
+      if ("error" in result) return result.error
+      setConversations((rows) => rows.filter((row) => row.id !== id))
       if (id === conversationId) newChat()
       return null
     },
-    [conversationId, conversations, newChat]
+    [conversationId, newChat]
   )
 
   const value = React.useMemo<PrimoContextValue>(
