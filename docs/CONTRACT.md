@@ -592,11 +592,10 @@ errors that occur before SSE can start. A matching acknowledgement means the
 question was received even if generation fails. A definite HTTP rejection before
 save restores the draft and removes its optimistic row. A lost or ambiguous
 response retains the question for retry with the same ID; it never claims the
-question was unsent. Generation failures retain recipe drafts, successful report
-links and tool receipts, and use one response recovery control. Completed repairs replace only the failed
-operation for the same input (or the recipe draft being repaired). Tool details
-sit under “What Primo checked”; Stop, interruption and completion have distinct
-announcements and persisted statuses.
+question was unsent. Generation failures retain recipe drafts and successful
+report links, and use one response recovery control. Completed repairs replace
+only the failed operation for the same input (or the recipe draft being repaired).
+Stop, interruption and completion have distinct announcements and persisted statuses.
 
 `POST /api/primo/chat` accepts
 `{conversationId, parentMessageId, recipeRef, productRef, messages, edit?}`. The
@@ -2799,7 +2798,7 @@ Conversation list `q` searches titles with existing page/limit semantics.
 | Selection precedence | A valid explicit conversation link wins over the tab's remembered selection; invalid IDs are ignored; a missing restored conversation starts fresh. Selection and unsent draft keys are scoped by authenticated user. Selecting history in one window cannot change another |
 | Conversation header | Home and rail show the active saved title; the title opens searchable history. The rail expands into Home preserving the active chat. Loading a saved chat shows a loading state without flashing the fresh greeting |
 | History visibility | Fresh Home does not show conversation-history shortcuts. Saved conversations remain in the explicitly opened Recents dialog. A failed history read is distinct from empty history |
-| Read-only results | Completed reads are explained once in assistant prose; numerical result boxes are not rendered. Report links and execution receipts survive reload and interrupted generation. A read with only a preamble and no following answer is retryable; interactive choices and recipe drafts stay actionable |
+| Read-only results | Completed reads are explained once in assistant prose; numerical result boxes and execution checklists are not rendered. Report links survive reload and interrupted generation. A read with only a preamble and no following answer is retryable; interactive choices and recipe drafts stay actionable |
 | History mutations | Rename/archive/delete preserve their visible rows until the server accepts the change; failure preserves the saved state. Success updates rows, closes the confirmation/editor and reports completion |
 | Conversation lifecycle | Loading, missing and failed chats cannot submit; stale loads cannot replace the selected chat |
 | History reads | Stable authenticated HTTP reads survive deployment action-ID changes; dates revive without mutating source/tool data; 401/404/backend/network errors stay distinct from empty lists, with retry on desktop and mobile |

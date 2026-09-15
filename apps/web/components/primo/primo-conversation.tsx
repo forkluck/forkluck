@@ -42,7 +42,6 @@ import { KITCHEN_TOOL_ACTION_LINES } from "@/lib/kitchen-tools/client"
 import type {
   FindProductsResult,
   FindRecipesResult,
-  KitchenToolFailure,
   RecipeBatchResult,
 } from "@/lib/kitchen-tools/results"
 import {
@@ -192,22 +191,6 @@ function BatchLine({ result }: { result: RecipeBatchResult }) {
   return <Marker>{details.join(" · ")}</Marker>
 }
 
-const checkedLabels: Record<string, string> = {
-  find_recipes: "Recipe search",
-  find_products: "Product search",
-  get_product_sales: "Product sales",
-  get_recipe_cost_change: "Recipe cost comparison",
-  show_recipe_batch: "Batch preview",
-  search_usda_foods: "USDA food search",
-  read_attachment: "Attachment read",
-  draft_recipe: "Recipe draft",
-  read_recipe_draft: "Saved recipe draft",
-  revise_recipe_draft: "Recipe revision",
-  calculate_batch_cost: "Batch calculation",
-  get_top_products: "Top products",
-  get_ingredient_price_changes: "Ingredient price changes",
-}
-
 function missingReadAnswer(message: PrimoUIMessage) {
   if (message.status === "aborted") return false
   const lastToolIndex = message.parts.findLastIndex(isToolUIPart)
@@ -228,7 +211,7 @@ function missingReadAnswer(message: PrimoUIMessage) {
   )
 }
 
-function TurnReceipt({
+function TurnStatus({
   message,
   transportError,
 }: {
@@ -245,45 +228,17 @@ function TurnReceipt({
     finishReason: message.metadata?.finishReason,
   })
   const loaded = tools.some(primoToolSucceeded)
-  return (
-    <>
-      {status === "aborted" ? (
-        <p className="text-xs text-muted-foreground">Response stopped</p>
-      ) : status === "error" ? (
-        <p className="text-xs text-destructive">
-          {loaded
-            ? "Results loaded; response interrupted. Try again."
-            : tools.some((part) => getToolName(part) === "draft_recipe")
-              ? "Recipe draft interrupted. Try again."
-              : "Response interrupted. Try again."}
-        </p>
-      ) : null}
-      {tools.length ? (
-        <details className="text-xs text-muted-foreground">
-          <summary className="cursor-pointer">What Primo checked</summary>
-          <ul className="mt-2 space-y-1">
-            {tools.map((part) => (
-              <li key={part.toolCallId}>
-                {checkedLabels[getToolName(part)] ?? "Kitchen read"} ·{" "}
-                {primoToolSucceeded(part)
-                  ? "completed"
-                  : status === "aborted"
-                    ? "stopped"
-                    : "not completed"}
-                {part.state === "output-available" &&
-                part.output &&
-                typeof part.output === "object" &&
-                "ok" in part.output &&
-                part.output.ok === false
-                  ? ` — ${(part.output as KitchenToolFailure).message}`
-                  : null}
-              </li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
-    </>
-  )
+  return status === "aborted" ? (
+    <p className="text-xs text-muted-foreground">Response stopped</p>
+  ) : status === "error" ? (
+    <p className="text-xs text-destructive">
+      {loaded
+        ? "Results loaded; response interrupted. Try again."
+        : tools.some((part) => getToolName(part) === "draft_recipe")
+          ? "Recipe draft interrupted. Try again."
+          : "Response interrupted. Try again."}
+    </p>
+  ) : null
 }
 
 export function PrimoConversation({
@@ -714,7 +669,7 @@ export function PrimoConversation({
                   })}
                   {message.role === "assistant" &&
                   !(busy && message.id === lastMessage?.id) ? (
-                    <TurnReceipt
+                    <TurnStatus
                       message={message}
                       transportError={Boolean(
                         error && message.id === lastMessage?.id

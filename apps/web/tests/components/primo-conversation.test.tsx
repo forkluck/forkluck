@@ -139,7 +139,7 @@ describe("Primo conversation", () => {
     expect(state.send).toHaveBeenCalledWith("Draft a tomato soup", [])
   })
 
-  it("renders sales, batch, and failure tool output", () => {
+  it("keeps batch actions and explains a read failure once in the answer", () => {
     state.chat.messages = [
       {
         id: "assistant-1",
@@ -187,6 +187,10 @@ describe("Primo conversation", () => {
               message: "Only the recipe's owner can compare its cost history.",
             },
           },
+          {
+            type: "text",
+            text: "Only the recipe's owner can compare its cost history.",
+          },
         ],
       },
     ]
@@ -201,8 +205,11 @@ describe("Primo conversation", () => {
         .getAttribute("href")
     ).toBe("/recipes/rcp_0123456789ab/cost?batch=50")
     expect(
-      screen.getByText(/Only the recipe.s owner can compare its cost history/)
-    ).toBeDefined()
+      screen.getAllByText(
+        /Only the recipe.s owner can compare its cost history/
+      )
+    ).toHaveLength(1)
+    expect(screen.queryByText("What Primo checked")).toBeNull()
   })
 
   it("renders progress markers for each kitchen read", () => {
@@ -397,7 +404,7 @@ it("retains successful data, offers one retry, and announces interruption", () =
   expect(screen.queryByText(/Couldn’t send/)).toBeNull()
 })
 
-it("collapses a repaired schema failure after a valid final draft", () => {
+it("shows a repaired draft without the earlier schema failure", () => {
   state.chat.messages = [
     {
       id: "answer",
@@ -433,7 +440,6 @@ it("collapses a repaired schema failure after a valid final draft", () => {
   expect(
     screen.queryByText(/interrupted|not completed|yield must be/)
   ).toBeNull()
-  expect(screen.getByText(/Recipe draft · completed/)).toBeDefined()
   expect(screen.getByRole("button", { name: "Create recipe" })).toBeDefined()
 })
 
