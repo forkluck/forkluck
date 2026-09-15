@@ -6,7 +6,12 @@ export const batchCalculationSchema = z.strictObject({
   ingredientCostPerBatch: money,
   packagingCostPerPortion: money.default(0),
   otherCostPerBatch: money.default(0),
-  sellingPricePerPortion: money.min(0.000001).optional(),
+  sellingPricePerPortion: money
+    .min(0.000001)
+    .optional()
+    .describe(
+      "Only an explicitly supplied selling/menu price, never a cost per portion. Omit when no selling price was given."
+    ),
   ingredientChangePercent: z.number().finite().min(-100).max(10_000).default(0),
   targetMarginPercent: z.number().finite().min(0).lt(100).optional(),
   currencyCode: z.string().regex(/^[A-Z]{3}$/),

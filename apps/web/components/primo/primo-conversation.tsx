@@ -344,6 +344,64 @@ function BatchCalculationCard({
         {quantityFormat.format(result.assumptions.portions)} portions · supplied
         assumptions · nothing saved
       </p>
+      <details className="mt-3 text-xs">
+        <summary className="cursor-pointer font-medium">
+          Calculation inputs
+        </summary>
+        <dl className="mt-2 space-y-1">
+          {[
+            [
+              "Ingredients per batch",
+              formatPreciseCents(
+                result.assumptions.ingredientCostPerBatch * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Packaging per portion",
+              formatPreciseCents(
+                result.assumptions.packagingCostPerPortion * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Other costs per batch",
+              formatPreciseCents(
+                result.assumptions.otherCostPerBatch * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Selling price per portion",
+              result.assumptions.sellingPricePerPortion === undefined
+                ? "Not provided"
+                : formatPreciseCents(
+                    result.assumptions.sellingPricePerPortion * 100,
+                    result.currencyCode
+                  ),
+            ],
+            [
+              "Ingredient price change",
+              percentFormat.format(
+                result.assumptions.ingredientChangePercent / 100
+              ),
+            ],
+            [
+              "Target margin",
+              result.assumptions.targetMarginPercent === undefined
+                ? "Preserve original margin if a selling price is supplied"
+                : percentFormat.format(
+                    result.assumptions.targetMarginPercent / 100
+                  ),
+            ],
+          ].map(([label, value]) => (
+            <div key={label} className="flex justify-between gap-3">
+              <dt>{label}</dt>
+              <dd className="text-right tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </details>
       <dl className="mt-3 space-y-1">
         {rows
           .filter(([, value]) => value !== null)

@@ -578,6 +578,9 @@ it("renders fractional-cent calculations and incomplete aggregate results withou
     },
   ]
   render(<PrimoConversation userName="Ada" />)
+  expect(screen.getByText("Calculation inputs")).toBeDefined()
+  expect(screen.getByText("Selling price per portion")).toBeDefined()
+  expect(screen.getByText("$2.50")).toBeDefined()
   expect(screen.getByText("$2.875")).toBeDefined()
   expect(screen.getByText("$2.88")).toBeDefined()
   expect(
