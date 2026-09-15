@@ -5,6 +5,7 @@ import {
   dollarsToCents,
   formatCents,
   formatWholeCents,
+  formatPreciseCents,
 } from "../lib/money"
 
 describe("money display", () => {
@@ -14,6 +15,15 @@ describe("money display", () => {
     expect(formatCents(3.4)).toBe("$0.03")
     expect(formatCents(2450, "EUR")).toBe("€24.50")
     expect(formatCents(100, "JPY")).toBe("¥1")
+  })
+
+  it("preserves fractional cents for unit and scenario prices", () => {
+    expect(formatPreciseCents(287.5)).toBe("$2.875")
+    expect(formatPreciseCents(288)).toBe("$2.88")
+    expect(formatPreciseCents(0.018)).toBe("$0.00018")
+    expect(formatPreciseCents(287.5, "KWD")).toContain("2.875")
+    expect(formatPreciseCents(287.5, "US$")).toBe("US$ 2.875")
+    expect(formatCents(287.5)).toBe("$2.88")
   })
 
   it("drops the decimals for hero figures", () => {

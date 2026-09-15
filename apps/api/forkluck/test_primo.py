@@ -313,3 +313,176 @@ class PrimoConversationTests(InternalApiTestCase):
         self.assertEqual(self.post_internal("primo-attachment", payload).status_code, 200)
         self.post_internal("primo-delete-conversation", {"conversationId": str(conversation.id)})
         self.assertEqual(self.post_internal("primo-attachment", payload).status_code, 400)
+
+
+    def test_edit_replaces_tail_preserves_target_files_and_rejects_old_streams(self):
+        from uuid import uuid4
+        from .models import PrimoAttachment
+
+        conversation = PrimoConversation.objects.create(user=self.user)
+        first_file, later_file = (
+            self.attachment(conversation.id),
+            self.attachment(conversation.id),
+        )
+        first = self.message("user-1", "Read @Cookies")
+        first["metadata"] = {
+            "attachmentIds": [first_file["id"]],
+            "mentions": [
+                {"kind": "recipe", "label": "Cookies", "ref": "rcp_0123456789ab"}
+            ],
+        }
+        old_generation, new_generation = str(uuid4()), str(uuid4())
+        self.assertEqual(
+            self.save(
+                conversation.id, [first], generationId=old_generation
+            ).status_code,
+            200,
+        )
+        reply = {
+            **self.message("answer-1", "Old answer"),
+            "role": "assistant",
+            "parentMessageId": "user-1",
+        }
+        self.save(
+            conversation.id,
+            [reply],
+            replyTo={"messageId": "user-1", "generationId": old_generation},
+        )
+        later = self.message("user-2", "Later question")
+        later["metadata"] = {"attachmentIds": [later_file["id"]]}
+        self.save(conversation.id, [later], generationId=str(uuid4()))
+        first["text"] = "Compare @Cookies"
+        first["parts"] = [{"type": "text", "text": first["text"]}]
+        edited = self.save(
+            conversation.id,
+            [first],
+            generationId=new_generation,
+            edit={
+                "messageId": "user-1",
+                "expectedText": "Read @Cookies",
+                "expectedLastMessageId": "user-2",
+            },
+        )
+        self.assertEqual(edited.status_code, 200, edited.content)
+        self.assertEqual(
+            list(conversation.messages.values_list("message_id", flat=True)), ["user-1"]
+        )
+        self.assertFalse(PrimoAttachment.objects.get(id=first_file["id"]).deleted)
+        self.assertTrue(PrimoAttachment.objects.get(id=later_file["id"]).deleted)
+        stale = self.save(
+            conversation.id,
+            [reply],
+            replyTo={"messageId": "user-1", "generationId": old_generation},
+        )
+        self.assertEqual(stale.json(), {"superseded": True})
+        self.assertEqual(conversation.messages.count(), 1)
+        self.assertEqual(
+            self.save(
+                conversation.id,
+                [reply],
+                replyTo={"messageId": "user-1", "generationId": new_generation},
+            ).status_code,
+            200,
+        )
+        detail = self.get_internal(f"primo/conversations/{conversation.id}/").json()[
+            "item"
+        ]["messages"]
+        self.assertEqual(detail[0]["metadata"]["attachments"], [first_file])
+        self.assertEqual(
+            detail[0]["metadata"]["mentions"], first["metadata"]["mentions"]
+        )
+        self.assertNotIn("_generationId", detail[0]["metadata"])
+
+    def test_edit_conflicts_and_invalid_files_leave_entire_history_unchanged(self):
+        from uuid import uuid4
+
+        conversation = PrimoConversation.objects.create(user=self.user)
+        self.save(conversation.id, [self.message(), self.message("later", "Later")])
+        for edit in (
+            {
+                "messageId": "user-1",
+                "expectedText": "Hello",
+                "expectedLastMessageId": "outdated",
+            },
+            {
+                "messageId": "user-1",
+                "expectedText": "Old text",
+                "expectedLastMessageId": "later",
+            },
+            {
+                "messageId": "foreign",
+                "expectedText": "Hello",
+                "expectedLastMessageId": "later",
+            },
+        ):
+            with self.subTest(edit=edit):
+                result = self.save(
+                    conversation.id,
+                    [self.message(text="Revised")],
+                    generationId=str(uuid4()),
+                    edit=edit,
+                )
+                self.assertEqual(result.status_code, 400)
+                self.assertEqual(conversation.messages.count(), 2)
+                self.assertEqual(
+                    conversation.messages.get(message_id="user-1").text, "Hello"
+                )
+        invalid = self.message(text="Revised")
+        invalid["metadata"] = {"attachmentIds": [str(uuid4())]}
+        result = self.save(
+            conversation.id,
+            [invalid],
+            generationId=str(uuid4()),
+            edit={
+                "messageId": "user-1",
+                "expectedText": "Hello",
+                "expectedLastMessageId": "later",
+            },
+        )
+        self.assertEqual(result.status_code, 400)
+        self.assertEqual(conversation.messages.count(), 2)
+
+    def test_generation_guard_supersedes_retry_followup_and_deleted_conversation(self):
+        from uuid import uuid4
+
+        for state in ("retry", "followup", "deleted"):
+            with self.subTest(state=state):
+                conversation = PrimoConversation.objects.create(user=self.user)
+                generation = str(uuid4())
+                self.save(conversation.id, [self.message()], generationId=generation)
+                if state == "retry":
+                    self.save(
+                        conversation.id, [self.message()], generationId=str(uuid4())
+                    )
+                elif state == "followup":
+                    self.save(
+                        conversation.id,
+                        [self.message("next")],
+                        generationId=str(uuid4()),
+                    )
+                else:
+                    self.post_internal(
+                        "primo-delete-conversation",
+                        {"conversationId": str(conversation.id)},
+                    )
+                result = self.save(
+                    conversation.id,
+                    [
+                        {
+                            **self.message("answer"),
+                            "role": "assistant",
+                            "parentMessageId": "user-1",
+                        }
+                    ],
+                    replyTo={"messageId": "user-1", "generationId": generation},
+                )
+                self.assertEqual(result.json(), {"superseded": True})
+                self.assertFalse(
+                    PrimoMessage.objects.filter(
+                        conversation_id=conversation.id, role="assistant"
+                    ).exists()
+                )
+                self.assertEqual(
+                    PrimoConversation.objects.filter(id=conversation.id).exists(),
+                    state != "deleted",
+                )

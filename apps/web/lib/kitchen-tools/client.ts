@@ -7,6 +7,9 @@ export const KITCHEN_TOOL_ACTION_LINES: Record<KitchenToolName, string> = {
   get_product_sales: "Reading sales…",
   show_recipe_batch: "Opening recipe…",
   get_recipe_cost_change: "Comparing costs…",
+  calculate_batch_cost: "Calculating batch costs…",
+  get_top_products: "Reading top products…",
+  get_ingredient_price_changes: "Comparing ingredient prices…",
 }
 
 function cancelled() {

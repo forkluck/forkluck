@@ -428,6 +428,7 @@ describe("PrimoProvider", () => {
 it.each([
   [400, false, true],
   [401, false, true],
+  [409, false, true],
   [503, false, true],
   [400, true, false],
   [502, true, false],

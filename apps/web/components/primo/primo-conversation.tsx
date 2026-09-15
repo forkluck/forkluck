@@ -14,6 +14,7 @@ import {
   History,
   Package,
   Search,
+  SquarePen,
   TrendingUp,
 } from "lucide-react"
 
@@ -31,6 +32,7 @@ import {
   type PrimoUsdaSearchResult,
 } from "@/components/primo/primo-usda-result-card"
 import { Bubble } from "@/components/ui/bubble"
+import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Marker } from "@/components/ui/marker"
 import { Message } from "@/components/ui/message"
@@ -46,6 +48,8 @@ import type {
   KitchenToolFailure,
   ProductSalesResult,
   RecipeBatchResult,
+  TopProductsResult,
+  IngredientPriceChangesResult,
 } from "@/lib/kitchen-tools/results"
 import {
   primoMessageText,
@@ -55,8 +59,14 @@ import {
   type PrimoMention,
   type PrimoUIMessage,
 } from "@/lib/primo/messages"
+import type { calculateBatchCost } from "@/lib/kitchen-tools/calculations"
 import type { RecipeDraft } from "@/lib/recipe/draft"
-import { formatCents, quantityFormat } from "@/lib/money"
+import {
+  formatCents,
+  formatPreciseCents,
+  percentFormat,
+  quantityFormat,
+} from "@/lib/money"
 import { cn } from "@/lib/utils"
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { formatDayMonthTime } from "@/lib/datetime"
@@ -66,7 +76,10 @@ type CostResult = RecipeCostDiff & { omittedLines?: number }
 type Starter = { icon: typeof Book; question: string }
 
 const homeStarterQuestions: Starter[] = [
-  { icon: ChartColumn, question: "Help me understand product sales." },
+  {
+    icon: ChartColumn,
+    question: "Which three products had the most net sales last month?",
+  },
   { icon: Package, question: "What changed in ingredient costs?" },
   { icon: Book, question: "Help me create a recipe." },
 ]
@@ -131,11 +144,12 @@ function highlightedText(text: string, mentions: PrimoMention[]) {
 function AmbiguityChoices({
   result,
   onChoose,
+  disabled,
 }: {
+  disabled: boolean
   result: FindRecipesResult | FindProductsResult
   onChoose: (text: string, mentions: PrimoMention[]) => void
 }) {
-  if (!result.ambiguous.length) return null
   const choices =
     result.tool === "find_recipes"
       ? result.recipes.map((recipe) => ({
@@ -155,6 +169,7 @@ function AmbiguityChoices({
       {choices.map((choice) => (
         <Button
           key={choice.ref}
+          disabled={disabled}
           type="button"
           size="sm"
           variant="secondary"
@@ -199,6 +214,216 @@ function BatchLine({ result }: { result: RecipeBatchResult }) {
   return <Marker>{details.join(" · ")}</Marker>
 }
 
+function TopProductsCard({ result }: { result: TopProductsResult }) {
+  return (
+    <section className="rounded-xl border border-border p-4 text-sm">
+      <h3 className="font-medium">Top products · {result.period.label}</h3>
+      {result.products.length ? (
+        <ol className="mt-3 space-y-2">
+          {result.products.map((row, index) => (
+            <li key={index} className="flex justify-between gap-3">
+              <span>
+                {index + 1}. {row.name}
+              </span>
+              <span className="tabular-nums">
+                {formatCents(row.netSalesCents, result.currencyCode)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="mt-2">
+          {result.hasRecordedProducts
+            ? "No products with complete revenue to rank."
+            : "No product sales recorded for this period."}
+        </p>
+      )}
+      {result.unrankedProducts > 0 ? (
+        <p className="mt-2">
+          {result.unrankedProducts} products have missing revenue and are
+          excluded; this ranking is incomplete.
+        </p>
+      ) : null}
+      {result.more ? (
+        <p className="mt-2">More products are in the report.</p>
+      ) : null}
+      <p className="mt-3 text-xs text-muted-foreground">{result.coverage}</p>
+    </section>
+  )
+}
+
+function IngredientPriceChangesCard({
+  result,
+}: {
+  result: IngredientPriceChangesResult
+}) {
+  return (
+    <section className="rounded-xl border border-border p-4 text-sm">
+      <h3 className="font-medium">
+        Ingredient price changes · {result.period.label}
+      </h3>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Recorded unit prices before the period compared with its last
+        observations.
+      </p>
+      {result.items.length ? (
+        <ul className="mt-3 space-y-3">
+          {result.items.map((row) => (
+            <li key={row.ingredientRef}>
+              <p className="font-medium">{row.name}</p>
+              <p>
+                {formatPreciseCents(row.fromUnitCostCents, result.currencyCode)}{" "}
+                → {formatPreciseCents(row.toUnitCostCents, result.currencyCode)}{" "}
+                / {row.unit}
+                {row.percent === null
+                  ? " · no percentage from a zero price"
+                  : ` · ${row.percent > 0 ? "+" : ""}${percentFormat.format(row.percent / 100)}`}
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-2">
+          {result.observedIngredients
+            ? "No comparable price changes in the recorded observations."
+            : "No ingredient price observations recorded in this period."}
+        </p>
+      )}
+      {result.missingBaseline || result.incomparableUnits || result.omitted ? (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {result.missingBaseline} without an earlier price ·{" "}
+          {result.incomparableUnits} with incompatible units · {result.omitted}{" "}
+          additional changes
+        </p>
+      ) : null}
+    </section>
+  )
+}
+
+function BatchCalculationCard({
+  result,
+}: {
+  result: ReturnType<typeof calculateBatchCost>
+}) {
+  const rows = [
+    [
+      "Ingredient cost per portion",
+      result.baseline.ingredientCostPerPortion,
+      false,
+    ],
+    [
+      "Variable cost per portion",
+      result.baseline.variableCostPerPortion,
+      false,
+    ],
+    ["Contribution per portion", result.baseline.contributionPerPortion, false],
+    ["Margin", result.baseline.marginPercent, true],
+    ["Markup", result.baseline.markupPercent, true],
+    ...(result.assumptions.ingredientChangePercent !== 0
+      ? [
+          [
+            "New variable cost per portion",
+            result.scenario.variableCostPerPortion,
+            false,
+          ],
+        ]
+      : []),
+    ["Exact price for target margin", result.scenario.exactSellingPrice, false],
+    [
+      "Minimum price for target margin",
+      result.scenario.minimumSellingPrice,
+      false,
+    ],
+  ] as const
+  return (
+    <section className="rounded-xl border border-border p-4 text-sm">
+      <h3 className="font-medium">
+        Hypothetical batch costs · {result.currencyCode}
+      </h3>
+      <p className="mt-1 text-xs text-muted-foreground">
+        {quantityFormat.format(result.assumptions.portions)} portions · supplied
+        assumptions · nothing saved
+      </p>
+      <details className="mt-3 text-xs">
+        <summary className="cursor-pointer font-medium">
+          Calculation inputs
+        </summary>
+        <dl className="mt-2 space-y-1">
+          {[
+            [
+              "Ingredients per batch",
+              formatPreciseCents(
+                result.assumptions.ingredientCostPerBatch * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Packaging per portion",
+              formatPreciseCents(
+                result.assumptions.packagingCostPerPortion * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Other costs per batch",
+              formatPreciseCents(
+                result.assumptions.otherCostPerBatch * 100,
+                result.currencyCode
+              ),
+            ],
+            [
+              "Selling price per portion",
+              result.assumptions.sellingPricePerPortion === undefined
+                ? "Not provided"
+                : formatPreciseCents(
+                    result.assumptions.sellingPricePerPortion * 100,
+                    result.currencyCode
+                  ),
+            ],
+            [
+              "Ingredient price change",
+              percentFormat.format(
+                result.assumptions.ingredientChangePercent / 100
+              ),
+            ],
+            [
+              "Target margin",
+              result.assumptions.targetMarginPercent === undefined
+                ? "Preserve original margin if a selling price is supplied"
+                : percentFormat.format(
+                    result.assumptions.targetMarginPercent / 100
+                  ),
+            ],
+          ].map(([label, value]) => (
+            <div key={label} className="flex justify-between gap-3">
+              <dt>{label}</dt>
+              <dd className="text-right tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </details>
+      <dl className="mt-3 space-y-1">
+        {rows
+          .filter(([, value]) => value !== null)
+          .map(([label, value, percent]) => (
+            <div key={String(label)} className="flex justify-between gap-3">
+              <dt>{label}</dt>
+              <dd className="tabular-nums">
+                {percent
+                  ? percentFormat.format(Number(value) / 100)
+                  : formatPreciseCents(
+                      Number(value) * 100,
+                      result.currencyCode
+                    )}
+              </dd>
+            </div>
+          ))}
+      </dl>
+      <p className="mt-3 text-xs text-muted-foreground">{result.exclusions}</p>
+    </section>
+  )
+}
+
 const checkedLabels: Record<string, string> = {
   find_recipes: "Recipe search",
   find_products: "Product search",
@@ -208,6 +433,11 @@ const checkedLabels: Record<string, string> = {
   search_usda_foods: "USDA food search",
   read_attachment: "Attachment read",
   draft_recipe: "Recipe draft",
+  read_recipe_draft: "Saved recipe draft",
+  revise_recipe_draft: "Recipe revision",
+  calculate_batch_cost: "Batch calculation",
+  get_top_products: "Top products",
+  get_ingredient_price_changes: "Ingredient price changes",
 }
 
 function TurnReceipt({
@@ -307,6 +537,45 @@ export function PrimoConversation({
     !lastMessage.parts.some(
       (part) => (part.type === "text" && part.text) || isToolUIPart(part)
     )
+  const [editing, setEditing] = React.useState<{
+    conversationId: string
+    message: PrimoUIMessage
+    text: string
+    pending: boolean
+    error: string
+  } | null>(null)
+  const activeEdit = editing?.conversationId === conversationId ? editing : null
+  async function resendEdit() {
+    if (!activeEdit || activeEdit.pending || busy || !activeEdit.text.trim())
+      return
+    const attempt = { ...activeEdit, pending: true, error: "" }
+    setEditing(attempt)
+    try {
+      await send(
+        attempt.text.trim(),
+        (attempt.message.metadata?.mentions ?? []).filter((mention) =>
+          attempt.text.includes(`@${mention.label}`)
+        ),
+        attempt.message.metadata?.attachments ?? [],
+        attempt.message.id
+      )
+      setEditing((current) => (current === attempt ? null : current))
+    } catch (error) {
+      setEditing((current) =>
+        current === attempt
+          ? {
+              ...attempt,
+              pending: false,
+              error:
+                error instanceof Error
+                  ? error.message
+                  : "Couldn’t resend this question.",
+            }
+          : current
+      )
+    }
+  }
+  const [suggestionError, setSuggestionError] = React.useState("")
   const [copyError, setCopyError] = React.useState("")
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const copyTimer = React.useRef<number | null>(null)
@@ -353,6 +622,15 @@ export function PrimoConversation({
       return attachments.length
         ? send(text, mentions, attachments)
         : send(text, mentions)
+  }
+
+  async function sendSuggestion(text: string, mentions: PrimoMention[] = []) {
+    setSuggestionError("")
+    try {
+      await sendMessage(text, mentions)
+    } catch {
+      setSuggestionError("Couldn’t send that question. Try the choice again.")
+    }
   }
 
   return (
@@ -407,7 +685,67 @@ export function PrimoConversation({
             <MessageScrollerItem key={message.id} messageId={message.id}>
               {awaitingReply && message.id === lastMessage?.id ? null : (
                 <div className="group space-y-3">
+                  {activeEdit?.message.id === message.id ? (
+                    <form
+                      className="space-y-3 rounded-xl border border-border p-4"
+                      onSubmit={(event) => {
+                        event.preventDefault()
+                        void resendEdit()
+                      }}
+                    >
+                      <label
+                        className="block text-sm font-medium"
+                        htmlFor={`edit-${message.id}`}
+                      >
+                        Edit question
+                      </label>
+                      <Textarea
+                        id={`edit-${message.id}`}
+                        autoFocus
+                        value={activeEdit.text}
+                        maxLength={4000}
+                        disabled={activeEdit.pending}
+                        onChange={(event) =>
+                          setEditing({
+                            ...activeEdit,
+                            text: event.target.value,
+                          })
+                        }
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Resending replaces this question and removes all later
+                        messages. This question’s attached files are kept.
+                      </p>
+                      {activeEdit.error ? (
+                        <p role="alert" className="text-xs text-destructive">
+                          {activeEdit.error}
+                        </p>
+                      ) : null}
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          disabled={activeEdit.pending}
+                          onClick={() => setEditing(null)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          pending={activeEdit.pending}
+                          disabled={!activeEdit.text.trim()}
+                        >
+                          Save and resend
+                        </Button>
+                      </div>
+                    </form>
+                  ) : null}
                   {message.parts.map((part, index) => {
+                    if (
+                      activeEdit?.message.id === message.id &&
+                      part.type === "text"
+                    )
+                      return null
                     if (part.type === "text" && part.text) {
                       return (
                         <Message
@@ -483,7 +821,8 @@ export function PrimoConversation({
                           result={
                             output as FindRecipesResult | FindProductsResult
                           }
-                          onChoose={sendMessage}
+                          onChoose={sendSuggestion}
+                          disabled={busy || Boolean(activeEdit)}
                         />
                       )
                     }
@@ -508,7 +847,7 @@ export function PrimoConversation({
                         <PrimoResultCard
                           key={part.toolCallId}
                           result={output as CostResult}
-                          onSuggestion={sendMessage}
+                          onSuggestion={sendSuggestion}
                         />
                       )
                     }
@@ -518,6 +857,44 @@ export function PrimoConversation({
                           key={part.toolCallId}
                           result={output as PrimoUsdaSearchResult}
                         />
+                      )
+                    }
+                    if (toolName === "get_top_products")
+                      return (
+                        <TopProductsCard
+                          key={part.toolCallId}
+                          result={output as TopProductsResult}
+                        />
+                      )
+                    if (toolName === "get_ingredient_price_changes")
+                      return (
+                        <IngredientPriceChangesCard
+                          key={part.toolCallId}
+                          result={output as IngredientPriceChangesResult}
+                        />
+                      )
+                    if (toolName === "calculate_batch_cost") {
+                      return (
+                        <BatchCalculationCard
+                          key={part.toolCallId}
+                          result={
+                            output as ReturnType<typeof calculateBatchCost>
+                          }
+                        />
+                      )
+                    }
+                    if (toolName === "revise_recipe_draft") {
+                      const result = output as {
+                        draft: RecipeDraft
+                        changes: string[]
+                      }
+                      return (
+                        <div key={part.toolCallId} className="space-y-2">
+                          <p className="text-xs text-muted-foreground">
+                            {result.changes.join(" ")}
+                          </p>
+                          <PrimoRecipeDraftCard draft={result.draft} />
+                        </div>
                       )
                     }
                     if (toolName === "draft_recipe") {
@@ -549,7 +926,9 @@ export function PrimoConversation({
                       typeof output !== "object" ||
                       !("view" in output) ||
                       typeof output.view !== "string" ||
-                      !/^\/(recipes|products)\//.test(output.view)
+                      !/^\/(?:recipes\/|products\/|analytics(?:\?|$)|ingredients(?:\?|$))/.test(
+                        output.view
+                      )
                     )
                       return null
                     return (
@@ -566,7 +945,11 @@ export function PrimoConversation({
                           ? "View batch preview"
                           : output.view.startsWith("/recipes/")
                             ? "Open recipe"
-                            : "Open product"}
+                            : output.view.startsWith("/products/")
+                              ? "Open product"
+                              : output.view.startsWith("/analytics")
+                                ? "View sales report"
+                                : "Open ingredients"}
                       </GuardedLink>
                     )
                   })}
@@ -624,6 +1007,26 @@ export function PrimoConversation({
                             <Copy aria-hidden="true" />
                           )}
                         </Button>
+                        {message.role === "user" ? (
+                          <Button
+                            type="button"
+                            size="icon-sm"
+                            variant="ghost"
+                            aria-label="Edit question"
+                            disabled={Boolean(activeEdit)}
+                            onClick={() =>
+                              setEditing({
+                                conversationId,
+                                message,
+                                text: primoMessageText(message),
+                                pending: false,
+                                error: "",
+                              })
+                            }
+                          >
+                            <SquarePen aria-hidden="true" />
+                          </Button>
+                        ) : null}
                         {message.role === "assistant" ? (
                           <PrimoFeedback
                             key={message.id}
@@ -648,6 +1051,7 @@ export function PrimoConversation({
                                 ? "Retry response"
                                 : "Regenerate response"
                             }
+                            disabled={Boolean(activeEdit)}
                             onClick={() => void regenerate()}
                           >
                             <RotateCcw aria-hidden="true" />
@@ -677,6 +1081,7 @@ export function PrimoConversation({
                 type="button"
                 size="xs"
                 variant="ghost"
+                disabled={Boolean(activeEdit)}
                 onClick={() => void regenerate()}
                 className="mt-1 text-destructive hover:text-destructive"
               >
@@ -700,6 +1105,11 @@ export function PrimoConversation({
       <span className="sr-only" role="status" aria-live="polite">
         {announcement}
       </span>
+      {suggestionError ? (
+        <p role="alert" className="px-4 text-xs text-destructive">
+          {suggestionError}
+        </p>
+      ) : null}
       {copyError ? (
         <p role="alert" className="px-4 text-xs text-destructive">
           {copyError}
@@ -709,7 +1119,11 @@ export function PrimoConversation({
         key={`composer-${conversationId}`}
         recipeOpen={route.recipeRef !== null}
         busy={busy}
-        disabled={conversationLoading || Boolean(conversationError)}
+        disabled={
+          conversationLoading ||
+          Boolean(conversationError) ||
+          Boolean(activeEdit)
+        }
         onSend={sendMessage}
         onStop={busy ? stop : () => {}}
         conversationId={conversationId}
@@ -725,7 +1139,7 @@ export function PrimoConversation({
                 <button
                   type="button"
                   disabled={conversationLoading}
-                  onClick={() => void sendMessage(question)?.catch(() => {})}
+                  onClick={() => void sendSuggestion(question)}
                   className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
                 >
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">

@@ -160,6 +160,27 @@ export const ingredientPriceSchema = z.strictObject({
   updatedAt: z.date(),
 })
 
+export const ingredientPriceChangesSchema = z.strictObject({
+  startDate: z.string(),
+  endDate: z.string(),
+  currencyCode: z.string(),
+  items: z.array(
+    z.strictObject({
+      ingredientRef: z.string(),
+      name: z.string(),
+      unit: z.string(),
+      fromUnitCostCents: z.number(),
+      toUnitCostCents: z.number(),
+      deltaUnitCostCents: z.number(),
+      percent: z.number().nullable(),
+    })
+  ),
+  omitted: z.number(),
+  observedIngredients: z.number(),
+  missingBaseline: z.number(),
+  incomparableUnits: z.number(),
+})
+
 export const nutritionCompositionSchema = z.strictObject({
   water: z.number().nonnegative(),
   fat: z.number().nonnegative(),
@@ -707,7 +728,7 @@ const recipeCostDiffSideSchema = z.strictObject({
   status: z.enum(["priced", "noHistory", "unpriceable"]),
   costCents: z.number().nullable(),
   unitCostCents: z.number().nullable(),
-  effectiveAt: z.string().nullable(),
+  effectiveAt: z.date().nullable(),
   source: z.string().nullable(),
   supplier: z.string().nullable(),
 })

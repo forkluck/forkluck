@@ -64,7 +64,8 @@ type PrimoContextValue = {
   send: (
     text: string,
     mentions?: PrimoMention[],
-    attachments?: PrimoAttachment[]
+    attachments?: PrimoAttachment[],
+    editMessageId?: string
   ) => Promise<void>
   conversationId: string
   conversationError: string
@@ -153,6 +154,11 @@ export function PrimoProvider({
   const [delivery] = React.useState(() =>
     valueCell<{
       messageId: string
+      edit?: {
+        messageId: string
+        expectedText: string
+        expectedLastMessageId: string
+      }
       state: "unknown" | "accepted" | "rejected"
     } | null>(null)
   )
@@ -170,7 +176,7 @@ export function PrimoProvider({
             ) {
               attempt.state = "accepted"
             } else if (
-              [400, 401, 403, 404, 413, 429, 503].includes(response.status)
+              [400, 401, 403, 404, 409, 413, 429, 503].includes(response.status)
             ) {
               attempt.state = "rejected"
             }
@@ -180,6 +186,7 @@ export function PrimoProvider({
         prepareSendMessagesRequest: ({ messages }) => ({
           body: {
             messages,
+            ...(delivery.get()?.edit ? { edit: delivery.get()!.edit } : {}),
             conversationId: conversationContext.get(),
             parentMessageId:
               messages.findLast((message) => message.role === "assistant")
@@ -395,7 +402,8 @@ export function PrimoProvider({
     async (
       text: string,
       mentions: PrimoMention[] = [],
-      attachments: PrimoAttachment[] = []
+      attachments: PrimoAttachment[] = [],
+      editMessageId?: string
     ) => {
       if (
         conversationLoading ||
@@ -422,15 +430,44 @@ export function PrimoProvider({
           ? previous.id
           : undefined
       sendError.current = null
-      const messageId = retryId ?? crypto.randomUUID()
+      const revisedId =
+        editMessageId ??
+        (retryId &&
+        previous &&
+        previous.parts
+          .flatMap((part) => (part.type === "text" ? [part.text] : []))
+          .join("") !== text
+          ? retryId
+          : undefined)
+      const edited = revisedId
+        ? chat.messages.find(
+            (message) => message.id === revisedId && message.role === "user"
+          )
+        : undefined
+      if (editMessageId && !edited)
+        throw new Error("That question is no longer available.")
+      const messageId = editMessageId ?? retryId ?? crypto.randomUUID()
       const attempt = {
         messageId,
+        ...(edited
+          ? {
+              edit: {
+                messageId,
+                expectedText: edited.parts
+                  .flatMap((part) => (part.type === "text" ? [part.text] : []))
+                  .join(""),
+                expectedLastMessageId: chat.messages.at(-1)!.id,
+              },
+            }
+          : {}),
         state: "unknown" as "unknown" | "accepted" | "rejected",
       }
       delivery.set(attempt)
       await chat.sendMessage({
         id: messageId,
-        ...(retryId ? { messageId: retryId } : {}),
+        ...((editMessageId ?? retryId)
+          ? { messageId: editMessageId ?? retryId }
+          : {}),
         role: "user",
         parts: [{ type: "text", text }],
         metadata: {
@@ -440,6 +477,7 @@ export function PrimoProvider({
           createdAt: new Date().toISOString(),
         },
       })
+      delivery.set(null)
       if (sendError.current && attempt.state === "rejected") {
         // Only a definite rejection restores the composer. A lost response may
         // already have committed; leave that turn in place for an idempotent retry.

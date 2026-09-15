@@ -268,6 +268,7 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("newsletter/", None),
     ("search-index/", None),
     ("ingredients/", None),
+    ("ingredient-price-changes/", None),
     ("ingredients/<str:ingredient_ref>/", None),
     ("ingredient-options/", None),
     ("ingredient-tags/", None),

@@ -26,11 +26,18 @@ def message_json(row: PrimoMessage) -> JsonObject:
         "feedbackComment": row.feedback_comment,
         "parts": row.parts,
         "status": row.status,
-        "metadata": row.metadata,
+        "metadata": {
+            key: value for key, value in row.metadata.items() if key != "_generationId"
+        },
         "createdAt": iso(row.created_at),
     }
 
 
 def attachment_json(row: PrimoAttachment) -> JsonObject:
-    return {"id": str(row.id), "name": row.name, "mediaType": row.media_type,
-            "size": row.size, "coverage": row.coverage}
+    return {
+        "id": str(row.id),
+        "name": row.name,
+        "mediaType": row.media_type,
+        "size": row.size,
+        "coverage": row.coverage,
+    }

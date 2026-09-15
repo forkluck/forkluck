@@ -44,6 +44,13 @@ const requestSchema = z.strictObject({
   recipeRef: z.string().regex(RECIPE_REF).nullable(),
   productRef: z.string().regex(PRODUCT_REF).nullable().default(null),
   messages: z.array(z.unknown()).max(200),
+  edit: z
+    .strictObject({
+      messageId: z.string().min(1).max(64),
+      expectedText: z.string().max(4_000),
+      expectedLastMessageId: z.string().min(1).max(64),
+    })
+    .optional(),
 })
 
 function cleanTitle(value: string, fallback: string): string {
@@ -145,45 +152,54 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
+  let conversationHasTitle = false
   let responseMessageId = createHash("sha256")
     .update(`${parsed.data.conversationId}:${lastUserMessage.id}`)
     .digest("hex")
   try {
-    const saved = await djangoAction<{ responseMessageId?: string }>(
-      "primo-save-turn",
-      {
-        conversationId: parsed.data.conversationId,
-        messages: [
-          {
-            id: lastUserMessage.id,
-            role: "user",
-            parts: lastUserMessage.parts.filter((part) => part.type === "text"),
-            text: primoMessageText(lastUserMessage),
-            status: "complete",
-            metadata: {
-              mentions: lastUserMessage.metadata?.mentions ?? [],
-              attachmentIds: lastUserMessage.metadata?.attachmentIds ?? [],
-            },
-            parentMessageId: parsed.data.parentMessageId,
+    const saved = await djangoAction<{
+      responseMessageId?: string
+      item?: { title?: string }
+    }>("primo-save-turn", {
+      conversationId: parsed.data.conversationId,
+      generationId: requestId,
+      ...(parsed.data.edit ? { edit: parsed.data.edit } : {}),
+      messages: [
+        {
+          id: lastUserMessage.id,
+          role: "user",
+          parts: lastUserMessage.parts.filter((part) => part.type === "text"),
+          text: primoMessageText(lastUserMessage),
+          status: "complete",
+          metadata: {
+            mentions: lastUserMessage.metadata?.mentions ?? [],
+            attachmentIds: lastUserMessage.metadata?.attachmentIds ?? [],
           },
-        ],
-      }
-    )
+          parentMessageId: parsed.data.parentMessageId,
+        },
+      ],
+    })
     responseMessageId = saved?.responseMessageId || responseMessageId
+    conversationHasTitle = Boolean(saved?.item?.title)
   } catch (cause) {
-    const status =
+    const missing =
       cause instanceof BackendRequestError &&
       cause.message === "Conversation not found"
-        ? 404
-        : 502
+    const conflict =
+      cause instanceof BackendRequestError &&
+      cause.message === "Conversation changed; reload before editing"
+    const rejected =
+      cause instanceof BackendRequestError &&
+      [400, 401, 403, 404, 409, 413, 429].includes(cause.status)
     return NextResponse.json(
       {
-        error:
-          status === 404
-            ? "Conversation not found"
+        error: missing
+          ? "Conversation not found"
+          : conflict
+            ? "This chat changed. Reload it before editing."
             : "Primo couldn't save that message.",
       },
-      { status }
+      { status: missing ? 404 : conflict ? 409 : rejected ? cause.status : 502 }
     )
   }
 
@@ -231,6 +247,7 @@ export async function POST(request: Request) {
     productRef: parsed.data.productRef,
     mentions,
     conversationId: parsed.data.conversationId,
+    userMessageId: lastUserMessage.id,
     attachments,
   })
 
@@ -270,6 +287,7 @@ export async function POST(request: Request) {
   const limits = primoGenerationLimits(attachments.length > 0)
   const deadline = AbortSignal.timeout(limits.timeoutMs)
   const needsTitle =
+    !conversationHasTitle &&
     validatedMessages.filter((message) => message.role === "user").length === 1
   const identity = {
     version: 1 as const,
@@ -384,6 +402,7 @@ export async function POST(request: Request) {
           await djangoAction("primo-save-turn", {
             conversationId: parsed.data.conversationId,
             ...(generatedTitle ? { title: generatedTitle } : {}),
+            replyTo: { messageId: lastUserMessage.id, generationId: requestId },
             messages: [
               {
                 id: responseMessage.id,

@@ -413,6 +413,7 @@ describe("POST /api/primo/chat", () => {
     expect(general.status).toBe(200)
     expect(mocks.createTools).toHaveBeenCalledWith({
       conversationId: "00000000-0000-4000-8000-000000000001",
+      userMessageId: "user-1",
       attachments: [],
       recipeRef: null,
       productRef: null,
@@ -450,6 +451,7 @@ describe("POST /api/primo/chat", () => {
     expect(response.status).toBe(200)
     expect(mocks.createTools).toHaveBeenCalledWith({
       conversationId: "00000000-0000-4000-8000-000000000001",
+      userMessageId: "user-mentioned",
       attachments: [],
       recipeRef: null,
       productRef,
@@ -480,6 +482,7 @@ describe("POST /api/primo/chat", () => {
     expect(response.status).toBe(200)
     expect(mocks.createTools).toHaveBeenCalledWith({
       conversationId: "00000000-0000-4000-8000-000000000001",
+      userMessageId: "latest-user",
       attachments: [],
       recipeRef: null,
       productRef: null,
@@ -618,6 +621,7 @@ describe("POST /api/primo/chat", () => {
     expect(JSON.stringify(options.messages)).not.toContain("private data")
     expect(mocks.createTools).toHaveBeenCalledWith({
       conversationId: "00000000-0000-4000-8000-000000000001",
+      userMessageId: "user-1",
       attachments: [],
       recipeRef,
       productRef: null,
@@ -749,6 +753,10 @@ describe("POST /api/primo/chat", () => {
       "primo-save-turn",
       expect.objectContaining({
         title: "Kitchen question",
+        replyTo: {
+          messageId: "user-1",
+          generationId: mocks.djangoAction.mock.calls[0]![1].generationId,
+        },
         messages: [
           expect.objectContaining({
             status: "complete",
@@ -841,4 +849,61 @@ it("does not acknowledge a rejected durable save", async () => {
   )
   expect(response.status).toBe(404)
   expect(response.headers.has("x-primo-accepted-message")).toBe(false)
+})
+
+it("sends the edit snapshot to the durable save and exposes stale edits as unaccepted conflicts", async () => {
+  const edit = {
+    messageId: "user-1",
+    expectedText: "Before",
+    expectedLastMessageId: "answer-1",
+  }
+  await POST(request({ recipeRef, messages: [userMessage("After")], edit }))
+  expect(mocks.djangoAction).toHaveBeenCalledWith(
+    "primo-save-turn",
+    expect.objectContaining({
+      edit,
+      generationId: expect.stringMatching(/^[0-9a-f-]{36}$/),
+    })
+  )
+  mocks.streamText.mockClear()
+  mocks.djangoAction.mockRejectedValueOnce(
+    new BackendRequestError("Conversation changed; reload before editing", 400)
+  )
+  const response = await POST(
+    request({ recipeRef, messages: [userMessage("After")], edit })
+  )
+  expect(response.status).toBe(409)
+  expect(response.headers.has("x-primo-accepted-message")).toBe(false)
+  expect(mocks.streamText).not.toHaveBeenCalled()
+})
+
+it("does not acknowledge a rejected attachment/edit transaction", async () => {
+  mocks.djangoAction.mockRejectedValueOnce(
+    new BackendRequestError("Invalid attachments", 400)
+  )
+  const response = await POST(
+    request({ recipeRef, messages: [userMessage("Revised")] })
+  )
+  expect(response.status).toBe(400)
+  expect(response.headers.has("x-primo-accepted-message")).toBe(false)
+  expect(mocks.streamText).not.toHaveBeenCalled()
+})
+
+it("keeps the saved conversation title when editing or regenerating the first question", async () => {
+  mocks.djangoAction.mockResolvedValueOnce({ item: { title: "My named chat" } })
+  await POST(
+    request({ recipeRef, messages: [userMessage("Revised first question")] })
+  )
+  const options = mocks.streamOptions as {
+    execute: (value: {
+      writer: {
+        merge: (stream: ReadableStream) => void
+        write: (part: unknown) => void
+      }
+    }) => Promise<void>
+  }
+  const writer = { merge: vi.fn(), write: vi.fn() }
+  await options.execute({ writer })
+  expect(mocks.generateText).not.toHaveBeenCalled()
+  expect(writer.write).not.toHaveBeenCalled()
 })

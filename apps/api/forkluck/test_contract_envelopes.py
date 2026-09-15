@@ -217,6 +217,7 @@ SCHEMA_PAYLOADS = {
     "ingredientsPayloadSchema": lambda case: internal_payload(
         ingredient_views.ingredients, case.user, query={"order": "name"}
     ),
+    "ingredientPriceChangesSchema": lambda case: case.ingredient_price_changes(),
     "ingredientPayloadSchema": lambda case: internal_payload(
         ingredient_views.ingredient_detail,
         case.user,
@@ -1275,6 +1276,30 @@ class EnvelopeContractTests(ShapeAssertions, TestCase):
             finished_at=now,
         )
         return run
+
+    def ingredient_price_changes(self):
+        ingredient = Ingredient.objects.create(
+            user=self.user,
+            name="ZZZ price comparison",
+            purchase_cost_cents=1200,
+            purchase_size=1,
+            purchase_unit="kg",
+        )
+        for stamp, cost in (("2026-01-01", 1000), ("2026-02-01", 1200)):
+            IngredientPrice.objects.create(
+                ingredient=ingredient,
+                effective_at=datetime.fromisoformat(stamp).replace(
+                    tzinfo=datetime_timezone.utc
+                ),
+                purchase_cost_cents=cost,
+                purchase_size=1,
+                purchase_unit="kg",
+            )
+        return internal_payload(
+            ingredient_views.ingredient_price_changes,
+            self.user,
+            query={"start": "2026-02-01", "end": "2026-02-28"},
+        )
 
     def test_typescript_schemas_match_the_python_payloads(self):
         """apps/web/lib/backend/schemas.ts describes the same keys Python emits.

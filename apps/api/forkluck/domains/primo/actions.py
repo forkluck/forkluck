@@ -39,17 +39,85 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
     foreign = PrimoConversation.objects.filter(id=conversation_id).exclude(user=user)
     if foreign.exists():
         raise ValueError("Conversation not found")
-    conversation, conversation_created = PrimoConversation.objects.get_or_create(
-        id=conversation_id, defaults={"user": user}
-    )
-    if conversation.user_id != user.id:
-        raise ValueError("Conversation not found")
-
+    reply_to = payload.get("replyTo")
+    if reply_to is not None:
+        conversation = (
+            PrimoConversation.objects.select_for_update()
+            .filter(id=conversation_id, user=user)
+            .first()
+        )
+        if conversation is None:
+            # A late stream must not recreate a deleted conversation.
+            return {"superseded": True}
+        conversation_created = False
+    else:
+        conversation, conversation_created = PrimoConversation.objects.get_or_create(
+            id=conversation_id, defaults={"user": user}
+        )
+        if conversation.user_id != user.id:
+            raise ValueError("Conversation not found")
+        conversation = PrimoConversation.objects.select_for_update().get(
+            id=conversation.id, user=user
+        )
     raw_messages = _json_list(payload.get("messages"), "messages")
     if not raw_messages:
         raise ValueError("messages is required")
     if len(raw_messages) > 200:
         raise ValueError("messages is too long")
+    raw_messages = [_json_object(raw, "message") for raw in raw_messages]
+    generation_id = payload.get("generationId")
+    if generation_id is not None:
+        generation_id = str(uuid_value(generation_id, "generationId"))
+        if len(raw_messages) != 1 or raw_messages[0].get("role") != "user":
+            raise ValueError("A generation requires one user message")
+    if reply_to is not None:
+        reply_to = _json_object(reply_to, "replyTo")
+        if (
+            len(raw_messages) != 1
+            or raw_messages[0].get("role") != "assistant"
+            or raw_messages[0].get("parentMessageId") != reply_to.get("messageId")
+        ):
+            raise ValueError("A response requires its user message")
+        parent = (
+            conversation.messages.filter(user=user, role="user")
+            .order_by("-created_at", "-id")
+            .first()
+        )
+        if (
+            parent is None
+            or parent.message_id != reply_to.get("messageId")
+            or not reply_to.get("generationId")
+            or parent.metadata.get("_generationId") != reply_to["generationId"]
+        ):
+            return {"superseded": True}
+    edit = payload.get("edit")
+    if edit is not None:
+        edit = _json_object(edit, "edit")
+        if generation_id is None or raw_messages[0].get("id") != edit.get("messageId"):
+            raise ValueError("Invalid message edit")
+        target = conversation.messages.filter(
+            user=user, message_id=edit.get("messageId"), role="user"
+        ).first()
+        latest = conversation.messages.order_by("-created_at", "-id").first()
+        if (
+            target is None
+            or latest is None
+            or latest.message_id != edit.get("expectedLastMessageId")
+            or target.text != edit.get("expectedText")
+        ):
+            raise ValueError("Conversation changed; reload before editing")
+        following = conversation.messages.filter(
+            Q(created_at__gt=target.created_at)
+            | Q(created_at=target.created_at, id__gt=target.id)
+        )
+        PrimoAttachment.objects.filter(user=user, message__in=following).update(
+            deleted=True
+        )
+        following.delete()
+        raw_messages[0] = {
+            **raw_messages[0],
+            "parentMessageId": target.parent_message_id,
+        }
     changed = conversation_created
     for raw in raw_messages:
         message = _json_object(raw, "message")
@@ -57,9 +125,7 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
         role = text_value(message.get("role"), "role", max_length=16)
         if role not in {"user", "assistant"}:
             raise ValueError("role is invalid")
-        status = text_value(
-            message.get("status", "complete"), "status", max_length=16
-        )
+        status = text_value(message.get("status", "complete"), "status", max_length=16)
         if status not in {"complete", "aborted", "error"}:
             raise ValueError("status is invalid")
         parts = _json_list(message.get("parts"), "parts")
@@ -84,10 +150,18 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
         if not isinstance(attachment_ids, list) or len(attachment_ids) > 5:
             raise ValueError("Invalid attachments")
         ids = [uuid_value(value, "attachmentId") for value in attachment_ids]
-        attachments = list(PrimoAttachment.objects.select_for_update().filter(
-            id__in=ids, user=user, conversation_id=conversation.id, deleted=False,
-        ))
-        if len(attachments) != len(ids) or sum(row.size for row in attachments) > 20_000_000:
+        attachments = list(
+            PrimoAttachment.objects.select_for_update().filter(
+                id__in=ids,
+                user=user,
+                conversation_id=conversation.id,
+                deleted=False,
+            )
+        )
+        if (
+            len(attachments) != len(ids)
+            or sum(row.size for row in attachments) > 20_000_000
+        ):
             raise ValueError("Invalid attachments")
         for attachment in attachments:
             if not attachment.content:
@@ -96,12 +170,24 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
                 raise ValueError("Attachment already sent")
             if not attachment.message_id and attachment.expires_at <= timezone.now():
                 raise ValueError("Attachment expired; attach it again")
+        if role == "user" and generation_id is not None:
+            metadata = {**metadata, "_generationId": generation_id}
         if role == "user":
-            metadata = {**metadata, "attachments": [attachment_json(row) for row in attachments]}
+            metadata = {
+                **metadata,
+                "attachments": [attachment_json(row) for row in attachments],
+            }
             defaults["metadata"] = metadata
         existing = PrimoMessage.objects.filter(
             conversation=conversation, message_id=message_id
         ).first()
+        if (
+            existing is not None
+            and generation_id is not None
+            and edit is None
+            and existing.text != defaults["text"]
+        ):
+            raise ValueError("Conversation changed; reload before editing")
         if existing is None:
             existing = PrimoMessage.objects.create(
                 conversation=conversation, message_id=message_id, **defaults
@@ -114,7 +200,9 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
             changed = True
 
         if attachments:
-            PrimoAttachment.objects.filter(id__in=ids, user=user).update(message=existing)
+            PrimoAttachment.objects.filter(id__in=ids, user=user).update(
+                message=existing
+            )
 
     title = payload.get("title")
     updates: dict[str, Any] = {}
@@ -123,12 +211,25 @@ def action_primo_save_turn(user: User, payload: JsonObject) -> JsonObject:
         changed = True
     if changed:
         updates["last_message_at"] = timezone.now()
-        PrimoConversation.objects.filter(id=conversation.id, user=user).update(**updates)
+        PrimoConversation.objects.filter(id=conversation.id, user=user).update(
+            **updates
+        )
         conversation.refresh_from_db()
-    last_user = next((raw for raw in reversed(raw_messages) if raw.get("role") == "user"), None)
+    last_user = next(
+        (raw for raw in reversed(raw_messages) if raw.get("role") == "user"), None
+    )
     response_id = None
     if last_user:
-        response_id = PrimoMessage.objects.filter(conversation=conversation, user=user, role="assistant", parent_message_id=last_user["id"]).values_list("message_id", flat=True).first()
+        response_id = (
+            PrimoMessage.objects.filter(
+                conversation=conversation,
+                user=user,
+                role="assistant",
+                parent_message_id=last_user["id"],
+            )
+            .values_list("message_id", flat=True)
+            .first()
+        )
     return {"item": conversation_json(conversation), "responseMessageId": response_id}
 
 
@@ -151,8 +252,10 @@ def action_primo_archive_conversation(user: User, payload: JsonObject) -> JsonOb
     return {"item": conversation_json(conversation)}
 
 
+@transaction.atomic
 def action_primo_delete_conversation(user: User, payload: JsonObject) -> JsonObject:
     conversation = _conversation(user, payload.get("conversationId"))
+    conversation = PrimoConversation.objects.select_for_update().get(id=conversation.id, user=user)
     PrimoAttachment.objects.filter(user=user, conversation_id=conversation.id).update(deleted=True)
     conversation.delete()
     return {"ok": True}
