@@ -58,8 +58,6 @@ type PrimoContextValue = {
   isDesktop: boolean
   inlineCount: number
   registerInline: () => () => void
-  actionLine: string
-  showAction: (line: string) => void
   navigate: (href: string) => Promise<void>
   send: (
     text: string,
@@ -248,8 +246,6 @@ export function PrimoProvider({
   const [open, setOpenState] = React.useState(false)
   const [isDesktop, setIsDesktop] = React.useState(false)
   const [inlineCount, setInlineCount] = React.useState(0)
-  const [actionLine, setActionLine] = React.useState("")
-  const actionTimer = React.useRef<number | null>(null)
   const [navigationPending, startTransition] = React.useTransition()
   const pendingNavigation = React.useRef<{
     sawPending: boolean
@@ -353,17 +349,6 @@ export function PrimoProvider({
     setInlineCount((count) => count + 1)
     return () => setInlineCount((count) => Math.max(0, count - 1))
   }, [])
-  const showAction = React.useCallback((line: string) => {
-    setActionLine(line)
-    if (actionTimer.current !== null) window.clearTimeout(actionTimer.current)
-    actionTimer.current = window.setTimeout(() => setActionLine(""), 4_000)
-  }, [])
-  React.useEffect(
-    () => () => {
-      if (actionTimer.current !== null) window.clearTimeout(actionTimer.current)
-    },
-    []
-  )
 
   React.useEffect(() => {
     const pending = pendingNavigation.current
@@ -580,8 +565,6 @@ export function PrimoProvider({
       isDesktop,
       inlineCount,
       registerInline,
-      actionLine,
-      showAction,
       navigate,
       send,
       conversationId,
@@ -599,7 +582,6 @@ export function PrimoProvider({
       route,
     }),
     [
-      actionLine,
       chat,
       archiveConversation,
       conversationId,
@@ -621,7 +603,6 @@ export function PrimoProvider({
       selectConversation,
       loadRecent,
       setOpen,
-      showAction,
     ]
   )
   return (

@@ -16,16 +16,68 @@ export function KitchenToolsWebMcp({
 }: {
   tools: KitchenToolDescriptor[]
 }) {
-  const { go } = useGuardedNavigate()
+  const { go, pending } = useGuardedNavigate()
   const toast = useToast()
+  const pendingNavigation = React.useRef<{
+    sawPending: boolean
+    settle: () => void
+  } | null>(null)
+
+  React.useEffect(() => {
+    const waiting = pendingNavigation.current
+    if (!waiting) return
+    if (pending) {
+      waiting.sawPending = true
+    } else if (waiting.sawPending) {
+      waiting.settle()
+    }
+  }, [pending])
+
+  React.useEffect(
+    () => () => {
+      pendingNavigation.current?.settle()
+    },
+    []
+  )
+
+  // A browser agent gets its result only after the screen has changed:
+  // resolve once the route transition settles, raced against three seconds.
+  const navigate = React.useCallback(
+    async (href: string) => {
+      await new Promise<void>((resolve, reject) => {
+        let settled = false
+        pendingNavigation.current?.settle()
+        let timeout = 0
+        const settle = (cause?: unknown) => {
+          if (settled) return
+          settled = true
+          window.clearTimeout(timeout)
+          pendingNavigation.current = null
+          if (cause === undefined) resolve()
+          else reject(cause)
+        }
+        pendingNavigation.current = { sawPending: false, settle }
+        timeout = window.setTimeout(settle, 3_000)
+        go(href).then(
+          (allowed) => {
+            if (!allowed)
+              settle(new DOMException("Navigation cancelled", "AbortError"))
+          },
+          (cause) => settle(cause ?? new Error("Navigation failed"))
+        )
+      })
+    },
+    [go]
+  )
+
   const depsRef = React.useRef({
     run: runKitchenToolAction,
-    go,
+    navigate,
     toast,
   })
   React.useEffect(() => {
-    depsRef.current = { run: runKitchenToolAction, go, toast }
-  }, [go, toast])
+    depsRef.current = { run: runKitchenToolAction, navigate, toast }
+  }, [navigate, toast])
 
   React.useEffect(() => {
     if (!("modelContext" in document) || !document.modelContext) return
@@ -39,7 +91,7 @@ export function KitchenToolsWebMcp({
             {
               ...descriptor,
               execute: async (input, { signal }) => {
-                const { run, go, toast } = depsRef.current
+                const { run, navigate, toast } = depsRef.current
                 let toastId: string | undefined
                 try {
                   const result = await executeKitchenTool(
@@ -47,13 +99,7 @@ export function KitchenToolsWebMcp({
                     input,
                     {
                       run,
-                      navigate: async (href) => {
-                        if (!(await go(href)))
-                          throw new DOMException(
-                            "Navigation cancelled",
-                            "AbortError"
-                          )
-                      },
+                      navigate,
                       showAction: (title) => {
                         toastId = toast.add({ title, timeout: 0 })
                       },
