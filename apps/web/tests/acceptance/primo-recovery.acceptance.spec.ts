@@ -68,7 +68,7 @@ for (const width of [1280, 390]) {
     await expect(page.getByText(/Recipe draft interrupted/)).toBeVisible()
     await expect(page.getByText("Preparing a recipe draft…")).toHaveCount(0)
     await expect(
-      page.getByRole("button", { name: "Regenerate response" })
+      page.getByRole("button", { name: "Retry response" })
     ).toBeVisible()
     await page.reload()
     await expect(page.getByText(/Recipe draft interrupted/)).toBeVisible()
@@ -182,13 +182,122 @@ test("an SSE response ending halfway through draft arguments becomes retryable",
     .getByRole("textbox", { name: "Message Primo" })
     .fill("Draft a soup recipe")
   await page.getByRole("button", { name: "Send message" }).click()
-  await expect(page.getByText("Response interrupted. Try again.")).toBeVisible()
+  await expect(
+    page.getByText("Recipe draft interrupted. Try again.")
+  ).toBeVisible()
   await expect(page.getByText("Preparing a recipe draft…")).toHaveCount(0)
   await expect(
-    page.getByRole("button", { name: "Regenerate response" })
+    page.getByRole("button", { name: "Retry response" })
   ).toBeVisible()
   await page.screenshot({
     path: "output/playwright/primo-interrupted-draft.png",
     fullPage: true,
   })
+})
+
+test("send acceptance, interruption and retry have one recovery path", async ({
+  page,
+}) => {
+  await signIn(page)
+  let scenario = "rejected"
+  const sentIds: string[] = []
+  await page.route("**/api/primo/chat", async (route) => {
+    const user = route
+      .request()
+      .postDataJSON()
+      .messages.findLast((row: { role: string }) => row.role === "user")
+    sentIds.push(user.id)
+    if (scenario === "rejected")
+      return route.fulfill({ status: 400, json: { error: "Message rejected" } })
+    if (scenario === "accepted-http")
+      return route.fulfill({
+        status: 502,
+        headers: { "x-primo-accepted-message": user.id },
+        json: { error: "Generation unavailable" },
+      })
+    const chunks =
+      scenario === "complete"
+        ? [
+            { type: "start", messageId: "answer" },
+            { type: "text-start", id: "text" },
+            { type: "text-delta", id: "text", delta: "The retry completed." },
+            { type: "text-end", id: "text" },
+            { type: "finish", finishReason: "stop" },
+          ]
+        : [
+            { type: "start", messageId: "answer" },
+            {
+              type: "tool-input-available",
+              toolCallId: "batch",
+              toolName: "show_recipe_batch",
+              input: { multiplier: 2 },
+            },
+            {
+              type: "tool-output-available",
+              toolCallId: "batch",
+              output: {
+                ok: true,
+                tool: "show_recipe_batch",
+                recipe: { title: "Synthetic soup" },
+                label: "2×",
+                portions: 4,
+                cost: null,
+                view: "/recipes/rcp_0123456789ab/cost?batch=2",
+              },
+            },
+            { type: "error", errorText: "Provider disconnected" },
+          ]
+    await route.fulfill({
+      contentType: "text/event-stream",
+      headers: {
+        "x-vercel-ai-ui-message-stream": "v1",
+        "x-primo-accepted-message": user.id,
+      },
+      body:
+        chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join("") +
+        "data: [DONE]\n\n",
+    })
+  })
+  const composer = page.getByRole("textbox", { name: "Message Primo" })
+  await composer.fill("Synthetic rejected question")
+  await page.getByRole("button", { name: "Send message" }).click()
+  await expect(
+    page.getByText("Couldn’t send. Your draft is ready to retry.")
+  ).toBeVisible()
+  await expect(composer).toHaveValue("Synthetic rejected question")
+  await expect(page.getByRole("button", { name: /^Retry/ })).toHaveCount(0)
+  await expect(
+    page.getByRole("region", { name: "Primo conversation" })
+  ).toHaveCount(0)
+
+  scenario = "accepted-http"
+  await page.getByRole("button", { name: "Send message" }).click()
+  await expect(
+    page.getByText("Primo couldn’t finish this question. Retry to continue.")
+  ).toBeVisible()
+  await expect(composer).toHaveValue("")
+  await expect(page.getByText(/Couldn’t send/)).toHaveCount(0)
+  await expect(page.getByRole("button", { name: /^Retry/ })).toHaveCount(1)
+
+  scenario = "partial"
+  await page.getByRole("button", { name: "Retry", exact: true }).click()
+  await expect(
+    page.getByText("Results loaded; response interrupted. Try again.")
+  ).toBeVisible()
+  await expect(
+    page.getByRole("link", { name: "View batch preview" })
+  ).toBeVisible()
+  await expect(page.getByRole("button", { name: /^Retry/ })).toHaveCount(1)
+  await expect(
+    page.getByText("Primo couldn’t finish this question. Retry to continue.")
+  ).toHaveCount(0)
+  await composer.fill("Keep this next question")
+  scenario = "complete"
+  await page
+    .getByRole("button", { name: "Retry response", exact: true })
+    .click()
+  await expect(page.getByText("The retry completed.")).toBeVisible()
+  await expect(composer).toHaveValue("Keep this next question")
+  expect(new Set(sentIds.slice(1)).size).toBe(1)
+  await expect(page.getByText(/response interrupted/)).toHaveCount(0)
 })

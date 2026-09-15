@@ -126,7 +126,7 @@ The normal test suites run without paid AI calls.
 ```
 Home Chat / Primo rail             one useChat survives client navigation
   POST /api/primo/chat             conversation id + messages + bound context
-    Django save-turn               user message persisted before inference
+    Django save-turn               user message persisted before inference; HTTP acknowledgement
     24k-character context fit      newest whole turns; newest user always kept
     private gateway → Qwen         prompt + model + access + usage per attempt
     Qwen chooses tools by intent   eight tools; at most four model/tool steps

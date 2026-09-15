@@ -42,3 +42,43 @@ describe("fitPrimoMessages", () => {
     ).toEqual(["new"])
   })
 })
+
+import { primoToolParts, primoTurnStatus } from "@/lib/primo/messages"
+
+it.each(["other-recipe", "other-period", "same-operation"])(
+  "a recovered read only replaces %s",
+  (scenario) => {
+    const input = { recipeRef: "rcp_0123456789ab", period: "2026-08" }
+    const turn: UIMessage = {
+      id: "turn",
+      role: "assistant",
+      parts: [
+        {
+          type: "tool-get_recipe_cost_change",
+          toolCallId: "bad",
+          state: "output-error",
+          input,
+          errorText: "Read failed",
+        },
+        {
+          type: "tool-get_recipe_cost_change",
+          toolCallId: "good",
+          state: "output-available",
+          input:
+            scenario === "other-recipe"
+              ? { ...input, recipeRef: "rcp_bbbbbbbbbbbb" }
+              : scenario === "other-period"
+                ? { ...input, period: "2026-07" }
+                : { period: input.period, recipeRef: input.recipeRef },
+          output: { ok: true },
+        },
+      ],
+    }
+    expect(primoToolParts(turn)).toHaveLength(
+      scenario === "same-operation" ? 1 : 2
+    )
+    expect(primoTurnStatus(turn, { finishReason: "stop" })).toBe(
+      scenario === "same-operation" ? "complete" : "error"
+    )
+  }
+)

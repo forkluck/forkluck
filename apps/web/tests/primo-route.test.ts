@@ -820,3 +820,25 @@ it("gives retries of the same turn a stable answer identity", async () => {
     (mocks.streamOptions as { generateId: () => string }).generateId()
   ).toBe(first)
 })
+
+it("acknowledges persisted turns even when generation cannot start", async () => {
+  mocks.streamText.mockImplementation(() => {
+    throw new Error("Provider unavailable")
+  })
+  const response = await POST(
+    request({ recipeRef: null, messages: [userMessage("Calculate a batch")] })
+  )
+  expect(response.status).toBe(502)
+  expect(response.headers.get("x-primo-accepted-message")).toBe("user-1")
+})
+
+it("does not acknowledge a rejected durable save", async () => {
+  mocks.djangoAction.mockRejectedValueOnce(
+    new BackendRequestError("Conversation not found", 400)
+  )
+  const response = await POST(
+    request({ recipeRef: null, messages: [userMessage("Private question")] })
+  )
+  expect(response.status).toBe(404)
+  expect(response.headers.has("x-primo-accepted-message")).toBe(false)
+})
