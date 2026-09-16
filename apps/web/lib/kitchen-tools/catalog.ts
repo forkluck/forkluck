@@ -15,6 +15,7 @@ export const KITCHEN_TOOL_NAMES = [
   "calculate_batch_cost",
   "get_top_products",
   "get_ingredient_price_changes",
+  "get_recipe",
 ] as const
 
 export type KitchenToolName = (typeof KITCHEN_TOOL_NAMES)[number]
@@ -141,6 +142,21 @@ export const KITCHEN_TOOLS: Record<KitchenToolName, KitchenToolEntry> = {
         .max(1_000)
         .optional()
         .describe("Batch multiplier. When present, this wins over portions."),
+    }),
+    annotations,
+  },
+  get_recipe: {
+    name: "get_recipe",
+    title: "Read a recipe",
+    description:
+      "Read one exact recipe in full: its every line at one batch with the quantities the sheet prints, its yield and portions, its cost when the reader may see it, and its per-serving nutrition when the label rollup is ready. This reads and saves nothing.",
+    inputSchema: z.strictObject({
+      recipeRef: z
+        .string()
+        .regex(RECIPE_REF)
+        .describe(
+          "Exact recipe reference returned by find_recipes or an @ pick."
+        ),
     }),
     annotations,
   },

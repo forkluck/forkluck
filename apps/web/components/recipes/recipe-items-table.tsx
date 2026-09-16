@@ -34,10 +34,7 @@ import {
   MenuItem,
   MenuTrigger,
 } from "@/components/ui/menu"
-import {
-  displayUnitShort,
-  inlineChipClassName,
-} from "@/components/ingredients/unit-combobox"
+import { inlineChipClassName } from "@/components/ingredients/unit-combobox"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import {
   Tooltip,
@@ -74,7 +71,12 @@ import { precisionFor } from "@/lib/precise-ingredients"
 import { resolveLine, withPreparationNote } from "@/lib/recipe/resolve-line"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
 import { fuzzyMatches } from "@/lib/fuzzy"
-import { KNOWN_UNITS, convertAmount, countedAsEach } from "@/lib/unit-registry"
+import {
+  KNOWN_UNITS,
+  convertAmount,
+  countedAsEach,
+  displayUnitShort,
+} from "@/lib/unit-registry"
 import { UnitOptions } from "@/components/recipes/unit-options"
 import { useToast } from "@/components/ui/toast"
 import { cn } from "@/lib/utils"

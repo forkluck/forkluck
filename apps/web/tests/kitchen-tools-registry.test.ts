@@ -28,7 +28,7 @@ function expectPlainEnumerable(value: unknown): void {
 }
 
 describe("kitchen tool registry", () => {
-  it("declares exactly eight compact read-only tools", () => {
+  it("declares exactly nine compact read-only tools", () => {
     expect(KITCHEN_TOOL_NAMES).toEqual([
       "find_recipes",
       "find_products",
@@ -38,6 +38,7 @@ describe("kitchen tool registry", () => {
       "calculate_batch_cost",
       "get_top_products",
       "get_ingredient_price_changes",
+      "get_recipe",
     ])
     for (const name of KITCHEN_TOOL_NAMES) {
       expect(name.length).toBeLessThanOrEqual(30)
@@ -51,7 +52,7 @@ describe("kitchen tool registry", () => {
 
   it("emits strict, compact, JSON-serializable descriptors", () => {
     const descriptors = kitchenToolDescriptors()
-    expect(descriptors).toHaveLength(8)
+    expect(descriptors).toHaveLength(9)
     for (const descriptor of descriptors) {
       expect(descriptor.inputSchema.additionalProperties).toBe(false)
       for (const description of schemaDescriptions(descriptor.inputSchema)) {

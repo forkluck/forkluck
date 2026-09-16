@@ -4,7 +4,7 @@ import * as React from "react"
 import { Popover } from "@base-ui/react/popover"
 import { ChevronDown } from "lucide-react"
 
-import { unitLabel, unitShort } from "@/lib/unit-registry"
+import { displayUnitShort, unitLabel, unitShort } from "@/lib/unit-registry"
 import type { UnitOption } from "@/lib/unit-registry"
 import { SearchInput } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -21,9 +21,6 @@ export const inlineChipClassName =
   "flex h-7 items-center gap-1 rounded-lg px-1.5 text-2xs font-semibold text-foreground outline-none hover:bg-accent focus-visible:bg-accent"
 
 /** "cup" stays a word: a lone "c" reads as nothing in a kitchen. */
-export const displayUnitShort = (slug: string | null) =>
-  slug === "cup" ? "cup" : unitShort(slug)
-
 /**
  * A searchable unit field. Units come from the shared registry; the search
  * narrows that controlled vocabulary but never creates a new unit.
