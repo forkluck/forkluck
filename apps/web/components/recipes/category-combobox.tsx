@@ -106,7 +106,9 @@ export function CategoryCombobox({
                   <span className="truncate">Add “{typed}”</span>
                 </button>
               ) : null}
-              {matches.length === 0 && !canAdd ? (
+              {/* Only a search that found nothing says so; an empty list is
+                  not a failed search. */}
+              {needle && matches.length === 0 && !canAdd ? (
                 <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
                   No results
                 </span>

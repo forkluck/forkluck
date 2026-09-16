@@ -48,6 +48,20 @@ describe("CategoryCombobox", () => {
     expect(screen.queryByRole("button", { name: "Add “Pastry”" })).toBeNull()
   })
 
+  it("shows an empty list without calling it a failed search", () => {
+    render(<Harness options={[]} />)
+
+    open()
+    expect(screen.queryByText("No results")).toBeNull()
+    expect(screen.getByRole("button", { name: "Uncategorized" })).not.toBeNull()
+
+    fireEvent.change(
+      screen.getByRole("searchbox", { name: "Search categories" }),
+      { target: { value: "   " } }
+    )
+    expect(screen.queryByText("No results")).toBeNull()
+  })
+
   it("keeps a saved category the option list does not carry", () => {
     render(
       <CategoryCombobox value="Fats" onChange={() => {}} options={["Bread"]} />
