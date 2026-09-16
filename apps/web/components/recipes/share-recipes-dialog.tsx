@@ -18,16 +18,11 @@ import { useToast } from "@/components/ui/toast"
 import { useDirtyDialog } from "@/hooks/use-dirty-dialog"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
 import { dialogSaveShortcut } from "@/hooks/use-save-shortcut"
+import { listNames } from "@/lib/recipe/names"
 import { toSaveFailure } from "@/lib/save-failure"
 
 const EMAIL_FIELD = "share-recipes-email"
 const TITLE_FIELD = "share-recipes-title"
-
-/** The selection named, without a line that runs off the dialog. */
-function nameSelection(titles: string[]): string {
-  if (titles.length <= 2) return titles.join(" and ")
-  return `${titles[0]}, ${titles[1]} and ${titles.length - 2} more`
-}
 
 /**
  * Sends a selection of recipes to one address. A reader with an account gets
@@ -109,7 +104,7 @@ export function ShareRecipesDialog({
         </DialogHeader>
 
         <p className="truncate text-sm text-muted-foreground">
-          {nameSelection(recipes.map((recipe) => recipe.title))}
+          {listNames(recipes.map((recipe) => recipe.title))}
         </p>
 
         <form

@@ -358,12 +358,10 @@ describe("a recipe saved for the first time", () => {
     expect(
       screen.getByRole("link", { name: "Nutrition" }).getAttribute("href")
     ).toBe("/recipes/abc123/nutrition")
-    fireEvent.click(screen.getByRole("button", { name: "Actions" }))
     expect(
-      screen
-        .getByRole("menuitem", { name: "Share…" })
-        .getAttribute("aria-disabled")
-    ).not.toBe("true")
+      (screen.getByRole("button", { name: "Share" }) as HTMLButtonElement)
+        .disabled
+    ).toBe(false)
   })
 
   it("creates an Untitled recipe when lines arrive before a name", async () => {
