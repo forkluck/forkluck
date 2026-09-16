@@ -1099,10 +1099,14 @@ starter prices keep `pack*`: those describe a pack somebody else assembled, and
 into the pantry.
 
 `invoice-line-options/` searches invoice lines by item, vendor or ID for the
-ingredient screen's invoice-price picker, newest first and capped at 20;
-`linkedIngredients` lists every ingredient already using that exact invoice
-line as a price reference, and `quantity` is how many packs the line bought, so
-a caller can divide `lineAmountCents` back down to one pack. Existing links are
+ingredient screen's invoice-price picker, newest first and capped at 20. A
+supplier item bought on many invoices is one option, its newest line; only
+lines with no item identity are listed one by one. `unit` is the printed U/M
+column, so a client can read "LB" as a price per pound rather than parsing
+"16 LB AVG" as a pack; `linkedIngredients` lists every ingredient already
+using that exact invoice line as a price reference, and `quantity` is how many
+packs the line bought, so a caller can divide `lineAmountCents` back down to
+one pack. Existing links are
 informational, not exclusive: the same whole-egg purchase may be referenced by
 both Egg and Egg yolk.
 

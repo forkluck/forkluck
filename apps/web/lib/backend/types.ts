@@ -907,6 +907,9 @@ export type InvoiceLineOption = {
   supplier: string
   description: string
   sku: string
+  /** The printed U/M column. A weight or count here ("LB", "EA") is what the
+   *  price is per; a container ("CS") leaves `packSize` to say what a pack is. */
+  unit: string
   packSize: string
   /** How many packs the line bought — `lineAmountCents` covers all of them. */
   quantity: number | null

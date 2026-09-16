@@ -266,6 +266,18 @@ def _is_login_page(url, body):
     )
 
 
+# Baldor prices a by-weight line per pound ("$4.69/LB, 16 LB AVG") whatever
+# the order unit column says, so that is the unit the line is costed by.
+POUND = re.compile(r"^lbs?\.?$", re.IGNORECASE)
+
+
+def line_unit(attributes):
+    unit = str(attributes["brname"])
+    if attributes.get("byWeight") is True and not POUND.match(unit.strip()):
+        return "LB"
+    return unit
+
+
 def normalize_document(header, lines):
     """Produce only the supplier_documents:v1 shape. No raw provider payload escapes."""
     attributes = header["attributes"]
@@ -296,7 +308,7 @@ def normalize_document(header, lines):
                 "sku": str(row["attributes"]["productId"]),
                 "description": html.unescape(str(row["attributes"]["productTitle"])),
                 "quantity": float(Decimal(str(row["attributes"]["quantity"]))),
-                "unit": str(row["attributes"]["brname"]),
+                "unit": line_unit(row["attributes"]),
                 "packSize": str(row["attributes"]["unitPart"]),
                 "unitPriceCents": cents(row["attributes"]["price"]),
                 "lineAmountCents": cents(row["attributes"]["priceExtended"]),

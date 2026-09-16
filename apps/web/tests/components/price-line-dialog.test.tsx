@@ -278,6 +278,7 @@ describe("new ingredient with my price", () => {
           supplier: "Acme Produce",
           description: "LEMON ZEST",
           sku: "LEM10",
+          unit: "CS",
           packSize: "2 kg",
           quantity: 1,
           unitPriceCents: 1250,

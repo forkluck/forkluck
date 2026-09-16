@@ -98,6 +98,7 @@ const threeCases: InvoiceLineOption = {
   supplier: "Acme Produce",
   description: "CARROTS BABY ORANGE",
   sku: "CAR10",
+  unit: "",
   packSize: "25 LB",
   quantity: 3,
   unitPriceCents: null,
@@ -294,6 +295,46 @@ describe("connecting an invoice line without a unit price", () => {
     expect(screen.getByLabelText("Pack unit").textContent).toContain("lb")
   })
 
+  it("reads a line priced by the pound as one pound", async () => {
+    // Baldor prints "$4.69/LB · 16 LB AVG": the pack text is an average
+    // weight, not a size, and the U/M column is what the price is per.
+    const { option } = await pickTheLine({
+      ...threeCases,
+      supplier: "Baldor Specialty Foods Inc.",
+      description: "CARROTS BABY ORANGE",
+      unit: "LB",
+      packSize: "16 LB AVG",
+      quantity: 16.2,
+      unitPriceCents: 469,
+      lineAmountCents: 7598,
+    })
+    fireEvent.click(option)
+
+    expect((screen.getByLabelText("Pack size") as HTMLInputElement).value).toBe(
+      "1"
+    )
+    expect(screen.getByLabelText("Pack unit").textContent).toContain("lb")
+    expect(
+      (screen.getByRole("button", { name: "Add price" }) as HTMLButtonElement)
+        .disabled
+    ).toBe(false)
+    expect(screen.getAllByText(/\$4\.69/).length).toBeGreaterThan(0)
+  })
+
+  it("reads a container from its printed pack text", async () => {
+    const { option } = await pickTheLine({
+      ...threeCases,
+      unit: "CS",
+      packSize: "24 X 1 LB",
+    })
+    fireEvent.click(option)
+
+    expect((screen.getByLabelText("Pack size") as HTMLInputElement).value).toBe(
+      "24"
+    )
+    expect(screen.getByLabelText("Pack unit").textContent).toContain("lb")
+  })
+
   it("prices the picker row per pack too", async () => {
     await pickTheLine(threeCases)
 
@@ -372,6 +413,7 @@ const butter: InvoiceLineOption = {
   supplier: "Sysco",
   description: "BUTTER UNSALTED",
   sku: "BUT20",
+  unit: "",
   packSize: "1 kg",
   quantity: 1,
   unitPriceCents: 990,
