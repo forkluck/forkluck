@@ -103,7 +103,7 @@ export function SupplierCombobox({
                 ) : null}
                 {/* Only a search that found nothing says so; an empty list is
                   not a failed search. */}
-              {needle && matches.length === 0 && !canAdd ? (
+                {needle && matches.length === 0 && !canAdd ? (
                   <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
                     No results
                   </span>
