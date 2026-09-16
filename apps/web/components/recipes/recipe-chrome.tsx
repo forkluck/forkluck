@@ -2,9 +2,10 @@
 
 import * as React from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { ClipboardPaste, Trash2, Users } from "lucide-react"
+import { ClipboardPaste, Trash2 } from "lucide-react"
 
 import { deleteRecipe } from "@/app/(app)/recipes/actions"
+import { ShareButton } from "@/components/recipes/share-button"
 import { ShareDialog } from "@/components/recipes/share-dialog"
 import { ActionsMenu } from "@/components/ui/actions-menu"
 import { Badge } from "@/components/ui/badge"
@@ -214,6 +215,13 @@ export function RecipeChrome({
         <div className="flex shrink-0 items-center gap-2">
           {/* Open before the first save: importing is how a new recipe
               gets its lines. Only sharing and deleting need a saved recipe. */}
+          <ShareButton
+            shares={shares}
+            guestLinks={guestLinks}
+            bookLinks={bookLinks}
+            disabled={!recipeId}
+            onClick={openShare}
+          />
           <ActionsMenu>
             {canEdit ? (
               <MenuItem onClick={() => importRef.current?.()}>
@@ -221,10 +229,6 @@ export function RecipeChrome({
                 Import recipe…
               </MenuItem>
             ) : null}
-            <MenuItem disabled={!recipeId} onClick={openShare}>
-              <Users strokeWidth={1.8} aria-hidden="true" />
-              Share…
-            </MenuItem>
             {showDelete ? (
               <MenuItem
                 disabled={!recipeId}

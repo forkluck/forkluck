@@ -249,12 +249,16 @@ describe("the Actions menu before the first save", () => {
       </RecipeChrome>
     )
 
+    expect(
+      (screen.getByRole("button", { name: "Share" }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true)
+
     fireEvent.click(screen.getByRole("button", { name: "Actions" }))
 
     const disabled = (name: string) =>
       screen.getByRole("menuitem", { name }).getAttribute("aria-disabled")
     expect(disabled("Import recipe…")).not.toBe("true")
-    expect(disabled("Share…")).toBe("true")
     expect(disabled("Delete recipe")).toBe("true")
   })
 
