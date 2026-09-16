@@ -1,3 +1,4 @@
+import { amountFormat } from "./display-amount"
 import vocabulary from "../../../data/parser-vocabulary.json"
 
 export type WeightUnit = "g" | "kg" | "oz" | "lb"
@@ -67,11 +68,8 @@ export function formatWeight(
   const display = useOriginal
     ? { amount: original.amount as number, unit: originalUnit }
     : displayWeight(grams, system)
-  const maximumFractionDigits =
-    display.unit === "g" ? 1 : display.unit === "oz" ? 2 : 3
-  return `${new Intl.NumberFormat("en-US", {
-    maximumFractionDigits,
-  }).format(display.amount)} ${display.unit}`
+  const belowTen = display.unit === "g" ? 1 : display.unit === "oz" ? 2 : 3
+  return `${amountFormat(display.amount, belowTen).format(display.amount)} ${display.unit}`
 }
 
 export type YieldUnit = "pcs" | "slice" | WeightUnit

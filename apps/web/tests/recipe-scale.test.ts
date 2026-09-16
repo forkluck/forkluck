@@ -4,6 +4,8 @@ import {
   clampScaleFactor,
   formatAppliedScaleFactor,
   formatScaleFactor,
+  formatKitchenAmount,
+  formatMeasuredAmount,
   formatScaledAmount,
   formatScaledWeight,
   formatYieldAmount,
@@ -371,7 +373,7 @@ describe("formatScaledAmount", () => {
   it("falls back to an auto-picked unit when the systems differ", () => {
     const [scaled] = scaleIngredientLines([ounceLine], 2)
 
-    expect(formatScaledAmount(scaled, "metric")).toBe("226.8 g")
+    expect(formatScaledAmount(scaled, "metric")).toBe("227 g")
     expect(formatScaledAmount(scaled, "us")).toBe("8 oz")
   })
 
@@ -610,5 +612,33 @@ describe("committing a scale from either control", () => {
 
     expect(committed.factor).toBe(MIN_SCALE_FACTOR)
     expect(committed.yield).toBe("1")
+  })
+})
+
+describe("whole numbers from ten up", () => {
+  it("prints a scaled gram weight without a fraction", () => {
+    expect(
+      formatScaledWeight(2030.333, "metric", { amount: 2030.333, unit: "g" })
+    ).toBe("2,030 g")
+    expect(formatMeasuredAmount(2030.333, "g")).toBe("2,030")
+  })
+
+  it("keeps the decimals of a small weight and of kilograms", () => {
+    expect(formatMeasuredAmount(2.55, "g")).toBe("2.6")
+    expect(formatScaledWeight(1234, "metric")).toBe("1.234 kg")
+    expect(formatScaledWeight(12345, "metric")).toBe("12 kg")
+  })
+
+  it("drops the fraction from a large kitchen amount but not a small one", () => {
+    expect(formatKitchenAmount(2030.333)).toBe("2,030")
+    expect(formatKitchenAmount(10.5)).toBe("11")
+    expect(formatKitchenAmount(1 / 3)).toBe("1/3")
+    expect(formatKitchenAmount(2.5)).toBe("2 1/2")
+    expect(formatKitchenAmount(3.226)).toBe("3.226")
+  })
+
+  it("counts a large scaled each line in whole pieces", () => {
+    const [scaled] = scaleIngredientLines([eachLine], 4.111)
+    expect(formatScaledAmount(scaled, "metric")).toBe("12 ea")
   })
 })

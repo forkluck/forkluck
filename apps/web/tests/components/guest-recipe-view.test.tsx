@@ -179,7 +179,7 @@ describe("guest recipe view", () => {
     // never the multiplier, and the block's weight rounds to what a scale shows.
     expect(within(block("Praline paste")).getByText("Makes 1 cup")).toBeTruthy()
     expect(cells(row("Hazelnuts"))).toEqual([
-      "100.7",
+      "101",
       "g",
       "Hazelnuts toasted",
       "toasted",
@@ -187,14 +187,14 @@ describe("guest recipe view", () => {
     await chooseBatch("2x")
     // The parent line doubles to 2 cup, which is one whole child batch.
     expect(within(block("Praline paste")).getByText("Makes 2 cup")).toBeTruthy()
-    expect(cells(row("Hazelnuts"))[0]).toBe("201.3")
+    expect(cells(row("Hazelnuts"))[0]).toBe("201")
     expect(screen.queryByText(/Batch size \d/)).toBeNull()
   })
 
   it("gives a component its own table, in the same columns", () => {
     render(<GuestRecipeView recipe={RECIPE} />)
     const hazelnuts = row("Hazelnuts")
-    // Same column count as the recipe's own lines, so "100.7" sits under "2".
+    // Same column count as the recipe's own lines, so "101" sits under "2".
     expect(hazelnuts.querySelectorAll("td").length).toBe(
       row("Flour").querySelectorAll("td").length
     )
@@ -221,7 +221,7 @@ describe("guest recipe view", () => {
         "tbody tr"
       ),
     ]
-    expect(rows.map((tr) => cells(tr)[0])).toEqual(["To finish", "100.7"])
+    expect(rows.map((tr) => cells(tr)[0])).toEqual(["To finish", "101"])
     expect(rows[0].querySelector("td")?.colSpan).toBe(4)
   })
 
