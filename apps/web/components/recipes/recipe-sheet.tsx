@@ -35,7 +35,8 @@ type GuestLineKind = "header" | "note" | "ingredient" | "subrecipe"
 
 // The sheet's own scaling and rounding live in lib/recipe/lines-for-tools.ts,
 // where the kitchen tools read them too: a batch quoted in chat and the same
-// batch on this page have to print the same number.
+// batch on this sheet print the same number. The owner's editor table and Cost
+// tab still round on their own.
 type GuestMeasure = {
   kind: GuestLineKind
   displayName: string

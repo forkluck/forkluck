@@ -662,8 +662,11 @@ formatted — the scaled amount at the ingredient's own precision, a tenth for t
 precise ingredients in `apps/web/lib/precise-ingredients.ts` and a whole number
 otherwise — and `unit` is the short display unit. The rounding lives in
 `apps/web/lib/recipe/lines-for-tools.ts`, which the guest recipe sheet uses too,
-so chat and page cannot disagree. Lines arrive in recipe order; `lineCount` is
-how many the recipe has and `truncated` says whether more than 80 were cut.
+so a batch quoted in chat and the same batch on that sheet print the same
+number; the owner's editor table and Cost tab still round some units on their
+own, so a quantity there can read rounder. Lines arrive in recipe order;
+`lineCount` is how many lines the recipe has, not how many rows came back: at
+most 80 are returned, and `truncated` says whether the rest were cut.
 
 `show_recipe_batch` also reports the batch it scaled from: `basePortions`,
 `baseYieldAmount`, `baseYieldUnit`, and `batches` (the same number as `factor`,

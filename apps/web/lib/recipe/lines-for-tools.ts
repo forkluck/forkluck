@@ -51,7 +51,10 @@ export function shownQuantity(
 }
 
 /** One recipe line as a tool result carries it: the numbers already read off
- * the sheet, so a chat answer and the page cannot round differently. */
+ * the sheet, formatted here once and by the guest recipe sheet, so a chat
+ * answer and that sheet round a batch the same way. The owner's editor table
+ * and Cost tab round some units to a precision of their own, so a quantity
+ * there can be rounder than the one quoted in chat. */
 export type RecipeToolLine = {
   kind: "ingredient" | "recipe" | "note"
   name: string

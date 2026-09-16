@@ -584,7 +584,7 @@ titles, product names and SKUs, sales units and revenue, batch and labor
 figures, an exact recipe's deterministic cost projection, public USDA candidate
 metadata, or the structured recipe draft the model just proposed. Cost
 projections can include recipe and ingredient names, prices, supplier labels,
-coverage, and price-history dates. Those same eight kitchen reads/calculations are available
+coverage, and price-history dates. Those same nine kitchen reads/calculations are available
 to whichever browser agent drives an authenticated WebMCP
 session; unlike Primo, WebMCP does not send them to Alibaba unless that agent's
 own implementation does so. Forkluck does not send
@@ -634,10 +634,10 @@ does; `--stretch` adds `spread-busy` for the unscaled spread rule beside it.
 Record any accepted change in the forecast ADR; ties keep the current basis.
 
 
-### Primo capability and editing rollout (September 15)
+### Primo capability and editing rollout (September 16)
 
-Deploy the private service with the additive thirteen-tool allowlist and prompt
-`2026-09-15.1` first; it still accepts the previous eight-tool app. Then deploy
+Deploy the private service with the additive fourteen-tool allowlist and prompt
+`2026-09-16.1` first; it still accepts the previous thirteen-tool app. Then deploy
 public Forkluck through its normal main-branch workflow on chefclaw. This adds
 no database migration or infrastructure. Chat, vision, credentials, nginx limits
 and usage metering keep their existing service configuration.

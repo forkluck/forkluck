@@ -145,7 +145,7 @@ Home Chat / Primo rail             one useChat survives client navigation
     Django save-turn               user message persisted before inference; HTTP acknowledgement
     24k-character context fit      newest whole turns; newest user always kept
     private gateway → Qwen         prompt + model + access + usage per attempt
-    Qwen chooses tools by intent   fourteen tools; at most four model/tool steps
+    Qwen chooses tools by intent   fourteen tools; at most six model/tool steps
       find_recipes / find_products owner-scoped discovery of stable public refs
       get_product_sales            exact product + period; as-sold accounting
       show_recipe_batch            exact recipe + portions or multiplier; scaled lines
@@ -171,7 +171,8 @@ calculation. The registry includes hypothetical batch calculations, top products
 from Analytics, ingredient price changes, and the two recipe reads that carry
 the recipe's own lines. Those lines are formatted once, in
 `apps/web/lib/recipe/lines-for-tools.ts`, which the guest sheet uses too, so a
-batch quoted in chat and the same batch on the page print the same number. Primo also exposes USDA search,
+batch quoted in chat and the same batch on that sheet print the same number; the
+owner's editor table and Cost tab keep their own rounding. Primo also exposes USDA search,
 recipe drafting, conversation-scoped draft reading/revision, and attachment reading. A batched manifest resolves all user-bound
 sources before history trimming can hide them; bounded sections are read on
 demand with the same ownership checks. The reader is not a WebMCP tool.

@@ -731,6 +731,28 @@ describe("Kitchen tools and Primo adapter", () => {
     expect(Number.isInteger(result.factor)).toBe(false)
   })
 
+  it("counts portions in whole portions when the batch does not divide", async () => {
+    mocks.getRecipe.mockResolvedValue(
+      linedRecipe({
+        yieldAmount: 500,
+        yieldUnit: "g",
+        servingAmount: 70,
+        servingUnit: "g",
+      })
+    )
+    // 500 g over a 70 g serving is 7.142857... portions a batch. A cook plates
+    // whole things, so neither figure arrives with the division's tail.
+    const result = await runKitchenTool("show_recipe_batch", {
+      recipeRef,
+      portions: 21,
+    })
+    expect(result).toMatchObject({
+      ok: true,
+      portions: 21,
+      wholeBatches: { factor: 3, portions: 21 },
+    })
+  })
+
   it("leaves wholeBatches unset for a multiplier and for an exact fit", async () => {
     mocks.getRecipe.mockResolvedValue(linedRecipe())
     expect(

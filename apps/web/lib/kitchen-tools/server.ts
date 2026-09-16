@@ -103,6 +103,13 @@ function baseRecipePortions(recipe: RecipeDetail): number | null {
   })
 }
 
+/** Portions a batch makes, counted the way the app counts them everywhere
+ * else: a portion is a whole thing to plate, and base portions are a division
+ * that can be endless. 7.142857... portions a batch, three batches, is 21. */
+function wholePortions(basePortions: number | null, factor: number) {
+  return basePortions === null ? null : Math.round(basePortions * factor)
+}
+
 function recipeToolLines(
   recipe: RecipeDetail,
   factor: number
@@ -375,7 +382,7 @@ export async function runKitchenTool(
       )
     }
     const factor = requestedScale.factor
-    const portions = basePortions === null ? null : basePortions * factor
+    const portions = wholePortions(basePortions, factor)
     const basis = requestedMultiplier !== null ? "multiplier" : "portions"
     // A portion request rarely lands on a whole batch. A cook runs batches, so
     // the next whole one and what it makes travel with the exact factor rather
@@ -383,10 +390,7 @@ export async function runKitchenTool(
     const rounded = Math.ceil(factor)
     const wholeBatches =
       basis === "portions" && !Number.isInteger(factor)
-        ? {
-            factor: rounded,
-            portions: basePortions === null ? null : basePortions * rounded,
-          }
+        ? { factor: rounded, portions: wholePortions(basePortions, rounded) }
         : null
     return {
       ok: true,
