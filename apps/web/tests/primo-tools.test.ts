@@ -1,7 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { isStepCount, streamText } from "ai"
 import { MockLanguageModelV4 } from "ai/test"
-import { recipeCostDiffPayloadSchema } from "@/lib/backend/schemas"
+import {
+  NUTRIENT_KEYS,
+  recipeCostDiffPayloadSchema,
+} from "@/lib/backend/schemas"
+import { precisionFor } from "@/lib/precise-ingredients"
+import { formatMeasuredAmount } from "@/lib/recipe/scale"
 
 import type {
   ProductDetail,
@@ -21,6 +26,7 @@ const mocks = vi.hoisted(() => ({
   browseMenuItems: vi.fn(),
   getRecipeCostDiff: vi.fn(),
   getRecipe: vi.fn(),
+  getRecipeNutrition: vi.fn(),
   getProductDetail: vi.fn(),
   getPrimoConversation: vi.fn(),
   getSalesOverview: vi.fn(),
@@ -45,6 +51,8 @@ vi.mock("@/lib/backend/queries", () => ({
   getRecipeCostDiff: (recipeRef: string, from?: string) =>
     mocks.getRecipeCostDiff(recipeRef, from),
   getRecipe: (recipeRef: string) => mocks.getRecipe(recipeRef),
+  getRecipeNutrition: (recipeRef: string) =>
+    mocks.getRecipeNutrition(recipeRef),
   getProductDetail: (productRef: string, start?: string, end?: string) =>
     mocks.getProductDetail(productRef, start, end),
 }))
@@ -55,6 +63,70 @@ const { projectCostDiff, runKitchenTool } =
 
 const recipeRef = "rcp_0123456789ab"
 const productRef = "prd_0123456789ab"
+/** Every nutrient reported and complete, with named overrides on top. */
+function nutrients(
+  overrides: Partial<Record<string, { amount: number; complete: boolean }>> = {}
+) {
+  return Object.fromEntries(
+    NUTRIENT_KEYS.map((key) => [
+      key,
+      overrides[key] ?? { amount: 1, complete: true },
+    ])
+  )
+}
+
+/** A recipe with a bulk line, a precise line, a sub-recipe and a note: the
+ * four shapes a formatted line list has to keep apart. */
+function linedRecipe(overrides: Partial<RecipeDetail> = {}) {
+  return {
+    publicId: recipeRef,
+    title: "Mooncake",
+    description: "A classic.",
+    yieldAmount: 12,
+    yieldUnit: "each",
+    servingAmount: 1,
+    servingUnit: "each",
+    equivalency: null,
+    canViewCost: false,
+    autoPrepTimeEnabled: false,
+    items: [
+      {
+        kind: "ingredient",
+        displayName: "Flour",
+        quantity: 300,
+        unit: "g",
+        preparationNote: "",
+        costCents: 100,
+      },
+      {
+        kind: "ingredient",
+        displayName: "Fine sea salt",
+        quantity: 7,
+        unit: "g",
+        preparationNote: "",
+        costCents: 5,
+      },
+      {
+        kind: "subrecipe",
+        displayName: "Lotus paste",
+        quantity: 2,
+        unit: "kg",
+        preparationNote: "chilled",
+        costCents: 400,
+      },
+      {
+        kind: "note",
+        displayName: "Rest the dough overnight.",
+        quantity: null,
+        unit: "",
+        preparationNote: "",
+      },
+    ],
+    steps: [],
+    ...overrides,
+  } as unknown as RecipeDetail
+}
+
 const executionOptions = {
   toolCallId: "call-1",
   messages: [],
@@ -578,6 +650,197 @@ describe("Kitchen tools and Primo adapter", () => {
     await expect(
       runKitchenTool("show_recipe_batch", { recipeRef })
     ).resolves.toMatchObject({ ok: false, reason: "bad_input" })
+  })
+
+  it("carries every line at the scaled batch, rounded as the sheet rounds", async () => {
+    mocks.getRecipe.mockResolvedValue(linedRecipe())
+    const result = await runKitchenTool("show_recipe_batch", {
+      recipeRef,
+      multiplier: 1.5,
+    })
+    if (!result.ok || result.tool !== "show_recipe_batch")
+      throw new Error("Expected a batch preview")
+    expect(result).toMatchObject({
+      basis: "multiplier",
+      factor: 1.5,
+      batches: 1.5,
+      basePortions: 12,
+      baseYieldAmount: 12,
+      baseYieldUnit: "each",
+      portions: 18,
+      yieldAmount: 18,
+      wholeBatches: null,
+      lineCount: 4,
+      truncated: false,
+    })
+    expect(result.lines).toEqual([
+      {
+        kind: "ingredient",
+        name: "Flour",
+        quantity: "450",
+        unit: "g",
+        note: null,
+      },
+      {
+        kind: "ingredient",
+        name: "Fine sea salt",
+        quantity: "10.5",
+        unit: "g",
+        note: null,
+      },
+      {
+        kind: "recipe",
+        name: "Lotus paste",
+        quantity: "3",
+        unit: "kg",
+        note: "chilled",
+      },
+      {
+        kind: "note",
+        name: "Rest the dough overnight.",
+        quantity: null,
+        unit: null,
+        note: null,
+      },
+    ])
+    // A precise ingredient reads to a tenth and a bulk one to a whole number,
+    // from the same formatter the page prints with.
+    expect(result.lines[0]!.quantity).toBe(
+      formatMeasuredAmount(450, "g", precisionFor("Flour"))
+    )
+    expect(result.lines[1]!.quantity).toBe(
+      formatMeasuredAmount(10.5, "g", precisionFor("Fine sea salt"))
+    )
+  })
+
+  it("offers the next whole batch when portions do not divide by the batch", async () => {
+    mocks.getRecipe.mockResolvedValue(linedRecipe())
+    const result = await runKitchenTool("show_recipe_batch", {
+      recipeRef,
+      portions: 700,
+    })
+    expect(result).toMatchObject({
+      ok: true,
+      basis: "portions",
+      portions: 700,
+      wholeBatches: { factor: 59, portions: 708 },
+    })
+    if (!result.ok || result.tool !== "show_recipe_batch")
+      throw new Error("Expected a batch preview")
+    expect(result.factor).toBeCloseTo(700 / 12, 10)
+    expect(Number.isInteger(result.factor)).toBe(false)
+  })
+
+  it("counts portions in whole portions when the batch does not divide", async () => {
+    mocks.getRecipe.mockResolvedValue(
+      linedRecipe({
+        yieldAmount: 500,
+        yieldUnit: "g",
+        servingAmount: 70,
+        servingUnit: "g",
+      })
+    )
+    // 500 g over a 70 g serving is 7.142857... portions a batch. A cook plates
+    // whole things, so neither figure arrives with the division's tail.
+    const result = await runKitchenTool("show_recipe_batch", {
+      recipeRef,
+      portions: 21,
+    })
+    expect(result).toMatchObject({
+      ok: true,
+      portions: 21,
+      wholeBatches: { factor: 3, portions: 21 },
+    })
+  })
+
+  it("leaves wholeBatches unset for a multiplier and for an exact fit", async () => {
+    mocks.getRecipe.mockResolvedValue(linedRecipe())
+    expect(
+      await runKitchenTool("show_recipe_batch", { recipeRef, multiplier: 2.5 })
+    ).toMatchObject({ basis: "multiplier", wholeBatches: null })
+    expect(
+      await runKitchenTool("show_recipe_batch", { recipeRef, portions: 24 })
+    ).toMatchObject({ basis: "portions", factor: 2, wholeBatches: null })
+  })
+
+  it("reads one recipe whole at 1x with cost, nutrition and a view", async () => {
+    mocks.getRecipe.mockResolvedValue(linedRecipe({ canViewCost: true }))
+    mocks.getRecipeNutrition.mockResolvedValue({
+      serving: { amount: 1, unit: "each", grams: 80 },
+      allergens: { contains: ["wheat"], mayContain: [] },
+      totals: {
+        batch: null,
+        per100g: null,
+        perServing: nutrients({
+          calories: { amount: 210, complete: true },
+          sodiumMg: { amount: 0, complete: false },
+        }),
+      },
+    })
+    const result = await runKitchenTool("get_recipe", { recipeRef })
+    if (!result.ok || result.tool !== "get_recipe")
+      throw new Error("Expected a recipe read")
+    expect(result).toMatchObject({
+      recipe: {
+        recipeRef,
+        title: "Mooncake",
+        description: "A classic.",
+      },
+      portions: 12,
+      yieldAmount: 12,
+      yieldUnit: "each",
+      lineCount: 4,
+      truncated: false,
+      view: `/recipes/${recipeRef}/recipe`,
+    })
+    // 1x is the recipe as written: no scaling, no rounding of its own. A
+    // precise ingredient shows a tenth when it has one, not a padded zero.
+    expect(result.lines.map((line) => line.quantity)).toEqual([
+      "300",
+      "7",
+      "2",
+      null,
+    ])
+    expect(result.cost).toMatchObject({
+      currencyCode: "USD",
+      ingredientTotalCents: 505,
+    })
+    expect(result.nutrition).toMatchObject({
+      servingLabel: "1 each (80 g)",
+      allergens: ["wheat"],
+    })
+    // A nutrient no linked record reports is unknown, never a claimed zero.
+    expect(result.nutrition?.perServing.calories).toBe(210)
+    expect(result.nutrition?.perServing.sodiumMg).toBeNull()
+  })
+
+  it("omits nutrition when the per-serving rollup is unavailable", async () => {
+    mocks.getRecipe.mockResolvedValue(linedRecipe())
+    mocks.getRecipeNutrition.mockResolvedValue({
+      serving: { amount: null, unit: "", grams: null },
+      allergens: { contains: [], mayContain: [] },
+      totals: { batch: null, per100g: null, perServing: null },
+    })
+    const result = await runKitchenTool("get_recipe", { recipeRef })
+    expect(result).toMatchObject({ ok: true, nutrition: null, cost: null })
+  })
+
+  it("returns not_found for a recipe read that resolves to nothing", async () => {
+    mocks.getRecipe.mockResolvedValue(null)
+    expect(await runKitchenTool("get_recipe", { recipeRef })).toMatchObject({
+      ok: false,
+      tool: "get_recipe",
+      reason: "not_found",
+    })
+    expect(mocks.getRecipeNutrition).not.toHaveBeenCalled()
+  })
+
+  it("refuses an unmentioned recipe ref before reading it", async () => {
+    const tools = createPrimoTools(context())
+    expect(
+      await tools.get_recipe.execute!({ recipeRef }, executionOptions)
+    ).toMatchObject({ ok: false, reason: "unknown_ref" })
+    expect(mocks.getRecipe).not.toHaveBeenCalled()
   })
 
   it("compares cost from the start of a named period", async () => {

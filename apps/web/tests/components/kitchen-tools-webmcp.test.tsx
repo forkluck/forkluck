@@ -175,6 +175,7 @@ describe("KitchenToolsWebMcp", () => {
       "calculate_batch_cost",
       "get_top_products",
       "get_ingredient_price_changes",
+      "get_recipe",
     ])
     for (const { tool, signal } of registrations) {
       expect(tool.annotations).toEqual({
@@ -207,6 +208,6 @@ describe("KitchenToolsWebMcp", () => {
     })
     render(<KitchenToolsWebMcp tools={kitchenToolDescriptors()} />)
     await Promise.resolve()
-    expect(registerTool).toHaveBeenCalledTimes(8)
+    expect(registerTool).toHaveBeenCalledTimes(9)
   })
 })

@@ -11,6 +11,7 @@ import {
   getProductDetail,
   getRecipe,
   getRecipeCostDiff,
+  getRecipeNutrition,
   getSalesOverview,
   getIngredientPriceChanges,
 } from "@/lib/backend/queries"
@@ -20,7 +21,16 @@ import { resolvePeriod } from "@/lib/date-range-label"
 import { localDateKey } from "@/lib/date-presets"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import { KITCHEN_TOOLS, type KitchenToolName } from "./catalog"
-import type { KitchenToolFailure, KitchenToolResult } from "./results"
+import type {
+  KitchenToolFailure,
+  KitchenToolResult,
+  RecipeToolCost,
+  RecipeToolLineList,
+} from "./results"
+import { NUTRIENT_KEYS } from "@/lib/backend/schemas"
+import type { RecipeDetail } from "@/lib/backend/types"
+import { formatServingLabel } from "@/lib/nutrition/label"
+import { recipeLinesForTools } from "@/lib/recipe/lines-for-tools"
 import { normalizeIngredientName } from "@/lib/pricing"
 import { recipePortions, recipePrepTimeSeconds } from "@/lib/recipe/portions"
 import {
@@ -43,6 +53,68 @@ export function projectCostDiff(
     lines: lines.slice(0, 40),
     omittedLines: Math.max(0, lines.length - 40),
   }
+}
+
+/**
+ * What one batch of this recipe costs, or null when the reader may not see
+ * cost at all. Shared by the batch preview and the full read so a scaled
+ * answer and a 1x answer come from the same arithmetic.
+ */
+async function recipeToolCost(
+  recipe: RecipeDetail,
+  basePortions: number | null,
+  factor: number
+): Promise<RecipeToolCost | null> {
+  if (!recipe.canViewCost) return null
+  const settings = await getBusinessSettings()
+  const batch = scaleBatchCost({
+    lineCostCents: recipe.items
+      .filter((item) => item.kind === "ingredient" || item.kind === "subrecipe")
+      .map((item) => item.costCents),
+    basePortions,
+    prepTimeSeconds: recipePrepTimeSeconds(recipe),
+    autoPrepTime: recipe.autoPrepTimeEnabled ?? false,
+    steps: recipe.steps.map((step, index) => ({
+      id: String(index),
+      kind: step.laborKind === "active" ? "active" : "passive",
+      timings: step.timings.map((timing) => ({
+        seconds: timing.seconds,
+        yieldCount: 1,
+      })),
+    })),
+    wagePerHourCents: settings.wagePerHourCents,
+    scale: factor,
+  })
+  return {
+    currencyCode: settings.currencyCode,
+    ingredientTotalCents: batch.ingredientTotalCents,
+    unpricedLineCount: batch.unpricedLineCount,
+    portionCostCents: batch.portionCostCents,
+    laborCentsPerBatch: batch.labor.laborCentsPerBatch,
+    laborCentsPerPortion: batch.labor.laborCentsPerPiece,
+  }
+}
+
+/** The recipe's own portion count, the number every batch scales from. */
+function baseRecipePortions(recipe: RecipeDetail): number | null {
+  return recipePortions(recipe, {
+    amount: recipe.servingAmount ?? null,
+    unit: recipe.servingUnit ?? "",
+  })
+}
+
+/** Portions a batch makes, counted the way the app counts them everywhere
+ * else: a portion is a whole thing to plate, and base portions are a division
+ * that can be endless. 7.142857... portions a batch, three batches, is 21. */
+function wholePortions(basePortions: number | null, factor: number) {
+  return basePortions === null ? null : Math.round(basePortions * factor)
+}
+
+function recipeToolLines(
+  recipe: RecipeDetail,
+  factor: number
+): RecipeToolLineList {
+  return recipeLinesForTools(recipe.items, factor)
 }
 
 export function kitchenToolFailure(
@@ -295,10 +367,7 @@ export async function runKitchenTool(
         "Give me a portion count or a batch multiplier."
       )
     }
-    const basePortions = recipePortions(recipe, {
-      amount: recipe.servingAmount ?? null,
-      unit: recipe.servingUnit ?? "",
-    })
+    const basePortions = baseRecipePortions(recipe)
     const requestedScale =
       requestedMultiplier !== null
         ? { factor: requestedMultiplier }
@@ -313,54 +382,82 @@ export async function runKitchenTool(
       )
     }
     const factor = requestedScale.factor
-    const portions = basePortions === null ? null : basePortions * factor
-    const settings = recipe.canViewCost ? await getBusinessSettings() : null
-    const batch = settings
-      ? scaleBatchCost({
-          lineCostCents: recipe.items
-            .filter(
-              (item) => item.kind === "ingredient" || item.kind === "subrecipe"
-            )
-            .map((item) => item.costCents),
-          basePortions,
-          prepTimeSeconds: recipePrepTimeSeconds(recipe),
-          autoPrepTime: recipe.autoPrepTimeEnabled ?? false,
-          steps: recipe.steps.map((step, index) => ({
-            id: String(index),
-            kind: step.laborKind === "active" ? "active" : "passive",
-            timings: step.timings.map((timing) => ({
-              seconds: timing.seconds,
-              yieldCount: 1,
-            })),
-          })),
-          wagePerHourCents: settings.wagePerHourCents,
-          scale: factor,
-        })
-      : null
+    const portions = wholePortions(basePortions, factor)
+    const basis = requestedMultiplier !== null ? "multiplier" : "portions"
+    // A portion request rarely lands on a whole batch. A cook runs batches, so
+    // the next whole one and what it makes travel with the exact factor rather
+    // than replacing it.
+    const rounded = Math.ceil(factor)
+    const wholeBatches =
+      basis === "portions" && !Number.isInteger(factor)
+        ? { factor: rounded, portions: wholePortions(basePortions, rounded) }
+        : null
     return {
       ok: true,
       tool: name,
       saved: false,
       recipe: { recipeRef: recipe.publicId, title: recipe.title },
-      basis: requestedMultiplier !== null ? "multiplier" : "portions",
+      basis,
       factor,
       label: `${formatAppliedScaleFactor(factor)}x`,
       portions,
       yieldAmount:
         recipe.yieldAmount === null ? null : recipe.yieldAmount * factor,
       yieldUnit: recipe.yieldUnit,
-      cost:
-        settings && batch
+      basePortions,
+      baseYieldAmount: recipe.yieldAmount,
+      baseYieldUnit: recipe.yieldUnit,
+      batches: factor,
+      wholeBatches,
+      ...recipeToolLines(recipe, factor),
+      cost: await recipeToolCost(recipe, basePortions, factor),
+      view: `/recipes/${recipe.publicId}/${recipe.canViewCost ? "cost" : "recipe"}?batch=${factor}`,
+    }
+  }
+
+  if (name === "get_recipe") {
+    const recipeRef = String(value.recipeRef)
+    const recipe = await getRecipe(recipeRef)
+    if (!recipe) {
+      return kitchenToolFailure(
+        name,
+        "not_found",
+        "That recipe could not be found."
+      )
+    }
+    // The label rollup is the Nutrition tab's own computation, read through the
+    // same query that tab uses. A recipe whose batch or serving is unresolved
+    // has no per-serving column, and neither does this answer.
+    const nutrition = await getRecipeNutrition(recipeRef).catch(() => null)
+    const perServing = nutrition?.totals.perServing ?? null
+    return {
+      ok: true,
+      tool: name,
+      recipe: {
+        recipeRef: recipe.publicId,
+        title: recipe.title,
+        description: recipe.description || null,
+      },
+      portions: baseRecipePortions(recipe),
+      yieldAmount: recipe.yieldAmount,
+      yieldUnit: recipe.yieldUnit,
+      ...recipeToolLines(recipe, 1),
+      cost: await recipeToolCost(recipe, baseRecipePortions(recipe), 1),
+      nutrition:
+        nutrition && perServing
           ? {
-              currencyCode: settings.currencyCode,
-              ingredientTotalCents: batch.ingredientTotalCents,
-              unpricedLineCount: batch.unpricedLineCount,
-              portionCostCents: batch.portionCostCents,
-              laborCentsPerBatch: batch.labor.laborCentsPerBatch,
-              laborCentsPerPortion: batch.labor.laborCentsPerPiece,
+              perServing: Object.fromEntries(
+                NUTRIENT_KEYS.map((key) => [
+                  key,
+                  // A nutrient no linked record reports is unknown, not zero.
+                  perServing[key].complete ? perServing[key].amount : null,
+                ])
+              ),
+              servingLabel: formatServingLabel(nutrition.serving),
+              allergens: nutrition.allergens.contains,
             }
           : null,
-      view: `/recipes/${recipe.publicId}/${recipe.canViewCost ? "cost" : "recipe"}?batch=${factor}`,
+      view: `/recipes/${recipe.publicId}/recipe`,
     }
   }
 

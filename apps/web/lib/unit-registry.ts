@@ -72,6 +72,11 @@ export function unitShort(slug: string | null): string {
   return unitDefinition(slug)?.short ?? ""
 }
 
+/** The unit as a table column prints it. "cup" is already as short as it
+ * reads; its abbreviation "c" is not worth the ambiguity. */
+export const displayUnitShort = (slug: string | null) =>
+  slug === "cup" ? "cup" : unitShort(slug)
+
 /**
  * The unit as a sentence says it: "cup", "each", "fluid ounce". Labels carry
  * the abbreviation in brackets for a picker row, and a sentence does not want

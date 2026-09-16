@@ -11,8 +11,8 @@ import type { Nutrients } from "@/lib/backend/types"
 import {
   containsLine,
   declaredAllergens,
-  formatAmount,
   formatEuRows,
+  formatServingLabel as servingLabel,
   formatUsRows,
   NUTRIENT_LABELS,
   servingsPerContainer,
@@ -47,16 +47,6 @@ export type NutritionLabelProps = {
   allergens: { contains: readonly string[]; mayContain: readonly string[] }
   /** What stops the per-serving column, shown where its figures would be. */
   servingNote?: string | null
-}
-
-function servingLabel(serving: LabelServing): string {
-  const stated =
-    serving.amount === null
-      ? ""
-      : `${formatAmount(serving.amount)} ${serving.unit}`.trim()
-  const grams = serving.grams === null ? "" : `${formatAmount(serving.grams)} g`
-  if (stated && grams && serving.unit !== "g") return `${stated} (${grams})`
-  return stated || grams || "Not set"
 }
 
 function UsRow({ row }: { row: LabelRow }) {

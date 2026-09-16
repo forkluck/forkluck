@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { displayUnitShort } from "@/components/ingredients/unit-combobox"
 import {
   BatchSizeSelect,
   ORIGINAL_BATCH,
@@ -21,42 +20,29 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { GuestRecipe } from "@/lib/backend/types"
-import {
-  clampRecipeQuantity,
-  formatMeasuredAmount,
-  tidyVolume,
-} from "@/lib/recipe"
+import { formatMeasuredAmount } from "@/lib/recipe"
+import { shownMeasure } from "@/lib/recipe/lines-for-tools"
 import { precisionFor } from "@/lib/precise-ingredients"
-import { convertAmount, countedAsEach } from "@/lib/unit-registry"
+import {
+  convertAmount,
+  countedAsEach,
+  displayUnitShort,
+} from "@/lib/unit-registry"
 import { YIELD_UNIT_LABELS } from "@/lib/units"
 import type { YieldUnit } from "@/lib/units"
 
 type GuestLineKind = "header" | "note" | "ingredient" | "subrecipe"
 
+// The sheet's own scaling and rounding live in lib/recipe/lines-for-tools.ts,
+// where the kitchen tools read them too: a batch quoted in chat and the same
+// batch on this sheet print the same number. The owner's editor table and Cost
+// tab still round on their own.
 type GuestMeasure = {
   kind: GuestLineKind
   displayName: string
   quantity: number | null
   unit: string
   preparationNote: string
-}
-
-/**
- * What a line shows at the batch being viewed: its own quantity and unit at
- * 1x, otherwise the scaled amount in the unit a cook would measure it with.
- * The same rule the editor's table applies, read-only.
- */
-function shownMeasure(
-  line: GuestMeasure,
-  scale: number
-): { amount: number | null; unit: string } {
-  if (line.quantity === null) return { amount: null, unit: line.unit }
-  if (scale === 1) return { amount: line.quantity, unit: line.unit }
-  const tidy = tidyVolume(line.quantity * scale, line.unit)
-  return {
-    amount: Number(clampRecipeQuantity(tidy.amount)),
-    unit: tidy.unit,
-  }
 }
 
 type GuestSubrecipe = NonNullable<GuestRecipe["items"][number]["subrecipe"]>

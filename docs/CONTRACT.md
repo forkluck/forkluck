@@ -623,11 +623,13 @@ mapping as versioned context; the private service inserts it into its model
 instructions as untrusted identity data. This is how the model can call an exact-ref tool even
 though message metadata itself is removed from model messages.
 
-The route exposes the shared kitchen tools `find_recipes`, `find_products`,
-`get_product_sales`, `show_recipe_batch`, `get_recipe_cost_change`,
+The route exposes the nine shared kitchen tools `find_recipes`, `find_products`,
+`get_product_sales`, `show_recipe_batch`, `get_recipe`,
+`get_recipe_cost_change`,
 `calculate_batch_cost`, `get_top_products`, and `get_ingredient_price_changes`,
 plus `search_usda_foods`, `draft_recipe`, `read_recipe_draft`,
-`revise_recipe_draft`, and the conversation-scoped `read_attachment`. Tool choice is automatic, the loop
+`revise_recipe_draft`, and the conversation-scoped `read_attachment` — fourteen
+tools in all. Tool choice is automatic, the loop
 stops after four steps, output is capped at 1,800 tokens per step, and generation
 aborts after 45 seconds. A turn with admitted attachments instead allows six
 steps, 6,000 output tokens per step and 90 seconds for complete recipe drafts.
@@ -650,6 +652,39 @@ drafts return choices. `revise_recipe_draft` takes the returned draft ID and a
 patch: multiplier OR target yield amount, optional title/description/steps, and
 zero-based ingredient patches. Unspecified fields are retained exactly; nothing
 is created until the existing explicit Create recipe action.
+
+`show_recipe_batch` and `get_recipe` both carry the recipe's own lines, so an
+answer does not have to describe a list it cannot see. A line is
+`{kind,name,quantity,unit,note}` where `kind` is `ingredient`, `recipe` (a
+sub-recipe line, at its own quantity and unit rather than expanded) or `note` (a
+heading or a note, with a null quantity and unit). `quantity` is already
+formatted — the scaled amount at the ingredient's own precision, a tenth for the
+precise ingredients in `apps/web/lib/precise-ingredients.ts` and a whole number
+otherwise — and `unit` is the short display unit. The rounding lives in
+`apps/web/lib/recipe/lines-for-tools.ts`, which the guest recipe sheet uses too,
+so a batch quoted in chat and the same batch on that sheet print the same
+number; the owner's editor table and Cost tab still round some units on their
+own, so a quantity there can read rounder. Lines arrive in recipe order;
+`lineCount` is how many lines the recipe has, not how many rows came back: at
+most 80 are returned, and `truncated` says whether the rest were cut.
+
+`show_recipe_batch` also reports the batch it scaled from: `basePortions`,
+`baseYieldAmount`, `baseYieldUnit`, and `batches` (the same number as `factor`,
+named for prose). A portion request that does not land on a whole batch adds
+`wholeBatches` — the factor rounded up and the portions that many batches make —
+beside the exact factor, never replacing it; a multiplier basis and an exact fit
+leave it null.
+
+`get_recipe` reads one exact recipe whole at 1x: its title and description, its
+portions and yield, its lines, its cost through the same `scaleBatchCost` path
+(null unless the reader may see cost), and its per-serving nutrition from the
+Nutrition tab's own rollup. `nutrition` is null when that rollup has no
+per-serving column; a nutrient no linked record reports is null rather than a
+claimed zero. `servingLabel` is the serving as the label states it and
+`allergens` is the computed "contains" list. Its `view` is the recipe tab, and
+it is the one kitchen tool whose view is a link rather than a navigation: the
+WebMCP adapter does not move the browser for it, because the answer is already
+complete.
 
 `get_top_products` accepts a period and limit (1–10, default 3), groups Analytics'
 including-bundles product/channel rows by product, and ranks recorded net sales.
@@ -720,7 +755,7 @@ user's Create recipe action. The opt-in private `forkluck-primo/eval/eval-primo-
 only synthetic documents and in-memory read/draft tools with the configured model;
 it cannot query or mutate kitchen data.
 
-`apps/web/app/(app)/actions.ts::runKitchenToolAction` exposes the same five read-only
+`apps/web/app/(app)/actions.ts::runKitchenToolAction` exposes the same nine read-only
 kitchen tools to `document.modelContext`. It authenticates first and calls the
 same strict schemas and server runner. WebMCP has no conversation allow-list;
 Django's owner/kitchen scoping and not-found responses remain authoritative.

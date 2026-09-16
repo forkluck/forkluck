@@ -182,7 +182,8 @@ it("persists a token-truncated draft as failed despite a clean HTTP/SSE end", as
 
 it("marks exhausted invalid-tool retries as failed rather than complete", async () => {
   model(
-    Array.from({ length: 4 }, (_, index) =>
+    // One bad call per step of the chat budget, so the run ends on the cap.
+    Array.from({ length: 6 }, (_, index) =>
       stream(
         call(`bad-${index}`, "draft_recipe", {
           ...draft,
@@ -256,7 +257,7 @@ it.each(["deadline", "stop", "disconnect"])(
     const client = new AbortController()
     const timeout = AbortSignal.timeout
     vi.spyOn(AbortSignal, "timeout").mockImplementation((ms) =>
-      ms === 45_000 ? deadline.signal : timeout(ms)
+      ms === 60_000 ? deadline.signal : timeout(ms)
     )
     let step = 0
     model(async ({ abortSignal }) => {
