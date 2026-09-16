@@ -575,16 +575,32 @@ def payment_methods(request: HttpRequest) -> JsonResponse:
 
 
 def invoice_line_options(request: HttpRequest) -> JsonResponse:
-    """Invoice lines an ingredient can be connected to, newest first."""
+    """Invoice lines an ingredient can be connected to, newest first.
+
+    A product bought every week is one option, not one per invoice: lines are
+    collapsed to the newest per supplier item (`item_key`), so the cap of 20
+    holds twenty products rather than twenty deliveries of the first one."""
     query = (request.GET.get("q") or "").strip()[:120]
-    rows = InvoiceLine.objects.filter(user=request.user).select_related("invoice")
+    candidates = InvoiceLine.objects.filter(user=request.user).select_related("invoice")
     if query:
-        rows = rows.filter(
+        candidates = candidates.filter(
             Q(description__icontains=query)
             | Q(sku__icontains=query)
             | Q(invoice__supplier_name__icontains=query)
         )
-    rows = list(rows.order_by("-invoice__invoice_date", "-created_at")[:20])
+    candidates = candidates.order_by("-invoice__invoice_date", "-created_at")
+    rows: list[InvoiceLine] = []
+    seen: set[tuple[str, str]] = set()
+    for row in candidates.iterator(chunk_size=100):
+        # A line with no item identity is its own product.
+        if row.item_key:
+            key = (row.invoice.supplier, row.item_key)
+            if key in seen:
+                continue
+            seen.add(key)
+        rows.append(row)
+        if len(rows) == 20:
+            break
     links: dict[object, list[object]] = {}
     for price in IngredientInvoicePrice.objects.filter(
         user=request.user, invoice_line__in=rows
@@ -597,6 +613,7 @@ def invoice_line_options(request: HttpRequest) -> JsonResponse:
             "supplier": row.invoice.supplier_name or row.invoice.supplier,
             "description": row.description,
             "sku": row.sku,
+            "unit": row.unit,
             "packSize": row.pack_size,
             "quantity": float(row.quantity) if row.quantity is not None else None,
             "unitPriceCents": row.unit_price_cents,

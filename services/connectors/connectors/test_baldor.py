@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.test import SimpleTestCase
 
-from .providers.baldor import BaldorClient, BaldorError
+from .providers.baldor import BaldorClient, BaldorError, normalize_document
 
 
 class BaldorAcquisitionTests(SimpleTestCase):
@@ -101,3 +101,35 @@ class BaldorAcquisitionTests(SimpleTestCase):
                         )
                     )
                 invoices.assert_not_called()
+
+
+class BaldorNormalizationTests(SimpleTestCase):
+    def document(self, **attributes):
+        header = {
+            "id": "IV26-000001",
+            "attributes": {
+                "formattedInvoiceDate": "2026-09-15",
+                "invoiceTotal": "75.98",
+            },
+        }
+        line = {
+            "attributes": {
+                "productId": "MEPKNM",
+                "productTitle": "Frozen Pork Fat Back",
+                "quantity": "16.2",
+                "brname": "CS",
+                "unitPart": "16 LB AVG",
+                "price": "4.69",
+                "priceExtended": "75.98",
+                **attributes,
+            }
+        }
+        return normalize_document(header, [line])["lines"][0]
+
+    def test_a_by_weight_line_is_priced_per_pound(self):
+        self.assertEqual(self.document(byWeight=True)["unit"], "LB")
+        self.assertEqual(self.document(byWeight=True, brname="lb")["unit"], "lb")
+
+    def test_other_lines_keep_their_order_unit(self):
+        self.assertEqual(self.document()["unit"], "CS")
+        self.assertEqual(self.document(byWeight=False, brname="EA")["unit"], "EA")

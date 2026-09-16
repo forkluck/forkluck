@@ -2080,6 +2080,89 @@ class PackPriceFromQuantityTests(InvoiceTestCase):
         )
 
 
+class InvoiceLineOptionTests(InvoiceTestCase):
+    """The picker lists products, not deliveries.
+
+    A supplier item bought every week is one option carrying its newest price
+    and date; the same code under another supplier is another product; a line
+    with no item identity is only ever itself.
+    """
+
+    def invoice(self, number: str, day: str, supplier: str = "baldor") -> Invoice:
+        return Invoice.objects.create(
+            user=self.user,
+            supplier=supplier,
+            supplier_name="Baldor Specialty Foods Inc."
+            if supplier == "baldor"
+            else supplier.title(),
+            document_type="invoice",
+            invoice_number=number,
+            invoice_date=day,
+            total_cents=0,
+            source_fingerprint=f"{supplier}-{number}",
+        )
+
+    def line(self, invoice: Invoice, **overrides) -> InvoiceLine:
+        fields = {
+            "user": self.user,
+            "invoice": invoice,
+            "position": 0,
+            "sku": "MEPKNM",
+            "item_key": "mepknm",
+            "description": "Frozen Pork Fat Back",
+            "quantity": Decimal("16.2"),
+            "unit": "LB",
+            "pack_size": "16 LB AVG",
+            "unit_price_cents": 469,
+            "line_amount_cents": 7598,
+        }
+        fields.update(overrides)
+        return InvoiceLine.objects.create(**fields)
+
+    def test_one_option_per_supplier_item_carrying_its_newest_price(self) -> None:
+        self.line(self.invoice("IV-1", "2026-08-01"), unit_price_cents=429)
+        newest = self.line(self.invoice("IV-3", "2026-09-15"))
+        self.line(self.invoice("IV-2", "2026-09-01"), unit_price_cents=429)
+
+        payload = self.get_internal("invoice-line-options/?q=pork").json()
+
+        self.assertEqual(
+            [
+                (item["id"], item["unitPriceCents"], item["invoiceDate"])
+                for item in payload["items"]
+            ],
+            [(str(newest.id), 469, "2026-09-15")],
+        )
+
+    def test_the_same_code_under_another_supplier_is_another_product(self) -> None:
+        self.line(self.invoice("IV-1", "2026-09-15"))
+        self.line(self.invoice("IV-9", "2026-09-10", supplier="harbor"))
+
+        payload = self.get_internal("invoice-line-options/").json()
+
+        self.assertEqual(
+            [item["supplier"] for item in payload["items"]],
+            ["Baldor Specialty Foods Inc.", "Harbor"],
+        )
+
+    def test_lines_without_an_item_identity_are_each_listed(self) -> None:
+        invoice = self.invoice("IV-1", "2026-09-15")
+        self.line(invoice, sku="", item_key="", description="Delivery")
+        self.line(invoice, position=1, sku="", item_key="", description="Delivery")
+
+        payload = self.get_internal("invoice-line-options/").json()
+
+        self.assertEqual(len(payload["items"]), 2)
+
+    def test_options_carry_the_printed_unit_the_price_is_per(self) -> None:
+        self.line(self.invoice("IV-1", "2026-09-15"))
+
+        item = self.get_internal("invoice-line-options/").json()["items"][0]
+
+        self.assertEqual(item["unit"], "LB")
+        self.assertEqual(item["packSize"], "16 LB AVG")
+
+
 class ProbeTests(InvoiceTestCase):
     def probe(self, body: dict) -> dict:
         response = self.post_internal("invoice-line-status", body)

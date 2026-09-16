@@ -21,6 +21,7 @@ import {
   unitDefinition,
   unitShort,
 } from "@/lib/unit-registry"
+import { resolveInvoiceLinePack } from "@/lib/invoice-line-cost"
 import { centsToDollarInput, formatCents } from "@/lib/money"
 import { cn } from "@/lib/utils"
 import type { IngredientRow, InvoiceLineOption } from "@/lib/backend/types"
@@ -433,7 +434,13 @@ export function PurchaseUnitFields({
 
   const connect = (item: InvoiceLineOption) => {
     setPicked(item)
-    const pack = parseTypedSize(item.packSize)
+    // A line priced by the pound is one pound whatever its pack text says
+    // ("16 LB AVG" is an average, not a size); a container reads its pack
+    // text, and anything neither parser understands is left for the buyer.
+    const resolved = resolveInvoiceLinePack(item)
+    const pack = resolved
+      ? { size: roundPack(resolved.amount), unit: resolved.unit }
+      : parseTypedSize(item.packSize)
     const next: PurchaseUnit = {
       ...value,
       ...(applyPickedInvoiceToCost
