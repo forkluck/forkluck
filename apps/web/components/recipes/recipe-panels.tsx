@@ -30,7 +30,9 @@ import {
 import type { CostBreakdown } from "@/lib/benchcost/math"
 import { formatCents, formatWholeCents } from "@/lib/money"
 import type { PriceListEntry, PricedLine } from "@/lib/pricing"
-import { formatScaledWeight } from "@/lib/recipe"
+import { formatDisplayAmount } from "@/lib/display-amount"
+import { formatKitchenAmount, formatScaledWeight } from "@/lib/recipe"
+import { precisionFor } from "@/lib/precise-ingredients"
 import type { ParsedRecipeLine } from "@/lib/recipe"
 import {
   RECIPE_LINE_ALERT_LABELS,
@@ -43,10 +45,6 @@ import {
   type WeightUnit,
 } from "@/lib/units"
 import { cn } from "@/lib/utils"
-
-const measureAmountFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 3,
-})
 
 /** A row the cook left without an amount ("olive oil, for brushing"). */
 function isUnmeasured(line: ParsedRecipeLine): boolean {
@@ -67,9 +65,10 @@ function quantityLabel(
   if (isUnmeasured(line)) return { measure: "—", equivalent: null }
 
   const grams = line.ingredient?.grams ?? null
+  const decimals = precisionFor(line.ingredient?.name ?? line.ingredientName)
   if (line.componentQuantity) {
     return {
-      measure: `${measureAmountFormat.format(line.componentQuantity.amount)} each`,
+      measure: `${formatDisplayAmount(line.componentQuantity.amount, decimals)} each`,
       equivalent: null,
     }
   }
@@ -83,14 +82,15 @@ function quantityLabel(
       measure: formatScaledWeight(
         grams ?? toGrams(line.enteredAmount, unit),
         measurementSystem,
-        { amount: line.enteredAmount, unit }
+        { amount: line.enteredAmount, unit },
+        decimals
       ),
       equivalent: null,
     }
   }
 
   const measure = [
-    measureAmountFormat.format(line.enteredAmount),
+    formatDisplayAmount(line.enteredAmount, decimals),
     line.enteredUnit ?? normalized,
   ]
     .filter(Boolean)
@@ -99,7 +99,7 @@ function quantityLabel(
     measure,
     equivalent:
       grams !== null && grams > 0
-        ? `≈ ${formatScaledWeight(grams, measurementSystem)}`
+        ? `≈ ${formatScaledWeight(grams, measurementSystem, null, decimals)}`
         : null,
   }
 }
@@ -251,7 +251,7 @@ export function RecipeCostingPanel({
   const costGutter = onToggleLeftOut ? "last:pr-9" : ""
   const yieldHint =
     units && units > 0 && yieldWord
-      ? `${measureAmountFormat.format(units)} ${yieldWord}${units === 1 ? "" : "s"}`
+      ? `${formatKitchenAmount(units)} ${yieldWord}${units === 1 ? "" : "s"}`
       : null
 
   if (lines.length === 0) {

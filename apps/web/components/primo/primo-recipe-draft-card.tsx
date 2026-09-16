@@ -8,6 +8,7 @@ import { GuardedLink } from "@/components/navigation-blocker"
 import { Button } from "@/components/ui/button"
 import { useFormSave } from "@/hooks/use-form-save"
 import type { RecipeDraft } from "@/lib/recipe/draft"
+import { precisionFor } from "@/lib/precise-ingredients"
 import { formatKitchenAmount } from "@/lib/recipe/scale"
 import { toSaveFailure } from "@/lib/save-failure"
 import { unitShort, unitWord } from "@/lib/unit-registry"
@@ -29,7 +30,7 @@ function yieldLabel(draftYield: NonNullable<RecipeDraft["yield"]>) {
 function ingredientMeasure(ingredient: RecipeDraft["ingredients"][number]) {
   if (ingredient.quantity === null) return "Unmeasured"
   const unit = unitShort(ingredient.unit)
-  return `${formatKitchenAmount(ingredient.quantity)}${unit ? ` ${unit}` : ""}`
+  return `${formatKitchenAmount(ingredient.quantity, precisionFor(ingredient.name))}${unit ? ` ${unit}` : ""}`
 }
 
 export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {

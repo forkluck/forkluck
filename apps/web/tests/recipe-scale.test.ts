@@ -415,7 +415,7 @@ describe("formatScaledAmount", () => {
     const [justAbove] = scaleIngredientLines([yeastLine], 0.05)
     const [belowThreshold] = scaleIngredientLines([yeastLine], 0.049)
 
-    expect(formatScaledAmount(justAbove, "metric")).toBe("0.1 g")
+    expect(formatScaledAmount(justAbove, "metric")).toBe("0.05 g")
     expect(formatScaledAmount(belowThreshold, "metric")).toBe("0.049 g")
   })
 })
@@ -615,30 +615,58 @@ describe("committing a scale from either control", () => {
   })
 })
 
-describe("whole numbers from ten up", () => {
+describe("whole numbers, tenths for a precise ingredient", () => {
   it("prints a scaled gram weight without a fraction", () => {
     expect(
       formatScaledWeight(2030.333, "metric", { amount: 2030.333, unit: "g" })
     ).toBe("2,030 g")
     expect(formatMeasuredAmount(2030.333, "g")).toBe("2,030")
+    expect(formatMeasuredAmount(2.55, "g")).toBe("3")
   })
 
-  it("keeps the decimals of a small weight and of kilograms", () => {
-    expect(formatMeasuredAmount(2.55, "g")).toBe("2.6")
+  it("keeps a tenth for salt and its kind", () => {
+    expect(
+      formatScaledWeight(10.333, "metric", { amount: 10.333, unit: "g" }, 1)
+    ).toBe("10.3 g")
+    expect(formatMeasuredAmount(2030.333, "g", 1)).toBe("2,030.3")
+    expect(formatKitchenAmount(10.333, 1)).toBe("10.3")
+  })
+
+  it("leaves kilograms, pounds and ounces at their own precision", () => {
     expect(formatScaledWeight(1234, "metric")).toBe("1.234 kg")
-    expect(formatScaledWeight(12345, "metric")).toBe("12 kg")
+    expect(formatScaledWeight(12345, "metric")).toBe("12.345 kg")
+    expect(formatMeasuredAmount(4.256, "oz")).toBe("4.26")
   })
 
-  it("drops the fraction from a large kitchen amount but not a small one", () => {
+  it("never rounds a small quantity away to nothing", () => {
+    expect(formatMeasuredAmount(0.4, "g")).toBe("0.4")
+    expect(formatKitchenAmount(0.35)).toBe("0.35")
+  })
+
+  it("drops the fraction from a large kitchen amount but keeps a small one", () => {
     expect(formatKitchenAmount(2030.333)).toBe("2,030")
     expect(formatKitchenAmount(10.5)).toBe("11")
     expect(formatKitchenAmount(1 / 3)).toBe("1/3")
     expect(formatKitchenAmount(2.5)).toBe("2 1/2")
-    expect(formatKitchenAmount(3.226)).toBe("3.226")
+    expect(formatKitchenAmount(3.226)).toBe("3")
   })
 
-  it("counts a large scaled each line in whole pieces", () => {
+  it("keeps a scaled count exact to the hundredth", () => {
     const [scaled] = scaleIngredientLines([eachLine], 4.111)
-    expect(formatScaledAmount(scaled, "metric")).toBe("12 ea")
+    expect(formatScaledAmount(scaled, "metric")).toBe("12.33 ea")
+  })
+
+  it("scales a seasoning line to the tenth of a gram", () => {
+    const salt = line({
+      lineNumber: 9,
+      rawLine: "10 g kosher salt",
+      enteredAmount: 10,
+      enteredUnit: "g",
+      normalizedUnit: "g",
+      note: null,
+      ingredient: { id: "paste-9", name: "Kosher salt", grams: 10 },
+    })
+    const [scaled] = scaleIngredientLines([salt], 1.0333)
+    expect(formatScaledAmount(scaled, "metric")).toBe("10.3 g")
   })
 })

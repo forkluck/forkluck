@@ -274,7 +274,7 @@ describe("guest recipe view", () => {
       ],
     }
     render(<GuestRecipeView recipe={recipe} />)
-    expect(cells(row("Cake flour"))[0]).toBe("8.7")
+    expect(cells(row("Cake flour"))[0]).toBe("9")
     expect(cells(row("Salt"))[0]).toBe("0.022")
     expect(cells(row("Butter"))[0]).toBe("1.23")
     expect(cells(row("Milk"))[0]).toBe("1/3")
