@@ -6,6 +6,7 @@ import {
   weightUnitSystem,
 } from "../units"
 import type { WeightSystem, WeightUnit } from "../units"
+import { WHOLE_NUMBER_FROM, amountFormat } from "../display-amount"
 import { isCountUnit, roundRecipeQuantity } from "./parse"
 import type { ParsedRecipeCountUnit, ParsedRecipeLine } from "./parse"
 
@@ -40,10 +41,6 @@ const KITCHEN_FRACTIONS: [number, string][] = [
   [7 / 8, "7/8"],
 ]
 
-const kitchenAmountFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 3,
-})
-
 /**
  * A quantity as the recipe stores it: six decimals, trailing zeroes gone. A
  * third of a cup is 0.333333, never the sixteen digits a division produces and
@@ -58,19 +55,16 @@ export function clampRecipeQuantity(amount: number | string): string {
 export function formatKitchenAmount(amount: number): string {
   const whole = Math.floor(amount)
   const part = amount - whole
-  if (part > 0.001 && part < 0.999) {
+  // A fraction is worth writing beside a small whole; "2030 1/3" is not.
+  if (Math.abs(amount) < WHOLE_NUMBER_FROM && part > 0.001 && part < 0.999) {
     for (const [value, label] of KITCHEN_FRACTIONS) {
       if (Math.abs(part - value) < 0.005) {
         return whole > 0 ? `${whole} ${label}` : label
       }
     }
   }
-  return kitchenAmountFormat.format(amount)
+  return amountFormat(amount, 3).format(amount)
 }
-
-const eachCountFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2,
-})
 
 const EACH_COUNT_FRACTION_DIGITS = 2
 
@@ -119,16 +113,6 @@ export function formatScaledWeight(
   return formatWeight(grams, system, original ?? undefined)
 }
 
-const weightAmountFormats: Record<WeightUnit, Intl.NumberFormat> =
-  Object.fromEntries(
-    WEIGHT_UNITS.map((unit) => [
-      unit,
-      new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: WEIGHT_FRACTION_DIGITS[unit],
-      }),
-    ])
-  ) as Record<WeightUnit, Intl.NumberFormat>
-
 /**
  * An amount as a cook reads it off the sheet, without its unit, for a table
  * that keeps the unit in its own column. A weight rounds to what a scale shows
@@ -144,7 +128,7 @@ export function formatMeasuredAmount(amount: number, unit: string): string {
   if (roundsToZero(amount, WEIGHT_FRACTION_DIGITS[weightUnit])) {
     return subThresholdFormat.format(amount)
   }
-  return weightAmountFormats[weightUnit].format(amount)
+  return amountFormat(amount, WEIGHT_FRACTION_DIGITS[weightUnit]).format(amount)
 }
 
 export type ScaledIngredientLine = {
@@ -317,7 +301,9 @@ export function formatScaledAmount(
     // A scaled-down line the recipe still needs must never read as none of it.
     const count = roundsToZero(line.eachCount, EACH_COUNT_FRACTION_DIGITS)
       ? subThresholdFormat.format(line.eachCount)
-      : eachCountFormat.format(line.eachCount)
+      : amountFormat(line.eachCount, EACH_COUNT_FRACTION_DIGITS).format(
+          line.eachCount
+        )
     // The label has to agree with the number beside it: a raw 0.999 displays as
     // "1", so the singular is chosen from what the sheet shows, not the count
     // behind it.
