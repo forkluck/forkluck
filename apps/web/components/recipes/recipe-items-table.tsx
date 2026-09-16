@@ -34,10 +34,7 @@ import {
   MenuItem,
   MenuTrigger,
 } from "@/components/ui/menu"
-import {
-  displayUnitShort,
-  inlineChipClassName,
-} from "@/components/ingredients/unit-combobox"
+import { inlineChipClassName } from "@/components/ingredients/unit-combobox"
 import { RowActionsMenu } from "@/components/ui/row-actions"
 import {
   Tooltip,
@@ -69,10 +66,17 @@ import {
   tidyVolume,
   type ParsedRecipeLine,
 } from "@/lib/recipe"
+import { roundDisplayAmount } from "@/lib/display-amount"
+import { precisionFor } from "@/lib/precise-ingredients"
 import { resolveLine, withPreparationNote } from "@/lib/recipe/resolve-line"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
 import { fuzzyMatches } from "@/lib/fuzzy"
-import { KNOWN_UNITS, convertAmount, countedAsEach } from "@/lib/unit-registry"
+import {
+  KNOWN_UNITS,
+  convertAmount,
+  countedAsEach,
+  displayUnitShort,
+} from "@/lib/unit-registry"
 import { UnitOptions } from "@/components/recipes/unit-options"
 import { useToast } from "@/components/ui/toast"
 import { cn } from "@/lib/utils"
@@ -172,11 +176,13 @@ function isMeasured(kind: RecipeItemKind) {
 }
 
 /** A resting row reads in kitchen fractions; the cook types whatever they like. */
-function restingQuantity(quantity: string): string {
+function restingQuantity(quantity: string, decimals = 0): string {
   const trimmed = quantity.trim()
   if (!trimmed) return ""
   const amount = Number(trimmed)
-  return Number.isFinite(amount) ? formatKitchenAmount(amount) : trimmed
+  return Number.isFinite(amount)
+    ? formatKitchenAmount(amount, decimals)
+    : trimmed
 }
 
 /**
@@ -191,7 +197,13 @@ function shownMeasure(
     return { amount: item.quantity, unit: item.unit }
   }
   const tidy = tidyVolume(Number(item.quantity) * scale, item.unit)
-  return { amount: clampRecipeQuantity(tidy.amount), unit: tidy.unit }
+  // Shown the way the sheet prints it: whole grams of stock, tenths of salt.
+  return {
+    amount: String(
+      roundDisplayAmount(tidy.amount, precisionFor(item.displayName))
+    ),
+    unit: tidy.unit,
+  }
 }
 
 function QuantityCell({
@@ -798,12 +810,16 @@ function nestedMeasure(
   factor: number
 ): { amount: string; unit: string } {
   if (line.quantity === null) return { amount: "", unit: line.unit }
+  const decimals = precisionFor(line.displayName)
   if (factor === 1) {
-    return { amount: restingQuantity(String(line.quantity)), unit: line.unit }
+    return {
+      amount: restingQuantity(String(line.quantity), decimals),
+      unit: line.unit,
+    }
   }
   const tidy = tidyVolume(line.quantity * factor, line.unit)
   return {
-    amount: restingQuantity(clampRecipeQuantity(tidy.amount)),
+    amount: restingQuantity(clampRecipeQuantity(tidy.amount), decimals),
     unit: tidy.unit,
   }
 }

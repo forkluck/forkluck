@@ -542,6 +542,11 @@ Cutover order:
    configured credential against `/v1/models` before stopping the current app;
    failed admission keeps the current release serving. This is not a provider
    health guarantee. No Django migration or table handover is required.
+   To ship an unrelated fix while the gateway is down, run the command as
+   root on the host with `FORKLUCK_DEPLOY_SKIP_PRIMO_CHECK=1` (`deploy-forkluck`
+   version 8): the failed check becomes a warning and the release proceeds.
+   The workflow's `sudo` call does not pass the flag; use the archive it
+   already uploaded. Do not clear `PRIMO_API_KEY` just to get past the check.
 5. Verify Home, a tool question, attachment extraction, explicit recipe creation,
    history and the service's per-user usage report. Check logs contain metadata
    only. Public builds and browser acceptance also run with Primo unconfigured.
@@ -579,7 +584,7 @@ titles, product names and SKUs, sales units and revenue, batch and labor
 figures, an exact recipe's deterministic cost projection, public USDA candidate
 metadata, or the structured recipe draft the model just proposed. Cost
 projections can include recipe and ingredient names, prices, supplier labels,
-coverage, and price-history dates. Those same eight kitchen reads/calculations are available
+coverage, and price-history dates. Those same nine kitchen reads/calculations are available
 to whichever browser agent drives an authenticated WebMCP
 session; unlike Primo, WebMCP does not send them to Alibaba unless that agent's
 own implementation does so. Forkluck does not send
@@ -629,10 +634,10 @@ does; `--stretch` adds `spread-busy` for the unscaled spread rule beside it.
 Record any accepted change in the forecast ADR; ties keep the current basis.
 
 
-### Primo capability and editing rollout (September 15)
+### Primo capability and editing rollout (September 16)
 
-Deploy the private service with the additive thirteen-tool allowlist and prompt
-`2026-09-15.1` first; it still accepts the previous eight-tool app. Then deploy
+Deploy the private service with the additive fourteen-tool allowlist and prompt
+`2026-09-16.1` first; it still accepts the previous thirteen-tool app. Then deploy
 public Forkluck through its normal main-branch workflow on chefclaw. This adds
 no database migration or infrastructure. Chat, vision, credentials, nginx limits
 and usage metering keep their existing service configuration.

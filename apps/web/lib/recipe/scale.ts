@@ -6,6 +6,8 @@ import {
   weightUnitSystem,
 } from "../units"
 import type { WeightSystem, WeightUnit } from "../units"
+import { formatDisplayAmount, roundsToZero } from "../display-amount"
+import { precisionFor } from "../precise-ingredients"
 import { isCountUnit, roundRecipeQuantity } from "./parse"
 import type { ParsedRecipeCountUnit, ParsedRecipeLine } from "./parse"
 
@@ -40,10 +42,6 @@ const KITCHEN_FRACTIONS: [number, string][] = [
   [7 / 8, "7/8"],
 ]
 
-const kitchenAmountFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 3,
-})
-
 /**
  * A quantity as the recipe stores it: six decimals, trailing zeroes gone. A
  * third of a cup is 0.333333, never the sixteen digits a division produces and
@@ -55,22 +53,19 @@ export function clampRecipeQuantity(amount: number | string): string {
   return String(roundRecipeQuantity(value))
 }
 
-export function formatKitchenAmount(amount: number): string {
+export function formatKitchenAmount(amount: number, decimals = 0): string {
   const whole = Math.floor(amount)
   const part = amount - whole
-  if (part > 0.001 && part < 0.999) {
+  // A fraction is worth writing beside a small whole; "2030 1/3" is not.
+  if (Math.abs(amount) < 10 && part > 0.001 && part < 0.999) {
     for (const [value, label] of KITCHEN_FRACTIONS) {
       if (Math.abs(part - value) < 0.005) {
         return whole > 0 ? `${whole} ${label}` : label
       }
     }
   }
-  return kitchenAmountFormat.format(amount)
+  return formatDisplayAmount(amount, decimals)
 }
-
-const eachCountFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2,
-})
 
 const EACH_COUNT_FRACTION_DIGITS = 2
 
@@ -79,10 +74,15 @@ const EACH_COUNT_FRACTION_DIGITS = 2
 // keep it, while only the scaled production view needs to know when a quantity
 // has fallen underneath it.
 const WEIGHT_FRACTION_DIGITS: Record<WeightUnit, number> = {
-  g: 1,
+  g: 0,
   oz: 2,
   kg: 3,
   lb: 3,
+}
+
+/** Grams take the ingredient's precision; the other units keep their own. */
+function weightDigits(unit: WeightUnit, decimals: number): number {
+  return unit === "g" ? decimals : WEIGHT_FRACTION_DIGITS[unit]
 }
 
 // Enough digits to read a pinch off the sheet, whatever its magnitude: a scaled
@@ -91,12 +91,6 @@ const WEIGHT_FRACTION_DIGITS: Record<WeightUnit, number> = {
 const subThresholdFormat = new Intl.NumberFormat("en-US", {
   maximumSignificantDigits: 2,
 })
-
-// Half-expand rounding, so anything under half of the last displayed place
-// collapses to a zero quantity no matter how the digits are spelled.
-function roundsToZero(amount: number, fractionDigits: number): boolean {
-  return amount > 0 && amount < 0.5 * 10 ** -fractionDigits
-}
 
 /**
  * What formatWeight prints, except that a quantity scaled underneath its
@@ -107,27 +101,18 @@ function roundsToZero(amount: number, fractionDigits: number): boolean {
 export function formatScaledWeight(
   grams: number,
   system: WeightSystem,
-  original?: { amount: number; unit: WeightUnit } | null
+  original?: { amount: number; unit: WeightUnit } | null,
+  decimals = 0
 ): string {
   const display =
     original && weightUnitSystem(original.unit) === system
       ? original
       : displayWeight(grams, system)
-  if (roundsToZero(display.amount, WEIGHT_FRACTION_DIGITS[display.unit])) {
+  if (roundsToZero(display.amount, weightDigits(display.unit, decimals))) {
     return `${subThresholdFormat.format(display.amount)} ${display.unit}`
   }
-  return formatWeight(grams, system, original ?? undefined)
+  return formatWeight(grams, system, original ?? undefined, decimals)
 }
-
-const weightAmountFormats: Record<WeightUnit, Intl.NumberFormat> =
-  Object.fromEntries(
-    WEIGHT_UNITS.map((unit) => [
-      unit,
-      new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: WEIGHT_FRACTION_DIGITS[unit],
-      }),
-    ])
-  ) as Record<WeightUnit, Intl.NumberFormat>
 
 /**
  * An amount as a cook reads it off the sheet, without its unit, for a table
@@ -136,15 +121,19 @@ const weightAmountFormats: Record<WeightUnit, Intl.NumberFormat> =
  * and keeps significant digits when a scaled pinch would otherwise read as
  * zero. A volume or a count keeps its kitchen fraction: "1/3 cup", "2 1/2 ea".
  */
-export function formatMeasuredAmount(amount: number, unit: string): string {
+export function formatMeasuredAmount(
+  amount: number,
+  unit: string,
+  decimals = 0
+): string {
   if (!WEIGHT_UNITS.includes(unit as WeightUnit)) {
-    return formatKitchenAmount(amount)
+    return formatKitchenAmount(amount, decimals)
   }
-  const weightUnit = unit as WeightUnit
-  if (roundsToZero(amount, WEIGHT_FRACTION_DIGITS[weightUnit])) {
+  const digits = weightDigits(unit as WeightUnit, decimals)
+  if (roundsToZero(amount, digits)) {
     return subThresholdFormat.format(amount)
   }
-  return weightAmountFormats[weightUnit].format(amount)
+  return formatDisplayAmount(amount, digits)
 }
 
 export type ScaledIngredientLine = {
@@ -312,19 +301,22 @@ export function formatScaledAmount(
   line: ScaledIngredientLine,
   system: WeightSystem
 ): string {
+  const decimals = precisionFor(line.name)
   // Count-unit lines carry a real gram weight too, but a cook counts them.
   if (line.eachCount !== null) {
     // A scaled-down line the recipe still needs must never read as none of it.
+    // A count stays exact to the hundredth: "1.2 cans" tells the cook to
+    // open two, where "1 can" would not.
     const count = roundsToZero(line.eachCount, EACH_COUNT_FRACTION_DIGITS)
       ? subThresholdFormat.format(line.eachCount)
-      : eachCountFormat.format(line.eachCount)
+      : formatDisplayAmount(line.eachCount, EACH_COUNT_FRACTION_DIGITS)
     // The label has to agree with the number beside it: a raw 0.999 displays as
     // "1", so the singular is chosen from what the sheet shows, not the count
     // behind it.
     return `${count} ${countUnitLabel(line.countUnit ?? "each", parseDisplayedCount(count))}`
   }
 
-  return formatScaledWeight(line.grams, system, line.original)
+  return formatScaledWeight(line.grams, system, line.original, decimals)
 }
 
 // The displayed count, read back off the string the cook sees so the label and

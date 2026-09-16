@@ -23,6 +23,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import {} from "@/components/ui/tooltip"
 import { preferredWeightUnit } from "@/lib/business-settings"
+import { precisionFor } from "@/lib/precise-ingredients"
 import {
   formatUnitPrice,
   type PriceListEntry,
@@ -31,6 +32,7 @@ import {
 import { rankedIngredientMatches } from "@/lib/search"
 import {
   RECIPE_LINE_ALERT_LABELS,
+  formatKitchenAmount,
   parseRecipeText,
   recipeLineAlert,
   type ParsedRecipeLine,
@@ -57,33 +59,6 @@ function displayUnit(line: ParsedRecipeLine): string {
 }
 
 /** Kitchen fractions worth showing as written: "1/3 tbsp", not "0.333 tbsp". */
-const KITCHEN_FRACTIONS: [number, string][] = [
-  [1 / 8, "1/8"],
-  [1 / 4, "1/4"],
-  [1 / 3, "1/3"],
-  [3 / 8, "3/8"],
-  [1 / 2, "1/2"],
-  [5 / 8, "5/8"],
-  [2 / 3, "2/3"],
-  [3 / 4, "3/4"],
-  [7 / 8, "7/8"],
-]
-
-function formatAmount(amount: number): string {
-  const whole = Math.floor(amount)
-  const part = amount - whole
-  if (part > 0.001 && part < 0.999) {
-    for (const [value, label] of KITCHEN_FRACTIONS) {
-      if (Math.abs(part - value) < 0.005) {
-        return whole > 0 ? `${whole} ${label}` : label
-      }
-    }
-  }
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 3 }).format(
-    amount
-  )
-}
-
 /**
  * The costed ingredient lines, in the order they were written. No card of its
  * own: two rules close it top and bottom, the way every table in the handoff
@@ -442,9 +417,10 @@ export function RecipeLinesTable({
                   />
                 </TableCell>
                 <TableCell className="text-right text-base text-muted-foreground tabular-nums">
-                  {formatAmount(
+                  {formatKitchenAmount(
                     (line.componentQuantity?.amount ?? line.enteredAmount) *
-                      factor
+                      factor,
+                    precisionFor(line.ingredient?.name ?? line.ingredientName)
                   )}
                 </TableCell>
                 <TableCell className="text-base whitespace-nowrap text-muted-foreground">

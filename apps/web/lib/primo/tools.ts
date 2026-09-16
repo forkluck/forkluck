@@ -121,8 +121,11 @@ export function createPrimoTools(context: {
     const entry = KITCHEN_TOOLS[name]
     return tool({
       description:
+        // The catalog describes the tool as the browser agent gets it, where
+        // the view is a navigation. In chat nothing moves: the answer is the
+        // returned lines and figures, and the link is only an offer.
         name === "show_recipe_batch"
-          ? "Prepare a temporary batch preview for one exact recipe at a requested portion count or multiplier. Return its preview link; the user must open it. This does not navigate or save anything."
+          ? "Scale one exact recipe to a requested commercial-portion count or multiplier. Return every line at that batch with the quantity the sheet prints, the recipe's base portions and yield, the number of batches and the next whole one when the portions do not divide evenly, the batch cost when the reader may see it, and a preview link the user may open. This is a temporary view: it does not navigate and saves nothing."
           : entry.description,
       inputSchema: entry.inputSchema,
       // Django revives timestamps as Dates. Serialize them before the SDK

@@ -498,7 +498,7 @@ describe("a line left out of cost", () => {
     expect(within(row).queryByText("Add price")).toBeNull()
     expect(within(row).queryByLabelText("No price yet")).toBeNull()
     // The quantity is still what the cook wrote.
-    expect(within(row).getByText("49.5 g")).toBeTruthy()
+    expect(within(row).getByText("50 g")).toBeTruthy()
   })
 
   it("counts the left-out lines under the batch total", () => {

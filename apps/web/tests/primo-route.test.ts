@@ -654,7 +654,7 @@ describe("POST /api/primo/chat", () => {
       "search_usda_foods",
       "show_recipe_batch",
     ])
-    expect(mocks.isStepCount).toHaveBeenCalledWith(4)
+    expect(mocks.isStepCount).toHaveBeenCalledWith(6)
     expect(options.stopWhen).toBe(mocks.stopCondition)
     expect(options.maxOutputTokens).toBe(1_800)
     expect(mocks.model.mock.calls[0][0]).toMatchObject({
@@ -669,7 +669,7 @@ describe("POST /api/primo/chat", () => {
     })
     expect(options.instructions).toBeUndefined()
     expect(options.providerOptions).toBeUndefined()
-    expect(timeout).toHaveBeenCalledWith(45_000)
+    expect(timeout).toHaveBeenCalledWith(60_000)
   })
 
   it("returns a sanitized provider error", async () => {

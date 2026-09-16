@@ -1,3 +1,4 @@
+import { formatDisplayAmount } from "./display-amount"
 import vocabulary from "../../../data/parser-vocabulary.json"
 
 export type WeightUnit = "g" | "kg" | "oz" | "lb"
@@ -54,7 +55,9 @@ export function weightInputFromGrams(
 export function formatWeight(
   grams: number,
   system: WeightSystem,
-  original?: { amount: number | null; unit: string | null }
+  original?: { amount: number | null; unit: string | null },
+  /** Decimals a gram amount shows; ounces and the large units keep theirs. */
+  decimals = 0
 ): string {
   const originalUnit = original?.unit as WeightUnit | null | undefined
   const useOriginal =
@@ -67,11 +70,8 @@ export function formatWeight(
   const display = useOriginal
     ? { amount: original.amount as number, unit: originalUnit }
     : displayWeight(grams, system)
-  const maximumFractionDigits =
-    display.unit === "g" ? 1 : display.unit === "oz" ? 2 : 3
-  return `${new Intl.NumberFormat("en-US", {
-    maximumFractionDigits,
-  }).format(display.amount)} ${display.unit}`
+  const digits = display.unit === "g" ? decimals : display.unit === "oz" ? 2 : 3
+  return `${formatDisplayAmount(display.amount, digits)} ${display.unit}`
 }
 
 export type YieldUnit = "pcs" | "slice" | WeightUnit

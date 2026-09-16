@@ -21,7 +21,10 @@ export type InvoiceLinePack = {
  * The unit a printed U/M column prices by. A container such as CS does not
  * describe its contents, so its pack-size text remains authoritative.
  */
-export function packUnitFromLabel(label: string): PackUnitSlug | null {
+export function packUnitFromLabel(
+  label: string | null | undefined
+): PackUnitSlug | null {
+  if (!label) return null
   const match = normalizePackUnit(label)
   return match && !match.container ? match.slug : null
 }

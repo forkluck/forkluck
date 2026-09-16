@@ -145,10 +145,11 @@ Home Chat / Primo rail             one useChat survives client navigation
     Django save-turn               user message persisted before inference; HTTP acknowledgement
     24k-character context fit      newest whole turns; newest user always kept
     private gateway → Qwen         prompt + model + access + usage per attempt
-    Qwen chooses tools by intent   eight tools; at most four model/tool steps
+    Qwen chooses tools by intent   fourteen tools; at most six model/tool steps
       find_recipes / find_products owner-scoped discovery of stable public refs
       get_product_sales            exact product + period; as-sold accounting
-      show_recipe_batch            exact recipe + portions or multiplier
+      show_recipe_batch            exact recipe + portions or multiplier; scaled lines
+      get_recipe                   exact recipe whole at 1x; lines, cost, nutrition
       get_recipe_cost_change       exact recipe + optional earlier period
       search_usda_foods({query, scope?})
         Django action              authenticated + 20 searches/user/minute
@@ -162,12 +163,16 @@ Home Chat / Primo rail             one useChat survives client navigation
       save-recipe                  explicit owner-scoped persistence
 ```
 
-The eight kitchen tools are declared once in `apps/web/lib/kitchen-tools/catalog.ts` as a
+The nine kitchen tools are declared once in `apps/web/lib/kitchen-tools/catalog.ts` as a
 name, description, strict zod input schema, and read-only annotations. Primo's
 server adapter and the browser's WebMCP adapter both consume that registry and
 both call `runKitchenTool`; there is no second input contract or kitchen
 calculation. The registry includes hypothetical batch calculations, top products
-from Analytics, and ingredient price changes. Primo also exposes USDA search,
+from Analytics, ingredient price changes, and the two recipe reads that carry
+the recipe's own lines. Those lines are formatted once, in
+`apps/web/lib/recipe/lines-for-tools.ts`, which the guest sheet uses too, so a
+batch quoted in chat and the same batch on that sheet print the same number; the
+owner's editor table and Cost tab keep their own rounding. Primo also exposes USDA search,
 recipe drafting, conversation-scoped draft reading/revision, and attachment reading. A batched manifest resolves all user-bound
 sources before history trimming can hide them; bounded sections are read on
 demand with the same ownership checks. The reader is not a WebMCP tool.
@@ -290,15 +295,17 @@ authenticated AppShell                 feature-detects document.modelContext
     executeKitchenTool                 progress line + cancellation checks
       runKitchenToolAction             requireUser first; same server runner
         runKitchenTool                 existing owner/kitchen-scoped Django reads
-      result.view                      confirmed navigation; await transition
+      result.view                      guarded navigation; await transition
     plain result object                returned to the browser agent
 ```
 
-The five tools register for the authenticated shell's lifetime with one
+The tools register for the authenticated shell's lifetime with one
 `AbortSignal`. Unsupported or permission-disabled browsers keep the ordinary
-app unchanged, and one rejected registration cannot stop the others. WebMCP
-returns the plain tool result: there is no content envelope and no toast. A
-successful acting result navigates to the normal recipe or product screen and
+app unchanged, and one rejected registration cannot stop the others. The
+adapter mounts outside the Primo provider and reports progress, completion and
+failure through its own toast; the browser agent receives the plain tool
+result with no content envelope. A successful acting result navigates through
+the app's unsaved-change guard to the normal recipe or product screen and
 resolves after the route transition, raced against a three-second timeout. No
 second Django route or business-logic implementation exists.
 
@@ -312,7 +319,7 @@ The invariant matrix for both adapters is:
 | batch       | portions with a saved portion size, or explicit multiplier | no scale returns `needs_scale`; factor clamps to the lens limits |
 | accounting  | product's as-sold units and net sales                      | allocated bundle revenue is not added again                      |
 | lifecycle   | one chat in the app shell; Primo navigates only on a user click    | closing/docking does not stop or duplicate a stream              |
-| persistence | all eight kitchen tools are reads or calculations                           | batch and navigation never update the recipe or product          |
+| persistence | all nine kitchen tools are reads or calculations                            | batch and navigation never update the recipe or product          |
 | trust       | returned names are rendered as data                        | returned prose cannot direct another tool call                   |
 
 ## A write

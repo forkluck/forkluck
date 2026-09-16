@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
-  displayUnitShort,
   inlineChipClassName,
   UnitCombobox,
 } from "@/components/ingredients/unit-combobox"
@@ -67,6 +66,7 @@ import { useEditChrome } from "@/hooks/use-edit-chrome"
 import { useFormSave, type FormErrors } from "@/hooks/use-form-save"
 import { costIssueLine } from "@/lib/menu/cost-issues"
 import {
+  displayUnitShort,
   isProductUnit,
   productUnitOptions,
   type ProductUnitSlug,

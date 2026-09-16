@@ -638,3 +638,19 @@ export function formatAmount(value: number): string {
     value
   )
 }
+
+/** The serving a label states, as written on the panel: the stated measure,
+ * with its weight in brackets when the two are different units. */
+export function formatServingLabel(serving: {
+  amount: number | null
+  unit: string
+  grams: number | null
+}): string {
+  const stated =
+    serving.amount === null
+      ? ""
+      : `${formatAmount(serving.amount)} ${serving.unit}`.trim()
+  const grams = serving.grams === null ? "" : `${formatAmount(serving.grams)} g`
+  if (stated && grams && serving.unit !== "g") return `${stated} (${grams})`
+  return stated || grams || "Not set"
+}

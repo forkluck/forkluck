@@ -4,7 +4,6 @@ import type * as React from "react"
 import { HatGlasses, Menu as MenuIcon, PanelLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { usePrimo } from "@/components/primo/primo-provider"
 
 /**
  * The 58px bar above every screen. It carries no title, screens own their
@@ -30,7 +29,6 @@ export function MainHeader({
   onTogglePrimo?: () => void
   primoTriggerRef?: React.Ref<HTMLButtonElement>
 }) {
-  const { actionLine } = usePrimo()
   return (
     <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 bg-background px-4 sm:px-6 md:h-[58px] md:px-6 print:hidden">
       <div className="flex items-center gap-1">
@@ -65,14 +63,6 @@ export function MainHeader({
           </button>
         ) : null}
       </div>
-
-      <span
-        role="status"
-        aria-live="polite"
-        className="min-w-0 flex-1 truncate text-center text-sm text-muted-foreground"
-      >
-        {actionLine}
-      </span>
 
       {primoEnabled ? (
         <Button

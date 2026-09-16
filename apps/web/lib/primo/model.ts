@@ -30,10 +30,16 @@ export type PrimoGatewayContext = GatewayIdentity &
 
 // The public application owns turn budgets and the tool loop. Provider/model
 // choices and instructions belong to the private service.
+//
+// Six steps without an attachment, not four: a cost comparison whose lines are
+// sub-recipes is instructed to read the comparison, find the sub-recipes, read
+// one, and read the kitchen's ingredient price changes before it answers. Four
+// tool calls fill a four-step budget exactly, and the run stops before the step
+// that writes the answer.
 export function primoGenerationLimits(hasAttachments: boolean) {
   return hasAttachments
     ? { maxOutputTokens: 6_000, timeoutMs: 90_000, maxSteps: 6 }
-    : { maxOutputTokens: 1_800, timeoutMs: 45_000, maxSteps: 4 }
+    : { maxOutputTokens: 1_800, timeoutMs: 60_000, maxSteps: 6 }
 }
 
 function gatewayUrl() {

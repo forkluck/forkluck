@@ -52,6 +52,36 @@ describe("executeKitchenTool", () => {
     expect(output).toBe(value)
   })
 
+  it("does not navigate for a read that answers in place", async () => {
+    const navigate = vi.fn()
+    const value = {
+      ok: true,
+      tool: "get_recipe",
+      recipe: {
+        recipeRef: "rcp_0123456789ab",
+        title: "Mooncake",
+        description: null,
+      },
+      portions: 12,
+      yieldAmount: 12,
+      yieldUnit: "each",
+      lines: [],
+      lineCount: 0,
+      truncated: false,
+      cost: null,
+      nutrition: null,
+      view: "/recipes/rcp_0123456789ab/recipe",
+    } satisfies KitchenToolResult
+    const output = await executeKitchenTool(
+      "get_recipe",
+      {},
+      { showAction: vi.fn(), run: vi.fn().mockResolvedValue(value), navigate },
+      new AbortController().signal
+    )
+    expect(navigate).not.toHaveBeenCalled()
+    expect(output).toBe(value)
+  })
+
   it("does not navigate a result without a view", async () => {
     const navigate = vi.fn()
     await executeKitchenTool(
