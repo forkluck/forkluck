@@ -26,6 +26,7 @@ import {
   formatMeasuredAmount,
   tidyVolume,
 } from "@/lib/recipe"
+import { precisionFor } from "@/lib/precise-ingredients"
 import { convertAmount, countedAsEach } from "@/lib/unit-registry"
 import { YIELD_UNIT_LABELS } from "@/lib/units"
 import type { YieldUnit } from "@/lib/units"
@@ -131,7 +132,9 @@ function LineRow({
   return (
     <TableRow className="hover:!bg-transparent">
       <TableCell className="whitespace-nowrap tabular-nums">
-        {amount === null ? "" : formatMeasuredAmount(amount, unit)}
+        {amount === null
+          ? ""
+          : formatMeasuredAmount(amount, unit, precisionFor(name))}
       </TableCell>
       <TableCell className="text-base whitespace-nowrap text-muted-foreground">
         {displayUnitShort(unit)}

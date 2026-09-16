@@ -23,6 +23,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import {} from "@/components/ui/tooltip"
 import { preferredWeightUnit } from "@/lib/business-settings"
+import { precisionFor } from "@/lib/precise-ingredients"
 import {
   formatUnitPrice,
   type PriceListEntry,
@@ -418,7 +419,8 @@ export function RecipeLinesTable({
                 <TableCell className="text-right text-base text-muted-foreground tabular-nums">
                   {formatKitchenAmount(
                     (line.componentQuantity?.amount ?? line.enteredAmount) *
-                      factor
+                      factor,
+                    precisionFor(line.ingredient?.name ?? line.ingredientName)
                   )}
                 </TableCell>
                 <TableCell className="text-base whitespace-nowrap text-muted-foreground">
