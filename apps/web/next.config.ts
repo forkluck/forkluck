@@ -70,6 +70,16 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // The visual guide is a second public host on this same process.
+        // design.forkluck.com serves it at "/", which app/(app)/page.tsx
+        // already owns, so the rewrite has to run in beforeFiles: afterFiles
+        // only sees paths no route matched. The URL stays "/" on that host,
+        // which is what the canonical link and the nginx template assume.
+        {
+          source: "/",
+          has: [{ type: "host", value: "design.forkluck.com" }],
+          destination: "/design",
+        },
         {
           source: "/api/auth/:path*",
           destination: `${djangoPublicOrigin}/api/auth/:path*`,
