@@ -1,11 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { Check, CirclePlus, X } from "lucide-react"
 
 import type { IngredientTagOptionRow } from "@/lib/backend/types"
 import { SearchInput } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 const MAX_TAGS = 50
@@ -108,7 +113,7 @@ export function IngredientTagsCard({
 
   return (
     <div className="self-start">
-      <Popover.Root
+      <Popover
         open={open}
         onOpenChange={(next) => {
           setOpen(next)
@@ -118,7 +123,7 @@ export function IngredientTagsCard({
         <div className="mb-3 flex min-h-7 items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">Tags</h2>
           {value.length > 0 ? (
-            <Popover.Trigger
+            <PopoverTrigger
               type="button"
               aria-label="Add tags"
               className="flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground"
@@ -128,7 +133,7 @@ export function IngredientTagsCard({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-            </Popover.Trigger>
+            </PopoverTrigger>
           ) : null}
         </div>
         <div
@@ -159,7 +164,7 @@ export function IngredientTagsCard({
             </span>
           ))}
           {value.length === 0 ? (
-            <Popover.Trigger
+            <PopoverTrigger
               type="button"
               aria-label="Add tags"
               className="flex h-7 items-center gap-1.5 rounded-md bg-secondary px-2 text-xs font-medium text-muted-foreground outline-none hover:bg-secondary-strong hover:text-foreground focus-visible:text-foreground"
@@ -170,105 +175,97 @@ export function IngredientTagsCard({
                 aria-hidden="true"
               />
               Add tags
-            </Popover.Trigger>
+            </PopoverTrigger>
           ) : null}
-          <Popover.Portal>
-            <Popover.Positioner
-              anchor={fieldRef}
-              align="start"
-              sideOffset={6}
-              className="z-50"
-            >
-              <Popover.Popup className="z-50 w-[var(--anchor-width)] max-w-(--available-width) origin-(--transform-origin) overflow-hidden rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
-                <Popover.Title className="px-3.5 pt-3 text-sm font-medium">
-                  Tags
-                </Popover.Title>
-                <div className="relative p-1.5">
-                  <SearchInput
-                    autoFocus
-                    maxLength={MAX_TAG_LENGTH}
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key !== "Enter") return
-                      event.preventDefault()
-                      if (canAdd) addTyped()
-                      else if (matches.length === 1) toggle(matches[0]!.name)
-                    }}
-                    placeholder="Search or add tags"
-                    aria-label="Search or add tags"
-                    className="max-w-none"
-                    inputClassName="h-9 pr-9"
-                  />
-                  {query ? (
+          <PopoverContent
+            anchor={fieldRef}
+            align="start"
+            sideOffset={6}
+            className="w-[var(--anchor-width)] max-w-(--available-width) overflow-hidden p-0"
+          >
+            <PopoverTitle className="px-3.5 pt-3 text-sm font-medium">
+              Tags
+            </PopoverTitle>
+            <div className="relative p-1.5">
+              <SearchInput
+                autoFocus
+                maxLength={MAX_TAG_LENGTH}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") return
+                  event.preventDefault()
+                  if (canAdd) addTyped()
+                  else if (matches.length === 1) toggle(matches[0]!.name)
+                }}
+                placeholder="Search or add tags"
+                aria-label="Search or add tags"
+                className="max-w-none"
+                inputClassName="h-9 pr-9"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => setQuery("")}
+                  aria-label="Clear tag search"
+                  className="absolute top-1/2 right-[15px] flex size-[22px] -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground"
+                >
+                  <X className="size-3.5" strokeWidth={2} aria-hidden="true" />
+                </button>
+              ) : null}
+            </div>
+            <div className="flex max-h-[360px] flex-col overflow-y-auto p-1.5">
+              {needle ? (
+                <>
+                  <span className="px-2.5 pt-1.5 pb-1 text-2xs font-medium text-faint">
+                    {matches.length}{" "}
+                    {matches.length === 1 ? "result" : "results"}
+                  </span>
+                  {canAdd ? (
                     <button
                       type="button"
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => setQuery("")}
-                      aria-label="Clear tag search"
-                      className="absolute top-1/2 right-[15px] flex size-[22px] -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground"
+                      onClick={addTyped}
+                      className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong"
                     >
-                      <X
-                        className="size-3.5"
-                        strokeWidth={2}
+                      <CirclePlus
+                        className="size-[15px] shrink-0"
                         aria-hidden="true"
                       />
+                      <span className="truncate">Add “{trimmed}”</span>
                     </button>
                   ) : null}
-                </div>
-                <div className="flex max-h-[360px] flex-col overflow-y-auto p-1.5">
-                  {needle ? (
+                  {matches.map(optionButton)}
+                </>
+              ) : (
+                <>
+                  {frequent.length > 0 ? (
                     <>
                       <span className="px-2.5 pt-1.5 pb-1 text-2xs font-medium text-faint">
-                        {matches.length}{" "}
-                        {matches.length === 1 ? "result" : "results"}
+                        Frequently used
                       </span>
-                      {canAdd ? (
-                        <button
-                          type="button"
-                          onClick={addTyped}
-                          className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong"
-                        >
-                          <CirclePlus
-                            className="size-[15px] shrink-0"
-                            aria-hidden="true"
-                          />
-                          <span className="truncate">Add “{trimmed}”</span>
-                        </button>
-                      ) : null}
-                      {matches.map(optionButton)}
+                      {frequent.map(optionButton)}
                     </>
-                  ) : (
+                  ) : null}
+                  {other.length > 0 ? (
                     <>
-                      {frequent.length > 0 ? (
-                        <>
-                          <span className="px-2.5 pt-1.5 pb-1 text-2xs font-medium text-faint">
-                            Frequently used
-                          </span>
-                          {frequent.map(optionButton)}
-                        </>
-                      ) : null}
-                      {other.length > 0 ? (
-                        <>
-                          <span className="px-2.5 pt-2 pb-1 text-2xs font-medium text-faint">
-                            {frequent.length > 0 ? "Other tags" : "All tags"}
-                          </span>
-                          {other.map(optionButton)}
-                        </>
-                      ) : null}
-                      {rows.length === 0 ? (
-                        <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-sm text-faint">
-                          Search to create your first tag.
-                        </span>
-                      ) : null}
+                      <span className="px-2.5 pt-2 pb-1 text-2xs font-medium text-faint">
+                        {frequent.length > 0 ? "Other tags" : "All tags"}
+                      </span>
+                      {other.map(optionButton)}
                     </>
-                  )}
-                </div>
-              </Popover.Popup>
-            </Popover.Positioner>
-          </Popover.Portal>
+                  ) : null}
+                  {rows.length === 0 ? (
+                    <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-sm text-faint">
+                      Search to create your first tag.
+                    </span>
+                  ) : null}
+                </>
+              )}
+            </div>
+          </PopoverContent>
         </div>
-      </Popover.Root>
+      </Popover>
     </div>
   )
 }

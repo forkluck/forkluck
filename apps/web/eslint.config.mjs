@@ -40,6 +40,27 @@ const eslintConfig = defineConfig([
     files: ["tests/**"],
     rules: { "no-restricted-syntax": "off" },
   },
+  {
+    // Base UI is the engine under components/ui and nothing else sees it. A
+    // feature file that reaches past the wrapper restates the surface by hand
+    // and drifts from the guide; it also ties a swap of the engine to every
+    // screen instead of to the one folder.
+    ignores: ["components/ui/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@base-ui/react", "@base-ui/react/*"],
+              message:
+                "Import the wrapper from @/components/ui instead. Only components/ui may import Base UI.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

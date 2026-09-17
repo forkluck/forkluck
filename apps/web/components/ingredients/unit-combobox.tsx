@@ -1,12 +1,17 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { ChevronDown } from "lucide-react"
 
 import { displayUnitShort, unitLabel, unitShort } from "@/lib/unit-registry"
 import type { UnitOption } from "@/lib/unit-registry"
 import { SearchInput } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 export const MAX_UNIT_LENGTH = 40
@@ -84,7 +89,7 @@ export function UnitCombobox({
   }
 
   const trigger = (
-    <Popover.Trigger
+    <PopoverTrigger
       id={id}
       aria-label={`${label} unit`}
       aria-invalid={invalid || undefined}
@@ -120,11 +125,11 @@ export function UnitCombobox({
         strokeWidth={2}
         aria-hidden="true"
       />
-    </Popover.Trigger>
+    </PopoverTrigger>
   )
 
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(next) => {
         setOpen(next)
@@ -143,84 +148,82 @@ export function UnitCombobox({
       ) : (
         trigger
       )}
-      <Popover.Portal>
-        <Popover.Positioner align="end" sideOffset={4} className="z-50">
-          <Popover.Popup
-            className={cn(
-              "z-50 w-[240px] max-w-(--available-width) origin-(--transform-origin) rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none",
-              popupClassName
-            )}
-          >
-            <Popover.Title className="sr-only">
-              Choose {label.toLocaleLowerCase()} unit
-            </Popover.Title>
-            <div className="relative p-1.5">
-              <SearchInput
-                autoFocus
-                maxLength={MAX_UNIT_LENGTH}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key !== "Enter" || matches.length === 0) return
-                  event.preventDefault()
-                  choose(matches[0].slug)
-                }}
-                placeholder="Search"
-                aria-label="Search units"
-                className="max-w-none"
-                inputClassName="h-9"
-              />
-            </div>
-            <div className="flex max-h-64 flex-col overflow-y-auto p-1.5">
-              {emptyLabel && !needle ? (
-                <button
-                  type="button"
-                  onClick={() => choose(null)}
-                  className={cn(
-                    "flex min-h-9 w-full shrink-0 items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
-                    !value && "bg-accent"
-                  )}
-                >
-                  {emptyLabel}
-                </button>
-              ) : null}
-              {matches.length === 0 ? (
-                <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
-                  No results
+      <PopoverContent
+        align="end"
+        sideOffset={4}
+        className={cn(
+          "w-[240px] max-w-(--available-width) p-0",
+          popupClassName
+        )}
+      >
+        <PopoverTitle className="sr-only">
+          Choose {label.toLocaleLowerCase()} unit
+        </PopoverTitle>
+        <div className="relative p-1.5">
+          <SearchInput
+            autoFocus
+            maxLength={MAX_UNIT_LENGTH}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" || matches.length === 0) return
+              event.preventDefault()
+              choose(matches[0].slug)
+            }}
+            placeholder="Search"
+            aria-label="Search units"
+            className="max-w-none"
+            inputClassName="h-9"
+          />
+        </div>
+        <div className="flex max-h-64 flex-col overflow-y-auto p-1.5">
+          {emptyLabel && !needle ? (
+            <button
+              type="button"
+              onClick={() => choose(null)}
+              className={cn(
+                "flex min-h-9 w-full shrink-0 items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                !value && "bg-accent"
+              )}
+            >
+              {emptyLabel}
+            </button>
+          ) : null}
+          {matches.length === 0 ? (
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+              No results
+            </span>
+          ) : null}
+          {matches.map((option, index) => (
+            <React.Fragment key={option.slug}>
+              {option.heading &&
+              option.heading !== matches[index - 1]?.heading ? (
+                <span className="shrink-0 px-2.5 pt-2 pb-1 text-2xs leading-none font-medium text-faint">
+                  {option.heading}
                 </span>
               ) : null}
-              {matches.map((option, index) => (
-                <React.Fragment key={option.slug}>
-                  {option.heading &&
-                  option.heading !== matches[index - 1]?.heading ? (
-                    <span className="shrink-0 px-2.5 pt-2 pb-1 text-2xs leading-none font-medium text-faint">
-                      {option.heading}
-                    </span>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={() => choose(option.slug)}
-                    className={cn(
-                      "flex min-h-9 w-full shrink-0 items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
-                      value === option.slug && "bg-accent"
-                    )}
-                  >
-                    <span className="min-w-0 truncate">
-                      {option.label.replace(` (${unitShort(option.slug)})`, "")}
-                    </span>
-                    {displayUnitShort(option.slug).toLocaleLowerCase() !==
-                    option.label.toLocaleLowerCase() ? (
-                      <span className="shrink-0 text-muted-foreground">
-                        {displayUnitShort(option.slug)}
-                      </span>
-                    ) : null}
-                  </button>
-                </React.Fragment>
-              ))}
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+              <button
+                type="button"
+                onClick={() => choose(option.slug)}
+                className={cn(
+                  "flex min-h-9 w-full shrink-0 items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  value === option.slug && "bg-accent"
+                )}
+              >
+                <span className="min-w-0 truncate">
+                  {option.label.replace(` (${unitShort(option.slug)})`, "")}
+                </span>
+                {displayUnitShort(option.slug).toLocaleLowerCase() !==
+                option.label.toLocaleLowerCase() ? (
+                  <span className="shrink-0 text-muted-foreground">
+                    {displayUnitShort(option.slug)}
+                  </span>
+                ) : null}
+              </button>
+            </React.Fragment>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +15,12 @@ import {
 } from "@/lib/date-presets"
 import { formatDateRangeLabel } from "@/lib/date-range-label"
 import { formatCalendarDate, formatMonthYear } from "@/lib/datetime"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 /** The longest range the forecast will plan, matching the backend's limit. */
@@ -149,7 +154,7 @@ export function ForecastDateFilter({
   }
 
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen)
@@ -159,7 +164,7 @@ export function ForecastDateFilter({
         }
       }}
     >
-      <Popover.Trigger
+      <PopoverTrigger
         render={
           <Button
             variant="filter"
@@ -171,143 +176,140 @@ export function ForecastDateFilter({
       >
         Dates
         <span className="font-medium text-foreground">{pillValue}</span>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner align="start" sideOffset={6} className="z-50">
-          <Popover.Popup className="max-h-[calc(100dvh-2rem)] w-[min(47rem,calc(100vw-2rem))] origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-popover-border bg-popover p-3 text-popover-foreground outline-none">
-            <Popover.Title className="sr-only">
-              Choose dates to plan for
-            </Popover.Title>
-            <div className="grid sm:grid-cols-[10rem_minmax(0,1fr)]">
-              <div className="flex flex-col gap-1 border-b border-popover-border pb-3 sm:border-r sm:border-b-0 sm:pr-3 sm:pb-0">
-                {presets.map((preset) => (
-                  <Button
-                    key={preset.id}
-                    variant="quiet"
-                    className={cn(
-                      "justify-start",
-                      activePreset?.id === preset.id &&
-                        !pendingStartDate &&
-                        "bg-muted text-foreground"
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={6}
+        className="max-h-[calc(100dvh-2rem)] w-[min(47rem,calc(100vw-2rem))] overflow-x-hidden overflow-y-auto p-3"
+      >
+        <PopoverTitle className="sr-only">
+          Choose dates to plan for
+        </PopoverTitle>
+        <div className="grid sm:grid-cols-[10rem_minmax(0,1fr)]">
+          <div className="flex flex-col gap-1 border-b border-popover-border pb-3 sm:border-r sm:border-b-0 sm:pr-3 sm:pb-0">
+            {presets.map((preset) => (
+              <Button
+                key={preset.id}
+                variant="quiet"
+                className={cn(
+                  "justify-start",
+                  activePreset?.id === preset.id &&
+                    !pendingStartDate &&
+                    "bg-muted text-foreground"
+                )}
+                aria-pressed={
+                  activePreset?.id === preset.id && !pendingStartDate
+                }
+                onClick={() => choosePreset(preset)}
+              >
+                {preset.label}
+              </Button>
+            ))}
+            <p className="mt-2 border-t border-popover-border pt-2 text-xs text-muted-foreground">
+              Or pick a first and a last day on the calendar, up to{" "}
+              {MAX_FORECAST_DAYS} days.
+            </p>
+          </div>
+          <div className="grid pt-3 sm:pt-0 sm:pl-5 md:grid-cols-2">
+            {[calendarMonth, nextMonth].map((month, monthIndex) => {
+              const isLeadingMonth = monthIndex === 0
+              return (
+                <div
+                  key={dateKey(month)}
+                  className={
+                    isLeadingMonth
+                      ? "md:pr-5"
+                      : "hidden md:block md:border-l md:border-popover-border md:pl-5"
+                  }
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    {isLeadingMonth ? (
+                      <Button
+                        variant="quiet"
+                        size="icon-sm"
+                        aria-label="Previous month"
+                        disabled={atEarliestMonth}
+                        onClick={() =>
+                          setCalendarMonth((current) => addMonths(current, -1))
+                        }
+                      >
+                        <ChevronLeft />
+                      </Button>
+                    ) : (
+                      <span className="size-7" />
                     )}
-                    aria-pressed={
-                      activePreset?.id === preset.id && !pendingStartDate
-                    }
-                    onClick={() => choosePreset(preset)}
-                  >
-                    {preset.label}
-                  </Button>
-                ))}
-                <p className="mt-2 border-t border-popover-border pt-2 text-xs text-muted-foreground">
-                  Or pick a first and a last day on the calendar, up to{" "}
-                  {MAX_FORECAST_DAYS} days.
-                </p>
-              </div>
-              <div className="grid pt-3 sm:pt-0 sm:pl-5 md:grid-cols-2">
-                {[calendarMonth, nextMonth].map((month, monthIndex) => {
-                  const isLeadingMonth = monthIndex === 0
-                  return (
-                    <div
-                      key={dateKey(month)}
-                      className={
-                        isLeadingMonth
-                          ? "md:pr-5"
-                          : "hidden md:block md:border-l md:border-popover-border md:pl-5"
+                    <p className="text-md font-semibold">
+                      {formatMonthYear(month)}
+                    </p>
+                    {isLeadingMonth ? (
+                      <>
+                        <span className="hidden size-7 md:block" />
+                        <Button
+                          variant="quiet"
+                          size="icon-sm"
+                          aria-label="Next month"
+                          className="md:hidden"
+                          onClick={() => setCalendarMonth(nextMonth)}
+                        >
+                          <ChevronRight />
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        variant="quiet"
+                        size="icon-sm"
+                        aria-label="Next month"
+                        onClick={() => setCalendarMonth(nextMonth)}
+                      >
+                        <ChevronRight />
+                      </Button>
+                    )}
+                  </div>
+                  <MonthGrid
+                    month={month}
+                    today={today}
+                    onSelectDate={chooseCalendarDate}
+                    onHoverDate={(date) => {
+                      if (!date || pendingStartDate) setHoveredDate(date)
+                    }}
+                    decorate={(key) => {
+                      const isRangeStart = key === displayedRangeStart
+                      const isRangeEnd = key === displayedRangeEnd
+                      const inRange =
+                        key > displayedRangeStart && key < displayedRangeEnd
+                      const soft =
+                        Boolean(pendingStartDate) &&
+                        key === previewEndDate &&
+                        key !== pendingStartDate
+                      const isCommittedEnd = !pendingStartDate && isRangeEnd
+                      const selected = isRangeStart || isCommittedEnd
+                      const multiDay = displayedRangeStart !== displayedRangeEnd
+                      return {
+                        selected,
+                        inRange,
+                        soft,
+                        edge: multiDay
+                          ? isRangeStart
+                            ? "start"
+                            : isCommittedEnd
+                              ? "end"
+                              : null
+                          : null,
+                        disabled:
+                          key < today ||
+                          (latestEnd !== null && key > latestEnd),
+                        pressed:
+                          key === pendingStartDate ||
+                          (!pendingStartDate && (selected || inRange)),
                       }
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        {isLeadingMonth ? (
-                          <Button
-                            variant="quiet"
-                            size="icon-sm"
-                            aria-label="Previous month"
-                            disabled={atEarliestMonth}
-                            onClick={() =>
-                              setCalendarMonth((current) =>
-                                addMonths(current, -1)
-                              )
-                            }
-                          >
-                            <ChevronLeft />
-                          </Button>
-                        ) : (
-                          <span className="size-7" />
-                        )}
-                        <p className="text-md font-semibold">
-                          {formatMonthYear(month)}
-                        </p>
-                        {isLeadingMonth ? (
-                          <>
-                            <span className="hidden size-7 md:block" />
-                            <Button
-                              variant="quiet"
-                              size="icon-sm"
-                              aria-label="Next month"
-                              className="md:hidden"
-                              onClick={() => setCalendarMonth(nextMonth)}
-                            >
-                              <ChevronRight />
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            variant="quiet"
-                            size="icon-sm"
-                            aria-label="Next month"
-                            onClick={() => setCalendarMonth(nextMonth)}
-                          >
-                            <ChevronRight />
-                          </Button>
-                        )}
-                      </div>
-                      <MonthGrid
-                        month={month}
-                        today={today}
-                        onSelectDate={chooseCalendarDate}
-                        onHoverDate={(date) => {
-                          if (!date || pendingStartDate) setHoveredDate(date)
-                        }}
-                        decorate={(key) => {
-                          const isRangeStart = key === displayedRangeStart
-                          const isRangeEnd = key === displayedRangeEnd
-                          const inRange =
-                            key > displayedRangeStart && key < displayedRangeEnd
-                          const soft =
-                            Boolean(pendingStartDate) &&
-                            key === previewEndDate &&
-                            key !== pendingStartDate
-                          const isCommittedEnd = !pendingStartDate && isRangeEnd
-                          const selected = isRangeStart || isCommittedEnd
-                          const multiDay =
-                            displayedRangeStart !== displayedRangeEnd
-                          return {
-                            selected,
-                            inRange,
-                            soft,
-                            edge: multiDay
-                              ? isRangeStart
-                                ? "start"
-                                : isCommittedEnd
-                                  ? "end"
-                                  : null
-                              : null,
-                            disabled:
-                              key < today ||
-                              (latestEnd !== null && key > latestEnd),
-                            pressed:
-                              key === pendingStartDate ||
-                              (!pendingStartDate && (selected || inRange)),
-                          }
-                        }}
-                      />
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+                    }}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

@@ -1,9 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { Filter } from "lucide-react"
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { undoIngredientImport } from "@/app/(app)/ingredients/actions"
 import {
   loadActivity,
@@ -279,37 +284,35 @@ export function HistoryDialog({
       <DialogContent size="md">
         <DialogHeader className="flex-row items-center justify-between gap-3">
           <DialogTitle>History</DialogTitle>
-          <Popover.Root>
-            <Popover.Trigger
+          <Popover>
+            <PopoverTrigger
               render={<Button type="button" variant="outline" size="sm" />}
             >
               <Filter strokeWidth={1.8} aria-hidden="true" />
               Filter
-            </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Positioner align="end" sideOffset={6} className="z-50">
-                <Popover.Popup className="w-[min(23rem,calc(100vw-2rem))] origin-(--transform-origin) rounded-lg border border-popover-border bg-popover p-3 text-popover-foreground outline-none">
-                  <Popover.Title className="sr-only">
-                    Filter history
-                  </Popover.Title>
-                  <div className="grid grid-cols-2 gap-x-5">
-                    <FilterColumn
-                      title="Events"
-                      options={EVENT_FILTERS}
-                      on={onEvents}
-                      onToggle={toggle(setOnEvents)}
-                    />
-                    <FilterColumn
-                      title="Resources"
-                      options={TYPE_FILTERS}
-                      on={onTypes}
-                      onToggle={toggle(setOnTypes)}
-                    />
-                  </div>
-                </Popover.Popup>
-              </Popover.Positioner>
-            </Popover.Portal>
-          </Popover.Root>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              sideOffset={6}
+              className="w-[min(23rem,calc(100vw-2rem))] p-3"
+            >
+              <PopoverTitle className="sr-only">Filter history</PopoverTitle>
+              <div className="grid grid-cols-2 gap-x-5">
+                <FilterColumn
+                  title="Events"
+                  options={EVENT_FILTERS}
+                  on={onEvents}
+                  onToggle={toggle(setOnEvents)}
+                />
+                <FilterColumn
+                  title="Resources"
+                  options={TYPE_FILTERS}
+                  on={onTypes}
+                  onToggle={toggle(setOnTypes)}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
         </DialogHeader>
 
         {/* Six rows of the 56px rhythm before the list starts scrolling. */}
