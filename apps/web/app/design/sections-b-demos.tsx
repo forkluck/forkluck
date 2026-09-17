@@ -843,6 +843,7 @@ export function MenuDemo() {
 
 export function ModalDemo() {
   const [confirming, setConfirming] = React.useState(false)
+  const [typing, setTyping] = React.useState(false)
   return (
     <Row>
       <Labeled label="Dialog">
@@ -879,8 +880,21 @@ export function ModalDemo() {
           title="Delete Butter croissant?"
           description="Twelve components and every costing on this recipe go with it."
           confirmLabel="Delete recipe"
-          confirmText="croissant"
           onConfirm={() => setConfirming(false)}
+        />
+      </Labeled>
+      <Labeled label="Confirm, type to confirm">
+        <Button variant="destructive" onClick={() => setTyping(true)}>
+          Delete kitchen
+        </Button>
+        <ConfirmDialog
+          open={typing}
+          onOpenChange={setTyping}
+          title="Delete Test kitchen?"
+          description="Every ingredient, recipe, invoice and sale in this kitchen goes with it."
+          confirmLabel="Delete kitchen"
+          confirmText="Test kitchen"
+          onConfirm={() => setTyping(false)}
         />
       </Labeled>
     </Row>
