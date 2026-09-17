@@ -258,7 +258,7 @@ export function LinkDemo() {
   return (
     <div className="flex flex-wrap items-center gap-5">
       <PageParent href="#link">Ingredients</PageParent>
-      <Button variant="link" render={<a href="#link" />}>
+      <Button variant="link" nativeButton={false} render={<a href="#link" />}>
         View the invoice
       </Button>
       <Badge variant="link" render={<a href="#link" />}>

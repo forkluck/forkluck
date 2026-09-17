@@ -78,6 +78,20 @@
   color: #fff;
 }
 
+/* The chrome link rules above outrank .btn here (the reference's bare `a`
+   did not), so the filled buttons name their label colour again. */
+.guide .nav a.btn,
+.guide .mobile-menu a.btn,
+.guide .foot a.btn {
+  color: #fff;
+}
+
+.guide .nav a.btn:hover,
+.guide .mobile-menu a.btn:hover,
+.guide .foot a.btn:hover {
+  color: #fff;
+}
+
 .guide .sec-inner {
   max-width: 1044px;
   margin: 0 auto;
