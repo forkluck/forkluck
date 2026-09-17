@@ -25,7 +25,8 @@
   --ink: #18181b;
   --ink-hover: #3f3f46;
   --accent: #3273dc;
-  --bg: #e9e7e2;
+  --bg: #ffffff;
+  --fill: #f4f4f5;
   --muted: #3f3f46;
   --muted2: #52525b;
   --grey: #71717a;
@@ -182,6 +183,7 @@
 
 .guide .foot {
   background: #fff;
+  border-top: 1px solid var(--line);
   padding: 72px 48px 36px;
   position: relative;
 }
@@ -698,7 +700,7 @@
   line-height: 1.4;
   text-transform: uppercase;
   color: var(--muted2);
-  background: var(--bg);
+  background: var(--fill);
   border-bottom: 1px solid var(--line);
 }
 
