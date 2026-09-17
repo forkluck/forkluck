@@ -84,9 +84,13 @@ function PageHeader({ className, ...props }: React.ComponentProps<"div">) {
  * line box would push the toolbar 3px down). Baseline flex so a badge or save
  * status sits on the title's baseline.
  */
-function PageTitle({ className, ...props }: React.ComponentProps<"h1">) {
+function PageTitle({
+  as: Heading = "h1",
+  className,
+  ...props
+}: React.ComponentProps<"h1"> & { as?: "h1" | "h2" | "h3" }) {
   return (
-    <h1
+    <Heading
       data-slot="page-title"
       className={cn(
         "flex min-w-0 items-baseline gap-2 text-2xl leading-[normal] font-semibold tracking-[-0.02em] text-foreground",
@@ -186,12 +190,14 @@ function ToolbarSpacer({ className, ...props }: React.ComponentProps<"div">) {
  */
 function EmptyState({
   title,
+  titleAs: EmptyStateTitle = "h2",
   description,
   children,
   className,
   ...props
 }: Omit<React.ComponentProps<"div">, "title"> & {
   title: React.ReactNode
+  titleAs?: "h2" | "h3"
   description?: React.ReactNode
 }) {
   return (
@@ -203,9 +209,9 @@ function EmptyState({
       )}
       {...props}
     >
-      <h2 className="text-xl leading-[normal] font-semibold tracking-[-0.01em] text-foreground">
+      <EmptyStateTitle className="text-xl leading-[normal] font-semibold tracking-[-0.01em] text-foreground">
         {title}
-      </h2>
+      </EmptyStateTitle>
       {description ? (
         <p className="mx-auto mt-2 max-w-[46ch] text-base leading-[1.65] text-muted-foreground">
           {description}

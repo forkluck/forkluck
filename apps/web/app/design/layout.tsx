@@ -1,13 +1,9 @@
 import type { Metadata } from "next"
 
-import "./guide.css"
-import { NavMenu } from "./nav-menu"
-
-const TITLE = "Forkluck visual guide: every component, rendered live"
+const TITLE = "Forkluck components"
 const DESCRIPTION =
-  "Every Forkluck component rendered live from the app's own code, with the design tokens behind it."
+  "Every Forkluck component, every variant, rendered live from the app's own code."
 const URL = "https://design.forkluck.com/"
-const PUBLISHED = "2026-09-16"
 
 export const metadata: Metadata = {
   // Absolute, because the root layout's template appends " — Forkluck" and
@@ -18,95 +14,47 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-// Article structured data, so the guide is indexed as the dated piece of
-// writing it is rather than as an application screen.
-const ARTICLE_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: TITLE,
-  description: DESCRIPTION,
-  url: URL,
-  datePublished: PUBLISHED,
-  dateModified: PUBLISHED,
-  author: {
-    "@type": "Organization",
-    name: "Forkluck",
-    url: "https://forkluck.com/",
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Forkluck",
-    url: "https://forkluck.com/",
-  },
-}
-
 /**
- * Chrome for the visual guide: the marketing nav and footer the article sits
- * in, and the one place guide.css is imported. The page itself renders the
- * header, the contents rail and the sections inside `children`.
+ * Chrome for the component guide: a slim sticky bar naming the app and the
+ * page, and a one-line footer. Everything between them is the page itself,
+ * on the bare background, on the app's own tokens.
  *
- * The `.guide` wrapper is what scopes every rule in guide.css, so this element
- * has to stay outermost; `landing-only` is the reference's mode for a page
- * with no site sections behind it, which hides the unbuilt nav and footer
- * columns and shows the single link row instead.
+ * The wordmark carries the same classes as `components/brand-mark.tsx` rather
+ * than the component, because the bar wants the type and not the truncating
+ * block the sidebar needs.
  */
 export default function DesignLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div data-slot="guide" className="guide">
-      <script
-        type="application/ld+json"
-        // The payload is a literal above, not user input.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE_JSON_LD) }}
-      />
-      <div className="page landing-only">
-        <nav className="nav">
-          <a href="https://forkluck.com/" className="brand">
-            <span>Forkluck</span>
-          </a>
-          <div className="nav-right">
-            <a href="https://app.forkluck.com" className="nav-open">
-              Open app
-            </a>
-            <a href="https://app.forkluck.com/signup" className="btn nav-cta">
-              Start free trial
-            </a>
-            <NavMenu />
-          </div>
-        </nav>
-        {children}
-        <footer className="foot">
-          <div className="sec-inner">
-            <div className="foot-grid">
-              <div className="foot-brand">
-                <a href="https://forkluck.com/" className="brand">
-                  <span>Forkluck</span>
-                </a>
-                <p>Recipe costing and analysis for chefs.</p>
-                <a href="https://app.forkluck.com/signup" className="btn">
-                  Start free trial
-                </a>
-              </div>
-              <div className="foot-mini">
-                <a href="https://forkluck.com">Website</a>
-                <a href="https://app.forkluck.com">App</a>
-                <a href="https://feedback.forkluck.com">Feedback</a>
-                <a href="https://github.com/forkluck/forkluck">Source</a>
-                <a href="https://forkluck.com/privacy/">Privacy</a>
-                <a href="mailto:support@forkluck.com">Support</a>
-              </div>
-            </div>
-            <div className="foot-bottom">
-              <span>© Forkluck</span>
-              <div>
-                <a href="https://forkluck.com/privacy/">Privacy</a>
-                <a href="https://forkluck.com/terms/">Terms</a>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </div>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background px-6">
+        <div className="flex items-center gap-3">
+          <span className="text-lg font-semibold tracking-[-0.01em]">
+            Forkluck
+          </span>
+          <span aria-hidden="true" className="h-4 w-px bg-border" />
+          <span className="text-md text-muted-foreground">Components</span>
+        </div>
+        <a
+          href="https://app.forkluck.com"
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          Open app
+        </a>
+      </header>
+      {children}
+      <footer className="flex items-center gap-4 px-6 py-8 text-xs text-faint">
+        <a
+          href="https://github.com/forkluck/forkluck"
+          className="hover:text-foreground"
+        >
+          Source
+        </a>
+        <a href="https://forkluck.com" className="hover:text-foreground">
+          Website
+        </a>
+      </footer>
     </div>
   )
 }

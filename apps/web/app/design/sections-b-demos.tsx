@@ -33,8 +33,6 @@ import {
 import { DropZone } from "@/components/ui/drop-zone"
 import {
   Field,
-  FieldDescription,
-  FieldError,
   FieldLabel,
   FieldLegend,
   FieldSeparator,
@@ -46,7 +44,7 @@ import {
   InputGroup,
   SearchInput,
 } from "@/components/ui/input"
-import { LabeledInput, LabeledShell } from "@/components/ui/labeled-field"
+import { LabeledInput } from "@/components/ui/labeled-field"
 import { MenuCheckItem, MenuItem } from "@/components/ui/menu"
 import { MetricCard, Stat } from "@/components/ui/metric-card"
 import { MetricComparisonBadge } from "@/components/ui/metric-comparison-badge"
@@ -84,9 +82,17 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { Labeled, Matrix, Row } from "./matrix"
+
 /**
  * Every demo body for sections 27 to 51 of the visual guide: the app's own
- * components on kitchen data, one component per pane.
+ * components laid out the way the Radix Themes playground lays its own out,
+ * on kitchen data and on the bare white page.
+ *
+ * A component with two axes gets a `Matrix`, variants across and sizes or
+ * states down; a component with one axis gets a `Row` of `Labeled` things; a
+ * composed thing renders once as a real example. Nothing else is drawn: no
+ * borders, no fills and no captions around a demo.
  *
  * This is the client half of the registry. The list itself lives in
  * `sections-b.tsx`, which stays a server module so the page can read it: in
@@ -94,76 +100,122 @@ import {
  * server component mapping over an array imported from one would throw.
  *
  * Nothing here talks to the server, the router or the clock. A demo that needs
- * state keeps it in this file, and the one date field is pinned to UTC on a
- * fixed day so the page renders the same thing every time.
+ * state keeps it in this file, and the date field is pinned to UTC on a fixed
+ * day so the page renders the same thing every time.
  */
 
-/** The pane's own vertical rhythm, shared by every demo that stacks rows. */
-const PANE_STACK = "flex flex-col gap-4"
+/** The vertical rhythm of a demo that stacks more than one thing. */
+const STACK = "flex flex-col gap-6"
+
+/** The states every text field is shown in, in one order. */
+const FIELD_STATES = ["Empty", "Filled", "Error", "Disabled"] as const
 
 export function EmailFieldDemo() {
   return (
-    <div className="flex max-w-80 flex-col gap-4">
-      <LabeledInput
-        label="Billing email"
-        type="email"
-        defaultValue="orders@ternbakery.com"
-        autoComplete="off"
-      />
-      <LabeledInput
-        label="Invoice inbox"
-        type="email"
-        placeholder="invoices@yourkitchen.com"
-        autoComplete="off"
-      />
-    </div>
+    <Row>
+      <Labeled label="Empty" className="w-64">
+        <LabeledInput
+          label="Billing email"
+          type="email"
+          placeholder="invoices@yourkitchen.com"
+          autoComplete="off"
+          containerClassName="w-full"
+        />
+      </Labeled>
+      <Labeled label="Filled" className="w-64">
+        <LabeledInput
+          label="Billing email"
+          type="email"
+          defaultValue="orders@ternbakery.com"
+          autoComplete="off"
+          containerClassName="w-full"
+        />
+      </Labeled>
+      <Labeled label="Error" className="w-64">
+        <LabeledInput
+          label="Billing email"
+          type="email"
+          defaultValue="orders@ternbakery"
+          aria-invalid
+          autoComplete="off"
+          containerClassName="w-full"
+        />
+      </Labeled>
+      <Labeled label="Disabled" className="w-64">
+        <LabeledInput
+          label="Billing email"
+          type="email"
+          defaultValue="orders@ternbakery.com"
+          disabled
+          autoComplete="off"
+          containerClassName="w-full"
+        />
+      </Labeled>
+    </Row>
   )
 }
 
 export function PasswordFieldDemo() {
   return (
-    <div className="flex max-w-80 flex-col gap-2">
-      <LabeledInput
-        label="Password"
-        type="password"
-        defaultValue="sourdough-starter"
-        autoComplete="off"
-      />
-      <FieldDescription>
-        At least 10 characters. Used for the kitchen account, not the supplier
-        portal.
-      </FieldDescription>
-    </div>
+    <Row>
+      {FIELD_STATES.map((state) => (
+        <Labeled key={state} label={state.toLowerCase()} className="w-64">
+          <LabeledInput
+            label="Password"
+            type="password"
+            defaultValue={state === "Empty" ? undefined : "sourdough-starter"}
+            placeholder={
+              state === "Empty" ? "At least 10 characters" : undefined
+            }
+            aria-invalid={state === "Error" || undefined}
+            disabled={state === "Disabled"}
+            autoComplete="off"
+            containerClassName="w-full"
+          />
+        </Labeled>
+      ))}
+    </Row>
   )
 }
 
 export function UrlFieldDemo() {
   return (
-    <LabeledShell label="Supplier portal" className="max-w-80">
-      <InputGroup>
-        <InputAffix>https://</InputAffix>
-        <Input
-          type="url"
-          defaultValue="baldor.com/orders"
-          autoComplete="off"
-          spellCheck={false}
-          className="pl-[62px]"
-        />
-      </InputGroup>
-    </LabeledShell>
+    <Row>
+      {FIELD_STATES.map((state) => (
+        <Labeled key={state} label={state.toLowerCase()} className="w-64">
+          <InputGroup className="w-full">
+            <InputAffix>https://</InputAffix>
+            <Input
+              type="url"
+              aria-label="Supplier portal"
+              defaultValue={state === "Empty" ? undefined : "baldor.com/orders"}
+              placeholder={state === "Empty" ? "yoursupplier.com" : undefined}
+              aria-invalid={state === "Error" || undefined}
+              disabled={state === "Disabled"}
+              autoComplete="off"
+              spellCheck={false}
+              className="pl-[62px]"
+            />
+          </InputGroup>
+        </Labeled>
+      ))}
+    </Row>
   )
 }
 
 export function SearchFieldDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <SearchInput label="Search ingredients" />
-      <SearchInput
-        label="Search recipes"
-        defaultValue="croissant"
-        className="max-w-[196px]"
-      />
-    </div>
+    <Row>
+      <Labeled label="Empty">
+        <SearchInput label="Search ingredients" />
+      </Labeled>
+      <Labeled label="Filled">
+        <SearchInput label="Search recipes" defaultValue="croissant" />
+      </Labeled>
+      <Labeled label="Disabled">
+        <SearchInput label="Search invoices" defaultValue="Baldor" disabled />
+      </Labeled>
+    </Row>
   )
 }
 
@@ -193,63 +245,99 @@ function UnitComboboxDemo() {
   )
 }
 
+const SELECT_STATES = ["Value", "Placeholder", "Error", "Disabled"] as const
+const SELECT_SIZES = ["sm", "default"] as const
+
 export function SelectDemo() {
   return (
-    <div className="flex flex-wrap items-end gap-4">
-      <LabeledShell label="Purchase unit" className="w-56">
-        <Select defaultValue="Kilogram">
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Weight</SelectLabel>
+    <div className={STACK}>
+      <Matrix
+        columns={SELECT_STATES}
+        rows={SELECT_SIZES}
+        cell={(state, size) => (
+          <Select
+            defaultValue={state === "Placeholder" ? undefined : "Kilogram"}
+          >
+            <SelectTrigger
+              size={size}
+              aria-label="Purchase unit"
+              aria-invalid={state === "Error" || undefined}
+              disabled={state === "Disabled"}
+              className="w-40"
+            >
+              <SelectValue placeholder="Pick a unit" />
+            </SelectTrigger>
+            <SelectContent>
               <SelectItem value="Kilogram">Kilogram</SelectItem>
               <SelectItem value="Pound">Pound</SelectItem>
-              <SelectItem value="Ounce">Ounce</SelectItem>
-            </SelectGroup>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>Volume</SelectLabel>
               <SelectItem value="Litre">Litre</SelectItem>
-              <SelectItem value="Quart">Quart</SelectItem>
-            </SelectGroup>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>Count</SelectLabel>
-              <SelectItem value="Case">Case</SelectItem>
-              <SelectItem value="Each">Each</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </LabeledShell>
-      <Select defaultValue="Bakery">
-        <SelectTrigger size="sm" className="w-40">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Bakery">Bakery</SelectItem>
-          <SelectItem value="Pastry">Pastry</SelectItem>
-          <SelectItem value="Larder">Larder</SelectItem>
-        </SelectContent>
-      </Select>
-      <UnitComboboxDemo />
+            </SelectContent>
+          </Select>
+        )}
+      />
+      <Row>
+        <Labeled label="Grouped list">
+          <Select defaultValue="Kilogram">
+            <SelectTrigger aria-label="Purchase unit" className="w-56">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Weight</SelectLabel>
+                <SelectItem value="Kilogram">Kilogram</SelectItem>
+                <SelectItem value="Pound">Pound</SelectItem>
+                <SelectItem value="Ounce">Ounce</SelectItem>
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Volume</SelectLabel>
+                <SelectItem value="Litre">Litre</SelectItem>
+                <SelectItem value="Quart">Quart</SelectItem>
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Count</SelectLabel>
+                <SelectItem value="Case">Case</SelectItem>
+                <SelectItem value="Each">Each</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </Labeled>
+        <Labeled label="Searchable">
+          <UnitComboboxDemo />
+        </Labeled>
+      </Row>
     </div>
   )
 }
 
 export function DateFieldDemo() {
-  const [value, setValue] = React.useState("2026-09-16")
+  const [delivery, setDelivery] = React.useState("2026-09-16")
+  const [invoiced, setInvoiced] = React.useState("")
   return (
-    <div className="max-w-64">
-      <DateField
-        id="guide-date-field"
-        label="Delivery date"
-        value={value}
-        onChange={setValue}
-        timeZone="UTC"
-      />
-    </div>
+    <Row>
+      <Labeled label="Filled" className="w-64">
+        <DateField
+          id="guide-date-field"
+          label="Delivery date"
+          value={delivery}
+          onChange={setDelivery}
+          timeZone="UTC"
+          containerClassName="w-full"
+        />
+      </Labeled>
+      <Labeled label="Empty" className="w-64">
+        <DateField
+          id="guide-date-field-empty"
+          label="Invoice date"
+          value={invoiced}
+          onChange={setInvoiced}
+          placeholder="YYYY-MM-DD"
+          timeZone="UTC"
+          containerClassName="w-full"
+        />
+      </Labeled>
+    </Row>
   )
 }
 
@@ -261,8 +349,8 @@ export function DatePickerDemo() {
   }>({ startDate: "2026-09-01", endDate: "2026-09-16" })
 
   return (
-    <div className={PANE_STACK}>
-      <div className="w-[19rem] rounded-lg border border-border bg-card p-3">
+    <div className={STACK}>
+      <div className="w-[19rem]">
         <p className="text-md font-semibold">September 2026</p>
         <MonthGrid
           month={new Date(Date.UTC(2026, 8, 1))}
@@ -286,11 +374,27 @@ export function DatePickerDemo() {
 }
 
 export function ColorFieldDemo() {
-  const [color, setColor] = React.useState("#3273dc")
+  const [chart, setChart] = React.useState("#3273dc")
+  const [tag, setTag] = React.useState("#2f7a4f")
   return (
-    <div className="max-w-64">
-      <ColorField label="Chart color" value={color} onValueChange={setColor} />
-    </div>
+    <Row>
+      <Labeled label="Chart series" className="w-64">
+        <ColorField
+          label="Chart color"
+          value={chart}
+          onValueChange={setChart}
+          className="w-full"
+        />
+      </Labeled>
+      <Labeled label="Station tag" className="w-64">
+        <ColorField
+          label="Station color"
+          value={tag}
+          onValueChange={setTag}
+          className="w-full"
+        />
+      </Labeled>
+    </Row>
   )
 }
 
@@ -302,117 +406,142 @@ export function ColorPickerDemo() {
 export function DropZoneDemo() {
   const [names, setNames] = React.useState<string[]>([])
   return (
-    <div className={PANE_STACK}>
-      <DropZone
-        accept="application/pdf"
-        multiple
-        onFiles={(files) => setNames(files.map((file) => file.name))}
-      >
-        PDF invoices, up to 5 MB each
-      </DropZone>
-      <p className="text-xs text-muted-foreground">
-        {names.length > 0 ? names.join(", ") : "No files chosen yet."}
-      </p>
-    </div>
+    <Row>
+      <Labeled label="Ready" className="w-80">
+        <DropZone
+          accept="application/pdf"
+          multiple
+          onFiles={(files) => setNames(files.map((file) => file.name))}
+          className="w-full"
+        >
+          {names.length > 0
+            ? names.join(", ")
+            : "PDF invoices, up to 5 MB each"}
+        </DropZone>
+      </Labeled>
+      <Labeled label="Disabled" className="w-80">
+        <DropZone
+          accept="application/pdf"
+          disabled
+          onFiles={() => undefined}
+          className="w-full"
+        >
+          PDF invoices, up to 5 MB each
+        </DropZone>
+      </Labeled>
+    </Row>
   )
 }
 
+const CHECKBOX_STATES = [
+  "Unchecked",
+  "Checked",
+  "Indeterminate",
+  "Error",
+] as const
+const ENABLEMENT = ["Enabled", "Disabled"] as const
+
 export function CheckboxDemo() {
   return (
-    <div className="flex flex-col gap-3">
-      <Field orientation="horizontal">
-        <Checkbox id="guide-check-flour" />
-        <FieldLabel htmlFor="guide-check-flour">Bread flour</FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Checkbox id="guide-check-butter" defaultChecked />
-        <FieldLabel htmlFor="guide-check-butter">European butter</FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Checkbox id="guide-check-all" indeterminate />
-        <FieldLabel htmlFor="guide-check-all">All dairy</FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Checkbox id="guide-check-archived" disabled />
-        <FieldLabel htmlFor="guide-check-archived">
-          Archived ingredients
-        </FieldLabel>
-      </Field>
-      <Field orientation="horizontal" data-invalid="true">
-        <Checkbox id="guide-check-terms" aria-invalid />
-        <FieldLabel htmlFor="guide-check-terms">Supplier terms</FieldLabel>
-      </Field>
-      <FieldError>Accept the supplier terms to place the order.</FieldError>
-    </div>
+    <Matrix
+      columns={ENABLEMENT}
+      rows={CHECKBOX_STATES}
+      cell={(enablement, state) => (
+        <Checkbox
+          aria-label={`Bread flour, ${state.toLowerCase()}, ${enablement.toLowerCase()}`}
+          defaultChecked={state === "Checked"}
+          indeterminate={state === "Indeterminate"}
+          aria-invalid={state === "Error" || undefined}
+          disabled={enablement === "Disabled"}
+        />
+      )}
+    />
   )
 }
+
+const RADIO_STATES = ["Unchecked", "Checked"] as const
 
 export function ChoiceListDemo() {
   const [basis, setBasis] = React.useState("yield")
   return (
-    <div className="flex flex-wrap gap-10">
-      <FieldSet>
-        <FieldLegend variant="label">Costing basis</FieldLegend>
-        <RadioGroup
-          aria-label="Costing basis"
-          value={basis}
-          onValueChange={(next) => setBasis(next as string)}
-        >
-          <RadioItem value="yield">Yield cost</RadioItem>
-          <RadioItem value="purchase">Purchase cost</RadioItem>
-          <RadioItem value="invoice" disabled>
-            Last invoice price
-          </RadioItem>
-        </RadioGroup>
-      </FieldSet>
-      <FieldSet>
-        <FieldLegend variant="label">Include in the export</FieldLegend>
-        <div data-slot="checkbox-group" className="flex flex-col gap-3">
-          <Field orientation="horizontal">
-            <Checkbox id="guide-export-recipes" defaultChecked />
-            <FieldLabel htmlFor="guide-export-recipes">Recipes</FieldLabel>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox id="guide-export-ingredients" defaultChecked />
-            <FieldLabel htmlFor="guide-export-ingredients">
-              Ingredients
-            </FieldLabel>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox id="guide-export-invoices" />
-            <FieldLabel htmlFor="guide-export-invoices">Invoices</FieldLabel>
-          </Field>
-        </div>
-      </FieldSet>
+    <div className={STACK}>
+      <Matrix
+        columns={ENABLEMENT}
+        rows={RADIO_STATES}
+        cell={(enablement, state) => (
+          <RadioGroup
+            aria-label={`Costing basis, ${state.toLowerCase()}, ${enablement.toLowerCase()}`}
+            defaultValue={state === "Checked" ? "on" : "off"}
+          >
+            <RadioItem
+              value="on"
+              aria-label="Yield cost"
+              disabled={enablement === "Disabled"}
+            />
+          </RadioGroup>
+        )}
+      />
+      <div className="flex flex-wrap gap-10">
+        <FieldSet>
+          <FieldLegend variant="label">Costing basis</FieldLegend>
+          <RadioGroup
+            aria-label="Costing basis"
+            value={basis}
+            onValueChange={(next) => setBasis(next as string)}
+          >
+            <RadioItem value="yield">Yield cost</RadioItem>
+            <RadioItem value="purchase">Purchase cost</RadioItem>
+            <RadioItem value="invoice" disabled>
+              Last invoice price
+            </RadioItem>
+          </RadioGroup>
+        </FieldSet>
+        <FieldSet>
+          <FieldLegend variant="label">Include in the export</FieldLegend>
+          <div data-slot="checkbox-group" className="flex flex-col gap-3">
+            <Field orientation="horizontal">
+              <Checkbox id="guide-export-recipes" defaultChecked />
+              <FieldLabel htmlFor="guide-export-recipes">Recipes</FieldLabel>
+            </Field>
+            <Field orientation="horizontal">
+              <Checkbox id="guide-export-ingredients" defaultChecked />
+              <FieldLabel htmlFor="guide-export-ingredients">
+                Ingredients
+              </FieldLabel>
+            </Field>
+            <Field orientation="horizontal">
+              <Checkbox id="guide-export-invoices" />
+              <FieldLabel htmlFor="guide-export-invoices">Invoices</FieldLabel>
+            </Field>
+          </div>
+        </FieldSet>
+      </div>
     </div>
   )
 }
 
+const SWITCH_SIZES = ["sm", "default"] as const
+const SWITCH_STATES = ["Off", "On", "Disabled"] as const
+
 export function SwitchDemo() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={STACK}>
+      <Matrix
+        columns={SWITCH_SIZES}
+        rows={SWITCH_STATES}
+        cell={(size, state) => (
+          <Switch
+            size={size}
+            aria-label={`Show costs, ${size}, ${state.toLowerCase()}`}
+            defaultChecked={state === "On"}
+            disabled={state === "Disabled"}
+          />
+        )}
+      />
       <Field orientation="horizontal">
         <Switch id="guide-switch-costs" defaultChecked />
         <FieldLabel htmlFor="guide-switch-costs">
           Show costs on the recipe
-        </FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Switch id="guide-switch-waste" />
-        <FieldLabel htmlFor="guide-switch-waste">
-          Apply a waste allowance
-        </FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Switch id="guide-switch-sync" size="sm" defaultChecked />
-        <FieldLabel htmlFor="guide-switch-sync">
-          Sync sales every night
-        </FieldLabel>
-      </Field>
-      <Field orientation="horizontal">
-        <Switch id="guide-switch-locked" disabled />
-        <FieldLabel htmlFor="guide-switch-locked">
-          Lock prices to the last invoice
         </FieldLabel>
       </Field>
     </div>
@@ -427,138 +556,139 @@ const TABLE_ROWS = [
 
 export function TableDemo() {
   return (
-    <div className={PANE_STACK}>
-      <TableFrame>
-        <Table>
-          <TableHeader>
-            <TableHeaderRow>
-              <TableHead>Recipe</TableHead>
-              <TableHead className="text-right">Cost per unit</TableHead>
-              <TableHead className="text-right">Margin</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="w-12" />
-            </TableHeaderRow>
-          </TableHeader>
-          <TableBody>
-            {TABLE_ROWS.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {row.cost}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {row.margin}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    size="row"
-                    variant={row.status === "Costed" ? "success" : "warning"}
-                  >
-                    {row.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <RowActionsMenu label={`Actions for ${row.name}`}>
-                    <MenuItem>
-                      <SquarePen strokeWidth={1.8} aria-hidden="true" />
-                      Edit
-                    </MenuItem>
-                    <MenuItem className="text-destructive">
-                      <Trash2 strokeWidth={1.8} aria-hidden="true" />
-                      Delete
-                    </MenuItem>
-                  </RowActionsMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableFrame>
-      <TableFrame>
-        <Table>
-          <TableHeader>
-            <TableHeaderRow>
-              <TableHead>Supplier</TableHead>
-              <TableHead className="text-right">Invoices</TableHead>
-            </TableHeaderRow>
-          </TableHeader>
-          <TableBody>
-            <TableEmpty colSpan={2}>No suppliers match this filter.</TableEmpty>
-          </TableBody>
-        </Table>
-      </TableFrame>
-    </div>
+    <TableFrame>
+      <Table>
+        <TableHeader>
+          <TableHeaderRow>
+            <TableHead>Recipe</TableHead>
+            <TableHead className="text-right">Cost per unit</TableHead>
+            <TableHead className="text-right">Margin</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="w-12" />
+          </TableHeaderRow>
+        </TableHeader>
+        <TableBody>
+          {TABLE_ROWS.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell>{row.name}</TableCell>
+              <TableCell className="text-right tabular-nums">
+                {row.cost}
+              </TableCell>
+              <TableCell className="text-right tabular-nums">
+                {row.margin}
+              </TableCell>
+              <TableCell>
+                <Badge
+                  size="row"
+                  variant={row.status === "Costed" ? "success" : "warning"}
+                >
+                  {row.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-right">
+                <RowActionsMenu label={`Actions for ${row.name}`}>
+                  <MenuItem>
+                    <SquarePen strokeWidth={1.8} aria-hidden="true" />
+                    Edit
+                  </MenuItem>
+                  <MenuItem className="text-destructive">
+                    <Trash2 strokeWidth={1.8} aria-hidden="true" />
+                    Delete
+                  </MenuItem>
+                </RowActionsMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableFrame>
   )
 }
 
 export function DividerDemo() {
   return (
-    <div className={PANE_STACK}>
-      <div className="flex flex-col gap-3">
-        <p className="text-base">Yield 24 croissants</p>
-        <Separator />
-        <p className="text-base">Batch time 3 h 20 m</p>
-      </div>
-      <div className="flex h-5 items-center gap-3 text-base">
-        <span>Bakery</span>
-        <Separator orientation="vertical" />
-        <span>Pastry</span>
-        <Separator orientation="vertical" />
-        <span>Larder</span>
-      </div>
-      <div className="flex flex-col gap-3">
-        <FieldSeparator>or</FieldSeparator>
-      </div>
-    </div>
+    <Row>
+      <Labeled label="Horizontal" className="w-64">
+        <div className="flex w-full flex-col gap-3">
+          <p className="text-base">Yield 24 croissants</p>
+          <Separator />
+          <p className="text-base">Batch time 3 h 20 m</p>
+        </div>
+      </Labeled>
+      <Labeled label="Vertical">
+        <div className="flex h-5 items-center gap-3 text-base">
+          <span>Bakery</span>
+          <Separator orientation="vertical" />
+          <span>Pastry</span>
+          <Separator orientation="vertical" />
+          <span>Larder</span>
+        </div>
+      </Labeled>
+      <Labeled label="With a word" className="w-64">
+        <div className="w-full py-2">
+          <FieldSeparator>or</FieldSeparator>
+        </div>
+      </Labeled>
+    </Row>
   )
 }
 
 export function BoxDemo() {
   return (
-    <div className={PANE_STACK}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Butter croissant</CardTitle>
-          <CardDescription>Updated this morning</CardDescription>
-        </CardHeader>
-        <CardContent>
-          Twelve components, costed from last week&apos;s invoices.
-        </CardContent>
-      </Card>
-      <Card className="gap-2 p-3">
-        <CardTitle>Tighter padding</CardTitle>
-        <CardContent>The same surface with 12px of padding.</CardContent>
-      </Card>
-      <div className="flex flex-wrap gap-3">
-        <div className="rounded-lg bg-fill-soft px-4 py-3 text-base">
-          bg-fill-soft, the quiet panel
+    <Row>
+      <Labeled label="Card" className="w-72">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Butter croissant</CardTitle>
+            <CardDescription>Updated this morning</CardDescription>
+          </CardHeader>
+          <CardContent>Twelve components, costed from last week.</CardContent>
+        </Card>
+      </Labeled>
+      <Labeled label="Tighter padding" className="w-72">
+        <Card className="w-full gap-2 p-3">
+          <CardTitle>Pain au chocolat</CardTitle>
+          <CardContent>Nine components, costed this morning.</CardContent>
+        </Card>
+      </Labeled>
+      <Labeled label="Soft panel" className="w-72">
+        <div className="w-full rounded-lg bg-fill-soft px-4 py-3 text-base">
+          Yield 24 croissants at $1.14 each
         </div>
-        <div className="rounded-lg bg-secondary px-4 py-3 text-base">
-          bg-secondary, the grey fill
+      </Labeled>
+      <Labeled label="Grey panel" className="w-72">
+        <div className="w-full rounded-lg bg-secondary px-4 py-3 text-base">
+          Yield 24 croissants at $1.14 each
         </div>
-      </div>
-    </div>
+      </Labeled>
+    </Row>
   )
 }
 
 export function StackDemo() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-base">Bread flour</p>
-        <p className="text-base">European butter</p>
-        <p className="text-base">Sea salt</p>
-      </div>
-      <div className="flex flex-col gap-4">
-        <p className="text-base">Mix and rest</p>
-        <p className="text-base">Laminate</p>
-        <p className="text-base">Proof and bake</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline">Cancel</Button>
-        <Button>Save recipe</Button>
-      </div>
-    </div>
+    <Row>
+      <Labeled label="gap-2">
+        <div className="flex flex-col gap-2">
+          <p className="text-base">Bread flour</p>
+          <p className="text-base">European butter</p>
+          <p className="text-base">Sea salt</p>
+        </div>
+      </Labeled>
+      <Labeled label="gap-4">
+        <div className="flex flex-col gap-4">
+          <p className="text-base">Mix and rest</p>
+          <p className="text-base">Laminate</p>
+          <p className="text-base">Proof and bake</p>
+        </div>
+      </Labeled>
+      <Labeled label="Action row">
+        <div className="flex items-center gap-2">
+          <Button variant="outline">Cancel</Button>
+          <Button>Save recipe</Button>
+        </div>
+      </Labeled>
+    </Row>
   )
 }
 
@@ -573,7 +703,7 @@ export function GridDemo() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          The wide column carries the table on a detail screen.
+          Bread flour, European butter, sea salt, fresh yeast, whole milk.
         </CardContent>
       </Card>
       <Card>
@@ -581,7 +711,7 @@ export function GridDemo() {
           <CardTitle>Costing</CardTitle>
           <CardDescription>Yield basis</CardDescription>
         </CardHeader>
-        <CardContent>The narrow column carries the summary.</CardContent>
+        <CardContent>$1.14 per croissant, 68% margin.</CardContent>
       </Card>
     </div>
   )
@@ -656,101 +786,126 @@ export function PopoverDemo() {
 export function MenuDemo() {
   const [sort, setSort] = React.useState("name")
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <ActionsMenu>
-        <MenuItem>
-          <Download strokeWidth={1.8} aria-hidden="true" />
-          Import recipes
-        </MenuItem>
-        <MenuItem>
-          <Upload strokeWidth={1.8} aria-hidden="true" />
-          Export recipes
-        </MenuItem>
-        <MenuItem>
-          <Clock strokeWidth={1.8} aria-hidden="true" />
-          History
-        </MenuItem>
-      </ActionsMenu>
-      <ActionsMenu label="Sort">
-        <MenuCheckItem
-          checked={sort === "name"}
-          onClick={() => setSort("name")}
-        >
-          Name
-        </MenuCheckItem>
-        <MenuCheckItem
-          checked={sort === "cost"}
-          onClick={() => setSort("cost")}
-        >
-          Cost per unit
-        </MenuCheckItem>
-        <MenuCheckItem
-          checked={sort === "margin"}
-          onClick={() => setSort("margin")}
-        >
-          Margin
-        </MenuCheckItem>
-      </ActionsMenu>
-      <RowActionsMenu label="Actions for Butter croissant">
-        <MenuItem>
-          <SquarePen strokeWidth={1.8} aria-hidden="true" />
-          Edit
-        </MenuItem>
-        <MenuItem className="text-destructive">
-          <Trash2 strokeWidth={1.8} aria-hidden="true" />
-          Delete
-        </MenuItem>
-      </RowActionsMenu>
-    </div>
+    <Row>
+      <Labeled label="Command rows">
+        <ActionsMenu>
+          <MenuItem>
+            <Download strokeWidth={1.8} aria-hidden="true" />
+            Import recipes
+          </MenuItem>
+          <MenuItem>
+            <Upload strokeWidth={1.8} aria-hidden="true" />
+            Export recipes
+          </MenuItem>
+          <MenuItem>
+            <Clock strokeWidth={1.8} aria-hidden="true" />
+            History
+          </MenuItem>
+        </ActionsMenu>
+      </Labeled>
+      <Labeled label="Check rows">
+        <ActionsMenu label="Sort">
+          <MenuCheckItem
+            checked={sort === "name"}
+            onClick={() => setSort("name")}
+          >
+            Name
+          </MenuCheckItem>
+          <MenuCheckItem
+            checked={sort === "cost"}
+            onClick={() => setSort("cost")}
+          >
+            Cost per unit
+          </MenuCheckItem>
+          <MenuCheckItem
+            checked={sort === "margin"}
+            onClick={() => setSort("margin")}
+          >
+            Margin
+          </MenuCheckItem>
+        </ActionsMenu>
+      </Labeled>
+      <Labeled label="Row actions">
+        <RowActionsMenu label="Actions for Butter croissant">
+          <MenuItem>
+            <SquarePen strokeWidth={1.8} aria-hidden="true" />
+            Edit
+          </MenuItem>
+          <MenuItem className="text-destructive">
+            <Trash2 strokeWidth={1.8} aria-hidden="true" />
+            Delete
+          </MenuItem>
+        </RowActionsMenu>
+      </Labeled>
+    </Row>
   )
 }
 
 export function ModalDemo() {
   const [confirming, setConfirming] = React.useState(false)
+  const [typing, setTyping] = React.useState(false)
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <Dialog>
-        <DialogTrigger
-          render={<Button variant="outline">Open the dialog</Button>}
-        />
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Duplicate recipe</DialogTitle>
-            <DialogDescription>
-              The copy keeps every component and its yield. Costs recalculate
-              from today&apos;s prices.
-            </DialogDescription>
-          </DialogHeader>
-          <LabeledInput
-            label="New name"
-            defaultValue="Butter croissant (copy)"
-            autoComplete="off"
+    <Row>
+      <Labeled label="Dialog">
+        <Dialog>
+          <DialogTrigger
+            render={<Button variant="outline">Duplicate recipe</Button>}
           />
-          <DialogFooter showCloseButton>
-            <Button>Duplicate</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Button variant="destructive" onClick={() => setConfirming(true)}>
-        Delete recipe
-      </Button>
-      <ConfirmDialog
-        open={confirming}
-        onOpenChange={setConfirming}
-        title="Delete Butter croissant?"
-        description="Twelve components and every costing on this recipe go with it."
-        confirmLabel="Delete recipe"
-        confirmText="croissant"
-        onConfirm={() => setConfirming(false)}
-      />
-    </div>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Duplicate recipe</DialogTitle>
+              <DialogDescription>
+                The copy keeps every component and its yield. Costs recalculate
+                from today&apos;s prices.
+              </DialogDescription>
+            </DialogHeader>
+            <LabeledInput
+              label="New name"
+              defaultValue="Butter croissant (copy)"
+              autoComplete="off"
+            />
+            <DialogFooter showCloseButton>
+              <Button>Duplicate</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Labeled>
+      <Labeled label="Confirm">
+        <Button variant="destructive" onClick={() => setConfirming(true)}>
+          Delete recipe
+        </Button>
+        <ConfirmDialog
+          open={confirming}
+          onOpenChange={setConfirming}
+          title="Delete Butter croissant?"
+          description="Twelve components and every costing on this recipe go with it."
+          confirmLabel="Delete recipe"
+          onConfirm={() => setConfirming(false)}
+        />
+      </Labeled>
+      <Labeled label="Confirm, type to confirm">
+        <Button variant="destructive" onClick={() => setTyping(true)}>
+          Delete kitchen
+        </Button>
+        <ConfirmDialog
+          open={typing}
+          onOpenChange={setTyping}
+          title="Delete Test kitchen?"
+          description="Every ingredient, recipe, invoice and sale in this kitchen goes with it."
+          confirmLabel="Delete kitchen"
+          confirmText="Test kitchen"
+          onConfirm={() => setTyping(false)}
+        />
+      </Labeled>
+    </Row>
   )
 }
 
 export function EmptyStateDemo() {
   return (
-    <div className={PANE_STACK}>
+    <div className={STACK}>
       <EmptyState
+        titleAs="h3"
         title="No ingredients yet"
         description="Add the things you buy, then build recipes on top of them. An invoice import fills this list in one pass."
       >
@@ -778,7 +933,7 @@ export function EmptyStateDemo() {
 
 export function NumberDemo() {
   return (
-    <div className={PANE_STACK}>
+    <div className={STACK}>
       <div className="grid gap-4 sm:grid-cols-2">
         <MetricCard
           label="Food cost"
@@ -806,28 +961,36 @@ export function NumberDemo() {
           note="Against $17,110 the week before"
         />
       </div>
-      <p className="text-4xl leading-none font-semibold tracking-[-0.02em] tabular-nums">
-        $1.14
-      </p>
-      <dl className="flex flex-wrap gap-8">
-        <Stat label="Components" value="12" />
-        <Stat label="Yield" value="24" />
-        <Stat label="Batch cost" value="$27.36" />
-      </dl>
-      <div className="flex max-w-56 flex-col gap-1 text-base tabular-nums">
-        <div className="flex justify-between">
-          <span>Bread flour</span>
-          <span>$4.20</span>
-        </div>
-        <div className="flex justify-between">
-          <span>European butter</span>
-          <span>$18.75</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Sea salt</span>
-          <span>$0.41</span>
-        </div>
-      </div>
+      <Row>
+        <Labeled label="Hero numeral">
+          <p className="text-4xl leading-none font-semibold tracking-[-0.02em] tabular-nums">
+            $1.14
+          </p>
+        </Labeled>
+        <Labeled label="Stats">
+          <dl className="flex flex-wrap gap-8">
+            <Stat label="Components" value="12" />
+            <Stat label="Yield" value="24" />
+            <Stat label="Batch cost" value="$27.36" />
+          </dl>
+        </Labeled>
+        <Labeled label="Aligned column">
+          <div className="flex w-56 flex-col gap-1 text-base tabular-nums">
+            <div className="flex justify-between">
+              <span>Bread flour</span>
+              <span>$4.20</span>
+            </div>
+            <div className="flex justify-between">
+              <span>European butter</span>
+              <span>$18.75</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Sea salt</span>
+              <span>$0.41</span>
+            </div>
+          </div>
+        </Labeled>
+      </Row>
     </div>
   )
 }
