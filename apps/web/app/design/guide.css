@@ -22,29 +22,32 @@
  */
 
 .guide {
-  --ink: #18181b;
-  --ink-hover: #3f3f46;
-  --accent: #3273dc;
-  --bg: #ffffff;
-  --fill: #f4f4f5;
-  --muted: #3f3f46;
-  --muted2: #52525b;
-  --grey: #71717a;
-  --line: #e4e4e7;
-  --fs10: 10px;
-  --fs12: 12px;
-  --fs13: 13px;
-  --fs14: 14px;
-  --fs15: 15px;
-  --fs16: 16px;
-  --fs18: 18px;
-  --fs20: 20px;
-  --fs21: 21px;
-  --fs24: 24px;
-  --foot-btn: 12px;
+  /* Every chrome variable carries the g- prefix: the app's own tokens
+     (--accent, --muted, ...) are inherited by the live panes, and a chrome
+     variable with the same name would recolour the components. */
+  --g-ink: #18181b;
+  --g-ink-hover: #3f3f46;
+  --g-accent: #3273dc;
+  --g-bg: #ffffff;
+  --g-fill: #f4f4f5;
+  --g-muted: #3f3f46;
+  --g-muted2: #52525b;
+  --g-grey: #71717a;
+  --g-line: #e4e4e7;
+  --g-fs10: 10px;
+  --g-fs12: 12px;
+  --g-fs13: 13px;
+  --g-fs14: 14px;
+  --g-fs15: 15px;
+  --g-fs16: 16px;
+  --g-fs18: 18px;
+  --g-fs20: 20px;
+  --g-fs21: 21px;
+  --g-fs24: 24px;
+  --g-foot-btn: 12px;
 
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--g-bg);
+  color: var(--g-ink);
   font-family: var(--font-body), system-ui, sans-serif;
   /* The canvas fills a short viewport; the app body behind it is white. */
   min-height: 100svh;
@@ -55,18 +58,18 @@
 .guide .nav a,
 .guide .mobile-menu a,
 .guide .foot a {
-  color: var(--ink);
+  color: var(--g-ink);
   text-decoration: none;
 }
 
 .guide .nav a:hover,
 .guide .mobile-menu a:hover,
 .guide .foot a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .btn {
-  background: var(--ink);
+  background: var(--g-ink);
   color: #fff;
   white-space: nowrap;
   border-radius: 6px;
@@ -75,7 +78,7 @@
 }
 
 .guide .btn:hover {
-  background: var(--ink-hover);
+  background: var(--g-ink-hover);
   color: #fff;
 }
 
@@ -109,7 +112,7 @@
 }
 
 .guide .brand {
-  color: var(--ink);
+  color: var(--g-ink);
   align-items: center;
   gap: 10px;
   display: flex;
@@ -117,13 +120,13 @@
 
 /* The brand is a wordmark; `components/brand-mark.tsx` carries no glyph. */
 .guide .brand span {
-  font-size: var(--fs20);
+  font-size: var(--g-fs20);
   letter-spacing: -0.02em;
   font-weight: 700;
 }
 
 .guide .nav-links {
-  font-size: var(--fs14);
+  font-size: var(--g-fs14);
   align-items: center;
   gap: 33px;
   font-weight: 500;
@@ -131,18 +134,18 @@
 }
 
 .guide .nav-links a {
-  color: var(--ink);
+  color: var(--g-ink);
   align-items: center;
   gap: 6px;
   display: flex;
 }
 
 .guide .nav-links a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .nav-right {
-  font-size: var(--fs14);
+  font-size: var(--g-fs14);
   align-items: center;
   gap: 27px;
   font-weight: 500;
@@ -158,7 +161,7 @@
   cursor: pointer;
   width: 33px;
   height: 33px;
-  color: var(--ink);
+  color: var(--g-ink);
   background: 0 0;
   border: 0;
   justify-content: center;
@@ -168,7 +171,7 @@
 }
 
 .guide .mobile-menu {
-  font-size: var(--fs16);
+  font-size: var(--g-fs16);
   flex-direction: column;
   gap: 16px;
   padding: 0 20px 24px;
@@ -177,13 +180,13 @@
   display: none;
   position: absolute;
   inset: 100% 0 auto 0;
-  background: var(--bg);
+  background: var(--g-bg);
   z-index: 20;
 }
 
 .guide .foot {
   background: #fff;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--g-line);
   padding: 72px 48px 36px;
   position: relative;
 }
@@ -211,13 +214,13 @@
 }
 
 .guide .foot-brand .brand span {
-  font-size: var(--fs16);
+  font-size: var(--g-fs16);
   display: inline;
 }
 
 .guide .foot-brand p {
-  font-size: var(--fs12);
-  color: var(--muted2);
+  font-size: var(--g-fs12);
+  color: var(--g-muted2);
   text-wrap: pretty;
   max-width: 195px;
   margin: 0;
@@ -225,7 +228,7 @@
 }
 
 .guide .foot-brand .btn {
-  font-size: var(--foot-btn);
+  font-size: var(--g-foot-btn);
   align-self: flex-start;
   padding: 9px 14px;
 }
@@ -237,13 +240,13 @@
 }
 
 .guide .foot-h {
-  font-size: var(--fs12);
-  color: var(--ink);
+  font-size: var(--g-fs12);
+  color: var(--g-ink);
   font-weight: 700;
 }
 
 .guide .foot-links {
-  font-size: var(--fs12);
+  font-size: var(--g-fs12);
   flex-direction: column;
   gap: 8px;
   line-height: 1.4;
@@ -251,15 +254,15 @@
 }
 
 .guide .foot-links a {
-  color: var(--muted2);
+  color: var(--g-muted2);
 }
 
 .guide .foot-links a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .foot-mini {
-  font-size: var(--fs12);
+  font-size: var(--g-fs12);
   flex-wrap: wrap;
   grid-column: 2 / -1;
   place-content: flex-start flex-end;
@@ -271,11 +274,11 @@
 }
 
 .guide .foot-mini a {
-  color: var(--muted2);
+  color: var(--g-muted2);
 }
 
 .guide .foot-mini a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .landing-only .nav-links,
@@ -289,9 +292,9 @@
 }
 
 .guide .foot-bottom {
-  border-top: 1px solid var(--line);
-  font-size: var(--fs10);
-  color: var(--grey);
+  border-top: 1px solid var(--g-line);
+  font-size: var(--g-fs10);
+  color: var(--g-grey);
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
@@ -307,26 +310,26 @@
 }
 
 .guide .foot-bottom a {
-  color: var(--grey);
+  color: var(--g-grey);
 }
 
 .guide .foot-bottom a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 @media (max-width: 1023px) {
   .guide {
-    --fs10: 13px;
-    --fs12: 16px;
-    --fs13: 17px;
-    --fs14: 19px;
-    --fs15: 20px;
-    --fs16: 21px;
-    --fs18: 24px;
-    --fs20: 27px;
-    --fs21: 28px;
-    --fs24: 32px;
-    --foot-btn: 13px;
+    --g-fs10: 13px;
+    --g-fs12: 16px;
+    --g-fs13: 17px;
+    --g-fs14: 19px;
+    --g-fs15: 20px;
+    --g-fs16: 21px;
+    --g-fs18: 24px;
+    --g-fs20: 27px;
+    --g-fs21: 28px;
+    --g-fs24: 32px;
+    --g-foot-btn: 13px;
   }
 
   .guide .sec-inner {
@@ -390,9 +393,7 @@
 }
 
 .guide .eyebrow {
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
+  color: var(--g-accent);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
@@ -408,7 +409,7 @@
 }
 
 .guide .standfirst {
-  color: var(--muted);
+  color: var(--g-muted);
   text-wrap: pretty;
   max-width: 600px;
   margin: 0;
@@ -417,7 +418,7 @@
 }
 
 .guide .byline {
-  color: var(--muted2);
+  color: var(--g-muted2);
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
@@ -428,7 +429,7 @@
 }
 
 .guide .byline strong {
-  color: var(--ink);
+  color: var(--g-ink);
   font-weight: 600;
 }
 
@@ -466,17 +467,15 @@
 }
 
 .guide .toc a {
-  color: var(--muted2);
+  color: var(--g-muted2);
   text-decoration: none;
 }
 
 .guide .toc a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .toc-h {
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: #a1a1aa;
   margin-bottom: 2px;
   font-size: 11px;
@@ -495,7 +494,7 @@
 }
 
 .guide .article {
-  color: var(--muted);
+  color: var(--g-muted);
   min-width: 0;
   max-width: 680px;
   font-size: 17px;
@@ -519,13 +518,13 @@
 }
 
 .guide .article > p:first-child {
-  color: var(--ink);
+  color: var(--g-ink);
   font-size: 19px;
 }
 
 .guide .article > h2 {
   letter-spacing: -0.02em;
-  color: var(--ink);
+  color: var(--g-ink);
   margin: 48px 0 20px;
   font-size: 27px;
   font-weight: 700;
@@ -533,7 +532,7 @@
 }
 
 .guide .article > h3 {
-  color: var(--ink);
+  color: var(--g-ink);
   margin: 28px 0 12px;
   font-size: 20px;
   font-weight: 600;
@@ -544,7 +543,7 @@
 .guide .article > ul a,
 .guide .article > ol a,
 .guide .article > blockquote a {
-  color: var(--ink);
+  color: var(--g-ink);
   text-underline-offset: 2px;
   text-decoration: underline;
 }
@@ -553,14 +552,14 @@
 .guide .article > ul a:hover,
 .guide .article > ol a:hover,
 .guide .article > blockquote a:hover {
-  color: var(--accent);
+  color: var(--g-accent);
 }
 
 .guide .article > p strong,
 .guide .article > ul strong,
 .guide .article > ol strong,
 .guide .article > blockquote strong {
-  color: var(--ink);
+  color: var(--g-ink);
   font-weight: 600;
 }
 
@@ -586,7 +585,7 @@
 .guide .article > ol code,
 .guide .article > blockquote code,
 .guide .article > .table-wrap code {
-  color: var(--ink);
+  color: var(--g-ink);
   overflow-wrap: anywhere;
   background: #f4f4f5;
   border-radius: 4px;
@@ -596,7 +595,7 @@
 }
 
 .guide .article > blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--g-accent);
   background: #fff;
   border-radius: 0 10px 10px 0;
   margin: 0 0 20px;
@@ -609,7 +608,7 @@
 }
 
 .guide .table-wrap {
-  border: 1px solid var(--line);
+  border: 1px solid var(--g-line);
   background: #fff;
   border-radius: 12px;
   overflow-x: auto;
@@ -629,20 +628,20 @@
 
 .guide .article > .table-wrap th {
   text-align: left;
-  color: var(--ink);
-  border-bottom: 1px solid var(--line);
+  color: var(--g-ink);
+  border-bottom: 1px solid var(--g-line);
   padding: 12px 16px;
   font-weight: 700;
 }
 
 .guide .article > .table-wrap td {
   vertical-align: top;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--g-line);
   padding: 12px 16px;
 }
 
 .guide .article > .table-wrap td:first-child {
-  color: var(--ink);
+  color: var(--g-ink);
   font-weight: 600;
 }
 
@@ -651,13 +650,13 @@
 }
 
 .guide .faq {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--g-line);
   flex-direction: column;
   display: flex;
 }
 
 .guide .faq-item {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--g-line);
   flex-direction: column;
   gap: 8px;
   padding: 20px 0;
@@ -665,7 +664,7 @@
 }
 
 .guide .faq-item h3 {
-  color: var(--ink);
+  color: var(--g-ink);
   margin: 0;
   font-size: 18px;
   font-weight: 600;
@@ -684,7 +683,7 @@
   display: grid;
   grid-template-columns: 1fr;
   margin: 0 0 28px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--g-line);
   border-radius: 12px;
   background: #fff;
   overflow: hidden;
@@ -696,12 +695,10 @@
   padding: 6px 12px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.06em;
   line-height: 1.4;
-  text-transform: uppercase;
-  color: var(--muted2);
-  background: var(--fill);
-  border-bottom: 1px solid var(--line);
+  color: var(--g-muted2);
+  background: var(--g-fill);
+  border-bottom: 1px solid var(--g-line);
 }
 
 /* The demo sits on the app's own body settings, not the article's prose:

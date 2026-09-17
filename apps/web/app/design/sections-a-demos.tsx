@@ -80,16 +80,18 @@ function photo(svg: string) {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }
 
-const CROISSANT_PHOTO = photo(
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" fill="#f4ead6"/><path d="M14 62c12-26 56-26 68 0-14 10-54 10-68 0z" fill="#c8880c"/><path d="M30 54c6-10 30-10 36 0-8 5-28 5-36 0z" fill="#eaa93a"/></svg>'
+/** An invoice scan: a white sheet, a supplier line, item lines and a total. */
+const INVOICE_SCAN = photo(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" fill="#e4e4e7"/><rect x="14" y="6" width="68" height="90" fill="#ffffff"/><rect x="22" y="14" width="30" height="5" rx="1" fill="#18181b"/><rect x="22" y="24" width="52" height="2.5" rx="1" fill="#c9c9cf"/><rect x="22" y="32" width="52" height="2.5" rx="1" fill="#c9c9cf"/><rect x="22" y="40" width="52" height="2.5" rx="1" fill="#c9c9cf"/><rect x="22" y="48" width="52" height="2.5" rx="1" fill="#c9c9cf"/><rect x="22" y="56" width="52" height="2.5" rx="1" fill="#c9c9cf"/><rect x="22" y="70" width="52" height="1" fill="#18181b"/><rect x="22" y="76" width="18" height="4" rx="1" fill="#18181b"/><rect x="56" y="76" width="18" height="4" rx="1" fill="#18181b"/></svg>'
 )
 
 const CHEF_PHOTO = photo(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#d8e4f7"/><circle cx="32" cy="24" r="12" fill="#3273dc"/><path d="M8 64c2-14 12-22 24-22s22 8 24 22z" fill="#3273dc"/></svg>'
 )
 
-const PREP_PHOTO = photo(
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"><rect width="300" height="100" fill="#eaf4ee"/><circle cx="70" cy="50" r="28" fill="#2f7a4f"/><rect x="130" y="26" width="140" height="48" rx="10" fill="#c8880c"/></svg>'
+/** The top of the same scan, wide: header, supplier line and item lines. */
+const INVOICE_SCAN_WIDE = photo(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"><rect width="300" height="100" fill="#e4e4e7"/><rect x="60" y="10" width="180" height="120" fill="#ffffff"/><rect x="76" y="24" width="52" height="8" rx="1.5" fill="#18181b"/><rect x="180" y="24" width="44" height="4" rx="1" fill="#c9c9cf"/><rect x="180" y="32" width="44" height="4" rx="1" fill="#c9c9cf"/><rect x="76" y="48" width="148" height="1" fill="#18181b"/><rect x="76" y="58" width="90" height="4" rx="1" fill="#c9c9cf"/><rect x="196" y="58" width="28" height="4" rx="1" fill="#c9c9cf"/><rect x="76" y="70" width="104" height="4" rx="1" fill="#c9c9cf"/><rect x="196" y="70" width="28" height="4" rx="1" fill="#c9c9cf"/><rect x="76" y="82" width="82" height="4" rx="1" fill="#c9c9cf"/><rect x="196" y="82" width="28" height="4" rx="1" fill="#c9c9cf"/><rect x="76" y="94" width="112" height="4" rx="1" fill="#c9c9cf"/><rect x="196" y="94" width="28" height="4" rx="1" fill="#c9c9cf"/></svg>'
 )
 
 /** 1. Page */
@@ -534,7 +536,7 @@ export function SpinnerDemo() {
         <Spinner size="lg" />
         <Button pending>Saving</Button>
       </div>
-      <LoadingRegion pending label="Loading recipes">
+      <LoadingRegion pending label="Loading recipes" className="min-h-40">
         <p className="text-base text-muted-foreground">
           48 recipes, costed on Monday. The numbers stay legible while the
           screen waits.
@@ -597,12 +599,24 @@ export function AvatarDemo() {
 
 /** 20. Thumbnail */
 export function ThumbnailDemo() {
+  const tiles = [
+    { label: "sm, 32px", size: "sm" as const, src: INVOICE_SCAN },
+    { label: "default, 48px", size: "default" as const, src: INVOICE_SCAN },
+    { label: "lg, 64px", size: "lg" as const, src: INVOICE_SCAN },
+    { label: "No file", size: "lg" as const, src: undefined },
+  ]
   return (
-    <div className="flex flex-wrap items-end gap-4">
-      <Thumbnail size="sm" src={CROISSANT_PHOTO} alt="Butter croissant" />
-      <Thumbnail src={CROISSANT_PHOTO} alt="Butter croissant" />
-      <Thumbnail size="lg" src={CROISSANT_PHOTO} alt="Butter croissant" />
-      <Thumbnail size="lg" alt="No photo for Kouign amann" />
+    <div className="flex flex-wrap items-end gap-6">
+      {tiles.map((tile) => (
+        <div key={tile.label} className="flex flex-col items-start gap-2">
+          <Thumbnail
+            size={tile.size}
+            src={tile.src}
+            alt={tile.src ? "Baldor invoice, scanned" : "No scan on file"}
+          />
+          <span className="text-xs text-muted-foreground">{tile.label}</span>
+        </div>
+      ))}
     </div>
   )
 }
@@ -612,8 +626,8 @@ export function ImageDemo() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={PREP_PHOTO}
-      alt="Croissants proofing on a sheet tray"
+      src={INVOICE_SCAN_WIDE}
+      alt="Baldor invoice, page 1, scanned"
       className="aspect-3/1 w-full rounded-lg border border-border object-cover"
     />
   )

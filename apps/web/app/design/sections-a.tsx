@@ -188,7 +188,7 @@ export const SECTIONS_A: GuideSection[] = [
     id: "thumbnail",
     title: "Thumbnail",
     description:
-      "A square photo tile at 32, 48 or 64px, rounded-md over one hairline, cropped with object-cover so a column of them keeps one edge whatever shape the file is. Without a photo it draws the same tile on the soft fill with a muted icon, named by the alt text.",
+      "The images Forkluck holds are invoice scans and attachments, and this is their tile: a square at 32, 48 or 64px, rounded-md over one hairline, cropped with object-cover so a column of them keeps one edge whatever shape the file is. Without a file it draws the same tile on the soft fill with a muted icon, named by the alt text.",
     Demo: ThumbnailDemo,
   },
   {

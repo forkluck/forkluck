@@ -181,7 +181,7 @@ export default function DesignGuidePage() {
   return (
     <>
       <header className="art-head">
-        <span className="eyebrow">design system</span>
+        <span className="eyebrow">Design system</span>
         <h1>Forkluck visual guide: every component, rendered live</h1>
         <p className="standfirst">
           Every Forkluck component rendered live from the app&apos;s own code,
