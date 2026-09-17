@@ -148,7 +148,7 @@ const EXPECTED_TITLES = [
   "Number",
 ]
 
-describe("visual guide registry", () => {
+describe("component guide registry", () => {
   it("holds the sections in the owner's order", () => {
     expect(SECTIONS.map((section) => section.id)).toEqual(EXPECTED_IDS)
   })
@@ -157,7 +157,7 @@ describe("visual guide registry", () => {
     expect(SECTIONS.map((section) => section.title)).toEqual(EXPECTED_TITLES)
   })
 
-  it("ends the contents rail with the tokens table", () => {
+  it("ends the contents rail with the tokens", () => {
     expect(CONTENTS).toHaveLength(SECTIONS.length + 1)
     expect(CONTENTS.at(-1)).toEqual({
       id: "design-tokens",
@@ -166,46 +166,45 @@ describe("visual guide registry", () => {
   })
 })
 
-describe("visual guide page", () => {
+describe("component guide page", () => {
   it("gives every contents link a heading to land on", () => {
     const { container } = render(<DesignGuidePage />)
-    const links = [...container.querySelectorAll(".toc a")].map((link) =>
+    const sections = [...container.querySelectorAll("section[id]")]
+    expect(sections.map((section) => section.id)).toEqual(
+      CONTENTS.map(({ id }) => id)
+    )
+    // Every section names its component in an `h2`; demos below it drop to
+    // `h3` so the section heading is the only `h2` inside.
+    for (const [index, section] of sections.entries()) {
+      const heading = section.querySelector("h2")
+      expect(heading?.textContent, section.id).toBe(CONTENTS[index].title)
+    }
+    expect(container.querySelectorAll("h1")).toHaveLength(1)
+    expect(container.querySelectorAll("h2")).toHaveLength(CONTENTS.length)
+  })
+
+  it("lists one contents link per entry", () => {
+    const { container } = render(<DesignGuidePage />)
+    const nav = container.querySelector('nav[aria-label="Contents"]')
+    const links = [...(nav?.querySelectorAll("a") ?? [])].map((link) =>
       link.getAttribute("href")
     )
     expect(links).toEqual(CONTENTS.map(({ id }) => `#${id}`))
-
-    const headings = [...container.querySelectorAll("h2[id]")]
-    expect(headings.map((heading) => heading.id)).toEqual(
-      CONTENTS.map(({ id }) => id)
-    )
-    expect(headings.map((heading) => heading.textContent)).toEqual(
-      CONTENTS.map(({ title }) => title)
-    )
-  })
-
-  it("puts one captioned pane under every section", () => {
-    const { container } = render(<DesignGuidePage />)
-    const panes = [...container.querySelectorAll("[data-demo]")]
-    expect(panes.map((pane) => pane.getAttribute("data-demo"))).toEqual(
-      EXPECTED_IDS
-    )
-    for (const pane of panes) {
-      expect(
-        pane.querySelector(".pane-cap")?.textContent,
-        pane.getAttribute("data-demo") ?? ""
-      ).toBe("Forkluck")
-    }
   })
 
   it("owns the only top-level heading and adds no second landmark", () => {
     render(<DesignGuidePage />)
-    // The Page demo's title is an `h1` element carrying aria-level 3, so the
-    // article keeps the one heading the document is titled by.
+    // The Page demo renders its title as an `h3`, so the guide keeps the one
+    // heading the document is titled by.
     const headings = screen.getAllByRole("heading", { level: 1 })
     expect(headings).toHaveLength(1)
-    expect(headings[0].textContent).toBe(
-      "Forkluck visual guide: every component, rendered live"
-    )
+    expect(headings[0].textContent).toBe("Components")
     expect(screen.queryByRole("main")).toBeNull()
+  })
+
+  it("draws the sections on the bare page, with no article panes", () => {
+    const { container } = render(<DesignGuidePage />)
+    expect(container.querySelector(".pane")).toBeNull()
+    expect(container.querySelector(".pane-cap")).toBeNull()
   })
 })
