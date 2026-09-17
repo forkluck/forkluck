@@ -31,20 +31,37 @@ function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
+/**
+ * The popup's accessible name. Screen readers announce it when the popup
+ * opens; a visible title is the popup's heading, an `sr-only` one names a
+ * popup whose content speaks for itself.
+ */
+function PopoverTitle({ ...props }: PopoverPrimitive.Title.Props) {
+  return <PopoverPrimitive.Title data-slot="popover-title" {...props} />
+}
+
+/**
+ * `anchor` hangs the popup off an element other than the trigger: the text
+ * field a suggestion list belongs under, when the field itself must keep
+ * focus and so cannot be the trigger.
+ */
 function PopoverContent({
   className,
   align = "end",
   side = "bottom",
   sideOffset = 6,
+  anchor,
   ...props
 }: PopoverPrimitive.Popup.Props & {
   align?: PopoverPrimitive.Positioner.Props["align"]
   side?: PopoverPrimitive.Positioner.Props["side"]
   sideOffset?: number
+  anchor?: PopoverPrimitive.Positioner.Props["anchor"]
 }) {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Positioner
+        anchor={anchor}
         align={align}
         side={side}
         sideOffset={sideOffset}
@@ -63,4 +80,4 @@ function PopoverContent({
   )
 }
 
-export { Popover, PopoverContent, PopoverTrigger }
+export { Popover, PopoverContent, PopoverTitle, PopoverTrigger }

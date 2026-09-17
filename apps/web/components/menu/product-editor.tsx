@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { TriangleAlert, Unlink, X } from "lucide-react"
 
 import {
@@ -75,6 +74,12 @@ import { formatMultiplier, parseMultiplier } from "@/lib/sales-identity"
 import { toSaveFailure } from "@/lib/save-failure"
 import { dollarsToCents } from "@/lib/money"
 import { productHref } from "@/lib/product-href"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import type {
   MenuIngredientOption,
@@ -204,49 +209,45 @@ function MultiplierChip({
   const [text, setText] = React.useState(() => formatMultiplier(value))
   const parsed = parseMultiplier(text)
   return (
-    <Popover.Root
+    <Popover
       onOpenChange={(open) => {
         if (open) setText(formatMultiplier(value))
       }}
     >
-      <Popover.Trigger
+      <PopoverTrigger
         aria-label="Units per sale"
         className={cn(inlineChipClassName, "data-popup-open:bg-fill-soft")}
       >
         <span className="underline decoration-current underline-offset-2">
           {formatMultiplier(value)} {unit}
         </span>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner align="end" sideOffset={4} className="z-50">
-          <Popover.Popup className="z-50 w-[180px] origin-(--transform-origin) rounded-lg border border-popover-border bg-popover p-3 text-popover-foreground outline-none">
-            <Popover.Title className="mb-1.5 block text-xs font-medium text-muted-foreground">
-              Units per sale
-            </Popover.Title>
-            <Input
-              autoFocus
-              type="number"
-              inputMode="decimal"
-              min={1}
-              step="any"
-              aria-label="Units per sale"
-              value={text}
-              onChange={(event) => {
-                setText(event.target.value)
-                const next = parseMultiplier(event.target.value)
-                if (next.ok) onChange(next.value)
-              }}
-              aria-invalid={!parsed.ok || undefined}
-            />
-            {!parsed.ok ? (
-              <p role="alert" className="mt-1.5 text-xs text-destructive">
-                {parsed.error}
-              </p>
-            ) : null}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverTrigger>
+      <PopoverContent align="end" sideOffset={4} className="w-[180px] p-3">
+        <PopoverTitle className="mb-1.5 block text-xs font-medium text-muted-foreground">
+          Units per sale
+        </PopoverTitle>
+        <Input
+          autoFocus
+          type="number"
+          inputMode="decimal"
+          min={1}
+          step="any"
+          aria-label="Units per sale"
+          value={text}
+          onChange={(event) => {
+            setText(event.target.value)
+            const next = parseMultiplier(event.target.value)
+            if (next.ok) onChange(next.value)
+          }}
+          aria-invalid={!parsed.ok || undefined}
+        />
+        {!parsed.ok ? (
+          <p role="alert" className="mt-1.5 text-xs text-destructive">
+            {parsed.error}
+          </p>
+        ) : null}
+      </PopoverContent>
+    </Popover>
   )
 }
 

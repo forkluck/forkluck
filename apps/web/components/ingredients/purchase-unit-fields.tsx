@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { Popover } from "@base-ui/react/popover"
 import { Info, Link2, Search } from "lucide-react"
 
 import { searchInvoiceItems } from "@/app/(app)/ingredients/actions"
@@ -23,6 +22,7 @@ import {
 } from "@/lib/unit-registry"
 import { resolveInvoiceLinePack } from "@/lib/invoice-line-cost"
 import { centsToDollarInput, formatCents } from "@/lib/money"
+import { Popover, PopoverContent } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import type { IngredientRow, InvoiceLineOption } from "@/lib/backend/types"
 import { formatCalendarDate } from "@/lib/datetime"
@@ -268,89 +268,80 @@ function InvoiceItemSearch({
           pick(item)
         }}
       />
-      <Popover.Root open={listed} onOpenChange={setOpen}>
-        <Popover.Portal>
-          <Popover.Positioner
-            anchor={fieldRef}
-            align="start"
-            sideOffset={4}
-            className="z-50"
-          >
-            <Popover.Popup
-              // The cook keeps typing while the list is up, so the popup never
-              // takes the focus its own opening would otherwise pull.
-              initialFocus={false}
-              role="listbox"
-              aria-label="Invoice items"
-              className="max-h-60 w-(--anchor-width) overflow-y-auto rounded-lg border border-popover-border bg-popover p-1.5 text-popover-foreground outline-none"
-            >
-              {answer.error && answered ? (
-                <p className={cn(messageClassName, "text-destructive")}>
-                  {answer.error}
-                </p>
-              ) : !answered ? (
-                <p className={messageClassName}>Searching…</p>
-              ) : items.length === 0 ? (
-                <p className={messageClassName}>No matching invoice items</p>
-              ) : null}
-              {items.map((item, index) => {
-                const linkedNames = item.linkedIngredients
-                  .map((ingredient) => ingredient.name)
-                  .join(", ")
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="option"
-                    aria-selected={index === highlighted}
-                    data-highlighted={index === highlighted || undefined}
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => pick(item)}
-                    className={cn(
-                      "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
-                      index === highlighted && "bg-accent"
-                    )}
-                  >
-                    <span className="min-w-0 flex-1 truncate">
-                      {item.description}
-                    </span>
-                    {linkedNames ? (
-                      <Tooltip>
-                        <TooltipTrigger
-                          render={
-                            <Link2
-                              className="size-[13px] shrink-0 text-muted-foreground"
-                              strokeWidth={1.9}
-                              role="img"
-                              aria-label={`Used by ${linkedNames}`}
-                            />
-                          }
+      <Popover open={listed} onOpenChange={setOpen}>
+        <PopoverContent
+          anchor={fieldRef}
+          align="start"
+          sideOffset={4}
+          // The cook keeps typing while the list is up, so the popup never
+          // takes the focus its own opening would otherwise pull.
+          initialFocus={false}
+          role="listbox"
+          aria-label="Invoice items"
+          className="max-h-60 w-(--anchor-width) overflow-y-auto p-1.5"
+        >
+          {answer.error && answered ? (
+            <p className={cn(messageClassName, "text-destructive")}>
+              {answer.error}
+            </p>
+          ) : !answered ? (
+            <p className={messageClassName}>Searching…</p>
+          ) : items.length === 0 ? (
+            <p className={messageClassName}>No matching invoice items</p>
+          ) : null}
+          {items.map((item, index) => {
+            const linkedNames = item.linkedIngredients
+              .map((ingredient) => ingredient.name)
+              .join(", ")
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="option"
+                aria-selected={index === highlighted}
+                data-highlighted={index === highlighted || undefined}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => pick(item)}
+                className={cn(
+                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  index === highlighted && "bg-accent"
+                )}
+              >
+                <span className="min-w-0 flex-1 truncate">
+                  {item.description}
+                </span>
+                {linkedNames ? (
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <Link2
+                          className="size-[13px] shrink-0 text-muted-foreground"
+                          strokeWidth={1.9}
+                          role="img"
+                          aria-label={`Used by ${linkedNames}`}
                         />
-                        <TooltipContent>Used by {linkedNames}</TooltipContent>
-                      </Tooltip>
-                    ) : null}
-                    <Badge
-                      variant="secondary"
-                      size="row"
-                      // A long supplier name gives way to the description rather
-                      // than truncating the one thing the cook is reading for.
-                      className="max-w-[40%] shrink"
-                    >
-                      <span className="truncate">{item.supplier}</span>
-                    </Badge>
-                    <span className="shrink-0 tabular-nums">
-                      {formatCents(
-                        optionPackPriceCents(item),
-                        item.currencyCode
-                      )}
-                    </span>
-                  </button>
-                )
-              })}
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+                      }
+                    />
+                    <TooltipContent>Used by {linkedNames}</TooltipContent>
+                  </Tooltip>
+                ) : null}
+                <Badge
+                  variant="secondary"
+                  size="row"
+                  // A long supplier name gives way to the description rather
+                  // than truncating the one thing the cook is reading for.
+                  className="max-w-[40%] shrink"
+                >
+                  <span className="truncate">{item.supplier}</span>
+                </Badge>
+                <span className="shrink-0 tabular-nums">
+                  {formatCents(optionPackPriceCents(item), item.currencyCode)}
+                </span>
+              </button>
+            )
+          })}
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
