@@ -47,10 +47,14 @@ are root-owned infrastructure, installed deliberately rather than replaceable by
 the SSH deploy account; changes inside `deploy/` must be applied as an
 infrastructure update.
 
-The public repository carries two nginx templates: `forkluck.conf` is the application on
-`app.forkluck.com`, `forkluck-ghost.conf` is the public site on `forkluck.com`.
-Both replace temporary upstream failures with a static maintenance page and a
-`503 Service Unavailable` response. Install all three files, validate the
+The public repository carries three nginx templates: `forkluck.conf` is the application on
+`app.forkluck.com`, `forkluck-ghost.conf` is the public site on `forkluck.com`,
+and `forkluck-design.conf` is the visual guide on `design.forkluck.com`. The
+first two replace temporary upstream failures with a static maintenance page and a
+`503 Service Unavailable` response. The design template has no service of its
+own: it proxies the guide's paths to the same Next process as the application,
+and it uses the static-asset map and log format that `forkluck.conf` defines at
+http level, so the two must be installed together. Install all four files, validate the
 configuration, and reload nginx when any template changes:
 
 ```bash
@@ -59,8 +63,20 @@ sudo install -m 644 deploy/nginx/maintenance.html /var/www/forkluck/maintenance.
 sudo install -m 644 deploy/nginx/forkluck.conf /etc/nginx/sites-available/forkluck
 sudo install -m 644 deploy/nginx/forkluck-ghost.conf /etc/nginx/sites-available/forkluck-ghost
 sudo ln -sf /etc/nginx/sites-available/forkluck-ghost /etc/nginx/sites-enabled/forkluck-ghost
+sudo install -m 644 deploy/nginx/forkluck-design.conf /etc/nginx/sites-available/forkluck-design
+sudo ln -sf /etc/nginx/sites-available/forkluck-design /etc/nginx/sites-enabled/forkluck-design
 sudo nginx -t
 sudo systemctl reload nginx
+```
+
+`design.forkluck.com` needs a DNS A record pointing at the application server,
+the same address as `app.forkluck.com`, and a certificate for the new name.
+The one certificate covers every Forkluck name, so expand the existing lineage
+rather than issuing a second one:
+
+```bash
+sudo certbot certonly --nginx --expand -d forkluck.com -d www.forkluck.com \
+  -d app.forkluck.com -d design.forkluck.com
 ```
 
 The application proxy allows 12 MiB per request so an accepted 8 MB receipt
@@ -137,6 +153,9 @@ Routing:
   touches it.
 - `www.forkluck.com` → redirects to `forkluck.com`
 - `app.forkluck.com` → application
+- `design.forkluck.com` → the visual guide, rendered by the application's Next
+  process. Only `/`, `/design`, `/icon.png`, `/robots.txt` and `/_next/static/`
+  are proxied there; every other path on that host is a 404
 - `primo.forkluck.com` → private inference gateway (its nginx template and release files live in `forkluck/forkluck-primo`)
 
 To create the first staff account, run Django's `createsuperuser` against the
@@ -632,7 +651,6 @@ level is judged on holding coverage and cutting over-production by at least 2
 points. `current` sizes its busy from the origins before each one, as the page
 does; `--stretch` adds `spread-busy` for the unscaled spread rule beside it.
 Record any accepted change in the forecast ADR; ties keep the current basis.
-
 
 ### Primo capability and editing rollout (September 16)
 

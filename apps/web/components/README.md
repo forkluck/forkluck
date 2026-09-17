@@ -6,8 +6,8 @@ change their rendered output.
 
 | Layer          | Responsibility                                                                         | Current examples                                                                                                       |
 | -------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Primitives     | One control or visual atom. Owns tokens, variants, focus, and accessible HTML.         | `ui/button.tsx`, `ui/input.tsx`, `ui/label.tsx`, `ui/checkbox.tsx`, `ui/select.tsx`, `ui/separator.tsx`                |
-| Components     | Small, reusable compositions with one UI meaning and no feature data access.           | `ui/card.tsx`, `ui/badge.tsx`, `ui/field.tsx`, `ui/filter-pill.tsx`, `ui/tab-pills.tsx`                                |
+| Primitives     | One control or visual atom. Owns tokens, variants, focus, and accessible HTML.         | `ui/button.tsx`, `ui/input.tsx`, `ui/label.tsx`, `ui/checkbox.tsx`, `ui/select.tsx`, `ui/separator.tsx`, `ui/toggle.tsx`, `ui/radio-group.tsx`, `ui/number-field.tsx`, `ui/avatar.tsx`, `ui/thumbnail.tsx`, `ui/scroll-area.tsx`, `ui/popover.tsx` |
+| Components     | Small, reusable compositions with one UI meaning and no feature data access.           | `ui/card.tsx`, `ui/badge.tsx`, `ui/chip.tsx`, `ui/field.tsx`, `ui/filter-pill.tsx`, `ui/tab-pills.tsx`, `ui/color-field.tsx`, `ui/color-picker.tsx`, `ui/drop-zone.tsx` |
 | Patterns       | Repeatable interaction or information arrangements composed from the two layers below. | `ui/data-table.tsx`, `ui/notice-banner.tsx`, `ui/metric-card.tsx`, `ui/date-range-filter.tsx`, `ui/confirm-dialog.tsx` |
 | Page templates | Screen and application-shell structure. Owns layout rhythm, not feature behavior.      | `ui/page.tsx`, `app-shell.tsx`, `app-sidebar.tsx`, `main-header.tsx`                                                   |
 
