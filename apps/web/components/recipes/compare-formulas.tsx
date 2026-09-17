@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { Popover } from "@base-ui/react/popover"
 import {
   ChevronDown,
   ClipboardPaste,
@@ -89,6 +88,12 @@ import {
   type FormulaRole,
 } from "@/lib/recipe/compare"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 /**
@@ -543,7 +548,7 @@ function AddRecipePopover({
     setQuery("")
   }
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(next) => {
         setOpen(next)
@@ -551,82 +556,78 @@ function AddRecipePopover({
       }}
     >
       {/* The black primary at the toolbar's end, as the recipes list has it. */}
-      <Popover.Trigger
+      <PopoverTrigger
         disabled={disabled}
         render={
           <Button type="button" pending={pending} className={className} />
         }
       >
         + Add recipe
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner align="start" sideOffset={6} className="z-50">
-          <Popover.Popup className="z-50 w-64 origin-(--transform-origin) rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
-            <Popover.Title className="sr-only">Add recipe</Popover.Title>
-            <div className="p-1.5">
-              <SearchInput
-                autoFocus
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key !== "Enter") return
-                  event.preventDefault()
-                  if (firstEnabled) choose(firstEnabled.publicId)
-                }}
-                placeholder="Search recipes"
-                aria-label="Search recipes"
-                className="max-w-none"
-                inputClassName="h-8"
-              />
-            </div>
-            <div className="flex max-h-64 flex-col overflow-y-auto p-1.5 pt-0">
-              {matches.length === 0 ? (
-                <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
-                  No recipes match
-                </span>
-              ) : null}
-              {matches.map((option) => {
-                const chosen = selected.includes(option.publicId)
-                return (
-                  <button
-                    key={option.publicId}
-                    type="button"
-                    disabled={chosen}
-                    onClick={() => choose(option.publicId)}
-                    className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-disabled-foreground"
-                  >
-                    <span className="min-w-0 flex-1 truncate text-base">
-                      {option.title}
-                    </span>
-                    {option.category ? (
-                      <span className="max-w-20 truncate text-xs text-faint">
-                        {option.category}
-                      </span>
-                    ) : null}
-                  </button>
-                )
-              })}
+      </PopoverTrigger>
+      <PopoverContent align="start" sideOffset={6} className="w-64 p-0">
+        <PopoverTitle className="sr-only">Add recipe</PopoverTitle>
+        <div className="p-1.5">
+          <SearchInput
+            autoFocus
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter") return
+              event.preventDefault()
+              if (firstEnabled) choose(firstEnabled.publicId)
+            }}
+            placeholder="Search recipes"
+            aria-label="Search recipes"
+            className="max-w-none"
+            inputClassName="h-8"
+          />
+        </div>
+        <div className="flex max-h-64 flex-col overflow-y-auto p-1.5 pt-0">
+          {matches.length === 0 ? (
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+              No recipes match
+            </span>
+          ) : null}
+          {matches.map((option) => {
+            const chosen = selected.includes(option.publicId)
+            return (
               <button
+                key={option.publicId}
                 type="button"
-                onClick={() => {
-                  setOpen(false)
-                  setQuery("")
-                  onPaste()
-                }}
-                className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-base outline-none hover:bg-accent focus-visible:bg-accent"
+                disabled={chosen}
+                onClick={() => choose(option.publicId)}
+                className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-disabled-foreground"
               >
-                <ClipboardPaste
-                  className="size-[17px]"
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
-                Paste a recipe
+                <span className="min-w-0 flex-1 truncate text-base">
+                  {option.title}
+                </span>
+                {option.category ? (
+                  <span className="max-w-20 truncate text-xs text-faint">
+                    {option.category}
+                  </span>
+                ) : null}
               </button>
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+            )
+          })}
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false)
+              setQuery("")
+              onPaste()
+            }}
+            className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-base outline-none hover:bg-accent focus-visible:bg-accent"
+          >
+            <ClipboardPaste
+              className="size-[17px]"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            Paste a recipe
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 

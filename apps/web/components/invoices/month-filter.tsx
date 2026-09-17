@@ -2,10 +2,15 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { Popover } from "@base-ui/react/popover"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { formatInZone, formatMonthYear } from "@/lib/datetime"
 
@@ -69,7 +74,7 @@ export function InvoiceMonthFilter({
   }
 
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen)
@@ -78,7 +83,7 @@ export function InvoiceMonthFilter({
       }}
     >
       {/* The toolbar filter pill: quiet label, ink value, no chevron. */}
-      <Popover.Trigger
+      <PopoverTrigger
         render={
           <Button
             variant="filter"
@@ -92,77 +97,71 @@ export function InvoiceMonthFilter({
         <span className="font-medium text-foreground">
           {formatMonthYear(monthDate(month))}
         </span>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner align="start" sideOffset={6} className="z-50">
-          <Popover.Popup className="w-[17rem] origin-(--transform-origin) rounded-lg border border-popover-border bg-popover p-3 text-popover-foreground outline-none">
-            <Popover.Title className="sr-only">Choose a month</Popover.Title>
-            <div className="flex items-center justify-between gap-3">
-              <Button
-                variant="quiet"
-                size="icon-sm"
-                aria-label="Previous year"
-                disabled={
-                  !earliestMonth || Number(earliestMonth.slice(0, 4)) >= year
-                }
-                onClick={() => setYear((current) => current - 1)}
-              >
-                <ChevronLeft />
-              </Button>
-              <p className="text-md font-semibold">{year}</p>
-              <Button
-                variant="quiet"
-                size="icon-sm"
-                aria-label="Next year"
-                disabled={
-                  !newestMonth || Number(newestMonth.slice(0, 4)) <= year
-                }
-                onClick={() => setYear((current) => current + 1)}
-              >
-                <ChevronRight />
-              </Button>
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-1">
-              {Array.from({ length: 12 }, (_, index) => {
-                const key = monthKey(year, index)
-                const selected = key === month
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    // A month with no invoices has nothing to navigate to.
-                    disabled={!available.has(key)}
-                    aria-label={formatMonthYear(monthDate(key))}
-                    aria-pressed={selected}
-                    onClick={() => choose(key)}
-                    className={cn(
-                      "flex h-9 items-center justify-center rounded-lg border border-transparent text-md leading-5 font-medium outline-none focus-visible:border-foreground disabled:cursor-not-allowed disabled:text-disabled-foreground",
-                      selected
-                        ? "bg-foreground text-background"
-                        : "enabled:hover:bg-muted"
-                    )}
-                  >
-                    {formatInZone(monthDate(key), "UTC", { month: "short" })}
-                  </button>
-                )
-              })}
-            </div>
-            <div className="mt-2 border-t border-popover-border pt-2">
-              <Button
-                variant="quiet"
+      </PopoverTrigger>
+      <PopoverContent align="start" sideOffset={6} className="w-[17rem] p-3">
+        <PopoverTitle className="sr-only">Choose a month</PopoverTitle>
+        <div className="flex items-center justify-between gap-3">
+          <Button
+            variant="quiet"
+            size="icon-sm"
+            aria-label="Previous year"
+            disabled={
+              !earliestMonth || Number(earliestMonth.slice(0, 4)) >= year
+            }
+            onClick={() => setYear((current) => current - 1)}
+          >
+            <ChevronLeft />
+          </Button>
+          <p className="text-md font-semibold">{year}</p>
+          <Button
+            variant="quiet"
+            size="icon-sm"
+            aria-label="Next year"
+            disabled={!newestMonth || Number(newestMonth.slice(0, 4)) <= year}
+            onClick={() => setYear((current) => current + 1)}
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-1">
+          {Array.from({ length: 12 }, (_, index) => {
+            const key = monthKey(year, index)
+            const selected = key === month
+            return (
+              <button
+                key={key}
+                type="button"
+                // A month with no invoices has nothing to navigate to.
+                disabled={!available.has(key)}
+                aria-label={formatMonthYear(monthDate(key))}
+                aria-pressed={selected}
+                onClick={() => choose(key)}
                 className={cn(
-                  "w-full justify-start",
-                  atNewest && "bg-muted text-foreground"
+                  "flex h-9 items-center justify-center rounded-lg border border-transparent text-md leading-5 font-medium outline-none focus-visible:border-foreground disabled:cursor-not-allowed disabled:text-disabled-foreground",
+                  selected
+                    ? "bg-foreground text-background"
+                    : "enabled:hover:bg-muted"
                 )}
-                aria-pressed={atNewest}
-                onClick={() => choose(null)}
               >
-                Most recent month
-              </Button>
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+                {formatInZone(monthDate(key), "UTC", { month: "short" })}
+              </button>
+            )
+          })}
+        </div>
+        <div className="mt-2 border-t border-popover-border pt-2">
+          <Button
+            variant="quiet"
+            className={cn(
+              "w-full justify-start",
+              atNewest && "bg-muted text-foreground"
+            )}
+            aria-pressed={atNewest}
+            onClick={() => choose(null)}
+          >
+            Most recent month
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

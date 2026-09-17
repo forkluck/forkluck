@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { ChevronDown, X } from "lucide-react"
 
 import {
@@ -12,6 +11,12 @@ import {
 import { SearchInput } from "@/components/ui/input"
 import { TabPill, TabPills } from "@/components/ui/tab-pills"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 export type LinkedNutrition = {
@@ -89,7 +94,7 @@ export function UsdaFoodCombobox({
   }
 
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(next) => {
         setOpen(next)
@@ -100,7 +105,7 @@ export function UsdaFoodCombobox({
         }
       }}
     >
-      <Popover.Trigger
+      <PopoverTrigger
         aria-label="Nutrition data"
         disabled={disabled}
         className={cn(
@@ -123,85 +128,85 @@ export function UsdaFoodCombobox({
           strokeWidth={2}
           aria-hidden="true"
         />
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner align="start" sideOffset={4} className="z-50">
-          <Popover.Popup className="z-50 w-(--anchor-width) max-w-(--available-width) min-w-[320px] origin-(--transform-origin) rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
-            <Popover.Title className="sr-only">Choose a food</Popover.Title>
-            <div className="flex items-center gap-2 p-1.5">
-              <SearchInput
-                autoFocus
-                maxLength={120}
-                value={query}
-                onChange={(event) => {
-                  setQuery(event.target.value)
-                  searchSoon(event.target.value, scope)
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={4}
+        className="w-(--anchor-width) max-w-(--available-width) min-w-[320px] p-0"
+      >
+        <PopoverTitle className="sr-only">Choose a food</PopoverTitle>
+        <div className="flex items-center gap-2 p-1.5">
+          <SearchInput
+            autoFocus
+            maxLength={120}
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              searchSoon(event.target.value, scope)
+            }}
+            placeholder="Search USDA foods"
+            aria-label="Search USDA foods"
+            className="max-w-none flex-1"
+            inputClassName="h-8"
+          />
+          <TabPills>
+            {(["common", "branded"] as const).map((entry) => (
+              <TabPill
+                key={entry}
+                active={scope === entry}
+                onClick={() => {
+                  if (scope === entry) return
+                  setScope(entry)
+                  void runSearch(query, entry)
                 }}
-                placeholder="Search USDA foods"
-                aria-label="Search USDA foods"
-                className="max-w-none flex-1"
-                inputClassName="h-8"
-              />
-              <TabPills>
-                {(["common", "branded"] as const).map((entry) => (
-                  <TabPill
-                    key={entry}
-                    active={scope === entry}
-                    onClick={() => {
-                      if (scope === entry) return
-                      setScope(entry)
-                      void runSearch(query, entry)
-                    }}
-                  >
-                    {entry === "common" ? "Common" : "Branded"}
-                  </TabPill>
-                ))}
-              </TabPills>
-            </div>
-            <div className="flex max-h-72 flex-col overflow-y-auto p-1.5 pt-0">
-              {value ? (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setOpen(false)
-                    await onClear()
-                  }}
-                  className="flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent"
-                >
-                  <X className="size-[15px] shrink-0" aria-hidden="true" />
-                  Clear
-                </button>
-              ) : null}
-              {searching ? (
-                <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
-                  Searching
+              >
+                {entry === "common" ? "Common" : "Branded"}
+              </TabPill>
+            ))}
+          </TabPills>
+        </div>
+        <div className="flex max-h-72 flex-col overflow-y-auto p-1.5 pt-0">
+          {value ? (
+            <button
+              type="button"
+              onClick={async () => {
+                setOpen(false)
+                await onClear()
+              }}
+              className="flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent"
+            >
+              <X className="size-[15px] shrink-0" aria-hidden="true" />
+              Clear
+            </button>
+          ) : null}
+          {searching ? (
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+              Searching
+            </span>
+          ) : message ? (
+            <span className="flex min-h-9 shrink-0 items-center px-2.5 text-base text-faint">
+              {message}
+            </span>
+          ) : null}
+          {results.map((match) => (
+            <button
+              key={match.fdcId}
+              type="button"
+              onClick={() => void choose(match)}
+              className="flex min-h-9 w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+            >
+              <span className="min-w-0 flex-1 truncate">
+                {match.description}
+              </span>
+              {match.brand ? (
+                <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
+                  {match.brand}
                 </span>
-              ) : message ? (
-                <span className="flex min-h-9 shrink-0 items-center px-2.5 text-base text-faint">
-                  {message}
-                </span>
               ) : null}
-              {results.map((match) => (
-                <button
-                  key={match.fdcId}
-                  type="button"
-                  onClick={() => void choose(match)}
-                  className="flex min-h-9 w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
-                >
-                  <span className="min-w-0 flex-1 truncate">
-                    {match.description}
-                  </span>
-                  {match.brand ? (
-                    <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
-                      {match.brand}
-                    </span>
-                  ) : null}
-                </button>
-              ))}
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

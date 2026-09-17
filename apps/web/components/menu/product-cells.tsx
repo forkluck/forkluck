@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import {
   ChevronDown,
   ChevronsUpDown,
@@ -9,6 +8,11 @@ import {
   TriangleAlert,
 } from "lucide-react"
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 /**
@@ -153,8 +157,8 @@ export function AlertFlag({
   const labels = Array.isArray(label) ? label : [label]
   const fixes = actions?.filter(Boolean) ?? []
   return (
-    <Popover.Root>
-      <Popover.Trigger
+    <Popover>
+      <PopoverTrigger
         aria-label={labels.join(", ")}
         className="group/flag relative flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-1.5 text-warning outline-none hover:bg-warning-hover focus-visible:border-foreground data-popup-open:bg-warning-hover"
       >
@@ -168,47 +172,41 @@ export function AlertFlag({
           strokeWidth={2.2}
           aria-hidden="true"
         />
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner
-          side="bottom"
-          align="start"
-          sideOffset={0}
-          className="z-50"
-        >
-          <Popover.Popup
-            style={{ width }}
-            className={cn(
-              "rounded-lg border border-popover-border bg-popover px-3 text-md leading-5 text-warning-foreground outline-none",
-              fixes.length || labels.length > 1
-                ? "flex flex-col gap-1.5 py-2.5"
-                : "flex h-[46px] items-center gap-2.5"
-            )}
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={0}
+        style={{ width }}
+        className={cn(
+          "min-w-0 px-3 text-md leading-5 text-warning-foreground",
+          fixes.length || labels.length > 1
+            ? "flex flex-col gap-1.5 py-2.5"
+            : "flex h-[46px] items-center gap-2.5"
+        )}
+      >
+        {labels.map((line) => (
+          <span key={line} className="flex items-center gap-2.5">
+            <TriangleAlert
+              className="size-[17px] flex-none text-warning"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            {line}
+          </span>
+        ))}
+        {fixes.map((fix) => (
+          <button
+            key={fix.label}
+            type="button"
+            onClick={fix.onClick}
+            className="self-start rounded-md border border-transparent text-sm text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:outline-none"
           >
-            {labels.map((line) => (
-              <span key={line} className="flex items-center gap-2.5">
-                <TriangleAlert
-                  className="size-[17px] flex-none text-warning"
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
-                {line}
-              </span>
-            ))}
-            {fixes.map((fix) => (
-              <button
-                key={fix.label}
-                type="button"
-                onClick={fix.onClick}
-                className="self-start rounded-md border border-transparent text-sm text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:outline-none"
-              >
-                {fix.label}
-              </button>
-            ))}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+            {fix.label}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -235,8 +233,8 @@ export function CountCell({
   }
 
   return (
-    <Popover.Root>
-      <Popover.Trigger
+    <Popover>
+      <PopoverTrigger
         aria-label={`${count} ${label[count === 1 ? 0 : 1]}`}
         className="group/count relative -ml-2 flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-2 text-base text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
         onClick={(event) => event.stopPropagation()}
@@ -247,23 +245,17 @@ export function CountCell({
           strokeWidth={2.2}
           aria-hidden="true"
         />
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner
-          side="bottom"
-          align="start"
-          sideOffset={-2}
-          className="z-50"
-        >
-          <Popover.Popup
-            style={{ width }}
-            className="flex flex-col rounded-lg border border-popover-border bg-popover p-1.5 outline-none"
-          >
-            {children}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={-2}
+        style={{ width }}
+        className="flex min-w-0 flex-col p-1.5"
+      >
+        {children}
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -330,8 +322,8 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
 
   return (
     <span className="flex min-w-0 items-center">
-      <Popover.Root>
-        <Popover.Trigger
+      <Popover>
+        <PopoverTrigger
           aria-label={`${entries.length} SKUs`}
           className="group/sku relative -ml-1 flex h-[30px] min-w-0 items-center gap-1 rounded-lg border border-transparent pr-[21px] pl-1 text-base text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
         >
@@ -342,35 +334,31 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
             strokeWidth={2.2}
             aria-hidden="true"
           />
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Positioner
-            side="bottom"
-            align="start"
-            sideOffset={-2}
-            className="z-50"
-          >
-            <Popover.Popup className="flex w-[264px] flex-col rounded-lg border border-popover-border bg-popover p-1.5 outline-none">
-              {entries.map((entry) => (
-                <span key={entry.sku} className="flex flex-col px-2.5 py-1.5">
-                  <span className="flex items-baseline justify-between gap-3">
-                    <span className="truncate text-base text-foreground">
-                      {entry.label}
-                    </span>
-                    <span className="flex-none text-base text-muted-foreground tabular-nums">
-                      {entry.sku}
-                    </span>
-                  </span>
-                  <span className="mt-0.5 text-xs text-faint">
-                    {entry.detail}
-                    {entry.multiplier === 1 ? "" : ` · ×${entry.multiplier}`}
-                  </span>
+        </PopoverTrigger>
+        <PopoverContent
+          side="bottom"
+          align="start"
+          sideOffset={-2}
+          className="flex w-[264px] flex-col p-1.5"
+        >
+          {entries.map((entry) => (
+            <span key={entry.sku} className="flex flex-col px-2.5 py-1.5">
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="truncate text-base text-foreground">
+                  {entry.label}
                 </span>
-              ))}
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+                <span className="flex-none text-base text-muted-foreground tabular-nums">
+                  {entry.sku}
+                </span>
+              </span>
+              <span className="mt-0.5 text-xs text-faint">
+                {entry.detail}
+                {entry.multiplier === 1 ? "" : ` · ×${entry.multiplier}`}
+              </span>
+            </span>
+          ))}
+        </PopoverContent>
+      </Popover>
     </span>
   )
 }

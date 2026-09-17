@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { Check, ChevronDown, Search, X } from "lucide-react"
 
 import type { SalesProductRow } from "@/lib/backend/types"
@@ -11,6 +10,12 @@ import {
 } from "@/lib/modifier-association-groups"
 import { productSkus } from "@/lib/product-search"
 import { rankedMatches, searchTokens } from "@/lib/search"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 type ProductChoice = {
@@ -121,14 +126,14 @@ export function ProductAssociationPicker({
   }
 
   return (
-    <Popover.Root
+    <Popover
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen)
         if (nextOpen) setQuery("")
       }}
     >
-      <Popover.Trigger
+      <PopoverTrigger
         aria-label={ariaLabel}
         className="flex h-9 w-full min-w-0 items-center justify-between gap-2.5 rounded-md border border-input bg-card px-3 text-left text-md text-foreground outline-none focus-visible:border-foreground enabled:hover:border-line-strong data-popup-open:border-line-strong data-popup-open:bg-accent"
       >
@@ -138,70 +143,70 @@ export function ProductAssociationPicker({
           className="size-[13px] shrink-0 text-muted-foreground"
           strokeWidth={2}
         />
-      </Popover.Trigger>
+      </PopoverTrigger>
 
-      <Popover.Portal>
-        <Popover.Positioner align="end" sideOffset={6} className="z-50">
-          <Popover.Popup className="z-50 w-[360px] max-w-(--available-width) origin-(--transform-origin) overflow-hidden rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
-            <Popover.Title className="sr-only">{ariaLabel}</Popover.Title>
-            <div className="relative border-b border-muted p-2">
-              <Search
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 left-[19px] size-[15px] -translate-y-1/2 text-faint"
-                strokeWidth={2}
-              />
-              <input
-                autoFocus
-                type="text"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key !== "Enter") return
-                  event.preventDefault()
-                  // Only a typed search picks the top row. On an empty box
-                  // that row is "Not associated", so a bare Enter would clear
-                  // the mapping the merchant just opened the picker to see.
-                  if (searchTokens(query).length === 0) return
-                  if (matches.length === 0) return
-                  choose(matches[0]!)
-                }}
-                placeholder="Search product title or SKU"
-                aria-label="Search product title or SKU"
-                className="h-9 w-full bg-transparent pr-8 pl-8 text-base text-foreground outline-none placeholder:text-faint"
-              />
-              {query ? (
-                <button
-                  type="button"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute top-1/2 right-3 flex size-[22px] -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground"
-                >
-                  <X aria-hidden="true" className="size-3.5" strokeWidth={2} />
-                </button>
-              ) : null}
-            </div>
+      <PopoverContent
+        align="end"
+        sideOffset={6}
+        className="w-[360px] max-w-(--available-width) overflow-hidden p-0"
+      >
+        <PopoverTitle className="sr-only">{ariaLabel}</PopoverTitle>
+        <div className="relative border-b border-muted p-2">
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-[19px] size-[15px] -translate-y-1/2 text-faint"
+            strokeWidth={2}
+          />
+          <input
+            autoFocus
+            type="text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter") return
+              event.preventDefault()
+              // Only a typed search picks the top row. On an empty box
+              // that row is "Not associated", so a bare Enter would clear
+              // the mapping the merchant just opened the picker to see.
+              if (searchTokens(query).length === 0) return
+              if (matches.length === 0) return
+              choose(matches[0]!)
+            }}
+            placeholder="Search product title or SKU"
+            aria-label="Search product title or SKU"
+            className="h-9 w-full bg-transparent pr-8 pl-8 text-base text-foreground outline-none placeholder:text-faint"
+          />
+          {query ? (
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute top-1/2 right-3 flex size-[22px] -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground"
+            >
+              <X aria-hidden="true" className="size-3.5" strokeWidth={2} />
+            </button>
+          ) : null}
+        </div>
 
-            <div className="flex max-h-[300px] flex-col overflow-y-auto p-1.5">
-              {matches.length === 0 ? (
-                <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-base text-faint">
-                  No products match that title or SKU.
-                </span>
-              ) : (
-                matches.map((choice) => (
-                  <ProductOption
-                    key={choice.value || "not-associated"}
-                    choice={choice}
-                    selected={choice.value === value}
-                    onClick={() => choose(choice)}
-                  />
-                ))
-              )}
-            </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+        <div className="flex max-h-[300px] flex-col overflow-y-auto p-1.5">
+          {matches.length === 0 ? (
+            <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-base text-faint">
+              No products match that title or SKU.
+            </span>
+          ) : (
+            matches.map((choice) => (
+              <ProductOption
+                key={choice.value || "not-associated"}
+                choice={choice}
+                selected={choice.value === value}
+                onClick={() => choose(choice)}
+              />
+            ))
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 import { ChevronDown, CirclePlus } from "lucide-react"
 
 import {
@@ -14,6 +13,12 @@ import type { CatalogIngredientSuggestion } from "@/lib/backend/schemas"
 import { normalizeIngredientName } from "@/lib/pricing"
 import { SearchInput } from "@/components/ui/input"
 import { LabeledShell } from "@/components/ui/labeled-field"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 const GROUP_LABEL = "px-2.5 pt-2 pb-1 text-2xs font-medium text-ink-soft"
@@ -155,14 +160,14 @@ export function IngredientCombobox({
 
   return (
     <LabeledShell label={label} className={className}>
-      <Popover.Root
+      <Popover
         open={open}
         onOpenChange={(next) => {
           setOpen(next)
           if (next) setQuery("")
         }}
       >
-        <Popover.Trigger
+        <PopoverTrigger
           id={id}
           aria-label={label}
           className={cn(
@@ -178,85 +183,85 @@ export function IngredientCombobox({
             strokeWidth={2}
             aria-hidden="true"
           />
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Positioner align="start" sideOffset={4} className="z-50">
-            <Popover.Popup className="z-50 w-(--anchor-width) min-w-[240px] origin-(--transform-origin) rounded-lg border border-popover-border bg-popover text-popover-foreground outline-none">
-              <Popover.Title className="sr-only">{label}</Popover.Title>
-              <div className="relative p-1.5">
-                <SearchInput
-                  autoFocus
-                  maxLength={120}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key !== "Enter") return
-                    event.preventDefault()
-                    const first = foods[0] ?? supplies[0]
-                    if (first) choose(first.id)
-                    else if (createLabel) choose("")
-                  }}
-                  placeholder="Search ingredients"
-                  aria-label="Search ingredients"
-                  className="max-w-none"
-                  inputClassName="h-9"
-                />
-              </div>
-              <div className="flex max-h-64 flex-col overflow-y-auto p-1.5">
-                {/* Creating what the line names is the answer for most review
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          sideOffset={4}
+          className="w-(--anchor-width) min-w-[240px] p-0"
+        >
+          <PopoverTitle className="sr-only">{label}</PopoverTitle>
+          <div className="relative p-1.5">
+            <SearchInput
+              autoFocus
+              maxLength={120}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return
+                event.preventDefault()
+                const first = foods[0] ?? supplies[0]
+                if (first) choose(first.id)
+                else if (createLabel) choose("")
+              }}
+              placeholder="Search ingredients"
+              aria-label="Search ingredients"
+              className="max-w-none"
+              inputClassName="h-9"
+            />
+          </div>
+          <div className="flex max-h-64 flex-col overflow-y-auto p-1.5">
+            {/* Creating what the line names is the answer for most review
                     lines, so it never moves below the search results. */}
-                {createLabel ? (
+            {createLabel ? (
+              <button
+                type="button"
+                onClick={() => choose("")}
+                className={cn(
+                  "flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong",
+                  !value && "bg-accent"
+                )}
+              >
+                <CirclePlus
+                  className="size-[15px] shrink-0"
+                  aria-hidden="true"
+                />
+                <span className="truncate">{createLabel}</span>
+              </button>
+            ) : null}
+            {matches.length === 0 && catalogRows.length === 0 ? (
+              <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+                No results
+              </span>
+            ) : null}
+            {group("Ingredients", foods)}
+            {group("Supplies", supplies)}
+            {catalogRows.length > 0 ? (
+              <>
+                <span className={GROUP_LABEL}>Catalog</span>
+                {catalogRows.map((row) => (
                   <button
+                    key={row.id}
                     type="button"
-                    onClick={() => choose("")}
-                    className={cn(
-                      "flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong",
-                      !value && "bg-accent"
-                    )}
+                    disabled={pendingId !== null}
+                    onClick={() => void adopt(row)}
+                    className={cn(ROW_CLASS, "justify-between gap-3")}
                   >
-                    <CirclePlus
-                      className="size-[15px] shrink-0"
-                      aria-hidden="true"
-                    />
-                    <span className="truncate">{createLabel}</span>
+                    <span className="min-w-0 truncate">{row.name}</span>
+                    <Badge variant="secondary">
+                      {pendingId === row.id ? "Adding…" : "Catalog"}
+                    </Badge>
                   </button>
-                ) : null}
-                {matches.length === 0 && catalogRows.length === 0 ? (
-                  <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
-                    No results
-                  </span>
-                ) : null}
-                {group("Ingredients", foods)}
-                {group("Supplies", supplies)}
-                {catalogRows.length > 0 ? (
-                  <>
-                    <span className={GROUP_LABEL}>Catalog</span>
-                    {catalogRows.map((row) => (
-                      <button
-                        key={row.id}
-                        type="button"
-                        disabled={pendingId !== null}
-                        onClick={() => void adopt(row)}
-                        className={cn(ROW_CLASS, "justify-between gap-3")}
-                      >
-                        <span className="min-w-0 truncate">{row.name}</span>
-                        <Badge variant="secondary">
-                          {pendingId === row.id ? "Adding…" : "Catalog"}
-                        </Badge>
-                      </button>
-                    ))}
-                  </>
-                ) : null}
-                {catalogError ? (
-                  <span className="px-2.5 py-1.5 text-xs text-destructive">
-                    {catalogError}
-                  </span>
-                ) : null}
-              </div>
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+                ))}
+              </>
+            ) : null}
+            {catalogError ? (
+              <span className="px-2.5 py-1.5 text-xs text-destructive">
+                {catalogError}
+              </span>
+            ) : null}
+          </div>
+        </PopoverContent>
+      </Popover>
     </LabeledShell>
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Popover } from "@base-ui/react/popover"
 
 import { Badge } from "@/components/ui/badge"
 import type {
@@ -11,6 +10,7 @@ import type {
 } from "@/lib/backend/types"
 import { fuzzyMatches } from "@/lib/fuzzy"
 import { KNOWN_UNITS } from "@/lib/unit-registry"
+import { Popover, PopoverContent } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 /** One recipe or one ingredient of a composition, in the quantity it uses. */
@@ -114,60 +114,54 @@ export function TargetSuggestions<T extends ComponentTarget>({
   // scrolls sideways, and a scroll box clips anything positioned inside it,
   // so an in-cell list was there in the DOM and invisible on the page.
   return (
-    <Popover.Root open modal={false}>
-      <Popover.Portal>
-        <Popover.Positioner
-          anchor={anchor}
-          side="bottom"
-          align="start"
-          sideOffset={4}
-          className="z-50"
-        >
-          <Popover.Popup
-            role="listbox"
-            initialFocus={false}
-            finalFocus={false}
-            className="max-h-60 w-(--anchor-width) min-w-[240px] overflow-y-auto rounded-lg border border-popover-border bg-popover p-1.5 text-popover-foreground outline-none"
+    <Popover open modal={false}>
+      <PopoverContent
+        anchor={anchor}
+        side="bottom"
+        align="start"
+        sideOffset={4}
+        role="listbox"
+        initialFocus={false}
+        finalFocus={false}
+        className="max-h-60 w-(--anchor-width) min-w-[240px] overflow-y-auto p-1.5"
+      >
+        {rows.map((row, index) => (
+          <button
+            key={`${row.kind}:${row.id}`}
+            type="button"
+            role="option"
+            aria-selected={index === highlighted}
+            data-highlighted={index === highlighted || undefined}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => onPick(row)}
+            className={cn(
+              "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+              index === highlighted && "bg-accent"
+            )}
           >
-            {rows.map((row, index) => (
-              <button
-                key={`${row.kind}:${row.id}`}
-                type="button"
-                role="option"
-                aria-selected={index === highlighted}
-                data-highlighted={index === highlighted || undefined}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => onPick(row)}
-                className={cn(
-                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
-                  index === highlighted && "bg-accent"
-                )}
-              >
-                <span className="min-w-0 flex-1 truncate">{row.name}</span>
-                {row.kind === "recipe" ? (
-                  <Badge variant="secondary">Recipe</Badge>
-                ) : row.kind === "product" ? (
-                  <Badge variant="secondary">Product</Badge>
-                ) : row.nonEdible ? (
-                  <Badge variant="outline">Supply</Badge>
-                ) : null}
-              </button>
-            ))}
-            {(footers ?? []).map((footer) => (
-              <button
-                key={footer.label}
-                type="button"
-                className="flex h-9 w-full items-center rounded-md px-2.5 text-left text-xs text-muted-foreground outline-none hover:bg-accent focus-visible:bg-accent"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={footer.onClick}
-              >
-                {footer.label}
-              </button>
-            ))}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+            <span className="min-w-0 flex-1 truncate">{row.name}</span>
+            {row.kind === "recipe" ? (
+              <Badge variant="secondary">Recipe</Badge>
+            ) : row.kind === "product" ? (
+              <Badge variant="secondary">Product</Badge>
+            ) : row.nonEdible ? (
+              <Badge variant="outline">Supply</Badge>
+            ) : null}
+          </button>
+        ))}
+        {(footers ?? []).map((footer) => (
+          <button
+            key={footer.label}
+            type="button"
+            className="flex h-9 w-full items-center rounded-md px-2.5 text-left text-xs text-muted-foreground outline-none hover:bg-accent focus-visible:bg-accent"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={footer.onClick}
+          >
+            {footer.label}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   )
 }
 
