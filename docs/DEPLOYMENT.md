@@ -72,11 +72,15 @@ sudo systemctl reload nginx
 `design.forkluck.com` needs a DNS A record pointing at the application server,
 the same address as `app.forkluck.com`, and a certificate for the new name.
 The one certificate covers every Forkluck name, so expand the existing lineage
-rather than issuing a second one:
+by name and list every name it already carries. A request that names only a
+subset makes certbot mint a second lineage (`forkluck.com-0001`) that nothing
+references, which is how the design host first served a certificate without
+its own name:
 
 ```bash
-sudo certbot certonly --nginx --expand -d forkluck.com -d www.forkluck.com \
-  -d app.forkluck.com -d design.forkluck.com
+sudo certbot certonly --nginx --cert-name forkluck.com --expand \
+  -d forkluck.com -d www.forkluck.com -d app.forkluck.com \
+  -d chef.forkluck.com -d connectors.forkluck.com -d design.forkluck.com
 ```
 
 The application proxy allows 12 MiB per request so an accepted 8 MB receipt
