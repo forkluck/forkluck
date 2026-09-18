@@ -39,7 +39,7 @@ export function Matrix<Column extends string, Row extends string>({
               <th
                 key={column}
                 scope="col"
-                className="px-3 pb-2 text-left align-bottom text-md font-medium text-muted-foreground"
+                className="px-3 pb-2 text-left align-bottom text-md text-muted-foreground"
               >
                 {column}
               </th>
@@ -51,7 +51,7 @@ export function Matrix<Column extends string, Row extends string>({
             <tr key={row}>
               <th
                 scope="row"
-                className="py-2 pr-4 text-left align-middle text-md font-medium whitespace-nowrap text-muted-foreground"
+                className="py-2 pr-4 text-left align-middle text-md whitespace-nowrap text-muted-foreground"
               >
                 {row}
               </th>
@@ -81,7 +81,7 @@ export function Labeled({
   return (
     <div className={cn("flex flex-col items-start gap-2", className)}>
       {children}
-      <span className="text-md font-medium text-muted-foreground">{label}</span>
+      <span className="text-md text-muted-foreground">{label}</span>
     </div>
   )
 }
