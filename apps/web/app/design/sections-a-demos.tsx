@@ -3,18 +3,26 @@
 import * as React from "react"
 import {
   ArrowUpRight,
+  Building2,
   Check,
   Clock,
   Ellipsis,
+  KeyRound,
   Plus,
   SquarePen,
   TrendingUp,
   TriangleAlert,
+  User,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  ClickableRowBody,
+  ClickableRows,
+  clickableRowClassName,
+} from "@/components/ui/clickable"
 import { TextLink } from "@/components/ui/link"
 import {
   Card,
@@ -391,18 +399,30 @@ export function PressButtonDemo() {
 /** 12. Clickable */
 export function ClickableDemo() {
   return (
-    <div className="max-w-md">
-      <Labeled label="Whole card is the link" className="w-full">
-        <Card render={<a href="#clickable" />} className="w-full">
-          <CardHeader>
-            <CardTitle>Butter croissant</CardTitle>
-            <CardDescription>48 pieces per batch</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Flour, butter, milk, yeast, salt, sugar.</p>
-          </CardContent>
-        </Card>
-      </Labeled>
+    <div className="max-w-[560px]">
+      <ClickableRows>
+        <button type="button" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={User}
+            title="Account details"
+            note="The name and email this workspace belongs to."
+          />
+        </button>
+        <a href="#clickable" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={Building2}
+            title="Kitchen"
+            note="Name, currency and the week the reports start on."
+          />
+        </a>
+        <button type="button" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={KeyRound}
+            title="Password"
+            note="Last changed in August."
+          />
+        </button>
+      </ClickableRows>
     </div>
   )
 }
