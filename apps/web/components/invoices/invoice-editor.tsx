@@ -888,7 +888,7 @@ export function InvoiceEditor({
                             {line.needsReview ? (
                               <>
                                 <TriangleAlert
-                                  className="size-[13px] shrink-0 text-warning"
+                                  className="size-[13px] shrink-0 text-warning-foreground"
                                   strokeWidth={1.9}
                                   aria-hidden="true"
                                 />

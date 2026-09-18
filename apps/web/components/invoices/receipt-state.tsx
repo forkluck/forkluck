@@ -64,7 +64,7 @@ export function Notice({ children }: { children: React.ReactNode }) {
   return (
     <p className="flex items-start gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md leading-[1.55] text-warning-foreground">
       <TriangleAlert
-        className="mt-px size-4 shrink-0 text-warning"
+        className="mt-px size-4 shrink-0 text-warning-foreground"
         strokeWidth={1.8}
         aria-hidden="true"
       />

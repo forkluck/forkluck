@@ -410,7 +410,7 @@ export function RecipeNutritionView({
                       <span
                         role="img"
                         aria-label={servingHint}
-                        className="flex size-5 items-center justify-center rounded-md text-warning"
+                        className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                       />
                     }
                   >
@@ -640,7 +640,7 @@ export function RecipeNutritionView({
                                     <span
                                       role="img"
                                       aria-label={flag}
-                                      className="flex size-5 items-center justify-center rounded-md text-warning"
+                                      className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                                     />
                                   }
                                 >

@@ -338,7 +338,7 @@ export function RecipeCostingPanel({
                             <span
                               role="img"
                               aria-label={alertLabel}
-                              className="flex size-5 items-center justify-center rounded-md text-warning"
+                              className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                             />
                           }
                         >
@@ -518,7 +518,7 @@ export function RecipeCostingPanel({
                           <span
                             role="img"
                             aria-label="Total yield needed for cost per yield"
-                            className="flex size-5 items-center justify-center rounded-md text-warning"
+                            className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                           />
                         }
                       >

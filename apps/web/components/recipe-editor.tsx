@@ -1627,7 +1627,7 @@ export function RecipeEditor({
               {autoYieldHint ? (
                 <p className="flex items-center gap-2 text-md text-warning-foreground">
                   <TriangleAlert
-                    className="size-3.5 shrink-0 text-warning"
+                    className="size-3.5 shrink-0 text-warning-foreground"
                     strokeWidth={1.9}
                     aria-hidden="true"
                   />
@@ -1676,7 +1676,7 @@ export function RecipeEditor({
                         <span
                           role="img"
                           aria-label={`Excluded from batch weight: ${batchWeight.missing.join(", ")}.`}
-                          className="flex size-5 items-center justify-center rounded-md text-warning"
+                          className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                         />
                       }
                     >

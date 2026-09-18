@@ -275,7 +275,7 @@ function ReviewQueue({
     <details className="group rounded-xl border border-border">
       <summary className="flex h-12 cursor-pointer list-none items-center gap-2.5 px-3.5 text-md [&::-webkit-details-marker]:hidden">
         <TriangleAlert
-          className="size-4 shrink-0 text-warning"
+          className="size-4 shrink-0 text-warning-foreground"
           strokeWidth={1.8}
           aria-hidden="true"
         />

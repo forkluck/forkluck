@@ -724,7 +724,7 @@ export function IconDemo() {
         </Labeled>
         <Labeled label="Warning">
           <TriangleAlert
-            className="size-[17px] text-warning"
+            className="size-[17px] text-warning-foreground"
             aria-hidden="true"
           />
         </Labeled>

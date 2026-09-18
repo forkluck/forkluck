@@ -317,7 +317,7 @@ function ItemNameCell({
               <button
                 type="button"
                 aria-label="Not linked: pick a recipe or a product"
-                className="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-warning outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
+                className="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-warning-foreground outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => inputRef.current?.focus()}
               />

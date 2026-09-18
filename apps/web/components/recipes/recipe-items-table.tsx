@@ -273,7 +273,7 @@ function QuantityCell({
             <button
               type="button"
               aria-label={weighAlert}
-              className="absolute top-1/2 right-0.5 flex size-5 -translate-y-1/2 items-center justify-center rounded-md text-warning outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
+              className="absolute top-1/2 right-0.5 flex size-5 -translate-y-1/2 items-center justify-center rounded-md text-warning-foreground outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => inputRef.current?.focus()}
             />
@@ -1099,7 +1099,7 @@ function TargetPicker({
                     ? "Not linked: pick an ingredient or recipe"
                     : "Not a saved preparation: pick one from the list"
                 }
-                className="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-warning outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
+                className="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-warning-foreground outline-none hover:bg-warning-fill focus-visible:bg-warning-fill"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => inputRef.current?.focus()}
               />

@@ -160,7 +160,7 @@ export function AlertFlag({
     <Popover>
       <PopoverTrigger
         aria-label={labels.join(", ")}
-        className="group/flag relative flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-1.5 text-warning outline-none hover:bg-warning-hover focus-visible:border-foreground data-popup-open:bg-warning-hover"
+        className="group/flag relative flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-1.5 text-warning-foreground outline-none hover:bg-warning-hover focus-visible:border-foreground data-popup-open:bg-warning-hover"
       >
         <TriangleAlert
           className="size-4 flex-none"
@@ -188,7 +188,7 @@ export function AlertFlag({
         {labels.map((line) => (
           <span key={line} className="flex items-center gap-2.5">
             <TriangleAlert
-              className="size-[17px] flex-none text-warning"
+              className="size-[17px] flex-none text-warning-foreground"
               strokeWidth={1.8}
               aria-hidden="true"
             />

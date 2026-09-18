@@ -29,7 +29,7 @@ function NoticeBanner({
       {...props}
     >
       <TriangleAlert
-        className="size-4 shrink-0 text-warning"
+        className="size-4 shrink-0 text-warning-foreground"
         strokeWidth={1.8}
         aria-hidden="true"
       />

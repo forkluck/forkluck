@@ -632,7 +632,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
           <details className="rounded-lg border border-warning-border bg-warning-fill">
             <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-md font-medium text-warning-foreground [&::-webkit-details-marker]:hidden">
               <TriangleAlert
-                className="size-4 text-warning"
+                className="size-4 text-warning-foreground"
                 strokeWidth={1.8}
                 aria-hidden="true"
               />
