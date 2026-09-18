@@ -46,6 +46,7 @@ import { servingUnitOptions } from "@/lib/unit-registry"
 import { formatWeight } from "@/lib/units"
 import { cn } from "@/lib/utils"
 import { useDialogTarget } from "@/components/ui/dialog"
+import { linkClassName } from "@/components/ui/link"
 
 const SERVING_UNITS = servingUnitOptions()
 
@@ -774,10 +775,7 @@ function SourceCell({
     if (line.status !== "subrecipeIncomplete")
       return <span className="text-muted-foreground">From its own recipe</span>
     return subrecipeHref ? (
-      <GuardedLink
-        href={subrecipeHref}
-        className="text-primary underline-offset-4 hover:underline"
-      >
+      <GuardedLink href={subrecipeHref} className={linkClassName}>
         Incomplete, open recipe
       </GuardedLink>
     ) : (
@@ -830,7 +828,7 @@ function SourceCell({
     <button
       type="button"
       onClick={onAdd}
-      className="whitespace-nowrap text-primary underline-offset-4 hover:underline"
+      className={cn("whitespace-nowrap", linkClassName)}
     >
       Add nutrition
     </button>

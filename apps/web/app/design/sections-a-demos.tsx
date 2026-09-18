@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { TextLink } from "@/components/ui/link"
 import {
   Card,
   CardContent,
@@ -249,7 +250,17 @@ export function ParagraphDemo() {
 /** 6. Link */
 export function LinkDemo() {
   return (
-    <Row>
+    <div className="flex flex-col items-start gap-6">
+      <Labeled label="Link">
+        <TextLink href="#link">Ingredients</TextLink>
+      </Labeled>
+      <Labeled label="In a sentence" className="max-w-[46ch]">
+        <p className="text-md leading-[1.55] text-foreground">
+          Butter is priced from the{" "}
+          <TextLink href="#link">last Baldor invoice</TextLink>, matched on
+          delivery.
+        </p>
+      </Labeled>
       <Labeled label="Parent link">
         <PageParent href="#link">Ingredients</PageParent>
       </Labeled>
@@ -258,13 +269,7 @@ export function LinkDemo() {
           View the invoice
         </Button>
       </Labeled>
-      <Labeled label="Link badge">
-        <Badge variant="link" render={<a href="#link" />}>
-          Baldor
-          <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
-        </Badge>
-      </Labeled>
-    </Row>
+    </div>
   )
 }
 

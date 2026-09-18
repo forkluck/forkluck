@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ChevronRight } from "lucide-react"
-import { GuardedLink } from "@/components/navigation-blocker"
+import { TextLink } from "@/components/ui/link"
 import { cn } from "@/lib/utils"
 
 /**
@@ -114,10 +114,7 @@ function PageParents({
     <nav
       aria-label="Up"
       data-slot="page-parents"
-      className={cn(
-        "flex min-w-0 items-center gap-1.5 text-md font-semibold",
-        className
-      )}
+      className={cn("flex min-w-0 items-center gap-1.5 text-md", className)}
       {...props}
     >
       {React.Children.toArray(children).map((child, index) => (
@@ -136,7 +133,7 @@ function PageParents({
   )
 }
 
-/** One step up, in the accent. */
+/** One step up: the link, as everywhere. */
 function PageParent({
   href,
   children,
@@ -145,12 +142,9 @@ function PageParent({
   children: React.ReactNode
 }) {
   return (
-    <GuardedLink
-      href={href}
-      className="min-w-0 truncate rounded-sm text-primary outline-none hover:underline focus-visible:underline"
-    >
+    <TextLink href={href} className="min-w-0 truncate">
       {children}
-    </GuardedLink>
+    </TextLink>
   )
 }
 

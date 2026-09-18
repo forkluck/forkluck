@@ -10,6 +10,7 @@ import type { PriceLineMatch } from "@/components/ingredients/price-line-dialog"
 import { Badge } from "@/components/ui/badge"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
+import { linkClassName } from "@/components/ui/link"
 import { WarningLine } from "@/components/recipes/warning-line"
 
 import {
@@ -377,7 +378,10 @@ export function RecipeCostingPanel({
                       fixUnitHref ? (
                         <GuardedLink
                           href={fixUnitHref}
-                          className="inline-flex items-center text-primary underline-offset-4 hover:underline"
+                          className={cn(
+                            "inline-flex items-center",
+                            linkClassName
+                          )}
                         >
                           Open UOM
                           <ChevronRight

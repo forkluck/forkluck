@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { linkClassName } from "@/components/ui/link"
 import Link from "next/link"
 import { Archive, Pen, Plug, Plus, Trash2, Upload } from "lucide-react"
 
@@ -147,7 +148,7 @@ export function ActivityRow({
               {`${RESOURCE_LABELS[item.resourceType]} ${item.event}: `}
               <strong className="font-semibold">
                 {href ? (
-                  <Link href={href} className="hover:underline">
+                  <Link href={href} className={linkClassName}>
                     {item.name}
                   </Link>
                 ) : (

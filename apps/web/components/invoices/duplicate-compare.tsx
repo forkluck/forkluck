@@ -5,6 +5,7 @@ import Link from "next/link"
 
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { Button } from "@/components/ui/button"
+import { linkClassName } from "@/components/ui/link"
 import { formatCalendarDayMonth, formatDateTime } from "@/lib/datetime"
 import type { ExistingInvoiceRef } from "@/lib/invoice-import"
 import { formatCents } from "@/lib/money"
@@ -109,7 +110,7 @@ export function DuplicateCompare({
       </dl>
       <Link
         href={`/invoices/${existing.publicId}`}
-        className="mt-2.5 inline-block text-md text-primary underline-offset-4 hover:underline"
+        className={cn("mt-2.5 inline-block", linkClassName)}
       >
         Open the imported invoice
       </Link>

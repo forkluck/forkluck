@@ -53,6 +53,7 @@ import {
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/toast"
+import { linkClassName } from "@/components/ui/link"
 import { useCompareEdit } from "@/components/recipes/compare-chrome"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
 import { useRefresh } from "@/hooks/use-refresh"
@@ -1132,7 +1133,10 @@ function FormulaPlotRow({
                     <button
                       type="button"
                       onClick={() => onLink(row)}
-                      className="inline-flex items-center gap-1 text-primary hover:underline"
+                      className={cn(
+                        "inline-flex items-center gap-1",
+                        linkClassName
+                      )}
                     >
                       <Link2
                         className="size-3"
@@ -1145,7 +1149,7 @@ function FormulaPlotRow({
                   {unmappedSaved?.href ? (
                     <GuardedLink
                       href={unmappedSaved.href}
-                      className="text-primary hover:underline"
+                      className={linkClassName}
                     >
                       Link on the recipe
                     </GuardedLink>

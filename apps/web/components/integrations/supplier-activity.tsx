@@ -4,6 +4,7 @@ import Link from "next/link"
 
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { Badge } from "@/components/ui/badge"
+import { linkClassName } from "@/components/ui/link"
 import type { ConnectorProvider, ConnectorSyncRun } from "@/lib/backend/types"
 import { formatDateTime } from "@/lib/datetime"
 
@@ -42,7 +43,7 @@ export function SupplierActivity({
       </h2>
       <p className="mt-1 text-md text-muted-foreground">
         Documents pulled from connected suppliers.{" "}
-        <Link href="/ingredients" className="underline underline-offset-4">
+        <Link href="/ingredients" className={linkClassName}>
           Price imports
         </Link>{" "}
         are undone on Ingredients.

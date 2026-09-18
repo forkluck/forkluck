@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { Input } from "@/components/ui/input"
+import { linkClassName } from "@/components/ui/link"
 import {
   MISSING_PURCHASE_PRICE,
   parsePurchaseUnit,
@@ -653,12 +654,7 @@ export function PriceLineDialog({
         <DialogTrigger render={trigger} />
       ) : trigger === null ? null : (
         <DialogTrigger
-          render={
-            <button
-              type="button"
-              className="text-primary underline-offset-4 outline-none hover:underline"
-            />
-          }
+          render={<button type="button" className={linkClassName} />}
         >
           add price
         </DialogTrigger>

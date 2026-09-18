@@ -9,6 +9,7 @@ import { GoogleDrivePickerButton } from "@/components/invoices/google-drive-pick
 import type { QueueItem } from "@/components/invoices/receipt-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { linkClassName } from "@/components/ui/link"
 import type { GoogleDriveConfig, PickedDriveFile } from "@/lib/google-drive"
 import { cn } from "@/lib/utils"
 
@@ -133,7 +134,7 @@ export function ImportFilesPanel({
         {driveConnectHref ? (
           <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             Receipts in a Google Drive folder?{" "}
-            <Link href={driveConnectHref} className="underline">
+            <Link href={driveConnectHref} className={linkClassName}>
               Connect the folder
             </Link>{" "}
             once and every receipt dropped in it is read for you.

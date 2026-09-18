@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Input, InputAffix, InputGroup } from "@/components/ui/input"
 import { MeasureField } from "@/components/ui/measure-field"
 import { useToast } from "@/components/ui/toast"
+import { linkClassName } from "@/components/ui/link"
 import { scaleBatchCost } from "@/lib/benchcost/math"
 import { centsToDollarInput, dollarsToCents, formatCents } from "@/lib/money"
 import { recipePortions } from "@/lib/recipe/portions"
@@ -720,7 +721,7 @@ export function RecipeCostView({
             {canEditCosting && draftServingAmount && recipeYield ? (
               <GuardedLink
                 href={`/recipes/${recipePublicId}/recipe#uom-equivalency`}
-                className="inline-flex items-center font-medium text-primary hover:underline hover:underline-offset-4"
+                className={cn("inline-flex items-center", linkClassName)}
               >
                 Open UOM
                 <ChevronRight className="size-3.5" aria-hidden="true" />

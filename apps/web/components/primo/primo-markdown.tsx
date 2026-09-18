@@ -1,5 +1,6 @@
 "use client"
 import Markdown from "react-markdown"
+import { linkClassName } from "@/components/ui/link"
 import remarkGfm from "remark-gfm"
 import { GuardedLink } from "@/components/navigation-blocker"
 
@@ -12,7 +13,7 @@ export function PrimoMarkdown({ text }: { text: string }) {
         components={{
           a: ({ href, children }) =>
             href ? (
-              <GuardedLink href={href} className="underline underline-offset-2">
+              <GuardedLink href={href} className={linkClassName}>
                 {children}
               </GuardedLink>
             ) : (

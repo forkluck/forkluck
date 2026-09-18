@@ -200,7 +200,7 @@ export function AlertFlag({
             key={fix.label}
             type="button"
             onClick={fix.onClick}
-            className="self-start rounded-md border border-transparent text-md text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:outline-none"
+            className="self-start rounded-md border border-transparent text-md text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:underline focus-visible:outline-none"
           >
             {fix.label}
           </button>

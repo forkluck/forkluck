@@ -80,7 +80,7 @@ const buttonVariants = cva(
         // A link-shaped action is ink, never blue — blue is data and
         // selection. The hairline underline firms to ink on hover, the way
         // the outline button's border does.
-        link: "text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground",
+        link: "font-normal text-primary underline-offset-4 hover:underline",
       },
       size: {
         default:

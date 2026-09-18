@@ -13,6 +13,7 @@ import {
 } from "recharts"
 
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
+import { linkClassName } from "@/components/ui/link"
 import {
   Table,
   TableBody,
@@ -246,7 +247,7 @@ export function MenuMatrix({
 
   const nameCell = (name: string, href: string | null) =>
     href ? (
-      <Link href={href} className="hover:underline">
+      <Link href={href} className={linkClassName}>
         {name}
       </Link>
     ) : (
