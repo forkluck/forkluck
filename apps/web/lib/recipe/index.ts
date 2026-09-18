@@ -15,6 +15,7 @@ export type {
   RecipeToolLine,
   RecipeToolLines,
 } from "./lines-for-tools"
+export { recipeLinesMarkdown } from "./markdown"
 export {
   RECIPE_LINE_ALERT_LABELS,
   costBasisNote,
