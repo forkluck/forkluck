@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
  *
  * `Matrix` is a variant grid the way the Radix Themes playground draws one:
  * one column per variant across the top, one row per size or state down the
- * side, and the component itself in every cell. The labels are 11.5px muted
+ * side, and the component itself in every cell. The labels are 13px ink
  * text and there are no rules or fills, so the grid reads as the components
  * arranged, not as a table of them.
  *
@@ -39,7 +39,7 @@ export function Matrix<Column extends string, Row extends string>({
               <th
                 key={column}
                 scope="col"
-                className="px-3 pb-2 text-left align-bottom text-2xs font-medium text-muted-foreground"
+                className="px-3 pb-2 text-left align-bottom text-sm font-medium text-foreground"
               >
                 {column}
               </th>
@@ -51,7 +51,7 @@ export function Matrix<Column extends string, Row extends string>({
             <tr key={row}>
               <th
                 scope="row"
-                className="py-2 pr-4 text-left align-middle text-2xs font-medium whitespace-nowrap text-muted-foreground"
+                className="py-2 pr-4 text-left align-middle text-sm font-medium whitespace-nowrap text-foreground"
               >
                 {row}
               </th>
@@ -81,7 +81,7 @@ export function Labeled({
   return (
     <div className={cn("flex flex-col items-start gap-2", className)}>
       {children}
-      <span className="text-2xs font-medium text-muted-foreground">{label}</span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
     </div>
   )
 }
