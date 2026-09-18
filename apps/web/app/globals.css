@@ -206,12 +206,12 @@
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
   --warning: #ea580c;
-  --warning-foreground: #9a3412;
-  --warning-fill: #ffedd5;
-  --warning-fill-hover: #fed7aa;
-  --warning-border: #fed7aa;
-  --warning-strong: #fdba74;
-  --warning-hover: #ffe4cc;
+  --warning-foreground: #7c2d12;
+  --warning-fill: #fed7aa;
+  --warning-fill-hover: #fdba74;
+  --warning-border: #fdba74;
+  --warning-strong: #fb923c;
+  --warning-hover: #ffedd5;
   /* Caution: the yellow, a step under warning. Ink 8.1:1 on its fill. */
   --caution: #ca8a04;
   --caution-foreground: #713f12;

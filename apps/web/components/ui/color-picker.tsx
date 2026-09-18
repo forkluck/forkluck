@@ -33,7 +33,7 @@ const DEFAULT_SWATCHES = [
   "#2f7a4f", // --success
   "#eaf4ee", // --success-fill
   "#ea580c", // --warning
-  "#ffedd5", // --warning-fill
+  "#fed7aa", // --warning-fill
   "#d92d20", // --destructive
   "#ffe7e6", // --destructive-fill
   // --chart-2 is the same #d8e4f7 as --brand-fill above, so it is not drawn

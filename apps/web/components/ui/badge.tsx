@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * One badge: 20px, the bottom rung of the control ladder, `rounded-md`, 600
+ * One badge: 20px, the bottom rung of the control ladder, `rounded-md`, 550
  * 12px, tabular so a column of deltas lines up. It labels a row or a metric
  * and never acts, so it carries no shadow, no ring and no accent; focus turns
  * the border ink like every other control. An icon may lead the label, never
@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
  * tokens in globals.css.
  */
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border border-transparent px-2 text-xs font-semibold whitespace-nowrap tabular-nums focus-visible:border-foreground has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border border-transparent px-2 text-xs font-[550] whitespace-nowrap tabular-nums focus-visible:border-foreground has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
