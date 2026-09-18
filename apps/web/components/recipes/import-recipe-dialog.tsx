@@ -15,7 +15,7 @@ import { splitRecipeDocument } from "@/lib/recipe/split-document"
 
 function Hints() {
   return (
-    <p className="text-xs leading-5 text-muted-foreground">
+    <p className="text-base leading-5 text-muted-foreground">
       <span className="font-medium text-foreground"># Heading</span> starts a
       section · <span className="font-medium text-foreground">&gt; Note</span>{" "}
       adds a note

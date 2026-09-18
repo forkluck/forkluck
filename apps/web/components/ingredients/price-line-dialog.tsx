@@ -391,7 +391,7 @@ function PickerBody({
             autoFocus
           />
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-base text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -431,7 +431,7 @@ function PickerBody({
             {selected.name}”. Nothing is linked until you confirm.
           </p>
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-base text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -492,7 +492,7 @@ function PickerBody({
             />
           </div>
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-base text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -577,7 +577,7 @@ function PickerBody({
       </div>
 
       {problem ? (
-        <p className="mt-3 text-xs text-destructive" role="alert">
+        <p className="mt-3 text-base text-destructive" role="alert">
           {problem}
         </p>
       ) : null}

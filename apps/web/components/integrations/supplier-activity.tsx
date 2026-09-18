@@ -65,7 +65,7 @@ export function SupplierActivity({
                   {RUN_STATUS_LABELS[run.status]}
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="mt-0.5 text-base text-muted-foreground">
                 {run.startedAt
                   ? `Started ${formatDateTime(new Date(run.startedAt), timezone)}`
                   : `Queued ${formatDateTime(new Date(run.queuedAt), timezone)}`}
@@ -73,7 +73,7 @@ export function SupplierActivity({
                   ? ` · finished ${formatDateTime(new Date(run.finishedAt), timezone)}`
                   : ""}
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="mt-0.5 text-base text-muted-foreground">
                 {run.progress.documentsImported} imported ·{" "}
                 {run.progress.documentsSkipped} skipped ·{" "}
                 {run.progress.linesNeedingReview} needing review

@@ -157,7 +157,7 @@ function ReceiptView({
           ["Ignored", receipt.ignored],
         ].map(([label, value]) => (
           <div key={label}>
-            <dt className="text-xs font-medium text-muted-foreground">
+            <dt className="text-base font-medium text-muted-foreground">
               {label}
             </dt>
             <dd className="tabular mt-1.5 text-xl leading-none font-semibold">
@@ -827,7 +827,7 @@ function ImportBody({
             : `Reading ${busyCount} of ${queue.length} file${queue.length === 1 ? "" : "s"}…`}
         </p>
         {!seeding ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Scanned receipts can take a few minutes to read and check.
           </p>
         ) : null}

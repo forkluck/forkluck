@@ -144,7 +144,7 @@ export function LoginForm({
           <AuthMethodsSeparator />
           <GoogleButton next={next} />
           {lastMethod === "google" ? (
-            <p className="mt-3 text-center text-xs text-muted-foreground">
+            <p className="mt-3 text-center text-base text-muted-foreground">
               You signed in with Google last time
             </p>
           ) : null}

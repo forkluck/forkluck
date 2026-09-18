@@ -324,14 +324,14 @@ export function PrimoComposer({
                   >
                     <span className="truncate">
                       {recipe.title}{" "}
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-base text-muted-foreground">
                         · {recipe.kind ?? "recipe"}
                       </span>
                     </span>
                   </button>
                 ))
               ) : (
-                <p className="px-2.5 py-2 text-xs text-muted-foreground">
+                <p className="px-2.5 py-2 text-base text-muted-foreground">
                   {searching
                     ? "Finding recipes and products…"
                     : "No recipes or products match that."}
@@ -532,14 +532,14 @@ export function PrimoComposer({
         </div>
       </div>
       {draft.fileErrors?.length ? (
-        <ul role="alert" className="mt-2 space-y-1 text-xs text-destructive">
+        <ul role="alert" className="mt-2 space-y-1 text-base text-destructive">
           {draft.fileErrors.map((error, index) => (
             <li key={index}>{error}</li>
           ))}
         </ul>
       ) : null}
       {sendError ? (
-        <p role="alert" className="mt-2 text-xs text-destructive">
+        <p role="alert" className="mt-2 text-base text-destructive">
           {sendError}
         </p>
       ) : null}

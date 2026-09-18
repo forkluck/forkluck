@@ -57,7 +57,7 @@ export function LaborImportHistoryDialog({
                       <p className="truncate text-md">{item.fileName}</p>
                       {item.undoneAt ? <Badge>Undone</Badge> : null}
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 text-base text-muted-foreground">
                       {formatDateTime(item.createdAt, timezone)} ·{" "}
                       {item.importedCount} shifts ·{" "}
                       {formatDecimalHours(item.totalSeconds)} h ·{" "}

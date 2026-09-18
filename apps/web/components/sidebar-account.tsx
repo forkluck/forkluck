@@ -101,7 +101,7 @@ export function SidebarAccount({
           <p className="truncate text-base leading-none font-semibold">
             {user.name}
           </p>
-          <p className="mt-1 truncate text-xs leading-none text-foreground">
+          <p className="mt-1 truncate text-base leading-none text-foreground">
             {user.email}
           </p>
         </div>

@@ -96,7 +96,9 @@ function AllergenRowChips({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <span className="text-base font-medium text-muted-foreground">
+        {label}
+      </span>
       <div
         role={readOnly ? undefined : "group"}
         aria-label={readOnly ? undefined : label}

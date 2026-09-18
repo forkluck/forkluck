@@ -298,13 +298,13 @@ export function AddComponentsDialog({
         </TableFrame>
 
         {tooMany ? (
-          <p className="text-xs text-destructive">
+          <p className="text-base text-destructive">
             At most {remaining} more can be added.
           </p>
         ) : null}
 
         <DialogFooter className="items-center sm:justify-between">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-base text-muted-foreground">
             {chosen.length} selected
           </span>
           <div className="flex gap-2">

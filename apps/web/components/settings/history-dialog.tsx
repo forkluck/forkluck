@@ -344,7 +344,7 @@ export function HistoryDialog({
                 timeZone={timezone}
                 trailing={
                   importRow?.undoneAt ? (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-base text-muted-foreground">
                       Undone
                     </span>
                   ) : importRow?.canUndo ? (
@@ -370,14 +370,14 @@ export function HistoryDialog({
           })}
           {rows?.length ? (
             <div ref={sentinel} className="py-2 text-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-base text-muted-foreground">
                 {current?.nextBefore ? "Loading more…" : "End of history"}
               </span>
             </div>
           ) : null}
         </div>
         {undoError ? (
-          <p className="mt-2 text-xs text-destructive" role="alert">
+          <p className="mt-2 text-base text-destructive" role="alert">
             {undoError}
           </p>
         ) : null}

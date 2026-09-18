@@ -577,7 +577,7 @@ export function RecipeCostView({
             </span>
             {portionCostCents !== null &&
             !Number.isInteger(portionCostCents) ? (
-              <span className="block text-xs text-muted-foreground">
+              <span className="block text-base text-muted-foreground">
                 uses unrounded cost
               </span>
             ) : null}

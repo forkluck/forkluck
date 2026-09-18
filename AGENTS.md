@@ -203,10 +203,11 @@ what its primitives describe as seven, ten of them between 11 and 16 pixels,
 which is how the same card heading came to be 15, 16 and 17. Pick the step;
 if none of the ten fits, the change is to the scale, not to the call site.
 
-Each step has a job: `2xs` chips, badges and menu group labels; `xs` help
-text and meta; `sm` controls — buttons, labels, tabs; `base` body — table
-cells, dialog copy, nav; `md` field text and every heading below the page
-title (dialog titles, section, card and list headings all sit here, at 600);
+Each step has a job: `2xs` chips, badges and menu group labels; `xs` the
+default badge, the xs button, avatar initials, tooltips and chart ticks, and
+never running text; `sm` controls — buttons, labels, tabs; `base` body —
+table cells, dialog copy, nav, help text, every sub-line and description;
+`md` field text and every heading below the page title (dialog titles, section, card and list headings all sit here, at 600);
 `lg` the 16px floor that keeps iOS from zooming a focused field, and the
 wordmark; `xl` inline figures such as a dialog's summary numbers; `2xl` page
 titles; `3xl` metric numerals; `4xl` the hero numeral. Headings come in two

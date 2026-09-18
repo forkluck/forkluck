@@ -729,7 +729,7 @@ function IngredientSuggestions({
             // A preparation is a quiet sub-row under its ingredient.
             row.preparation === null
               ? "h-9 text-sm"
-              : "h-7 pl-7 text-xs text-muted-foreground",
+              : "h-7 pl-7 text-base text-muted-foreground",
             index === highlighted && "bg-accent"
           )}
         >
@@ -1841,7 +1841,7 @@ export function RecipeItemsTable({
             ) : null}
           </div>
           {quickAddError ? (
-            <p role="alert" className="mt-1 text-xs text-destructive">
+            <p role="alert" className="mt-1 text-base text-destructive">
               {quickAddError}
             </p>
           ) : null}

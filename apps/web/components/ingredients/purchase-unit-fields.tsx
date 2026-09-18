@@ -203,7 +203,7 @@ function InvoiceItemSearch({
   }
 
   const messageClassName =
-    "flex h-9 items-center px-2.5 text-xs text-muted-foreground"
+    "flex h-9 items-center px-2.5 text-base text-muted-foreground"
 
   return (
     <div className="relative" ref={fieldRef}>
@@ -631,7 +631,7 @@ export function PurchaseUnitFields({
                           <Badge size="row">Used for costing</Badge>
                         ) : null}
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                      <p className="mt-0.5 truncate text-base text-muted-foreground">
                         {item.supplier} {item.externalId} ·{" "}
                         {item.rawSize ||
                           `${item.purchaseSize ?? "–"} ${unitShort(item.purchaseUnit)}`}{" "}
@@ -671,7 +671,7 @@ export function PurchaseUnitFields({
               })}
             </div>
           ) : (
-            <p className="px-3.5 py-3 text-xs text-muted-foreground">
+            <p className="px-3.5 py-3 text-base text-muted-foreground">
               No invoice prices connected yet.
             </p>
           )}
@@ -679,7 +679,7 @@ export function PurchaseUnitFields({
           {picked ? (
             <div className="border-t border-muted bg-fill-soft px-3.5 py-3">
               <div className="flex flex-wrap items-end gap-3">
-                <div className="min-w-[180px] flex-1 pb-1 text-xs text-muted-foreground">
+                <div className="min-w-[180px] flex-1 pb-1 text-base text-muted-foreground">
                   <span className="font-medium text-foreground">
                     {picked.description}
                   </span>
@@ -748,7 +748,7 @@ export function PurchaseUnitFields({
       ) : null}
 
       {value.disconnectInvoicePriceId ? (
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="mt-2 text-base text-muted-foreground">
           The cost above stays as it is. Saving only drops the link to the
           invoice item, and price history is kept.
         </p>

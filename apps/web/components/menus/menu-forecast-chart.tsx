@@ -84,7 +84,7 @@ export function MenuForecastChart({
 
   return (
     <div className="min-w-0">
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-base text-muted-foreground">
         <LegendKey swatch="h-0.5 w-4 rounded-full bg-foreground">
           Actual
         </LegendKey>

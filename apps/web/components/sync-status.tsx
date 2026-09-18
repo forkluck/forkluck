@@ -124,7 +124,7 @@ export function SyncStatus({
   )
 
   return (
-    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+    <div className="flex items-center gap-3 text-base text-muted-foreground">
       <span title={connection.title} className="flex items-center gap-[7px]">
         <span
           aria-hidden="true"

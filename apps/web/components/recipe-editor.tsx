@@ -481,7 +481,7 @@ function HintLine({
     <p
       role={error && children ? "alert" : undefined}
       className={cn(
-        "text-xs font-normal",
+        "text-base font-normal",
         error ? "text-destructive" : "text-muted-foreground"
       )}
     >
@@ -1636,7 +1636,7 @@ export function RecipeEditor({
                 ) : null}
               </Tooltip>
               {autoYieldHint ? (
-                <p className="flex items-center gap-2 text-xs text-warning-foreground">
+                <p className="flex items-center gap-2 text-base text-warning-foreground">
                   <TriangleAlert
                     className="size-3.5 shrink-0 text-warning"
                     strokeWidth={1.9}
@@ -1679,7 +1679,7 @@ export function RecipeEditor({
           title="Ingredients"
           action={
             batchWeight ? (
-              <span className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+              <span className="flex items-center gap-1.5 text-base font-normal text-muted-foreground">
                 {batchWeight.missing.length > 0 ? (
                   <Tooltip>
                     <TooltipTrigger
@@ -1852,7 +1852,7 @@ export function RecipeEditor({
                     />
                   )}
                   {stepTimeLabel(step) !== "Time" ? (
-                    <span className="text-xs text-muted-foreground tabular-nums">
+                    <span className="text-base text-muted-foreground tabular-nums">
                       {stepTimeLabel(step)}
                     </span>
                   ) : null}
@@ -2023,7 +2023,7 @@ export function RecipeEditor({
                     </Tooltip>
                   </div>
                   {declaredYield ? (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-base text-muted-foreground">
                       Yield: {formatKitchenAmount(Number(declaredYield.amount))}{" "}
                       {declaredYield.unit === "cup"
                         ? "cup"
@@ -2109,7 +2109,7 @@ export function RecipeEditor({
                   key={comment.id}
                   className="group/row rounded-lg bg-muted/50 p-3"
                 >
-                  <div className="flex items-center justify-between gap-3 text-xs leading-4 text-muted-foreground">
+                  <div className="flex items-center justify-between gap-3 text-base text-muted-foreground">
                     <span className="font-medium text-foreground">
                       {comment.authorName}
                     </span>
@@ -2165,7 +2165,10 @@ export function RecipeEditor({
                       }}
                     />
                     {commentError ? (
-                      <p role="alert" className="mt-1 text-xs text-destructive">
+                      <p
+                        role="alert"
+                        className="mt-1 text-base text-destructive"
+                      >
                         {commentError}
                       </p>
                     ) : null}

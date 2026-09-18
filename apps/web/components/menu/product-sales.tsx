@@ -188,7 +188,7 @@ function ManualSalesForm({
           </Field>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p role="alert" className="text-xs text-destructive">
+          <p role="alert" className="text-base text-destructive">
             {error}
           </p>
           <Button type="submit" size="lg" pending={pending}>
@@ -281,7 +281,7 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
         </Table>
       </TableFrame>
       {error ? (
-        <p role="alert" className="mt-2 text-xs text-destructive">
+        <p role="alert" className="mt-2 text-base text-destructive">
           {error}
         </p>
       ) : null}
@@ -334,7 +334,7 @@ export function ProductSalesSection({
           >
             Sales
           </h2>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-base text-muted-foreground">
             {period
               ? formatDateRangeLabel(period.startDate, period.endDate)
               : `${all.length} days`}
@@ -368,9 +368,7 @@ export function ProductSalesSection({
       ) : null}
       <div className="mb-3 grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card">
         <div className="px-4 py-3">
-          <p className="text-base font-medium text-muted-foreground">
-            Units
-          </p>
+          <p className="text-base font-medium text-muted-foreground">Units</p>
           <p className="mt-1 text-xl leading-7 font-semibold tracking-tight text-foreground tabular-nums">
             {quantityFormat.format(totals.totalQuantity)}
           </p>

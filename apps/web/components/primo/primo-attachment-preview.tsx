@@ -52,7 +52,7 @@ export function PrimoAttachmentPreview({
         <span className="truncate">{file.name}</span>
       </Button>
       {error ? (
-        <span role="alert" className="text-xs text-destructive">
+        <span role="alert" className="text-base text-destructive">
           {error}
         </span>
       ) : null}

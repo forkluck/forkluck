@@ -223,7 +223,7 @@ function MultiplierChip({
         </span>
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={4} className="w-[180px] p-3">
-        <PopoverTitle className="mb-1.5 block text-xs font-medium text-muted-foreground">
+        <PopoverTitle className="mb-1.5 block text-base font-medium text-muted-foreground">
           Units per sale
         </PopoverTitle>
         <Input
@@ -242,7 +242,7 @@ function MultiplierChip({
           aria-invalid={!parsed.ok || undefined}
         />
         {!parsed.ok ? (
-          <p role="alert" className="mt-1.5 text-xs text-destructive">
+          <p role="alert" className="mt-1.5 text-base text-destructive">
             {parsed.error}
           </p>
         ) : null}
@@ -314,7 +314,9 @@ function VariantsCard({ product }: { product: ProductDetail }) {
         >
           Variants
         </h2>
-        <span className="text-xs text-muted-foreground">{variants.length}</span>
+        <span className="text-base text-muted-foreground">
+          {variants.length}
+        </span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[560px] table-fixed">
@@ -605,7 +607,9 @@ export function ProductEditor({
               <Field>
                 <FieldTitle>
                   Description{" "}
-                  <span className="font-normal text-muted-foreground">(Optional)</span>
+                  <span className="font-normal text-muted-foreground">
+                    (Optional)
+                  </span>
                 </FieldTitle>
                 <textarea
                   value={draft.description}

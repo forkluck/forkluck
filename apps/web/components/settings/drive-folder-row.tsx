@@ -336,7 +336,7 @@ export function DriveFileLists({
     <div className="mt-2.5 rounded-xl border border-border bg-background px-4 py-3">
       {failed.length > 0 ? (
         <div>
-          <p className="text-xs font-medium text-muted-foreground">
+          <p className="text-base font-medium text-muted-foreground">
             Couldn&apos;t read
           </p>
           <ul className="mt-1.5">
@@ -348,7 +348,7 @@ export function DriveFileLists({
                 <span className="min-w-0 flex-1 truncate text-base text-muted-foreground">
                   {file.name}
                 </span>
-                <span className="truncate text-xs text-muted-foreground">
+                <span className="truncate text-base text-muted-foreground">
                   {file.reason}
                 </span>
                 <Button
@@ -378,7 +378,7 @@ export function DriveFileLists({
       ) : null}
       {skipped.length > 0 ? (
         <div className={failed.length > 0 ? "mt-4" : undefined}>
-          <p className="text-xs font-medium text-muted-foreground">
+          <p className="text-base font-medium text-muted-foreground">
             Skipped files
           </p>
           <ul className="mt-1.5">

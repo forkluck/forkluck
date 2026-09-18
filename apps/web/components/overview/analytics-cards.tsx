@@ -26,7 +26,7 @@ export function AnalyticsCard({
 export function CardLabel({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-xs font-medium text-muted-foreground", className)}
+      className={cn("text-base font-medium text-muted-foreground", className)}
       {...props}
     />
   )
@@ -49,7 +49,7 @@ export function CardMetric({ className, ...props }: React.ComponentProps<"p">) {
 export function CardNote({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-xs text-muted-foreground tabular-nums", className)}
+      className={cn("text-base text-muted-foreground tabular-nums", className)}
       {...props}
     />
   )

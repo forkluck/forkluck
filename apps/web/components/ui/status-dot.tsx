@@ -23,7 +23,7 @@ export function StatusDot({
   }[tone]
 
   return (
-    <span className={cn("flex items-center gap-[5px] text-xs", text)}>
+    <span className={cn("flex items-center gap-[5px] text-base", text)}>
       <span
         aria-hidden="true"
         className={cn("size-1.5 flex-none rounded-full", dot)}

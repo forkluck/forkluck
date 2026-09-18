@@ -122,7 +122,7 @@ export function IdentityLinesDialog({
                       </span>
                       {lineMeta(line) ? (
                         <span
-                          className="mt-0.5 block truncate text-xs text-muted-foreground"
+                          className="mt-0.5 block truncate text-base text-muted-foreground"
                           title={lineMeta(line)}
                         >
                           {lineMeta(line)}
@@ -143,7 +143,7 @@ export function IdentityLinesDialog({
                         {formatCents(line.netSalesCents, line.currencyCode)}
                       </span>
                       {line.refundCents ? (
-                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                        <span className="mt-0.5 block text-base text-muted-foreground">
                           refund{" "}
                           {formatCents(line.refundCents, line.currencyCode)}
                         </span>
@@ -157,7 +157,7 @@ export function IdentityLinesDialog({
         )}
 
         {lines !== null && lineCount > lines.length ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Showing the {lines.length} most recent of {lineCount} sales.
           </p>
         ) : null}

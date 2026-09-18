@@ -77,7 +77,7 @@ export default function SourceAndLegalPage() {
           </div>
         </section>
 
-        <p className="mt-8 border-t border-border pt-6 text-xs leading-5 text-muted-foreground">
+        <p className="mt-8 border-t border-border pt-6 text-base leading-5 text-muted-foreground">
           Questions about Forkluck? Email{" "}
           <a href="mailto:guero@forkluck.com" className={externalLinkClassName}>
             guero@forkluck.com

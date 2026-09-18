@@ -109,7 +109,7 @@ export function InvoiceActivity({ resourceId }: { resourceId: string }) {
         ))}
         {rows?.length ? (
           <div ref={sentinel} className="py-2 text-center">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-base text-muted-foreground">
               {nextBefore ? "Loading more…" : "End of activity"}
             </span>
           </div>

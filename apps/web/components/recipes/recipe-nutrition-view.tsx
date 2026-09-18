@@ -156,7 +156,7 @@ function YieldCell({
         }}
         className="h-7 w-16 pr-5 pl-2 text-sm tabular-nums md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
-      <InputAffix side="end" className="right-2 text-xs">
+      <InputAffix side="end" className="right-2 text-base">
         %
       </InputAffix>
     </InputGroup>

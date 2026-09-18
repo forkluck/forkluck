@@ -370,7 +370,7 @@ function PasteFormulaDialog({
               placeholder={"500 g bread flour\n2 cups water\n10 g salt"}
               onChange={(event) => setText(event.target.value)}
             />
-            <p className="text-xs leading-5 text-muted-foreground">
+            <p className="text-base leading-5 text-muted-foreground">
               One ingredient per line. A line the page cannot weigh keeps its
               row, with a box to type the grams.
             </p>
@@ -602,7 +602,7 @@ function AddRecipePopover({
                   {option.title}
                 </span>
                 {option.category ? (
-                  <span className="max-w-20 truncate text-xs text-muted-foreground">
+                  <span className="max-w-20 truncate text-base text-muted-foreground">
                     {option.category}
                   </span>
                 ) : null}
@@ -680,7 +680,7 @@ function ColumnHeader({
         />
         <span
           className={cn(
-            "min-w-0 truncate text-xs font-medium",
+            "min-w-0 truncate text-base font-medium",
             active ? "text-foreground" : "text-muted-foreground"
           )}
         >
@@ -785,7 +785,9 @@ function FormulaValue({
         </span>
       ) : null}
       {value.line?.note === "discarded" ? (
-        <span className="block text-base font-normal text-muted-foreground">discarded</span>
+        <span className="block text-base font-normal text-muted-foreground">
+          discarded
+        </span>
       ) : null}
     </span>
   )
@@ -1085,7 +1087,9 @@ function FormulaPlotRow({
                 {row.label}
               </span>
               {note ? (
-                <span className="block text-xs text-muted-foreground">Hydration</span>
+                <span className="block text-base text-muted-foreground">
+                  Hydration
+                </span>
               ) : null}
             </span>
             <ChevronDown
@@ -1116,11 +1120,13 @@ function FormulaPlotRow({
                 {row.label}
               </span>
               {row.kind === "group" && note ? (
-                <span className="block text-xs text-muted-foreground">Hydration</span>
+                <span className="block text-base text-muted-foreground">
+                  Hydration
+                </span>
               ) : null}
               {unmappedIn.length > 0 &&
               (row.kind === "ingredient" || row.group.rows.length === 1) ? (
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-base text-muted-foreground">
                   No profile
                   {unmappedPasted && canLink ? (
                     <button
@@ -1412,7 +1418,7 @@ function SpecSheetView({
                     key={figure.key}
                     className="border-t border-border pt-4 pb-[18px]"
                   >
-                    <h3 className="text-xs font-medium text-muted-foreground">
+                    <h3 className="text-base font-medium text-muted-foreground">
                       {specFigureLabel(figure.key, mode)}
                       {figure.key === "solids" ? (
                         <span className="font-normal text-muted-foreground">
@@ -1427,7 +1433,7 @@ function SpecSheetView({
                           <span className="text-2xl font-semibold text-muted-foreground">
                             —
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-base text-muted-foreground">
                             Nothing weighed
                           </span>
                         </>
@@ -1992,7 +1998,7 @@ export function CompareFormulas({
             </div>
           </Toolbar>
           {missingCount > 0 ? (
-            <p className="mb-4 text-xs text-muted-foreground">
+            <p className="mb-4 text-base text-muted-foreground">
               {plural(missingCount, "selected recipe")} could not be opened.
             </p>
           ) : null}
@@ -2051,7 +2057,7 @@ export function CompareFormulas({
         />
       ) : null}
       {columns.length === 0 && missingCount > 0 ? (
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-3 text-base text-muted-foreground">
           {plural(missingCount, "selected recipe")} could not be opened.
         </p>
       ) : null}

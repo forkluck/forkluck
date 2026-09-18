@@ -175,7 +175,7 @@ export function ImportProductsDialog({
             </p>
           ) : (
             <>
-              <label className="flex h-9 items-center gap-3 border-b border-muted text-xs font-medium text-muted-foreground">
+              <label className="flex h-9 items-center gap-3 border-b border-muted text-base font-medium text-muted-foreground">
                 <Checkbox
                   checked={allSelected}
                   indeterminate={!allSelected && someSelected}
@@ -211,7 +211,7 @@ export function ImportProductsDialog({
                           </Badge>
                         ) : null}
                       </span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground tabular-nums sm:hidden">
+                      <span className="mt-0.5 block text-base text-muted-foreground tabular-nums sm:hidden">
                         {quantityFormat.format(row.sales.totalQuantity)} units ·{" "}
                         {row.sales.sharedToMembers
                           ? "Shared"

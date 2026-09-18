@@ -149,7 +149,7 @@ function ImportReceiptView({
           <Stat label="Needs a rate" value={receipt.uncosted} />
         </dl>
         {notes.length ? (
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-3 text-base text-muted-foreground">
             {notes.join(" · ")}
           </p>
         ) : null}
@@ -377,7 +377,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               <p className="truncate text-md font-medium">{fileName}</p>
               <Badge>{preview.timezone}</Badge>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground tabular-nums">
+            <p className="mt-1 text-base text-muted-foreground tabular-nums">
               {preview.periodStart} – {preview.periodEnd}
             </p>
             <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-muted pt-4 sm:grid-cols-4">
@@ -534,7 +534,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
                         >
                           {person.name}
                         </span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                        <span className="mt-0.5 block text-base text-muted-foreground">
                           {person.shiftCount}{" "}
                           {person.shiftCount === 1 ? "shift" : "shifts"} ·{" "}
                           {formatDecimalHours(person.totalSeconds)} h ·{" "}
@@ -617,7 +617,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               </tbody>
             </table>
             {includedEntries.length > 30 ? (
-              <p className="border-t border-muted px-4 py-3 text-xs text-muted-foreground">
+              <p className="border-t border-muted px-4 py-3 text-base text-muted-foreground">
                 Showing 30 of {includedEntries.length} included shifts.
               </p>
             ) : null}
@@ -643,7 +643,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               {preview.skipped.map((row) => (
                 <p
                   key={row.position}
-                  className="px-4 py-2 text-xs text-warning-foreground"
+                  className="px-4 py-2 text-base text-warning-foreground"
                 >
                   <span className="font-medium">Row {row.position}</span>
                   {row.employeeName ? ` · ${row.employeeName}` : ""}

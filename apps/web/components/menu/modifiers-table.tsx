@@ -431,7 +431,7 @@ export function ModifiersTable({
                         <span className="block truncate text-md text-foreground">
                           {group.name}
                         </span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                        <span className="mt-0.5 block text-base text-muted-foreground">
                           {group.squareRecordCount} Square{" "}
                           {group.squareRecordCount === 1 ? "record" : "records"}
                         </span>

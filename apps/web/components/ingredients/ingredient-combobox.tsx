@@ -255,7 +255,7 @@ export function IngredientCombobox({
               </>
             ) : null}
             {catalogError ? (
-              <span className="px-2.5 py-1.5 text-xs text-destructive">
+              <span className="px-2.5 py-1.5 text-base text-destructive">
                 {catalogError}
               </span>
             ) : null}

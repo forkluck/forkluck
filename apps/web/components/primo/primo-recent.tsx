@@ -284,7 +284,7 @@ function RecentList({ close }: { close: () => void }) {
                     {pending === row.id ? (
                       <span
                         role="status"
-                        className="text-xs text-muted-foreground"
+                        className="text-base text-muted-foreground"
                       >
                         Saving…
                       </span>

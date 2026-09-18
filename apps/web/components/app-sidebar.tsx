@@ -410,7 +410,7 @@ export function AppSidebar({
               {section.label ? (
                 <div
                   id={`nav-zone-${index}`}
-                  className="px-2.5 pb-1 text-xs leading-none font-medium text-muted-foreground"
+                  className="px-2.5 pb-1 text-base leading-none font-medium text-muted-foreground"
                 >
                   {section.label}
                 </div>

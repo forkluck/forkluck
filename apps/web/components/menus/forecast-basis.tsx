@@ -144,7 +144,7 @@ export function ProductForecastBasis({
               title="Same period last year"
               weeks={[basis.lastYearPeriod]}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               Dates shift back 52 weeks so weekdays match. These are recorded
               units, not estimates; missing records do not prove zero demand.
             </p>

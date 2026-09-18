@@ -283,7 +283,7 @@ function PdfViewer({
           Fit
         </Button>
         {pages ? (
-          <span className="ml-auto text-xs text-muted-foreground">
+          <span className="ml-auto text-base text-muted-foreground">
             {Math.min(Math.max(currentPage - first, 0), pages.length - 1) + 1} /{" "}
             {pages.length}
           </span>
@@ -291,11 +291,13 @@ function PdfViewer({
       </div>
       <Frame ref={scrollRef} onScroll={handleScroll}>
         {failed ? (
-          <p className="p-6 text-xs text-muted-foreground">
+          <p className="p-6 text-base text-muted-foreground">
             Couldn&apos;t open this document.
           </p>
         ) : !pages ? (
-          <p className="p-6 text-xs text-muted-foreground">Loading document…</p>
+          <p className="p-6 text-base text-muted-foreground">
+            Loading document…
+          </p>
         ) : (
           <div className="flex flex-col items-center gap-3 p-3">
             {pages.map((page, offset) => {

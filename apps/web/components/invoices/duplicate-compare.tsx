@@ -109,7 +109,7 @@ export function DuplicateCompare({
       </dl>
       <Link
         href={`/invoices/${existing.publicId}`}
-        className="mt-2.5 inline-block text-xs text-primary underline-offset-4 hover:underline"
+        className="mt-2.5 inline-block text-base text-primary underline-offset-4 hover:underline"
       >
         Open the imported invoice
       </Link>

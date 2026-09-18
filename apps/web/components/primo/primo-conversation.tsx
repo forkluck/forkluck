@@ -229,9 +229,9 @@ function TurnStatus({
   })
   const loaded = tools.some(primoToolSucceeded)
   return status === "aborted" ? (
-    <p className="text-xs text-muted-foreground">Response stopped</p>
+    <p className="text-base text-muted-foreground">Response stopped</p>
   ) : status === "error" ? (
-    <p className="text-xs text-destructive">
+    <p className="text-base text-destructive">
       {loaded
         ? "Results loaded; response interrupted. Try again."
         : tools.some((part) => getToolName(part) === "draft_recipe")
@@ -465,12 +465,12 @@ export function PrimoConversation({
                           })
                         }
                       />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-base text-muted-foreground">
                         Resending replaces this question and removes all later
                         messages. This question’s attached files are kept.
                       </p>
                       {activeEdit.error ? (
-                        <p role="alert" className="text-xs text-destructive">
+                        <p role="alert" className="text-base text-destructive">
                           {activeEdit.error}
                         </p>
                       ) : null}
@@ -603,7 +603,7 @@ export function PrimoConversation({
                       }
                       return (
                         <div key={part.toolCallId} className="space-y-2">
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-base text-muted-foreground">
                             {result.changes.join(" ")}
                           </p>
                           <PrimoRecipeDraftCard draft={result.draft} />
@@ -827,12 +827,12 @@ export function PrimoConversation({
         {announcement}
       </span>
       {suggestionError ? (
-        <p role="alert" className="px-4 text-xs text-destructive">
+        <p role="alert" className="px-4 text-base text-destructive">
           {suggestionError}
         </p>
       ) : null}
       {copyError ? (
-        <p role="alert" className="px-4 text-xs text-destructive">
+        <p role="alert" className="px-4 text-base text-destructive">
           {copyError}
         </p>
       ) : null}
@@ -851,7 +851,7 @@ export function PrimoConversation({
       />
       {empty && !conversationError ? (
         <div className="mt-6 px-3 pb-5 max-md:group-has-[textarea:focus]/primo:hidden">
-          <p className="mb-2 px-1 text-xs text-muted-foreground">
+          <p className="mb-2 px-1 text-base text-muted-foreground">
             Try one of these
           </p>
           <ul className="flex flex-col gap-1">

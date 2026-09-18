@@ -91,7 +91,7 @@ export function PurchaseUnitDialog({
           />
 
           {form.errors[UNIT_FIELD] || form.failure ? (
-            <p role="alert" className="mt-3 text-xs text-destructive">
+            <p role="alert" className="mt-3 text-base text-destructive">
               {form.errors[UNIT_FIELD] ?? form.failure?.message}
             </p>
           ) : null}

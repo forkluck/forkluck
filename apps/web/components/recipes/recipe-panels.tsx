@@ -146,7 +146,7 @@ function TotalRow({
       >
         {label}
         {hint ? (
-          <span className="block text-xs text-muted-foreground">{hint}</span>
+          <span className="block text-base text-muted-foreground">{hint}</span>
         ) : null}
       </TableCell>
       <TableCell
@@ -159,7 +159,7 @@ function TotalRow({
       >
         {value}
         {valueHint ? (
-          <span className="block text-xs font-normal text-muted-foreground">
+          <span className="block text-base font-normal text-muted-foreground">
             {valueHint}
           </span>
         ) : null}
@@ -356,7 +356,7 @@ export function RecipeCostingPanel({
                   <TableCell className="pr-8 text-right text-base whitespace-nowrap text-muted-foreground tabular-nums">
                     <span className="block">{quantity.measure}</span>
                     {quantity.equivalent ? (
-                      <span className="block text-xs text-muted-foreground/80">
+                      <span className="block text-base text-muted-foreground/80">
                         {quantity.equivalent}
                       </span>
                     ) : null}

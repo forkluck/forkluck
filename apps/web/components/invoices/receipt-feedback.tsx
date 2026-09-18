@@ -90,7 +90,7 @@ export function ReceiptFeedback({
 
   return (
     <div className="ml-auto flex items-center gap-1">
-      <span className="mr-1 text-xs text-muted-foreground" role="status">
+      <span className="mr-1 text-base text-muted-foreground" role="status">
         {invoice.feedback ? "Feedback sent" : "Feedback"}
       </span>
       <Button

@@ -254,7 +254,7 @@ function ComponentRow({
           ) : null}
         </span>
         {hint ? (
-          <span className="block truncate text-xs text-muted-foreground">
+          <span className="block truncate text-base text-muted-foreground">
             {hint}
           </span>
         ) : null}
@@ -377,7 +377,9 @@ export function ProductComponentsCard({
         >
           {label}
         </h3>
-        <span className="text-xs text-muted-foreground">{sectionRows.length}</span>
+        <span className="text-base text-muted-foreground">
+          {sectionRows.length}
+        </span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[420px] table-fixed">

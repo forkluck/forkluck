@@ -30,7 +30,7 @@ export function MetricCard({
       )}
       {...props}
     >
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p className="text-base font-medium text-muted-foreground">{label}</p>
       <div className="mt-1.5 flex min-h-[26px] items-center gap-2.5">
         <p className="min-w-0 truncate text-3xl leading-none font-semibold tracking-[-0.02em] tabular-nums">
           {value}
@@ -38,7 +38,7 @@ export function MetricCard({
         {badge}
       </div>
       {note ? (
-        <p className="mt-2 text-xs text-muted-foreground tabular-nums">
+        <p className="mt-2 text-base text-muted-foreground tabular-nums">
           {note}
         </p>
       ) : null}
@@ -56,7 +56,7 @@ export function Stat({
 }) {
   return (
     <div>
-      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dt className="text-base text-muted-foreground">{label}</dt>
       <dd className="mt-0.5 text-md font-medium tabular-nums">{value}</dd>
     </div>
   )

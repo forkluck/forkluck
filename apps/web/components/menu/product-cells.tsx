@@ -287,7 +287,7 @@ export function CountRow({
         {children}
       </span>
       {detail ? (
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">
+        <span className="ml-auto shrink-0 text-base text-muted-foreground tabular-nums">
           {detail}
         </span>
       ) : null}
@@ -351,7 +351,7 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
                   {entry.sku}
                 </span>
               </span>
-              <span className="mt-0.5 text-xs text-muted-foreground">
+              <span className="mt-0.5 text-base text-muted-foreground">
                 {entry.detail}
                 {entry.multiplier === 1 ? "" : ` · ×${entry.multiplier}`}
               </span>

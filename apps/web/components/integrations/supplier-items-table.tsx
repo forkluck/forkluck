@@ -226,7 +226,7 @@ export function SupplierItemsTable({
                   <span className="block truncate text-md text-foreground">
                     {itemCode(row)}
                   </span>
-                  <span className="block truncate text-xs text-muted-foreground">
+                  <span className="block truncate text-base text-muted-foreground">
                     {row.hasCode ? row.title : "No code"} · {row.supplierName}
                   </span>
                 </span>

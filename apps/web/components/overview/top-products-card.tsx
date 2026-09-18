@@ -69,7 +69,7 @@ export function TopProductsCard({
             ))}
           </ListBody>
           {hasShared ? (
-            <p className="px-5 pt-2.5 pb-1 text-xs text-muted-foreground">
+            <p className="px-5 pt-2.5 pb-1 text-base text-muted-foreground">
               Bundle sales are counted on the products inside them.
             </p>
           ) : null}

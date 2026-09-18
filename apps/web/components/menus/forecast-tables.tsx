@@ -325,7 +325,7 @@ export function RecipeBatchesTable({
                       {row.recipeTitle}
                     </Link>
                     {row.yieldAmount === null || !row.yieldUnit ? (
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className="mt-1 text-base text-muted-foreground">
                         Yield not recorded; shown in batches.
                       </p>
                     ) : null}
@@ -448,7 +448,9 @@ export function MaterialsTable({
                         </Badge>
                       ) : null}
                       {note ? (
-                        <div className="mt-0.5 text-xs text-muted-foreground">{note}</div>
+                        <div className="mt-0.5 text-base text-muted-foreground">
+                          {note}
+                        </div>
                       ) : null}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">

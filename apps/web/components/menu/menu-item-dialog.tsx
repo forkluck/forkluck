@@ -498,7 +498,7 @@ export function MenuItemDialog({
               ? ` · ${initialVariant.externalVariantTitle}`
               : ""}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="mt-0.5 text-base text-muted-foreground">
             {channelLabel(initialVariant.channel)}
             {initialVariant.sku ? ` · SKU ${initialVariant.sku}` : ""}
           </p>
@@ -577,7 +577,7 @@ export function MenuItemDialog({
           onChange={(event) => setAttribution(event.target.value)}
         />
         {attributionHelp(attribution) ? (
-          <p className="mt-1.5 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-base text-muted-foreground">
             {attributionHelp(attribution)}
           </p>
         ) : null}
@@ -592,12 +592,12 @@ export function MenuItemDialog({
               value={bundlePrice}
               onChange={(event) => setBundlePrice(event.target.value)}
             />
-            <p className="mt-1.5 text-xs text-muted-foreground">
+            <p className="mt-1.5 text-base text-muted-foreground">
               Optional. What one box sells for.
             </p>
             <div className="mt-4 rounded-xl border border-border p-4">
               <FieldLabel>Products in this box</FieldLabel>
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 text-base text-muted-foreground">
                 Say how many of each product one box contains. The box gets its
                 own product page, cost and price.
               </p>

@@ -599,7 +599,7 @@ export function RecipeLinesTable({
                   <span className="min-w-0 truncate text-base">
                     {entry.name}
                   </span>
-                  <span className="shrink-0 pr-2 text-xs text-muted-foreground tabular-nums">
+                  <span className="shrink-0 pr-2 text-base text-muted-foreground tabular-nums">
                     {formatUnitPrice(
                       entry.purchaseCostCents,
                       entry.purchaseSize,
@@ -616,7 +616,7 @@ export function RecipeLinesTable({
           {draftRejected ? (
             <TableRow className="h-9 border-b-0 hover:bg-transparent">
               <TableCell colSpan={6}>
-                <p role="alert" className="text-xs text-destructive">
+                <p role="alert" className="text-base text-destructive">
                   Add an amount, e.g. 20 g bread flour
                 </p>
               </TableCell>

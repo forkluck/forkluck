@@ -206,7 +206,7 @@ export function ReceiptReview({
                     ) : null}
                     {line.entry.description}
                   </span>
-                  <span className="mt-0.5 line-clamp-2 text-xs break-words text-muted-foreground">
+                  <span className="mt-0.5 line-clamp-2 text-base break-words text-muted-foreground">
                     {[
                       line.entry.packSize,
                       line.entry.match.kind === "update"
@@ -439,7 +439,7 @@ export function ReceiptReview({
                     currencyCode={currencyCode}
                     fallbackName={line.entry.description}
                   />
-                  <label className="mt-3 flex items-center gap-2.5 text-xs text-foreground">
+                  <label className="mt-3 flex items-center gap-2.5 text-base text-foreground">
                     <Checkbox
                       checked={line.remember}
                       onCheckedChange={(checked) =>
@@ -450,7 +450,7 @@ export function ReceiptReview({
                     />
                     Remember for {invoice.supplierName || "this supplier"}
                   </label>
-                  <p className="mt-1 pl-6.5 text-xs text-muted-foreground">
+                  <p className="mt-1 pl-6.5 text-base text-muted-foreground">
                     {line.entry.description} →{" "}
                     {ingredients.find(
                       (ingredient) => ingredient.id === line.ingredientId

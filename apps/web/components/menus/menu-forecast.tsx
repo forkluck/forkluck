@@ -105,7 +105,7 @@ export function MenuForecast({
           <h2 className="text-md font-semibold text-foreground">
             Unresolved demand paths
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-base text-muted-foreground">
             These quantities need a yield, conversion, purchase unit, or Product
             link before they can be completed.
           </p>
@@ -123,7 +123,7 @@ export function MenuForecast({
         </section>
       ) : null}
       <p
-        className="text-xs text-muted-foreground"
+        className="text-base text-muted-foreground"
         data-testid="forecast-money-caption"
       >
         {moneyCaption(forecast)}

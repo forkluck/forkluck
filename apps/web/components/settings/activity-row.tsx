@@ -159,7 +159,7 @@ export function ActivityRow({
           {count > 1 ? ` ${count} times` : ""}
           {`, by ${item.actorName}`}
         </span>
-        <span className="mt-[3px] block text-xs text-muted-foreground">
+        <span className="mt-[3px] block text-base text-muted-foreground">
           {timestamp(item.createdAt, timeZone)}
         </span>
       </span>

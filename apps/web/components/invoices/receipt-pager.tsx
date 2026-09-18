@@ -153,13 +153,13 @@ export function ReceiptPager({
         Files ({filesCount})
       </Button>
       {readingLabel ? (
-        <span className="text-xs text-muted-foreground">{readingLabel}</span>
+        <span className="text-base text-muted-foreground">{readingLabel}</span>
       ) : null}
       {children}
 
       <span className="ml-auto flex items-center gap-2">
         {blocker ? (
-          <span className="text-xs text-muted-foreground">{blocker}</span>
+          <span className="text-base text-muted-foreground">{blocker}</span>
         ) : null}
         {isDriveFile && onNeverOffer ? (
           <Button type="button" variant="ghost" onClick={onNeverOffer}>

@@ -52,7 +52,7 @@ function SentRequestValues({
         {request.source ? `${request.source} — ` : ""}sent per{" "}
         {formatAmount(request.servingGrams)} g
       </FieldDescription>
-      <dl className="grid grid-cols-2 gap-x-4 text-xs text-muted-foreground">
+      <dl className="grid grid-cols-2 gap-x-4 text-base text-muted-foreground">
         {stated.map((field) => (
           <div key={field.key} className="flex justify-between gap-2 py-0.5">
             <dt>{field.label}</dt>
@@ -146,7 +146,9 @@ function AllergenHintRow({
   if (keys.length === 0) return null
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <span className="text-base font-medium text-muted-foreground">
+        {label}
+      </span>
       <div role="group" aria-label={label} className="flex flex-wrap gap-1.5">
         {keys.map((key) => (
           <span
@@ -415,7 +417,7 @@ export function IngredientNutritionFields({
               <button
                 type="button"
                 onClick={() => setPackageOpen(true)}
-                className="w-fit text-xs text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+                className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
               >
                 Show all
               </button>
@@ -424,7 +426,7 @@ export function IngredientNutritionFields({
         ) : null}
         {requestPending ? (
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-base text-muted-foreground">
               Request pending
             </span>
             {sentRequest ? (
@@ -434,7 +436,7 @@ export function IngredientNutritionFields({
                 <button
                   type="button"
                   onClick={() => setSentOpen(true)}
-                  className="w-fit text-xs text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+                  className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
                 >
                   Show what was sent
                 </button>
@@ -445,7 +447,7 @@ export function IngredientNutritionFields({
           <button
             type="button"
             onClick={() => setRequestOpen(true)}
-            className="w-fit text-xs text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+            className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
           >
             No match? Request a custom value
           </button>

@@ -72,7 +72,7 @@ export function PrimoFeedback({
         <ThumbsDown aria-hidden="true" />
       </Button>
       {error && !open ? (
-        <span role="alert" className="text-xs text-destructive">
+        <span role="alert" className="text-base text-destructive">
           {error}
         </span>
       ) : null}

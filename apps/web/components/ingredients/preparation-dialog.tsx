@@ -242,7 +242,7 @@ export function PreparationDialog({
             </label>
           </div>
 
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-2 text-base text-muted-foreground">
             Leave yield blank to use a reviewed catalog estimate when one is
             available.
           </p>
@@ -274,7 +274,7 @@ export function PreparationDialog({
                   className="h-9 w-full rounded-md border border-input bg-card px-3 text-md outline-none placeholder:text-muted-foreground hover:border-line-strong focus:border-foreground"
                 />
                 {form.errors[NAME_FIELD] ? (
-                  <p role="alert" className="mt-1 text-xs text-destructive">
+                  <p role="alert" className="mt-1 text-base text-destructive">
                     {form.errors[NAME_FIELD]}
                   </p>
                 ) : null}
@@ -305,7 +305,7 @@ export function PreparationDialog({
                   </span>
                 </div>
                 {form.errors[YIELD_FIELD] ? (
-                  <p role="alert" className="mt-1 text-xs text-destructive">
+                  <p role="alert" className="mt-1 text-base text-destructive">
                     {form.errors[YIELD_FIELD]}
                   </p>
                 ) : null}
@@ -345,7 +345,10 @@ export function PreparationDialog({
                       />
                     </div>
                     {form.errors[id] ? (
-                      <p role="alert" className="mt-1 text-xs text-destructive">
+                      <p
+                        role="alert"
+                        className="mt-1 text-base text-destructive"
+                      >
                         {form.errors[id]}
                       </p>
                     ) : null}
@@ -356,7 +359,7 @@ export function PreparationDialog({
           </div>
 
           {form.failure ? (
-            <p role="alert" className="mt-3 text-xs text-destructive">
+            <p role="alert" className="mt-3 text-base text-destructive">
               {form.failure.message}
             </p>
           ) : null}

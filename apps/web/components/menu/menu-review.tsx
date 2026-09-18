@@ -355,7 +355,7 @@ export function MenuReview({
             </div>
             <div className="overflow-x-auto border-t border-muted">
               <div className="grid min-w-[640px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)_120px_92px]">
-                <div className="col-span-full grid grid-cols-subgrid border-b border-muted px-3.5 py-2 text-xs text-muted-foreground">
+                <div className="col-span-full grid grid-cols-subgrid border-b border-muted px-3.5 py-2 text-base text-muted-foreground">
                   <span>Product</span>
                   <span>Provider item</span>
                   <span>SKU</span>
@@ -475,11 +475,11 @@ export function MenuReview({
                       money
                     )}
                   </span>
-                  <span className="flex-none text-xs text-muted-foreground">
+                  <span className="flex-none text-base text-muted-foreground">
                     {channelLabel(group.channel)}
                   </span>
                   {hidden > 0 ? (
-                    <span className="flex-none text-xs text-muted-foreground tabular-nums">
+                    <span className="flex-none text-base text-muted-foreground tabular-nums">
                       showing {group.items.length}
                     </span>
                   ) : null}
@@ -628,7 +628,7 @@ export function MenuReview({
                             {item.itemName}
                           </span>
                           {item.externalVariantTitle ? (
-                            <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                            <span className="mt-0.5 block truncate text-base text-muted-foreground">
                               {item.externalVariantTitle}
                             </span>
                           ) : null}
@@ -699,7 +699,7 @@ export function MenuReview({
       )}
 
       {visibleTotal > visibleItems.length ? (
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-3 text-base text-muted-foreground">
           {query
             ? `Showing ${visibleItems.length} of ${visibleTotal} matches.`
             : `Showing the ${visibleItems.length} biggest by net sales. Clear some to see the rest.`}

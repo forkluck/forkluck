@@ -205,7 +205,7 @@ export function ForecastDateFilter({
                 {preset.label}
               </Button>
             ))}
-            <p className="mt-2 border-t border-popover-border pt-2 text-xs text-muted-foreground">
+            <p className="mt-2 border-t border-popover-border pt-2 text-base text-muted-foreground">
               Or pick a first and a last day on the calendar, up to{" "}
               {MAX_FORECAST_DAYS} days.
             </p>
