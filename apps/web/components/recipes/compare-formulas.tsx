@@ -749,7 +749,7 @@ function FormulaValue({
           onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
         />
         {value.line.written ? (
-          <span className="text-2xs text-muted-foreground">
+          <span className="text-base text-muted-foreground">
             Recipe says {value.line.written}
           </span>
         ) : null}
@@ -770,7 +770,7 @@ function FormulaValue({
     return (
       <span className={cn("tabular-nums", className)}>
         {formatCompareDeltaPoints(value.percent - baseline)}
-        <span className="block text-2xs font-normal text-muted-foreground">
+        <span className="block text-base font-normal text-muted-foreground">
           {formatComparePercent(value.percent)}
         </span>
       </span>
@@ -780,12 +780,12 @@ function FormulaValue({
     <span className={cn("tabular-nums", className)}>
       {formatComparePercent(value.percent)}
       {showGrams && value.grams !== null ? (
-        <span className="block text-2xs font-normal text-muted-foreground">
+        <span className="block text-base font-normal text-muted-foreground">
           {formatCompareGrams(value.grams)}
         </span>
       ) : null}
       {value.line?.note === "discarded" ? (
-        <span className="block text-2xs font-normal text-muted-foreground">discarded</span>
+        <span className="block text-base font-normal text-muted-foreground">discarded</span>
       ) : null}
     </span>
   )

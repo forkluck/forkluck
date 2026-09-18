@@ -173,7 +173,7 @@ export function ProductLinkPicker({
                 <span className="min-w-0 flex-1">
                   <span className="block truncate">{choice.label}</span>
                   {choice.skus.length ? (
-                    <span className="mt-0.5 block truncate text-2xs text-muted-foreground">
+                    <span className="mt-0.5 block truncate text-base text-muted-foreground">
                       {choice.skus.length === 1 ? "SKU" : "SKUs"}{" "}
                       {choice.skus.join(", ")}
                     </span>

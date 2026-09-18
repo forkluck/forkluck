@@ -368,7 +368,7 @@ export function ProductSalesSection({
       ) : null}
       <div className="mb-3 grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card">
         <div className="px-4 py-3">
-          <p className="text-2xs font-medium tracking-wide text-muted-foreground uppercase">
+          <p className="text-base font-medium text-muted-foreground">
             Units
           </p>
           <p className="mt-1 text-xl leading-7 font-semibold tracking-tight text-foreground tabular-nums">
@@ -376,7 +376,7 @@ export function ProductSalesSection({
           </p>
         </div>
         <div className="border-l border-border px-4 py-3 text-right">
-          <p className="text-2xs font-medium tracking-wide text-muted-foreground uppercase">
+          <p className="text-base font-medium text-muted-foreground">
             Net sales
           </p>
           <p className="mt-1 text-xl leading-7 font-semibold tracking-tight text-foreground tabular-nums">

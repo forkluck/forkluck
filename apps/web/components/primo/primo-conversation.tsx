@@ -684,7 +684,7 @@ export function PrimoConversation({
                   >
                     {message.createdAt || message.metadata?.createdAt ? (
                       <time
-                        className="mr-1 text-2xs"
+                        className="mr-1 text-base text-muted-foreground"
                         dateTime={new Date(
                           message.createdAt ?? message.metadata!.createdAt!
                         ).toISOString()}

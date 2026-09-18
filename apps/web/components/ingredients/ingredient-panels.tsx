@@ -238,7 +238,7 @@ function UnitConversionSection({
             </TooltipContent>
           </Tooltip>
           {conversion?.source === "catalog" ? (
-            <span className="text-2xs text-muted-foreground">Estimate</span>
+            <span className="text-base text-muted-foreground">Estimate</span>
           ) : null}
         </div>
       </div>
@@ -525,7 +525,7 @@ function UsedInProductsSection({
               </span>
               <span className="min-w-0 flex-1 truncate">{product.name}</span>
               {product.isActive ? null : (
-                <span className="shrink-0 text-2xs text-muted-foreground">
+                <span className="shrink-0 text-base text-muted-foreground">
                   Inactive
                 </span>
               )}
@@ -709,7 +709,7 @@ export function IngredientPanel({
                               ? "–"
                               : `${preparation.yieldPercent}%`}
                             {preparation.source === "catalog" ? (
-                              <span className="ml-1 text-2xs text-muted-foreground">
+                              <span className="ml-1 text-base text-muted-foreground">
                                 Estimate
                               </span>
                             ) : null}

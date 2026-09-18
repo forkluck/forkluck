@@ -61,7 +61,7 @@ export function UsedInList({ rows }: { rows: readonly UsedInRecipe[] }) {
           </span>
           <span className="min-w-0 flex-1 truncate">{recipe.title}</span>
           {recipe.status === "archived" ? (
-            <span className="shrink-0 text-2xs text-muted-foreground">
+            <span className="shrink-0 text-base text-muted-foreground">
               Archived
             </span>
           ) : null}

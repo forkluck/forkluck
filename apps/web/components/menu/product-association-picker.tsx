@@ -249,12 +249,12 @@ function ProductOption({
           {choice.label}
         </span>
         {choice.kind === "current" ? (
-          <span className="mt-0.5 block truncate text-2xs text-muted-foreground">
+          <span className="mt-0.5 block truncate text-base text-muted-foreground">
             Still counted here — no longer a product you can pick
           </span>
         ) : null}
         {choice.skus.length ? (
-          <span className="mt-0.5 block truncate text-2xs text-muted-foreground">
+          <span className="mt-0.5 block truncate text-base text-muted-foreground">
             {choice.skus.length === 1 ? "SKU" : "SKUs"} {choice.skus.join(", ")}
           </span>
         ) : null}

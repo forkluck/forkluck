@@ -241,7 +241,7 @@ export function IngredientsTable({
               {row.original.name}
             </GuardedLink>
             {row.original.status === "archived" ? (
-              <span className="shrink-0 text-2xs text-muted-foreground">
+              <span className="shrink-0 text-base text-muted-foreground">
                 Archived
               </span>
             ) : null}

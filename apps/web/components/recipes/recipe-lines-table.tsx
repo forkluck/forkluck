@@ -316,7 +316,7 @@ export function RecipeLinesTable({
                 )}
                 {line.measureRange?.requiresReview ? (
                   <span
-                    className="ml-1.5 text-2xs text-warning-foreground"
+                    className="ml-1.5 text-base text-warning-foreground"
                     title={`${formatWeight(line.measureRange.lowGrams, measurementSystem)}–${formatWeight(line.measureRange.highGrams, measurementSystem)} possible range`}
                   >
                     review
@@ -428,7 +428,7 @@ export function RecipeLinesTable({
                       same x whether the unit reads "g" or "tbsp". */}
                   <span className="inline-block w-9">{displayUnit(line)}</span>
                   {showWeightNote ? (
-                    <span className="text-2xs text-muted-foreground">
+                    <span className="text-base text-muted-foreground">
                       {canOverrideMeasure ? (
                         <button
                           type="button"

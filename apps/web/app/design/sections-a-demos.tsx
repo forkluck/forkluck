@@ -201,27 +201,24 @@ export function HeadingDemo() {
 export function TextDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
-      <Labeled label="Foreground">
+      <Labeled label="Regular text">
         <span className="text-base text-foreground">12 cases of butter</span>
       </Labeled>
-      <Labeled label="Muted">
+      <Labeled label="Subdued text">
         <span className="text-base text-muted-foreground">
           Priced from the invoice
         </span>
       </Labeled>
-      <Labeled label="Success">
+      <Labeled label="Success tone">
         <span className="text-base text-success">Cost fell 3.1%</span>
       </Labeled>
-      <Labeled label="Destructive">
+      <Labeled label="Critical tone">
         <span className="text-base text-destructive">Two have no price</span>
       </Labeled>
-      <Labeled label="Warning">
+      <Labeled label="Warning tone">
         <span className="text-base text-warning-foreground">
           Four lines unmatched
         </span>
-      </Labeled>
-      <Labeled label="2xs meta">
-        <span className="text-2xs text-muted-foreground">Updated by the kitchen</span>
       </Labeled>
     </div>
   )

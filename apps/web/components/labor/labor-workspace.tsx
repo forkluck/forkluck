@@ -294,7 +294,7 @@ export function LaborWorkspace({
               {row.original.name}
             </Link>
             {row.original.excludedFromCost ? (
-              <span className="shrink-0 text-2xs text-muted-foreground">
+              <span className="shrink-0 text-base text-muted-foreground">
                 Not costed
               </span>
             ) : null}
