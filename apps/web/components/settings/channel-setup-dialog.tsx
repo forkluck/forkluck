@@ -120,7 +120,7 @@ function SquareSandboxForm({
           onChange={(event) => setToken(event.target.value)}
         />
         <SetupNotes summary="Where to find it">
-          <ol className="list-decimal space-y-1 pl-4">
+          <ol className="list-decimal space-y-1 pl-4 text-foreground">
             <li>
               In the Square Developer Console, open your app’s OAuth section,
               then Test account authorizations.
@@ -289,7 +289,7 @@ function ShopifyForm({
 
         <SetupNotes summary="Setup instructions">
           {mode === "credentials" ? (
-            <ol className="list-decimal space-y-1 pl-4">
+            <ol className="list-decimal space-y-1 pl-4 text-foreground">
               <li>
                 Go to dev.shopify.com, signed in with your store account, then
                 Create app and start from the Dev Dashboard. Name it Forkluck.

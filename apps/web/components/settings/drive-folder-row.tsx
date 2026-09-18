@@ -160,7 +160,7 @@ export function DriveFolderRow({
                 to sign in to.
               </DialogDescription>
             </DialogHeader>
-            <ol className="flex list-decimal flex-col gap-2 pl-4 text-md leading-[1.55] text-muted-foreground">
+            <ol className="flex list-decimal flex-col gap-2 pl-4 text-md leading-[1.55] text-foreground">
               <li>
                 In Drive, share the folder with{" "}
                 <span className="font-medium text-foreground">

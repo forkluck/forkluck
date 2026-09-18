@@ -266,7 +266,7 @@ export function LinkDemo() {
 /** 7. Unordered list */
 export function UnorderedListDemo() {
   return (
-    <ul className="flex list-disc flex-col gap-1 pl-5 text-md text-muted-foreground">
+    <ul className="flex list-disc flex-col gap-1 pl-5 text-md text-foreground">
       <li>Laminate the dough in three single folds</li>
       <li>Rest 30 minutes between folds</li>
       <li>Proof at 26 C until doubled</li>
@@ -277,7 +277,7 @@ export function UnorderedListDemo() {
 /** 8. Ordered list */
 export function OrderedListDemo() {
   return (
-    <ol className="flex list-decimal flex-col gap-1 pl-5 text-md text-muted-foreground">
+    <ol className="flex list-decimal flex-col gap-1 pl-5 text-md text-foreground">
       <li>Weigh the detrempe and the butter block</li>
       <li>Lock the butter in and chill for an hour</li>
       <li>Roll, cut and shape 48 pieces</li>
