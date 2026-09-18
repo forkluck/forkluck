@@ -15,50 +15,29 @@ const TYPE_STEPS: {
   className: string
 }[] = [
   {
-    step: "2xs",
-    px: "11.5",
-    jobs: "Chips, badges in rows, menu group labels",
-    className: "text-2xs",
-  },
-  {
     step: "xs",
-    px: "12.5",
-    jobs: "Default badge, xs button, avatar initials, tooltips, chart ticks",
+    px: "12",
+    jobs: "Badges, chips, menu group labels, tooltips, chart ticks",
     className: "text-xs",
-  },
-  {
-    step: "sm",
-    px: "13",
-    jobs: "Controls: buttons, labels, tabs",
-    className: "text-sm",
-  },
-  {
-    step: "base",
-    px: "13.5",
-    jobs: "Body: table cells, dialog copy, nav, help text, every sub-line",
-    className: "text-base",
   },
   {
     step: "md",
     px: "14",
-    jobs: "Field text, list titles, every heading below the page title",
+    jobs: "Body, controls, fields, help text, every heading below the page title",
     className: "text-md",
   },
   {
     step: "lg",
     px: "16",
-    jobs: "The iOS field floor, the wordmark",
+    jobs: "The iOS field floor, the wordmark, inline figures",
     className: "text-lg",
   },
   {
-    step: "xl",
-    px: "17",
-    jobs: "Three inline figures (invoice import summary, sales strip)",
-    className: "text-xl",
+    step: "2xl",
+    px: "24",
+    jobs: "Page titles and every numeral: metric cards, the hero figure",
+    className: "text-2xl",
   },
-  { step: "2xl", px: "24", jobs: "Page titles", className: "text-2xl" },
-  { step: "3xl", px: "26", jobs: "Metric numerals", className: "text-3xl" },
-  { step: "4xl", px: "42", jobs: "The hero numeral", className: "text-4xl" },
 ]
 
 function TypeScaleDemo() {
@@ -69,7 +48,7 @@ function TypeScaleDemo() {
           key={step}
           className="grid grid-cols-[56px_1fr] items-baseline gap-x-6 md:grid-cols-[56px_minmax(0,320px)_1fr]"
         >
-          <span className="text-sm text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             {step} <span className="tabular-nums">{px}</span>
           </span>
           <span
@@ -87,7 +66,7 @@ function TypeScaleDemo() {
                 ? "$1.14"
                 : "Butter croissant"}
           </span>
-          <span className="col-span-2 text-base text-muted-foreground md:col-span-1">
+          <span className="col-span-2 text-md text-muted-foreground md:col-span-1">
             {jobs}
           </span>
         </div>
@@ -138,11 +117,11 @@ function RadiusDemo() {
           <div
             className={cn("size-16 border border-border bg-card", className)}
           />
-          <span className="text-sm text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             {step}
             {px ? <span className="tabular-nums"> {px}px</span> : null}
           </span>
-          <span className="text-base text-muted-foreground">{jobs}</span>
+          <span className="text-md text-muted-foreground">{jobs}</span>
         </div>
       ))}
     </div>
@@ -168,26 +147,26 @@ function ControlHeightsDemo() {
         {HEIGHTS.map(({ px, name }) => (
           <div key={px} className="flex flex-col items-start gap-2">
             <div
-              className="flex w-28 items-center rounded-lg border border-input bg-card px-3 text-sm"
+              className="flex w-28 items-center rounded-lg border border-input bg-card px-3 text-md"
               style={{ height: px }}
             >
               {px}px
             </div>
-            <span className="text-sm text-muted-foreground">{name}</span>
+            <span className="text-md text-muted-foreground">{name}</span>
           </div>
         ))}
       </div>
       <div className="flex flex-col gap-1">
         {HEIGHTS.map(({ px, jobs }) => (
           <div key={px} className="grid grid-cols-[56px_1fr] gap-x-6">
-            <span className="text-sm text-muted-foreground tabular-nums">
+            <span className="text-md text-muted-foreground tabular-nums">
               {px}px
             </span>
-            <span className="text-base text-muted-foreground">{jobs}</span>
+            <span className="text-md text-muted-foreground">{jobs}</span>
           </div>
         ))}
       </div>
-      <p className="max-w-[60ch] text-base leading-[1.55] text-muted-foreground">
+      <p className="max-w-[60ch] text-md leading-[1.55] text-muted-foreground">
         Layout heights are off this ladder on purpose: table rows 44, header
         rows 48, sidebar items 44, the floating field 52, the full-page spinner
         80, the main header 58.

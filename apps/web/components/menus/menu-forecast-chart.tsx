@@ -84,7 +84,7 @@ export function MenuForecastChart({
 
   return (
     <div className="min-w-0">
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-base text-muted-foreground">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-md text-muted-foreground">
         <LegendKey swatch="h-0.5 w-4 rounded-full bg-foreground">
           Actual
         </LegendKey>
@@ -113,7 +113,7 @@ export function MenuForecastChart({
             tickCount={3}
             tickLine={false}
             axisLine={false}
-            tick={{ className: "fill-muted-foreground text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-xs" }}
             tickFormatter={units}
             allowDecimals={false}
           />
@@ -124,7 +124,7 @@ export function MenuForecastChart({
             tickMargin={10}
             interval="preserveStartEnd"
             minTickGap={28}
-            tick={{ className: "fill-muted-foreground text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-xs" }}
           />
           <ChartTooltip
             cursor={{ stroke: "var(--border)" }}
@@ -136,7 +136,7 @@ export function MenuForecastChart({
             label={{
               value: "Today",
               position: "insideTopLeft",
-              className: "fill-muted-foreground text-2xs",
+              className: "fill-muted-foreground text-xs",
             }}
           />
           <Area

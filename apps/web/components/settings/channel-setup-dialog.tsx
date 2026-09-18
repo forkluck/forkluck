@@ -51,7 +51,7 @@ function SetupNotes({
 }) {
   return (
     <details className="group/notes">
-      <summary className="flex w-fit list-none items-center gap-1.5 text-sm font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground">
+      <summary className="flex w-fit list-none items-center gap-1.5 text-md font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground">
         <ChevronRight
           className="size-3.5 flex-none text-disabled-foreground group-open/notes:rotate-90"
           strokeWidth={2}
@@ -59,7 +59,7 @@ function SetupNotes({
         />
         {summary}
       </summary>
-      <div className="mt-2 text-base leading-[1.55] text-muted-foreground">
+      <div className="mt-2 text-md leading-[1.55] text-muted-foreground">
         {children}
       </div>
     </details>

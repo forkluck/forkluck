@@ -13,7 +13,7 @@ export function Marker({
     <div
       role={live ? "status" : undefined}
       className={cn(
-        "flex items-center gap-2 text-base text-muted-foreground",
+        "flex items-center gap-2 text-md text-muted-foreground",
         className
       )}
     >

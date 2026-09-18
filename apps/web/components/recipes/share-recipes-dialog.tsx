@@ -103,7 +103,7 @@ export function ShareRecipesDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <p className="truncate text-sm text-muted-foreground">
+        <p className="truncate text-md text-muted-foreground">
           {listNames(recipes.map((recipe) => recipe.title))}
         </p>
 
@@ -138,7 +138,7 @@ export function ShareRecipesDialog({
               Send
             </Button>
             {invite.errors[EMAIL_FIELD] || invite.failure ? (
-              <p role="alert" className="w-full text-base text-destructive">
+              <p role="alert" className="w-full text-md text-destructive">
                 {invite.errors[EMAIL_FIELD] ?? invite.failure?.message}
               </p>
             ) : null}

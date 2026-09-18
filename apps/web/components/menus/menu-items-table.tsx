@@ -95,7 +95,7 @@ export type MenuItemPatch =
   Partial<MenuItemState> | ((item: MenuItemState) => Partial<MenuItemState>)
 
 const cellInput =
-  "h-8 rounded-md border-transparent bg-transparent px-2 text-base md:text-base enabled:not-focus:hover:border-transparent disabled:border-transparent disabled:bg-transparent"
+  "h-8 rounded-md border-transparent bg-transparent px-2 text-md md:text-md enabled:not-focus:hover:border-transparent disabled:border-transparent disabled:bg-transparent"
 
 const PRICE_CENTS_LIMIT = 100_000_000
 const QTY_LIMIT = 1_000_000
@@ -135,7 +135,7 @@ type WorksheetRow = {
   derived: DerivedRow
 }
 
-const numberCell = "text-right text-base text-muted-foreground tabular-nums"
+const numberCell = "text-right text-md text-muted-foreground tabular-nums"
 
 function money(cents: number | null, currencyCode: string) {
   return cents === null ? "—" : formatCents(cents, currencyCode)
@@ -389,7 +389,7 @@ function QuickAdd({
     <div className="relative mt-2">
       <Input
         ref={inputRef}
-        className="h-8 text-base"
+        className="h-8 text-md"
         value={text}
         placeholder="Add an item"
         aria-label="Quick add item"
@@ -789,7 +789,7 @@ export function MenuItemsTable({
                 <TableRow className="h-11 hover:!bg-transparent">
                   <TableCell
                     colSpan={columnCount}
-                    className="pl-3 text-base text-muted-foreground"
+                    className="pl-3 text-md text-muted-foreground"
                   >
                     No items yet.
                   </TableCell>
@@ -839,7 +839,7 @@ export function MenuItemsTable({
                                       publicId: item.productPublicId ?? "",
                                     })
                               }
-                              className="truncate rounded-sm text-base text-foreground outline-none hover:underline focus-visible:underline"
+                              className="truncate rounded-sm text-md text-foreground outline-none hover:underline focus-visible:underline"
                             >
                               {item.name}
                             </GuardedLink>
@@ -864,7 +864,7 @@ export function MenuItemsTable({
                         )}
                       </TableCell>
                       {shown("category") ? (
-                        <TableCell className="w-[140px] text-base text-muted-foreground">
+                        <TableCell className="w-[140px] text-md text-muted-foreground">
                           {item.category || "—"}
                         </TableCell>
                       ) : null}
@@ -906,7 +906,7 @@ export function MenuItemsTable({
                       </TableCell>
                       <TableCell className="w-[90px]">
                         {item.productId ? (
-                          <span className="block text-right text-base text-muted-foreground tabular-nums">
+                          <span className="block text-right text-md text-muted-foreground tabular-nums">
                             {item.qtySold > 0
                               ? quantityFormat.format(item.qtySold)
                               : "—"}
@@ -946,7 +946,7 @@ export function MenuItemsTable({
                         </TableCell>
                       ) : null}
                       {shown("class") ? (
-                        <TableCell className="w-[100px] text-base text-muted-foreground">
+                        <TableCell className="w-[100px] text-md text-muted-foreground">
                           {row.class ? MENU_CLASS_LABELS[row.class] : "—"}
                         </TableCell>
                       ) : null}

@@ -76,7 +76,7 @@ export function InvoiceActivity({ resourceId }: { resourceId: string }) {
 
   return (
     <section className="max-w-[560px]">
-      <h2 className="text-sm leading-none font-medium text-foreground">
+      <h2 className="text-md leading-none font-medium text-foreground">
         Activity
       </h2>
       <div className="mt-2.5 border-t border-muted">
@@ -109,7 +109,7 @@ export function InvoiceActivity({ resourceId }: { resourceId: string }) {
         ))}
         {rows?.length ? (
           <div ref={sentinel} className="py-2 text-center">
-            <span className="text-base text-muted-foreground">
+            <span className="text-md text-muted-foreground">
               {nextBefore ? "Loading more…" : "End of activity"}
             </span>
           </div>

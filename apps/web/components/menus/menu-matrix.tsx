@@ -232,7 +232,7 @@ export function MenuMatrix({
 
   if (!points.length) {
     return (
-      <p className="text-base text-muted-foreground">
+      <p className="text-md text-muted-foreground">
         Nothing to plot yet. Link menu items to a costed recipe or product and
         the matrix fills in.
       </p>
@@ -260,7 +260,7 @@ export function MenuMatrix({
         {CLASSES.map((name) => (
           <div
             key={name}
-            className="flex items-center gap-1.5 text-base text-muted-foreground"
+            className="flex items-center gap-1.5 text-md text-muted-foreground"
           >
             <span
               className="h-2 w-2 shrink-0 rounded-sm"
@@ -274,13 +274,11 @@ export function MenuMatrix({
             </span>
           </div>
         ))}
-        <span className="ml-auto text-base text-muted-foreground">
-          {period}
-        </span>
+        <span className="ml-auto text-md text-muted-foreground">{period}</span>
       </div>
 
       <div className="mt-4 flex gap-2">
-        <div className="flex w-4 shrink-0 flex-col items-center justify-between py-2 text-2xs text-muted-foreground">
+        <div className="flex w-4 shrink-0 flex-col items-center justify-between py-2 text-xs text-muted-foreground">
           <span>High</span>
           <span className="rotate-180" style={{ writingMode: "vertical-rl" }}>
             Units sold
@@ -293,7 +291,7 @@ export function MenuMatrix({
           <div className="relative h-[300px] w-full border-b border-l border-border">
             {/* Quadrant names and threshold labels: under the chart, so the
                 tooltip covers them. */}
-            <div className="pointer-events-none absolute inset-0 overflow-hidden text-2xs text-muted-foreground">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden text-xs text-muted-foreground">
               <span className="absolute top-2 left-2">Plowhorses</span>
               <span className="absolute top-2 right-2">Stars</span>
               <span className="absolute bottom-2 left-2">Dogs</span>
@@ -336,7 +334,7 @@ export function MenuMatrix({
             </ChartContainer>
           </div>
 
-          <div className="mt-1.5 flex justify-between text-2xs text-muted-foreground">
+          <div className="mt-1.5 flex justify-between text-xs text-muted-foreground">
             <span>Low</span>
             <span>
               {`Margin per item · avg ${formatCents(averageMarginDollars * 100, currencyCode)}`}

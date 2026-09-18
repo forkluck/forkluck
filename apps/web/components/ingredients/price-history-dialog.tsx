@@ -63,7 +63,7 @@ export function PriceHistoryDialog({
                     <TableCell className="pl-3.5">
                       {formatFullDate(price.effectiveAt, timezone)}
                     </TableCell>
-                    <TableCell className="text-base text-muted-foreground">
+                    <TableCell className="text-md text-muted-foreground">
                       {formatPackSize(
                         price.purchaseSize,
                         price.purchaseUnit,

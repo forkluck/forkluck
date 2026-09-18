@@ -77,7 +77,7 @@ export function PrimoDropTarget({
                 ? "Wait for this chat to load"
                 : "Drop recipes or invoices here"}
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-md text-muted-foreground">
               {conversationError ||
                 "PDFs, photos and documents · up to five files, 20 MB combined"}
             </p>

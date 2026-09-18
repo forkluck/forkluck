@@ -134,7 +134,7 @@ export function ActivityRow({
   const href = resourceHref(item)
   return (
     <div className="flex h-14 items-center gap-3 border-b border-muted last:border-b-0">
-      <span className="relative flex size-10 flex-none items-center justify-center rounded-full bg-secondary text-sm font-medium text-muted-foreground">
+      <span className="relative flex size-10 flex-none items-center justify-center rounded-full bg-secondary text-md font-medium text-muted-foreground">
         {initials(item.actorName)}
         <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full border border-card bg-secondary-strong text-muted-foreground">
           <Badge className="size-2.5" strokeWidth={2} aria-hidden="true" />
@@ -159,7 +159,7 @@ export function ActivityRow({
           {count > 1 ? ` ${count} times` : ""}
           {`, by ${item.actorName}`}
         </span>
-        <span className="mt-[3px] block text-base text-muted-foreground">
+        <span className="mt-[3px] block text-md text-muted-foreground">
           {timestamp(item.createdAt, timeZone)}
         </span>
       </span>

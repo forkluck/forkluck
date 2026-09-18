@@ -55,7 +55,7 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
           <ClipboardList className="size-3.5" aria-hidden="true" />
           <span>Recipe draft</span>
         </div>
-        <p className="mt-1.5 text-base leading-5 text-muted-foreground">
+        <p className="mt-1.5 text-md leading-5 text-muted-foreground">
           Review this draft or ask Primo to change it before creating the
           recipe.
         </p>
@@ -71,14 +71,14 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
           </p>
         ) : null}
         {draft.yield ? (
-          <p className="mt-3 text-base text-muted-foreground">
+          <p className="mt-3 text-md text-muted-foreground">
             <span className="font-medium text-foreground">Total yield:</span>{" "}
             {yieldLabel(draft.yield)}
           </p>
         ) : null}
 
         <div className="mt-4">
-          <h4 className="text-base font-medium text-muted-foreground">
+          <h4 className="text-md font-medium text-muted-foreground">
             Ingredients
           </h4>
           <ul className="mt-2 divide-y divide-border border-y border-border">
@@ -87,7 +87,7 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
                 key={`${ingredient.name}-${index}`}
                 className="flex items-start gap-3 py-2.5 text-md leading-5"
               >
-                <span className="w-20 shrink-0 text-base leading-5 text-muted-foreground tabular-nums">
+                <span className="w-20 shrink-0 text-md leading-5 text-muted-foreground tabular-nums">
                   {ingredientMeasure(ingredient)}
                 </span>
                 <span className="min-w-0 leading-5 text-foreground">
@@ -105,14 +105,12 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
         </div>
 
         <div className="mt-4">
-          <h4 className="text-base font-medium text-muted-foreground">
-            Method
-          </h4>
+          <h4 className="text-md font-medium text-muted-foreground">Method</h4>
           {draft.steps.length ? (
             <ol className="mt-2 space-y-2 text-md leading-5 text-foreground">
               {draft.steps.map((step, index) => (
                 <li key={`${step}-${index}`} className="flex gap-2.5">
-                  <span className="shrink-0 text-base text-muted-foreground tabular-nums">
+                  <span className="shrink-0 text-md text-muted-foreground tabular-nums">
                     {index + 1}.
                   </span>
                   <span>{step}</span>
@@ -152,7 +150,7 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
         ) : (
           <div className="mt-5">
             {form.failure ? (
-              <p role="alert" className="mb-2 text-base text-destructive">
+              <p role="alert" className="mb-2 text-md text-destructive">
                 {form.failure.message}
               </p>
             ) : null}

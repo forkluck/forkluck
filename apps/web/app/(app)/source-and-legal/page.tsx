@@ -17,7 +17,7 @@ export default function SourceAndLegalPage() {
       <div className="max-w-[720px]">
         <PageHeader className="block">
           <PageTitle>Source &amp; legal</PageTitle>
-          <p className="mt-[5px] text-base text-muted-foreground">
+          <p className="mt-[5px] text-md text-muted-foreground">
             Forkluck&apos;s source license and service policies.
           </p>
         </PageHeader>
@@ -77,7 +77,7 @@ export default function SourceAndLegalPage() {
           </div>
         </section>
 
-        <p className="mt-8 border-t border-border pt-6 text-base leading-5 text-muted-foreground">
+        <p className="mt-8 border-t border-border pt-6 text-md leading-5 text-muted-foreground">
           Questions about Forkluck? Email{" "}
           <a href="mailto:guero@forkluck.com" className={externalLinkClassName}>
             guero@forkluck.com

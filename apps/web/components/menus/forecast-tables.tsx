@@ -159,7 +159,7 @@ export function ProductForecastTable({
                     >
                       {units(product.busyQuantity)}
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-md text-muted-foreground">
                       {/* A full eight weeks is the norm and says nothing;
                           only thin history is worth a word. The explanation
                           sits behind one quiet icon so the column stays a
@@ -234,7 +234,7 @@ export function SectionHeader({
     <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
       <div>
         <h2 className="text-md font-semibold text-foreground">{title}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+        <p className="mt-1 text-md text-muted-foreground">{subtitle}</p>
       </div>
       <Badge variant="secondary">{badge}</Badge>
     </div>
@@ -325,7 +325,7 @@ export function RecipeBatchesTable({
                       {row.recipeTitle}
                     </Link>
                     {row.yieldAmount === null || !row.yieldUnit ? (
-                      <p className="mt-1 text-base text-muted-foreground">
+                      <p className="mt-1 text-md text-muted-foreground">
                         Yield not recorded; shown in batches.
                       </p>
                     ) : null}
@@ -448,7 +448,7 @@ export function MaterialsTable({
                         </Badge>
                       ) : null}
                       {note ? (
-                        <div className="mt-0.5 text-base text-muted-foreground">
+                        <div className="mt-0.5 text-md text-muted-foreground">
                           {note}
                         </div>
                       ) : null}

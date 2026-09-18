@@ -72,7 +72,7 @@ export function IngredientNutritionPanel({
         <div className="flex min-h-8 items-center justify-between gap-3 print:hidden">
           <h2 className="text-md font-semibold">Preview</h2>
           {per100g ? (
-            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <label className="flex items-center gap-2 text-md text-muted-foreground">
               Serving (g)
               <InputGroup className="w-24">
                 <Input
@@ -83,7 +83,7 @@ export function IngredientNutritionPanel({
                   aria-label="Serving (g)"
                   value={servingGrams}
                   onChange={(event) => setServingGrams(event.target.value)}
-                  className="h-8 pr-7 tabular-nums md:text-sm"
+                  className="h-8 pr-7 tabular-nums md:text-md"
                 />
                 <InputAffix side="end">g</InputAffix>
               </InputGroup>
@@ -116,7 +116,7 @@ export function IngredientNutritionPanel({
             }
           />
         ) : (
-          <p className="mt-3 text-base text-muted-foreground">
+          <p className="mt-3 text-md text-muted-foreground">
             Link nutrition data to see a preview.
           </p>
         )}

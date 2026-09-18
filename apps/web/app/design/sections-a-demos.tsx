@@ -202,21 +202,21 @@ export function TextDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular text">
-        <span className="text-base text-foreground">12 cases of butter</span>
+        <span className="text-md text-foreground">12 cases of butter</span>
       </Labeled>
       <Labeled label="Subdued text">
-        <span className="text-base text-muted-foreground">
+        <span className="text-md text-muted-foreground">
           Priced from the invoice
         </span>
       </Labeled>
       <Labeled label="Success tone">
-        <span className="text-base text-success">Cost fell 3.1%</span>
+        <span className="text-md text-success">Cost fell 3.1%</span>
       </Labeled>
       <Labeled label="Critical tone">
-        <span className="text-base text-destructive">Two have no price</span>
+        <span className="text-md text-destructive">Two have no price</span>
       </Labeled>
       <Labeled label="Warning tone">
-        <span className="text-base text-warning-foreground">
+        <span className="text-md text-warning-foreground">
           Four lines unmatched
         </span>
       </Labeled>
@@ -229,7 +229,7 @@ export function ParagraphDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular paragraph" className="max-w-[46ch]">
-        <p className="text-base leading-[1.55] text-foreground">
+        <p className="text-md leading-[1.55] text-foreground">
           A recipe holds its components, its yield and the method the kitchen
           follows. Costing reads the last price paid for each ingredient, so a
           delivery that moved the price of butter moves the plate cost of every
@@ -237,7 +237,7 @@ export function ParagraphDemo() {
         </p>
       </Labeled>
       <Labeled label="Subdued paragraph" className="max-w-[46ch]">
-        <p className="text-base leading-[1.55] text-muted-foreground">
+        <p className="text-md leading-[1.55] text-muted-foreground">
           Prices come from the most recent invoice line matched to the
           ingredient.
         </p>
@@ -271,7 +271,7 @@ export function LinkDemo() {
 /** 7. Unordered list */
 export function UnorderedListDemo() {
   return (
-    <ul className="flex list-disc flex-col gap-1 pl-5 text-base text-muted-foreground">
+    <ul className="flex list-disc flex-col gap-1 pl-5 text-md text-muted-foreground">
       <li>Laminate the dough in three single folds</li>
       <li>Rest 30 minutes between folds</li>
       <li>Proof at 26 C until doubled</li>
@@ -282,7 +282,7 @@ export function UnorderedListDemo() {
 /** 8. Ordered list */
 export function OrderedListDemo() {
   return (
-    <ol className="flex list-decimal flex-col gap-1 pl-5 text-base text-muted-foreground">
+    <ol className="flex list-decimal flex-col gap-1 pl-5 text-md text-muted-foreground">
       <li>Weigh the detrempe and the butter block</li>
       <li>Lock the butter in and chill for an hour</li>
       <li>Roll, cut and shape 48 pieces</li>
@@ -648,13 +648,13 @@ export function SpinnerDemo() {
         </Labeled>
       </Row>
       <LoadingRegion pending label="Loading recipes" className="min-h-40">
-        <p className="text-base text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           48 recipes, costed on Monday. The numbers stay legible while the
           screen waits.
         </p>
       </LoadingRegion>
       <div className="relative h-32 rounded-xl border border-border bg-card">
-        <p className="p-4 text-base text-muted-foreground">
+        <p className="p-4 text-md text-muted-foreground">
           Butter croissant, Pain au chocolat, Kouign amann
         </p>
         <TableBusy />

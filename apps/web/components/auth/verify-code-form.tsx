@@ -118,7 +118,7 @@ export function VerifyCodeForm({
       <button
         type="button"
         onClick={resend}
-        className={cn("mt-6 self-center text-sm leading-5", authLinkClassName)}
+        className={cn("mt-6 self-center text-md leading-5", authLinkClassName)}
       >
         Resend code
       </button>

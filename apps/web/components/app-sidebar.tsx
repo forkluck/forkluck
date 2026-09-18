@@ -34,12 +34,12 @@ import { cn } from "@/lib/utils"
 // grey; the active row has no fill and turns brand blue, and hovering it tints
 // with the same translucent blue as an active section tab.
 const ROW_CLASS =
-  "flex h-11 w-full items-center gap-[9px] rounded-lg border border-transparent px-2.5 text-base leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-9"
+  "flex h-11 w-full items-center gap-[9px] rounded-lg border border-transparent px-2.5 text-md leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-9"
 
 const ICON_CLASS = "size-[17px] shrink-0"
 
 const SUB_ROW_CLASS =
-  "flex h-9 w-full items-center rounded-lg border border-transparent px-2.5 text-base leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-[30px]"
+  "flex h-9 w-full items-center rounded-lg border border-transparent px-2.5 text-md leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-[30px]"
 
 type NavChild = {
   href: string
@@ -410,7 +410,7 @@ export function AppSidebar({
               {section.label ? (
                 <div
                   id={`nav-zone-${index}`}
-                  className="px-2.5 pb-1 text-base leading-none font-medium text-muted-foreground"
+                  className="px-2.5 pb-1 text-md leading-none font-medium text-muted-foreground"
                 >
                   {section.label}
                 </div>

@@ -297,7 +297,7 @@ export function ModifiersTable({
       />
 
       {error && !openList ? (
-        <p role="alert" className="mb-3 text-base text-destructive">
+        <p role="alert" className="mb-3 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -319,7 +319,7 @@ export function ModifiersTable({
         <TableFrame className="overflow-x-auto">
           <div
             className={cn(
-              "grid h-12 items-center border-b border-border text-2xs font-medium text-ink-soft",
+              "grid h-12 items-center border-b border-border text-xs font-medium text-ink-soft",
               GRID
             )}
           >
@@ -379,10 +379,10 @@ export function ModifiersTable({
                 ) : (
                   <span />
                 )}
-                <span className="min-w-0 truncate text-base text-muted-foreground">
+                <span className="min-w-0 truncate text-md text-muted-foreground">
                   {row.details}
                 </span>
-                <span className="text-right text-base text-muted-foreground tabular-nums">
+                <span className="text-right text-md text-muted-foreground tabular-nums">
                   {row.total ? `${row.associated} of ${row.total}` : "—"}
                 </span>
               </div>
@@ -413,7 +413,7 @@ export function ModifiersTable({
           {associationGroups.length ? (
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-border">
               {/* Each row stacks on a phone, so the column labels go with it. */}
-              <div className="hidden shrink-0 grid-cols-[minmax(0,1fr)_120px_minmax(0,240px)] gap-3 border-b border-muted px-4 py-3.5 text-sm font-medium text-foreground md:grid">
+              <div className="hidden shrink-0 grid-cols-[minmax(0,1fr)_120px_minmax(0,240px)] gap-3 border-b border-muted px-4 py-3.5 text-md font-medium text-foreground md:grid">
                 <span>Selection</span>
                 <span className="text-right">Sales history</span>
                 <span>Counts as</span>
@@ -431,12 +431,12 @@ export function ModifiersTable({
                         <span className="block truncate text-md text-foreground">
                           {group.name}
                         </span>
-                        <span className="mt-0.5 block text-base text-muted-foreground">
+                        <span className="mt-0.5 block text-md text-muted-foreground">
                           {group.squareRecordCount} Square{" "}
                           {group.squareRecordCount === 1 ? "record" : "records"}
                         </span>
                       </span>
-                      <span className="text-base text-muted-foreground tabular-nums md:text-right">
+                      <span className="text-md text-muted-foreground tabular-nums md:text-right">
                         {group.usageCount
                           ? `${group.usageCount} ${group.usageCount === 1 ? "selection" : "selections"}`
                           : "—"}
@@ -460,7 +460,7 @@ export function ModifiersTable({
               </div>
             </div>
           ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto rounded-xl border border-border px-4 py-10 text-center text-base text-muted-foreground">
+            <div className="min-h-0 flex-1 overflow-y-auto rounded-xl border border-border px-4 py-10 text-center text-md text-muted-foreground">
               {openList?.modifierType === "text"
                 ? "This is a customer-entered text modifier, so there is no product to associate."
                 : "Square did not return any modifier items in this list."}
@@ -468,7 +468,7 @@ export function ModifiersTable({
           )}
 
           {error ? (
-            <p role="alert" className="text-base text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {error}
             </p>
           ) : null}

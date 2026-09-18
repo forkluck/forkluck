@@ -52,13 +52,13 @@ export function PriceMovesCard({
                   {move.name}
                 </span>
                 <span className="flex flex-none items-baseline gap-3">
-                  <span className="text-sm text-muted-foreground tabular-nums">
+                  <span className="text-md text-muted-foreground tabular-nums">
                     {formatCents(move.unitPriceCents, currencyCode)} /{" "}
                     {unitShort(move.unit)}
                   </span>
                   <span
                     className={cn(
-                      "w-13 text-right text-sm font-medium tabular-nums",
+                      "w-13 text-right text-md font-medium tabular-nums",
                       move.percent > 0 ? "text-destructive" : "text-success"
                     )}
                   >

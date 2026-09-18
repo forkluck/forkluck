@@ -203,7 +203,7 @@ function InvoiceItemSearch({
   }
 
   const messageClassName =
-    "flex h-9 items-center px-2.5 text-base text-muted-foreground"
+    "flex h-9 items-center px-2.5 text-md text-muted-foreground"
 
   return (
     <div className="relative" ref={fieldRef}>
@@ -303,7 +303,7 @@ function InvoiceItemSearch({
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => pick(item)}
                 className={cn(
-                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                   index === highlighted && "bg-accent"
                 )}
               >
@@ -352,7 +352,7 @@ const typedFieldClassName =
 
 /** Each column repeats its heading on a narrow screen, where the row splits. */
 const columnLabelClassName =
-  "mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+  "mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
 
 /** Yield is a percent, so it needs less room than the other two. Named once so
  *  the heading row and the fields under it cannot drift apart. */
@@ -491,9 +491,9 @@ export function PurchaseUnitFields({
             columnsClassName
           )}
         >
-          <span className="text-sm font-medium">Cost ({currencyCode})</span>
-          <span className="text-sm font-medium">Size</span>
-          <span className="flex items-center gap-1.5 text-sm font-medium">
+          <span className="text-md font-medium">Cost ({currencyCode})</span>
+          <span className="text-md font-medium">Size</span>
+          <span className="flex items-center gap-1.5 text-md font-medium">
             Yield
             <Tooltip>
               <TooltipTrigger
@@ -595,7 +595,7 @@ export function PurchaseUnitFields({
               />
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground"
+                className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-md text-muted-foreground"
               >
                 %
               </span>
@@ -624,14 +624,14 @@ export function PurchaseUnitFields({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center gap-2">
-                        <span className="truncate text-base font-medium">
+                        <span className="truncate text-md font-medium">
                           {item.title}
                         </span>
                         {used ? (
                           <Badge size="row">Used for costing</Badge>
                         ) : null}
                       </div>
-                      <p className="mt-0.5 truncate text-base text-muted-foreground">
+                      <p className="mt-0.5 truncate text-md text-muted-foreground">
                         {item.supplier} {item.externalId} ·{" "}
                         {item.rawSize ||
                           `${item.purchaseSize ?? "–"} ${unitShort(item.purchaseUnit)}`}{" "}
@@ -671,7 +671,7 @@ export function PurchaseUnitFields({
               })}
             </div>
           ) : (
-            <p className="px-3.5 py-3 text-base text-muted-foreground">
+            <p className="px-3.5 py-3 text-md text-muted-foreground">
               No invoice prices connected yet.
             </p>
           )}
@@ -679,7 +679,7 @@ export function PurchaseUnitFields({
           {picked ? (
             <div className="border-t border-muted bg-fill-soft px-3.5 py-3">
               <div className="flex flex-wrap items-end gap-3">
-                <div className="min-w-[180px] flex-1 pb-1 text-base text-muted-foreground">
+                <div className="min-w-[180px] flex-1 pb-1 text-md text-muted-foreground">
                   <span className="font-medium text-foreground">
                     {picked.description}
                   </span>
@@ -748,7 +748,7 @@ export function PurchaseUnitFields({
       ) : null}
 
       {value.disconnectInvoicePriceId ? (
-        <p className="mt-2 text-base text-muted-foreground">
+        <p className="mt-2 text-md text-muted-foreground">
           The cost above stays as it is. Saving only drops the link to the
           invoice item, and price history is kept.
         </p>

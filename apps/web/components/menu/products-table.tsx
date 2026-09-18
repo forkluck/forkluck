@@ -119,7 +119,7 @@ function itemChannels(row: SalesProductRow) {
 /** Secondary cell: 13.5px `--muted-foreground`, one step under the name. */
 function Cell({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-base whitespace-nowrap text-muted-foreground">
+    <span className="text-md whitespace-nowrap text-muted-foreground">
       {children}
     </span>
   )
@@ -490,7 +490,7 @@ export function ProductsTable({
   return (
     <>
       {error ? (
-        <p role="alert" className="mb-3 text-base text-destructive">
+        <p role="alert" className="mb-3 text-md text-destructive">
           {error}
         </p>
       ) : null}

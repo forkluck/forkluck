@@ -15,7 +15,7 @@ import { splitRecipeDocument } from "@/lib/recipe/split-document"
 
 function Hints() {
   return (
-    <p className="text-base leading-5 text-muted-foreground">
+    <p className="text-md leading-5 text-muted-foreground">
       <span className="font-medium text-foreground"># Heading</span> starts a
       section · <span className="font-medium text-foreground">&gt; Note</span>{" "}
       adds a note
@@ -60,7 +60,7 @@ export function ImportRecipeDialog({
           </DialogTitle>
         </DialogHeader>
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : null}
@@ -73,7 +73,7 @@ export function ImportRecipeDialog({
             <div className="grid gap-2">
               <label
                 htmlFor="import-ingredients"
-                className="text-sm font-medium"
+                className="text-md font-medium"
               >
                 Ingredients
               </label>
@@ -109,7 +109,7 @@ export function ImportRecipeDialog({
           ) : null}
           {wantMethod ? (
             <div className="grid gap-2">
-              <label htmlFor="import-method" className="text-sm font-medium">
+              <label htmlFor="import-method" className="text-md font-medium">
                 Prep method
               </label>
               <Textarea

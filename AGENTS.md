@@ -189,32 +189,29 @@ stand next to each other in a toolbar, a form, or a table row.
 
 ## Type scale
 
-Ten sizes exist and nothing between them, declared as `--text-*` in
-`apps/web/app/globals.css`: `text-2xs` (11.5px), `text-xs` (12.5px), `text-sm`
-(13px), `text-base` (13.5px), `text-md` (14px), `text-lg` (16px), `text-xl`
-(17px), `text-2xl` (24px), `text-3xl` (26px), `text-4xl` (42px). Tailwind's
-defaults are cleared, so `text-sm` is 13px here and not 14, and no step
-carries a line-height: `normal` stays the default and prose opts in with
-`leading-*`, as the body rule in `globals.css` explains.
+Four sizes exist and nothing between them, declared as `--text-*` in
+`apps/web/app/globals.css`: `text-xs` (12px), `text-md` (14px), `text-lg`
+(16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
+`text-base` and `text-xl` do not exist here, and no step carries a
+line-height: `normal` stays the default and a paragraph opts in with
+`leading-[1.55]`, as the body rule in `globals.css` explains.
 
 An arbitrary size — `text-[13px]`, `text-[14.5px]`, any of them — is never
-correct, including when it matches a step. The app drew twenty-six sizes from
-what its primitives describe as seven, ten of them between 11 and 16 pixels,
-which is how the same card heading came to be 15, 16 and 17. Pick the step;
-if none of the ten fits, the change is to the scale, not to the call site.
+correct, including when it matches a step. The app once drew twenty-six sizes
+from a ten-step scale; the scale was cut to four on 2026-09-18 because the
+steps between were doing nothing a reader could see. Pick the step; if none of
+the four fits, the change is to the scale, not to the call site.
 
-Each step has a job: `2xs` chips, badges and menu group labels; `xs` the
-default badge, the xs button, avatar initials, tooltips and chart ticks, and
-never running text; `sm` controls — buttons, labels, tabs; `base` body —
-table cells, dialog copy, nav, help text, every sub-line and description;
-`md` field text and every heading below the page title (dialog titles, section, card and list headings all sit here, at 600);
-`lg` the 16px floor that keeps iOS from zooming a focused field, and the
-wordmark; `xl` inline figures such as a dialog's summary numbers; `2xl` page
-titles; `3xl` metric numerals; `4xl` the hero numeral. Headings come in two
-sizes only, `2xl` for the page title and `md` for everything under it; a
-heading at `lg` or `xl` is a regression, not a choice. The Nutrition Facts label keeps its own sizes because it
-imitates a regulated format, the way table rows sit outside the control
-height ladder. `apps/web/tests/type-scale-pins.test.ts` refuses any other size.
+Each step has a job: `xs` badges, chips, menu group labels, tooltips and chart
+ticks, never running text; `md` everything read or pressed — body, table
+cells, dialog copy, help text, sub-lines, buttons, labels, tabs, field text,
+and every heading below the page title (at 600); `lg` the 16px floor that
+keeps iOS from zooming a focused field, the wordmark, and inline figures;
+`2xl` the page title and every numeral, metric cards and the hero figure
+alike. Headings come in two sizes, `2xl` for the page title and `md` for
+everything under it. The Nutrition Facts label keeps its own sizes because it
+imitates a regulated format. `apps/web/tests/type-scale-pins.test.ts` refuses
+any other size.
 
 ## Dialog width
 

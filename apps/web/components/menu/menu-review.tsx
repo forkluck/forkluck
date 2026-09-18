@@ -320,7 +320,7 @@ export function MenuReview({
   return (
     <>
       {error ? (
-        <p role="alert" className="mb-3 text-base text-destructive">
+        <p role="alert" className="mb-3 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -355,7 +355,7 @@ export function MenuReview({
             </div>
             <div className="overflow-x-auto border-t border-muted">
               <div className="grid min-w-[640px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)_120px_92px]">
-                <div className="col-span-full grid grid-cols-subgrid border-b border-muted px-3.5 py-2 text-base text-muted-foreground">
+                <div className="col-span-full grid grid-cols-subgrid border-b border-muted px-3.5 py-2 text-md text-muted-foreground">
                   <span>Product</span>
                   <span>Provider item</span>
                   <span>SKU</span>
@@ -370,7 +370,7 @@ export function MenuReview({
                       <span className="flex min-w-0 items-center gap-1.5">
                         <GuardedLink
                           href={productHref({ publicId: productPublicId })}
-                          className="truncate rounded-sm text-base outline-none hover:underline focus-visible:underline"
+                          className="truncate rounded-sm text-md outline-none hover:underline focus-visible:underline"
                         >
                           {productLabel}
                         </GuardedLink>
@@ -378,22 +378,22 @@ export function MenuReview({
                         variant.attributionPercent !== 100 ? (
                           <span
                             title={`${100 - variant.attributionPercent}% of this sale is unattributed`}
-                            className="flex-none rounded-md bg-muted px-1.5 py-0.5 text-2xs text-muted-foreground tabular-nums"
+                            className="flex-none rounded-md bg-muted px-1.5 py-0.5 text-xs text-muted-foreground tabular-nums"
                           >
                             {variant.attributionPercent}%
                           </span>
                         ) : null}
                       </span>
-                      <span className="truncate text-base text-muted-foreground">
+                      <span className="truncate text-md text-muted-foreground">
                         {variant.externalName}
                         {variant.externalVariantTitle
                           ? ` · ${variant.externalVariantTitle}`
                           : ""}
                       </span>
-                      <span className="truncate text-base text-muted-foreground tabular-nums">
+                      <span className="truncate text-md text-muted-foreground tabular-nums">
                         {variant.sku || "—"}
                       </span>
-                      <span className="text-base text-muted-foreground">
+                      <span className="text-md text-muted-foreground">
                         {channelLabel(variant.channel)}
                       </span>
                     </div>
@@ -475,11 +475,11 @@ export function MenuReview({
                       money
                     )}
                   </span>
-                  <span className="flex-none text-base text-muted-foreground">
+                  <span className="flex-none text-md text-muted-foreground">
                     {channelLabel(group.channel)}
                   </span>
                   {hidden > 0 ? (
-                    <span className="flex-none text-base text-muted-foreground tabular-nums">
+                    <span className="flex-none text-md text-muted-foreground tabular-nums">
                       showing {group.items.length}
                     </span>
                   ) : null}
@@ -520,7 +520,7 @@ export function MenuReview({
                   <div className="overflow-x-auto border-t border-muted">
                     <div
                       className={cn(
-                        "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+                        "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
                         GRID
                       )}
                     >
@@ -628,34 +628,34 @@ export function MenuReview({
                             {item.itemName}
                           </span>
                           {item.externalVariantTitle ? (
-                            <span className="mt-0.5 block truncate text-base text-muted-foreground">
+                            <span className="mt-0.5 block truncate text-md text-muted-foreground">
                               {item.externalVariantTitle}
                             </span>
                           ) : null}
                         </span>
-                        <span className="truncate text-base text-muted-foreground tabular-nums">
+                        <span className="truncate text-md text-muted-foreground tabular-nums">
                           {item.sku || "—"}
                         </span>
-                        <span className="truncate text-base text-muted-foreground">
+                        <span className="truncate text-md text-muted-foreground">
                           {channelLabel(item.channel)}
                         </span>
                         <span
-                          className="truncate text-base text-muted-foreground"
+                          className="truncate text-md text-muted-foreground"
                           title={orderSourceLabel(item.orderSources)}
                         >
                           {orderSourceLabel(item.orderSources) || "—"}
                         </span>
-                        <span className="text-right text-base text-muted-foreground tabular-nums">
+                        <span className="text-right text-md text-muted-foreground tabular-nums">
                           {item.lineCount
                             ? quantityFormat.format(item.quantity)
                             : "—"}
                         </span>
-                        <span className="text-right text-base text-muted-foreground tabular-nums">
+                        <span className="text-right text-md text-muted-foreground tabular-nums">
                           {item.lineCount
                             ? money(item.netSalesCents, item.currencyCode)
                             : "—"}
                         </span>
-                        <span className="text-right text-base text-muted-foreground tabular-nums">
+                        <span className="text-right text-md text-muted-foreground tabular-nums">
                           {item.lastSoldAt
                             ? formatFullDate(item.lastSoldAt, timezone)
                             : "—"}
@@ -699,7 +699,7 @@ export function MenuReview({
       )}
 
       {visibleTotal > visibleItems.length ? (
-        <p className="mt-3 text-base text-muted-foreground">
+        <p className="mt-3 text-md text-muted-foreground">
           {query
             ? `Showing ${visibleItems.length} of ${visibleTotal} matches.`
             : `Showing the ${visibleItems.length} biggest by net sales. Clear some to see the rest.`}

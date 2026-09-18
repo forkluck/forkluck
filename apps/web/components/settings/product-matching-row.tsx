@@ -64,7 +64,7 @@ export function ProductMatchingRow({ initial }: { initial: boolean }) {
         </div>
       </div>
       {error ? (
-        <p role="alert" className="mt-2 text-base text-destructive">
+        <p role="alert" className="mt-2 text-md text-destructive">
           {error}
         </p>
       ) : null}

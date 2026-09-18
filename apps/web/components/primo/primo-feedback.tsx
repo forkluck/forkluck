@@ -72,7 +72,7 @@ export function PrimoFeedback({
         <ThumbsDown aria-hidden="true" />
       </Button>
       {error && !open ? (
-        <span role="alert" className="text-base text-destructive">
+        <span role="alert" className="text-md text-destructive">
           {error}
         </span>
       ) : null}
@@ -95,7 +95,7 @@ export function PrimoFeedback({
             onChange={(event) => setComment(event.target.value)}
           />
           {error ? (
-            <p role="alert" className="text-sm text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {error}
             </p>
           ) : null}

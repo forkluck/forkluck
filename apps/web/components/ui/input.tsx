@@ -109,7 +109,7 @@ function SearchInput({
         autoComplete="off"
         {...props}
         className={cn(
-          "h-8 pr-3 pl-[33px] text-sm md:text-sm",
+          "h-8 pr-3 pl-[33px] text-md md:text-md",
           "[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
           inputClassName
         )}

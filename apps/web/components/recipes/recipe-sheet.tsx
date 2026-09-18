@@ -122,20 +122,20 @@ function LineRow({
           ? ""
           : formatMeasuredAmount(amount, unit, precisionFor(name))}
       </TableCell>
-      <TableCell className="text-base whitespace-nowrap text-muted-foreground">
+      <TableCell className="text-md whitespace-nowrap text-muted-foreground">
         {displayUnitShort(unit)}
       </TableCell>
       <TableCell className="py-2">
         {component ? <span className="font-medium">{name}</span> : name}
         {note ? (
-          <span className="text-base text-muted-foreground italic sm:hidden">
+          <span className="text-md text-muted-foreground italic sm:hidden">
             {" "}
             {note}
           </span>
         ) : null}
       </TableCell>
       {showNotes ? (
-        <TableCell className="hidden text-base text-muted-foreground italic sm:table-cell">
+        <TableCell className="hidden text-md text-muted-foreground italic sm:table-cell">
           {note}
         </TableCell>
       ) : null}
@@ -193,7 +193,7 @@ function IngredientTable({
             if (item.kind === "note") {
               return (
                 <TextRow key={index} showNotes={showNotes}>
-                  <span className="text-base text-muted-foreground italic">
+                  <span className="text-md text-muted-foreground italic">
                     {item.displayName}
                   </span>
                 </TextRow>
@@ -243,7 +243,7 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
           />
         </div>
         {recipe.yieldAmount !== null ? (
-          <p className="text-base text-muted-foreground tabular-nums">
+          <p className="text-md text-muted-foreground tabular-nums">
             Makes{" "}
             {formatYield(recipe.yieldAmount * batch.scale, recipe.yieldUnit)}
           </p>
@@ -274,13 +274,13 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 <h3 className="text-md font-medium">{item.displayName}</h3>
                 {factor === null || makes ? (
-                  <p className="text-base text-muted-foreground tabular-nums">
+                  <p className="text-md text-muted-foreground tabular-nums">
                     {factor === null ? "Shown at 1x" : ""}
                     {factor === null && makes ? " · " : ""}
                     {makes}
                   </p>
                 ) : null}
-                <Badge size="row" className="rounded-sm px-[7px] text-2xs">
+                <Badge size="row" className="rounded-sm px-[7px] text-xs">
                   Sub-recipe
                 </Badge>
               </div>
@@ -325,7 +325,7 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
                   key={index}
                   className="grid grid-cols-[24px_minmax(0,1fr)] gap-2"
                 >
-                  <span className="text-sm text-muted-foreground tabular-nums">
+                  <span className="text-md text-muted-foreground tabular-nums">
                     {number}
                   </span>
                   <p className="text-md">{entry.body}</p>

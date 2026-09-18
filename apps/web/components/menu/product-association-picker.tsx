@@ -174,7 +174,7 @@ export function ProductAssociationPicker({
             }}
             placeholder="Search product title or SKU"
             aria-label="Search product title or SKU"
-            className="h-9 w-full bg-transparent pr-8 pl-8 text-base text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-9 w-full bg-transparent pr-8 pl-8 text-md text-foreground outline-none placeholder:text-muted-foreground"
           />
           {query ? (
             <button
@@ -191,7 +191,7 @@ export function ProductAssociationPicker({
 
         <div className="flex max-h-[300px] flex-col overflow-y-auto p-1.5">
           {matches.length === 0 ? (
-            <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-base text-muted-foreground">
+            <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-md text-muted-foreground">
               No products match that title or SKU.
             </span>
           ) : (
@@ -249,12 +249,12 @@ function ProductOption({
           {choice.label}
         </span>
         {choice.kind === "current" ? (
-          <span className="mt-0.5 block truncate text-base text-muted-foreground">
+          <span className="mt-0.5 block truncate text-md text-muted-foreground">
             Still counted here — no longer a product you can pick
           </span>
         ) : null}
         {choice.skus.length ? (
-          <span className="mt-0.5 block truncate text-base text-muted-foreground">
+          <span className="mt-0.5 block truncate text-md text-muted-foreground">
             {choice.skus.length === 1 ? "SKU" : "SKUs"} {choice.skus.join(", ")}
           </span>
         ) : null}

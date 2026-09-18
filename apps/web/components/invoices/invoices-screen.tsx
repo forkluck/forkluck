@@ -181,7 +181,7 @@ export function InvoicesScreen({
       {/* No line when the read is unmetered (BYOK, self-hosted) or when the
           account is read-only: the banner above already says what to do. */}
       {!byok && overview.aiUsage && overview.aiUsage.maxPages ? (
-        <p className="text-base text-muted-foreground" role="status">
+        <p className="text-md text-muted-foreground" role="status">
           {overview.aiUsage.usedPages} of {overview.aiUsage.maxPages} AI pages
           used. Resets {formatCalendarDayMonth(overview.aiUsage.resetsOn)}.
           {overview.aiUsage.exhausted &&

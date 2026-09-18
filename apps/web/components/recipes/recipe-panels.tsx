@@ -142,16 +142,16 @@ function TotalRow({
     <TableRow className="hover:bg-transparent">
       <TableCell
         colSpan={span}
-        className={cn("text-base", strong && "font-medium", edge)}
+        className={cn("text-md", strong && "font-medium", edge)}
       >
         {label}
         {hint ? (
-          <span className="block text-base text-muted-foreground">{hint}</span>
+          <span className="block text-md text-muted-foreground">{hint}</span>
         ) : null}
       </TableCell>
       <TableCell
         className={cn(
-          "text-right text-base whitespace-nowrap tabular-nums",
+          "text-right text-md whitespace-nowrap tabular-nums",
           strong && "font-medium",
           edge,
           valueClass
@@ -159,7 +159,7 @@ function TotalRow({
       >
         {value}
         {valueHint ? (
-          <span className="block text-base font-normal text-muted-foreground">
+          <span className="block text-md font-normal text-muted-foreground">
             {valueHint}
           </span>
         ) : null}
@@ -256,7 +256,7 @@ export function RecipeCostingPanel({
 
   if (lines.length === 0) {
     return (
-      <p className="text-base text-muted-foreground">
+      <p className="text-md text-muted-foreground">
         Add ingredients on the Recipe tab and their cost lands here.
       </p>
     )
@@ -353,17 +353,17 @@ export function RecipeCostingPanel({
                       </Tooltip>
                     ) : null}
                   </TableCell>
-                  <TableCell className="pr-8 text-right text-base whitespace-nowrap text-muted-foreground tabular-nums">
+                  <TableCell className="pr-8 text-right text-md whitespace-nowrap text-muted-foreground tabular-nums">
                     <span className="block">{quantity.measure}</span>
                     {quantity.equivalent ? (
-                      <span className="block text-base text-muted-foreground/80">
+                      <span className="block text-md text-muted-foreground/80">
                         {quantity.equivalent}
                       </span>
                     ) : null}
                   </TableCell>
                   <TableCell
                     className={cn(
-                      "relative text-right text-base whitespace-nowrap tabular-nums",
+                      "relative text-right text-md whitespace-nowrap tabular-nums",
                       costGutter
                     )}
                   >

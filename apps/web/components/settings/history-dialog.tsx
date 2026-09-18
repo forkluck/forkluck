@@ -88,7 +88,7 @@ function FilterColumn({
 }) {
   return (
     <div>
-      <p className="mb-1 text-2xs font-semibold text-muted-foreground">
+      <p className="mb-1 text-xs font-semibold text-muted-foreground">
         {title}
       </p>
       {options.map((option) => (
@@ -96,7 +96,7 @@ function FilterColumn({
           key={option.key}
           className="flex h-8 items-center justify-between gap-3"
         >
-          <span className="text-base text-foreground">{option.label}</span>
+          <span className="text-md text-foreground">{option.label}</span>
           <Switch
             size="sm"
             aria-label={option.label}
@@ -344,7 +344,7 @@ export function HistoryDialog({
                 timeZone={timezone}
                 trailing={
                   importRow?.undoneAt ? (
-                    <span className="text-base text-muted-foreground">
+                    <span className="text-md text-muted-foreground">
                       Undone
                     </span>
                   ) : importRow?.canUndo ? (
@@ -370,14 +370,14 @@ export function HistoryDialog({
           })}
           {rows?.length ? (
             <div ref={sentinel} className="py-2 text-center">
-              <span className="text-base text-muted-foreground">
+              <span className="text-md text-muted-foreground">
                 {current?.nextBefore ? "Loading more…" : "End of history"}
               </span>
             </div>
           ) : null}
         </div>
         {undoError ? (
-          <p className="mt-2 text-base text-destructive" role="alert">
+          <p className="mt-2 text-md text-destructive" role="alert">
             {undoError}
           </p>
         ) : null}

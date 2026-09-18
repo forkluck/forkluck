@@ -97,7 +97,7 @@ export function SupplierCombobox({
               <button
                 type="button"
                 onClick={() => choose(typed)}
-                className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong"
+                className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong"
               >
                 <CirclePlus
                   className="size-[15px] shrink-0"
@@ -109,7 +109,7 @@ export function SupplierCombobox({
             {/* Only a search that found nothing says so; an empty list is
                   not a failed search. */}
             {needle && matches.length === 0 && !canAdd ? (
-              <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
+              <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
                 No results
               </span>
             ) : null}
@@ -119,7 +119,7 @@ export function SupplierCombobox({
                 type="button"
                 onClick={() => choose(option)}
                 className={cn(
-                  "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                   value === option && "bg-accent"
                 )}
               >

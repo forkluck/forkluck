@@ -42,7 +42,7 @@ export function LaborImportHistoryDialog({
 
         <div>
           {imports.length === 0 ? (
-            <p className="text-base leading-[1.55] text-muted-foreground">
+            <p className="text-md leading-[1.55] text-muted-foreground">
               No hours have been imported yet.
             </p>
           ) : (
@@ -57,7 +57,7 @@ export function LaborImportHistoryDialog({
                       <p className="truncate text-md">{item.fileName}</p>
                       {item.undoneAt ? <Badge>Undone</Badge> : null}
                     </div>
-                    <p className="mt-1 text-base text-muted-foreground">
+                    <p className="mt-1 text-md text-muted-foreground">
                       {formatDateTime(item.createdAt, timezone)} ·{" "}
                       {item.importedCount} shifts ·{" "}
                       {formatDecimalHours(item.totalSeconds)} h ·{" "}
@@ -83,7 +83,7 @@ export function LaborImportHistoryDialog({
           )}
           {error ? (
             <p
-              className="mt-3 text-base leading-[1.55] text-destructive"
+              className="mt-3 text-md leading-[1.55] text-destructive"
               role="alert"
             >
               {error}

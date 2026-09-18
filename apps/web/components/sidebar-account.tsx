@@ -71,7 +71,7 @@ export function SidebarAccount({
         >
           {firstName(user.name).slice(0, 1).toUpperCase()}
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm leading-none font-medium text-sidebar-foreground">
+        <span className="min-w-0 flex-1 truncate text-md leading-none font-medium text-sidebar-foreground">
           {firstName(user.name)}
         </span>
         {/* The chevron points at where the popover will go, so it flips when
@@ -98,10 +98,10 @@ export function SidebarAccount({
       >
         {/* Name over email on a #f4f4f5 rule — no avatar up here. */}
         <div className="border-b border-muted px-2.5 pt-2 pb-2.5">
-          <p className="truncate text-base leading-none font-semibold">
+          <p className="truncate text-md leading-none font-semibold">
             {user.name}
           </p>
-          <p className="mt-1 truncate text-base leading-none text-foreground">
+          <p className="mt-1 truncate text-md leading-none text-foreground">
             {user.email}
           </p>
         </div>

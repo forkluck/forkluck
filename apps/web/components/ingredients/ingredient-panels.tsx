@@ -238,7 +238,7 @@ function UnitConversionSection({
             </TooltipContent>
           </Tooltip>
           {conversion?.source === "catalog" ? (
-            <span className="text-base text-muted-foreground">Estimate</span>
+            <span className="text-md text-muted-foreground">Estimate</span>
           ) : null}
         </div>
       </div>
@@ -463,7 +463,7 @@ function UsedInSection({
       <div className="flex min-h-8 items-center gap-1.5">
         <h2 className="text-md font-semibold">Used in</h2>
         {rows.length > 0 ? (
-          <span className="text-sm text-muted-foreground tabular-nums">
+          <span className="text-md text-muted-foreground tabular-nums">
             {rows.length}
           </span>
         ) : null}
@@ -499,13 +499,13 @@ function UsedInProductsSection({
       <div className="flex min-h-8 items-center gap-1.5">
         <h2 className="text-md font-semibold">Used in</h2>
         {rows.length > 0 ? (
-          <span className="text-sm text-muted-foreground tabular-nums">
+          <span className="text-md text-muted-foreground tabular-nums">
             {rows.length}
           </span>
         ) : null}
       </div>
       {rows.length === 0 ? (
-        <p className="mt-3 text-base text-muted-foreground">
+        <p className="mt-3 text-md text-muted-foreground">
           No product uses this yet.
         </p>
       ) : (
@@ -514,7 +514,7 @@ function UsedInProductsSection({
             <GuardedLink
               key={product.id}
               href={productHref(product)}
-              className="flex min-h-9 items-center gap-2.5 px-1 text-base font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
+              className="flex min-h-9 items-center gap-2.5 px-1 text-md font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
             >
               <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground">
                 <Tag
@@ -525,7 +525,7 @@ function UsedInProductsSection({
               </span>
               <span className="min-w-0 flex-1 truncate">{product.name}</span>
               {product.isActive ? null : (
-                <span className="shrink-0 text-base text-muted-foreground">
+                <span className="shrink-0 text-md text-muted-foreground">
                   Inactive
                 </span>
               )}
@@ -597,7 +597,7 @@ export function IngredientPanel({
       ) : (
         <>
           <section className="max-w-[640px]">
-            <h2 className="mb-2 text-base font-medium">Preparations</h2>
+            <h2 className="mb-2 text-md font-medium">Preparations</h2>
             {/* Over the frame, not inside it: the bar must not pan with the
             columns; it covers the header row the way every table shows a
             selection. */}
@@ -616,7 +616,7 @@ export function IngredientPanel({
                     }
                     aria-label="Select all preparations"
                   />
-                  <span className="text-sm font-medium tabular-nums">
+                  <span className="text-md font-medium tabular-nums">
                     {selectedCount} selected
                   </span>
                   <BulkDeleteMenu
@@ -709,7 +709,7 @@ export function IngredientPanel({
                               ? "–"
                               : `${preparation.yieldPercent}%`}
                             {preparation.source === "catalog" ? (
-                              <span className="ml-1 text-base text-muted-foreground">
+                              <span className="ml-1 text-md text-muted-foreground">
                                 Estimate
                               </span>
                             ) : null}
@@ -865,7 +865,7 @@ export function NewIngredientPanel({
       ) : (
         <>
           <section className="max-w-[640px]">
-            <h2 className="mb-2 text-base font-medium">Preparations</h2>
+            <h2 className="mb-2 text-md font-medium">Preparations</h2>
             <TableFrame className="overflow-x-auto">
               <Table>
                 <TableHeader>

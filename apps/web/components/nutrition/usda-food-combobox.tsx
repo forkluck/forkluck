@@ -115,7 +115,7 @@ export function UsdaFoodCombobox({
       >
         <span className="flex min-w-0 items-center gap-2">
           {value ? (
-            <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
+            <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-xs font-medium text-secondary-foreground">
               {nutritionSourceLabel(value.source)}
             </span>
           ) : null}
@@ -173,18 +173,18 @@ export function UsdaFoodCombobox({
                 setOpen(false)
                 await onClear()
               }}
-              className="flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent"
+              className="flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent"
             >
               <X className="size-[15px] shrink-0" aria-hidden="true" />
               Clear
             </button>
           ) : null}
           {searching ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
               Searching
             </span>
           ) : message ? (
-            <span className="flex min-h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
+            <span className="flex min-h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
               {message}
             </span>
           ) : null}
@@ -193,13 +193,13 @@ export function UsdaFoodCombobox({
               key={match.fdcId}
               type="button"
               onClick={() => void choose(match)}
-              className="flex min-h-9 w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+              className="flex min-h-9 w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent"
             >
               <span className="min-w-0 flex-1 truncate">
                 {match.description}
               </span>
               {match.brand ? (
-                <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
+                <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-xs font-medium text-secondary-foreground">
                   {match.brand}
                 </span>
               ) : null}

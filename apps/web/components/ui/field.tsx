@@ -31,7 +31,7 @@ function FieldLegend({
       data-variant={variant}
       className={cn(
         // Section heading inside a form: 600 14px ink.
-        "mb-1.5 font-semibold text-foreground data-[variant=label]:text-sm data-[variant=legend]:text-md",
+        "mb-1.5 font-semibold text-foreground data-[variant=label]:text-md data-[variant=legend]:text-md",
         className
       )}
       {...props}
@@ -124,7 +124,7 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-sm leading-none font-medium text-foreground group-data-[disabled=true]/field:opacity-50",
+        "flex w-fit items-center gap-2 text-md leading-none font-medium text-foreground group-data-[disabled=true]/field:opacity-50",
         className
       )}
       {...props}
@@ -139,7 +139,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
       className={cn(
         // Help text: 400 12.5px/1.55 --muted-foreground, sitting 8px under the
         // control it explains.
-        "text-left text-base leading-[1.55] font-normal text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
+        "text-left text-md leading-[1.55] font-normal text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
         "last:mt-0 nth-last-2:-mt-1",
         "[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-foreground",
         className
@@ -223,7 +223,7 @@ function FieldError({
       role="alert"
       data-slot="field-error"
       className={cn(
-        "text-base leading-[1.55] font-normal text-destructive",
+        "text-md leading-[1.55] font-normal text-destructive",
         className
       )}
       {...props}

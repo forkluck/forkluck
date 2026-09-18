@@ -95,7 +95,7 @@ export function ImportFilesPanel({
         <p className="text-md leading-5 font-medium text-foreground">
           Drop invoice PDFs or receipt photos here
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           PDF up to 5 MB, photo up to 8 MB
         </p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
@@ -125,13 +125,13 @@ export function ImportFilesPanel({
           </Button>
         </div>
         {config ? (
-          <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
+          <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             In Drive, open the month folder and select the PDFs inside it.
             Folders themselves can&apos;t be imported.
           </p>
         ) : null}
         {driveConnectHref ? (
-          <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
+          <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             Receipts in a Google Drive folder?{" "}
             <Link href={driveConnectHref} className="underline">
               Connect the folder
@@ -142,7 +142,7 @@ export function ImportFilesPanel({
       </div>
 
       {reconnectNeeded ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-base text-warning-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md text-warning-foreground">
           Google Drive access expired mid-import.
           <Button type="button" size="sm" onClick={onReconnect}>
             Reconnect Google Drive
@@ -152,7 +152,7 @@ export function ImportFilesPanel({
 
       {queue.length > 0 ? (
         <div className="rounded-xl border border-border">
-          <p className="border-b border-border px-3.5 py-2.5 text-base font-medium text-muted-foreground">
+          <p className="border-b border-border px-3.5 py-2.5 text-md font-medium text-muted-foreground">
             {busyCount > 0
               ? `Reading ${busyCount} of ${queue.length} file${queue.length === 1 ? "" : "s"}…`
               : `${queue.length} file${queue.length === 1 ? "" : "s"}`}
@@ -163,12 +163,12 @@ export function ImportFilesPanel({
                 key={item.key}
                 className="flex items-center gap-2 border-b border-muted px-3.5 py-2 last:border-b-0"
               >
-                <span className="min-w-0 flex-1 truncate text-base">
+                <span className="min-w-0 flex-1 truncate text-md">
                   {item.fileName}
                 </span>
                 {item.status === "error" ? (
                   <>
-                    <span className="truncate text-base text-destructive">
+                    <span className="truncate text-md text-destructive">
                       {item.error}
                     </span>
                     <Button
@@ -210,11 +210,11 @@ export function ImportFilesPanel({
       ) : null}
 
       {inboxNotice ? (
-        <p className="text-base text-muted-foreground">{inboxNotice}</p>
+        <p className="text-md text-muted-foreground">{inboxNotice}</p>
       ) : null}
 
       {error ? (
-        <p className="text-base text-destructive" role="alert">
+        <p className="text-md text-destructive" role="alert">
           {error}
         </p>
       ) : null}

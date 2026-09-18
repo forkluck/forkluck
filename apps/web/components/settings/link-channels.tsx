@@ -423,7 +423,7 @@ export function LinkChannels({
       ) : null}
 
       {integrationError ? (
-        <div className="mb-4 flex max-w-[760px] items-center gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-3 text-sm text-warning-foreground">
+        <div className="mb-4 flex max-w-[760px] items-center gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-3 text-md text-warning-foreground">
           <TriangleAlert
             className="size-4 flex-none text-warning"
             strokeWidth={1.8}

@@ -86,21 +86,16 @@
   --radius-xl: 14px;
   --radius-2xl: 18px;
 
-  /* Type scale: ten steps and nothing between them (AGENTS.md "Type scale").
-     Tailwind's own sizes are cleared so `text-sm` is 13px here, not 14, and
-     no step carries a line-height: `normal` stays the default and prose opts
-     in with `leading-*`. tests/type-scale-pins.test.ts refuses any other size. */
+  /* Type scale: four steps and nothing between them (AGENTS.md "Type scale").
+     Tailwind's own sizes are cleared so `text-sm`, `text-base` and `text-xl`
+     do not exist here, and no step carries a line-height: `normal` stays the
+     default and a paragraph opts in with `leading-[1.55]`.
+     tests/type-scale-pins.test.ts refuses any other size. */
   --text-*: initial;
-  --text-2xs: 11.5px;
-  --text-xs: 12.5px;
-  --text-sm: 13px;
-  --text-base: 13.5px;
+  --text-xs: 12px;
   --text-md: 14px;
   --text-lg: 16px;
-  --text-xl: 17px;
   --text-2xl: 24px;
-  --text-3xl: 26px;
-  --text-4xl: 42px;
   /* No elevation anywhere in this design: depth is one 1px --border hairline
      plus the modal scrim. Zeroing the scale means a stray shadow-* utility
      can't reintroduce a drop shadow. */

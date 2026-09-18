@@ -5,7 +5,7 @@ export function AuthMethodsSeparator() {
       className="relative my-5 flex items-center justify-center"
     >
       <div className="absolute inset-x-0 border-t border-border" />
-      <span className="relative bg-card px-3 text-base text-muted-foreground">
+      <span className="relative bg-card px-3 text-md text-muted-foreground">
         or
       </span>
     </div>

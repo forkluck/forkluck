@@ -129,7 +129,7 @@ function FieldLabel({
   htmlFor?: string
   children: React.ReactNode
 }) {
-  const className = "block text-sm font-medium text-foreground"
+  const className = "block text-md font-medium text-foreground"
   return htmlFor ? (
     <label htmlFor={htmlFor} className={className}>
       {children}
@@ -498,7 +498,7 @@ export function MenuItemDialog({
               ? ` · ${initialVariant.externalVariantTitle}`
               : ""}
           </p>
-          <p className="mt-0.5 text-base text-muted-foreground">
+          <p className="mt-0.5 text-md text-muted-foreground">
             {channelLabel(initialVariant.channel)}
             {initialVariant.sku ? ` · SKU ${initialVariant.sku}` : ""}
           </p>
@@ -548,7 +548,7 @@ export function MenuItemDialog({
                   <span className="mt-3 block text-md font-semibold text-foreground">
                     {option.label}
                   </span>
-                  <span className="mt-1 block text-base leading-[1.55] text-muted-foreground">
+                  <span className="mt-1 block text-md leading-[1.55] text-muted-foreground">
                     {option.help}
                   </span>
                 </button>
@@ -577,7 +577,7 @@ export function MenuItemDialog({
           onChange={(event) => setAttribution(event.target.value)}
         />
         {attributionHelp(attribution) ? (
-          <p className="mt-1.5 text-base text-muted-foreground">
+          <p className="mt-1.5 text-md text-muted-foreground">
             {attributionHelp(attribution)}
           </p>
         ) : null}
@@ -592,12 +592,12 @@ export function MenuItemDialog({
               value={bundlePrice}
               onChange={(event) => setBundlePrice(event.target.value)}
             />
-            <p className="mt-1.5 text-base text-muted-foreground">
+            <p className="mt-1.5 text-md text-muted-foreground">
               Optional. What one box sells for.
             </p>
             <div className="mt-4 rounded-xl border border-border p-4">
               <FieldLabel>Products in this box</FieldLabel>
-              <p className="mt-1 text-base text-muted-foreground">
+              <p className="mt-1 text-md text-muted-foreground">
                 Say how many of each product one box contains. The box gets its
                 own product page, cost and price.
               </p>
@@ -607,7 +607,7 @@ export function MenuItemDialog({
                     key={member.productId}
                     className="grid grid-cols-[minmax(0,1fr)_72px_28px] items-center gap-2"
                   >
-                    <span className="truncate text-base text-foreground">
+                    <span className="truncate text-md text-foreground">
                       {member.name}
                     </span>
                     <Input
@@ -758,7 +758,7 @@ export function MenuItemDialog({
           ))}
         </div>
         {form.errors[NAME_FIELD] || form.errors[ITEM_FIELD] || form.failure ? (
-          <p role="alert" className="mt-4 text-base text-destructive">
+          <p role="alert" className="mt-4 text-md text-destructive">
             {form.errors[NAME_FIELD] ??
               form.errors[ITEM_FIELD] ??
               form.failure?.message}

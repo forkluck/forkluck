@@ -38,7 +38,7 @@ export default function DesignLayout({
         </div>
         <a
           href="https://app.forkluck.com"
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="text-md text-muted-foreground hover:text-foreground"
         >
           Open app
         </a>

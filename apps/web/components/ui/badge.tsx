@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
  *
  * The Recipes food-cost chip is the row size at 12px
  * (`size="row" className="text-xs"`); the small grey row tag (`Package`)
- * is `size="row" className="rounded-sm px-[7px] text-2xs"`.
+ * is `size="row" className="rounded-sm px-[7px] text-xs"`.
  *
  * Badges label, they never act, so they carry no shadow, no ring, and no
  * accent — focus turns the border ink like every other control.
@@ -28,7 +28,7 @@ const badgeVariants = cva(
     variants: {
       size: {
         default: "h-5 rounded-full text-xs",
-        row: "h-5 rounded-md text-2xs",
+        row: "h-5 rounded-md text-xs",
       },
       variant: {
         // Badges are grey by default — they label things, they don't act, so

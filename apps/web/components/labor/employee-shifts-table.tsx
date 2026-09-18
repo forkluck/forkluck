@@ -19,7 +19,7 @@ const entryHelper = dataTableColumns<TimeEntryRow>()
 
 /** The 13.5px secondary cell every numeric column on this screen uses. */
 function Cell({ children }: { children: React.ReactNode }) {
-  return <span className="text-base text-muted-foreground">{children}</span>
+  return <span className="text-md text-muted-foreground">{children}</span>
 }
 
 /**

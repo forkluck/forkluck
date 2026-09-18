@@ -74,7 +74,7 @@ function SettingsGroup({
     <section className="mt-[26px] first:mt-0">
       <h2 className="text-md font-semibold text-foreground">{title}</h2>
       {note ? (
-        <p className="mt-1 text-base text-muted-foreground">{note}</p>
+        <p className="mt-1 text-md text-muted-foreground">{note}</p>
       ) : null}
       <div className="mt-2.5 overflow-hidden rounded-xl border border-border">
         {children}
@@ -102,7 +102,7 @@ function RowBody({
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-md text-foreground">{title}</span>
-        <span className="mt-[3px] block text-base text-muted-foreground">
+        <span className="mt-[3px] block text-md text-muted-foreground">
           {note}
         </span>
       </span>
@@ -296,7 +296,7 @@ export function SettingsScreen({
           ) : null}
         </SettingsGroup>
         {newsletterError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {newsletterError}
           </p>
         ) : null}
@@ -339,7 +339,7 @@ export function SettingsScreen({
               )}
             </SettingsGroup>
             {portalError ? (
-              <p role="alert" className="mt-2 text-base text-destructive">
+              <p role="alert" className="mt-2 text-md text-destructive">
                 {portalError}
               </p>
             ) : null}
@@ -441,12 +441,12 @@ export function SettingsScreen({
           </div>
         </SettingsGroup>
         {deleteError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {deleteError}
           </p>
         ) : null}
         {linksError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {linksError}
           </p>
         ) : null}
@@ -512,7 +512,7 @@ export function SettingsScreen({
             ))}
           </div>
           {portalError ? (
-            <p role="alert" className="text-base text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {portalError}
             </p>
           ) : null}

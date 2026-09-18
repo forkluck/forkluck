@@ -32,10 +32,7 @@ const TOKENS: { token: string; value: string }[] = [
     value: "4px, 6px, 10px, 14px, 18px",
   },
   { token: "--shadow-2xs … --shadow-2xl", value: "0 0 #0000" },
-  {
-    token: "--text-2xs … --text-4xl",
-    value: "11.5, 12.5, 13, 13.5, 14, 16, 17, 24, 26, 42px",
-  },
+  { token: "--text-xs / md / lg / 2xl", value: "12, 14, 16, 24px" },
   { token: "Control heights", value: "20, 24, 28, 32, 36px" },
   { token: "--font-body", value: "Inter" },
 ]
@@ -62,7 +59,7 @@ export default function DesignGuidePage() {
               <a
                 key={id}
                 href={`#${id}`}
-                className="text-sm text-muted-foreground hover:text-foreground"
+                className="text-md text-muted-foreground hover:text-foreground"
               >
                 {title}
               </a>
@@ -74,7 +71,7 @@ export default function DesignGuidePage() {
             <h1 className="text-2xl font-semibold tracking-[-0.02em]">
               Components
             </h1>
-            <p className="text-base text-muted-foreground">
+            <p className="text-md text-muted-foreground">
               Every variant of every component, rendered from the app&apos;s own
               code.
             </p>
@@ -106,7 +103,7 @@ export default function DesignGuidePage() {
                         {token}
                       </code>
                     </dt>
-                    <dd className="text-sm text-muted-foreground">{value}</dd>
+                    <dd className="text-md text-muted-foreground">{value}</dd>
                   </div>
                 ))}
               </dl>

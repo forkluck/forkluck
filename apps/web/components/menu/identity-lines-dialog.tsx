@@ -72,7 +72,7 @@ export function IdentityLinesDialog({
         </DialogHeader>
 
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : (
@@ -80,7 +80,7 @@ export function IdentityLinesDialog({
             <div className="overflow-x-auto">
               <div
                 className={cn(
-                  "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+                  "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
                   GRID
                 )}
               >
@@ -92,11 +92,11 @@ export function IdentityLinesDialog({
                 <span className="text-right">Net</span>
               </div>
               {lines === null ? (
-                <p className="px-3.5 py-6 text-center text-base text-muted-foreground">
+                <p className="px-3.5 py-6 text-center text-md text-muted-foreground">
                   Loading…
                 </p>
               ) : lines.length === 0 ? (
-                <p className="px-3.5 py-6 text-center text-base text-muted-foreground">
+                <p className="px-3.5 py-6 text-center text-md text-muted-foreground">
                   No sales recorded yet — this item came from the provider
                   catalog.
                 </p>
@@ -109,41 +109,41 @@ export function IdentityLinesDialog({
                       GRID
                     )}
                   >
-                    <span className="text-base text-muted-foreground tabular-nums">
+                    <span className="text-md text-muted-foreground tabular-nums">
                       {/* In the zone the sale was recorded in. */}
                       {formatDateTime(line.soldAt, line.timezone)}
                     </span>
                     <span className="min-w-0">
                       <span
-                        className="block truncate text-base text-foreground"
+                        className="block truncate text-md text-foreground"
                         title={line.externalOrderId}
                       >
                         {line.externalOrderId || "—"}
                       </span>
                       {lineMeta(line) ? (
                         <span
-                          className="mt-0.5 block truncate text-base text-muted-foreground"
+                          className="mt-0.5 block truncate text-md text-muted-foreground"
                           title={lineMeta(line)}
                         >
                           {lineMeta(line)}
                         </span>
                       ) : null}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {quantityFormat.format(line.quantity)}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {formatCents(line.grossCents, line.currencyCode)}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {formatCents(line.discountCents, line.currencyCode)}
                     </span>
                     <span className="text-right tabular-nums">
-                      <span className="block text-base text-foreground">
+                      <span className="block text-md text-foreground">
                         {formatCents(line.netSalesCents, line.currencyCode)}
                       </span>
                       {line.refundCents ? (
-                        <span className="mt-0.5 block text-base text-muted-foreground">
+                        <span className="mt-0.5 block text-md text-muted-foreground">
                           refund{" "}
                           {formatCents(line.refundCents, line.currencyCode)}
                         </span>
@@ -157,7 +157,7 @@ export function IdentityLinesDialog({
         )}
 
         {lines !== null && lineCount > lines.length ? (
-          <p className="text-base text-muted-foreground">
+          <p className="text-md text-muted-foreground">
             Showing the {lines.length} most recent of {lineCount} sales.
           </p>
         ) : null}

@@ -94,7 +94,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "py-0 pr-3 pl-0 text-2xs leading-none font-medium whitespace-nowrap text-ink-soft last:pr-0",
+        "py-0 pr-3 pl-0 text-xs leading-none font-medium whitespace-nowrap text-ink-soft last:pr-0",
         className
       )}
       {...props}
@@ -134,7 +134,7 @@ function TableEmpty({
         data-slot="table-empty"
         colSpan={colSpan}
         className={cn(
-          "h-12 px-4 text-center text-base text-muted-foreground",
+          "h-12 px-4 text-center text-md text-muted-foreground",
           className
         )}
         {...props}

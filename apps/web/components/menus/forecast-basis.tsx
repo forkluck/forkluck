@@ -31,7 +31,7 @@ const dates = (row: { start: string; end: string }) =>
 function RecordedSales({ title, weeks }: { title: string; weeks: Week[] }) {
   return (
     <div>
-      <h4 className="mb-2 text-sm font-medium">{title}</h4>
+      <h4 className="mb-2 text-md font-medium">{title}</h4>
       <Table aria-label={title}>
         <TableHeader>
           <TableHeaderRow>
@@ -68,7 +68,7 @@ export function ProductForecastBasis({
   return (
     <section
       aria-label={`Why this quantity for ${product.productName}`}
-      className="space-y-4 py-2 text-sm"
+      className="space-y-4 py-2 text-md"
     >
       <div>
         <h3 className="font-medium">
@@ -144,7 +144,7 @@ export function ProductForecastBasis({
               title="Same period last year"
               weeks={[basis.lastYearPeriod]}
             />
-            <p className="text-base text-muted-foreground">
+            <p className="text-md text-muted-foreground">
               Dates shift back 52 weeks so weekdays match. These are recorded
               units, not estimates; missing records do not prove zero demand.
             </p>

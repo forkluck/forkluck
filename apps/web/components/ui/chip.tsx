@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const chipClassName =
-  "inline-flex h-5 w-fit shrink-0 items-center gap-1 rounded-full border px-2 text-2xs font-medium whitespace-nowrap"
+  "inline-flex h-5 w-fit shrink-0 items-center gap-1 rounded-full border px-2 text-xs font-medium whitespace-nowrap"
 
 /**
  * The 20px tag: `rounded-full`, 11.5px 500, on the bottom rung of the control

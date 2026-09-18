@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-const GROUP_LABEL = "px-2.5 pt-2 pb-1 text-2xs font-medium text-ink-soft"
+const GROUP_LABEL = "px-2.5 pt-2 pb-1 text-xs font-medium text-ink-soft"
 
 const ROW_CLASS =
-  "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+  "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent"
 
 /**
  * Which pantry item a supplier line or a remembered pack points at, typed at
@@ -217,7 +217,7 @@ export function IngredientCombobox({
                 type="button"
                 onClick={() => choose("")}
                 className={cn(
-                  "flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong",
+                  "flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong",
                   !value && "bg-accent"
                 )}
               >
@@ -229,7 +229,7 @@ export function IngredientCombobox({
               </button>
             ) : null}
             {matches.length === 0 && catalogRows.length === 0 ? (
-              <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
+              <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
                 No results
               </span>
             ) : null}
@@ -255,7 +255,7 @@ export function IngredientCombobox({
               </>
             ) : null}
             {catalogError ? (
-              <span className="px-2.5 py-1.5 text-base text-destructive">
+              <span className="px-2.5 py-1.5 text-md text-destructive">
                 {catalogError}
               </span>
             ) : null}

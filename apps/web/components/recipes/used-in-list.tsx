@@ -43,7 +43,7 @@ export function useUsedInRows(usedIn: readonly UsedInRecipe[]) {
 export function UsedInList({ rows }: { rows: readonly UsedInRecipe[] }) {
   if (rows.length === 0) {
     return (
-      <p className="mt-3 text-base text-muted-foreground">
+      <p className="mt-3 text-md text-muted-foreground">
         No recipe uses this yet.
       </p>
     )
@@ -54,14 +54,14 @@ export function UsedInList({ rows }: { rows: readonly UsedInRecipe[] }) {
         <GuardedLink
           key={recipe.id}
           href={`/recipes/${recipe.publicId}/recipe`}
-          className="flex min-h-9 items-center gap-2.5 px-1 text-base font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
+          className="flex min-h-9 items-center gap-2.5 px-1 text-md font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
         >
           <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground">
             <Book className="size-3.5" strokeWidth={1.8} aria-hidden="true" />
           </span>
           <span className="min-w-0 flex-1 truncate">{recipe.title}</span>
           {recipe.status === "archived" ? (
-            <span className="shrink-0 text-base text-muted-foreground">
+            <span className="shrink-0 text-md text-muted-foreground">
               Archived
             </span>
           ) : null}

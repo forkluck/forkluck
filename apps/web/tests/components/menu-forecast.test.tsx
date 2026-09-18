@@ -548,7 +548,7 @@ describe("Menu forecast", () => {
     expect(
       screen.getByRole("heading", { name: "Prep quantities" })
     ).toBeDefined()
-    expect(container.querySelector(".text-4xl")).toBeNull()
+    expect(container.querySelector(".text-2xl")).toBeNull()
     expect(screen.queryByText("across 1 recipe")).toBeNull()
     expect(
       screen.getByText(/volume-weighted error was 12% of actual units/)
@@ -566,7 +566,7 @@ describe("Menu forecast", () => {
     const { container } = render(
       <MenuForecast measurementSystem="metric" forecast={busy()} />
     )
-    expect(container.querySelector(".text-4xl")).toBeNull()
+    expect(container.querySelector(".text-2xl")).toBeNull()
     expect(table(0).getByRole("columnheader", { name: "Busy" })).toBeDefined()
     expect(screen.getAllByText(/for the busy plan/).length).toBe(1)
   })

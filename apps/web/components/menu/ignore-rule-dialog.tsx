@@ -260,7 +260,7 @@ export function IgnoreRuleDialog({
 
           <section className="flex shrink-0 flex-col gap-2">
             <h3 className="text-md font-medium text-foreground">Conditions</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-md text-muted-foreground">
               Every condition must match. Use Title for a whole product, SKU or
               Variant for one variation. Letter case and spacing are ignored.
             </p>
@@ -375,7 +375,7 @@ export function IgnoreRuleDialog({
                 <div className="overflow-x-auto">
                   <div
                     className={cn(
-                      "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+                      "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
                       previewGrid
                     )}
                   >
@@ -385,7 +385,7 @@ export function IgnoreRuleDialog({
                     <span>Status</span>
                   </div>
                   {matches.length === 0 ? (
-                    <p className="px-3.5 py-6 text-center text-base text-muted-foreground">
+                    <p className="px-3.5 py-6 text-center text-md text-muted-foreground">
                       {previewing
                         ? "Checking…"
                         : "Nothing matches these conditions yet."}
@@ -405,17 +405,17 @@ export function IgnoreRuleDialog({
                         >
                           {row.itemName || "Unnamed item"}
                         </span>
-                        <span className="truncate text-base text-muted-foreground tabular-nums">
+                        <span className="truncate text-md text-muted-foreground tabular-nums">
                           {row.sku || "—"}
                         </span>
                         {channel === null ? (
-                          <span className="truncate text-sm text-muted-foreground">
+                          <span className="truncate text-md text-muted-foreground">
                             {ruleChannelLabel(row.channel)}
                           </span>
                         ) : null}
                         <span
                           className={cn(
-                            "text-sm",
+                            "text-md",
                             row.status === "tracked"
                               ? "text-foreground"
                               : "text-muted-foreground"
@@ -436,7 +436,7 @@ export function IgnoreRuleDialog({
                 />
               ) : null}
               {truncated ? (
-                <p className="text-base text-muted-foreground">
+                <p className="text-md text-muted-foreground">
                   Showing the first matches only — narrow the rule to see them
                   all.
                 </p>

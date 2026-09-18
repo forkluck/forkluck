@@ -169,7 +169,7 @@ export type RecipeItemsTableProps = {
 }
 
 const cellInput =
-  "h-8 rounded-md border-transparent bg-transparent px-2 text-base md:text-base enabled:not-focus:hover:border-transparent disabled:border-transparent disabled:bg-transparent"
+  "h-8 rounded-md border-transparent bg-transparent px-2 text-md md:text-md enabled:not-focus:hover:border-transparent disabled:border-transparent disabled:bg-transparent"
 
 function isMeasured(kind: RecipeItemKind) {
   return kind === "ingredient" || kind === "subrecipe"
@@ -728,8 +728,8 @@ function IngredientSuggestions({
             "flex w-full items-center gap-2 rounded-md px-2.5 text-left outline-none hover:bg-accent focus-visible:bg-accent",
             // A preparation is a quiet sub-row under its ingredient.
             row.preparation === null
-              ? "h-9 text-sm"
-              : "h-7 pl-7 text-base text-muted-foreground",
+              ? "h-9 text-md"
+              : "h-7 pl-7 text-md text-muted-foreground",
             index === highlighted && "bg-accent"
           )}
         >
@@ -848,7 +848,7 @@ function SubrecipePanel({
     <TableRow className="hover:!bg-transparent">
       <TableCell className="w-6 pl-1 sm:w-8 sm:pl-3" />
       <TableCell colSpan={columns - 1} className="pb-3">
-        <div className="rounded-md border border-muted bg-fill-soft px-3 py-2.5 text-sm break-words">
+        <div className="rounded-md border border-muted bg-fill-soft px-3 py-2.5 text-md break-words">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <span className="font-medium">Sub-recipe</span>
             <span className="text-muted-foreground">
@@ -1433,22 +1433,22 @@ export function RecipeItemsTable({
           <TableHeader>
             <TableHeaderRow>
               <TableHead className="w-6 pl-1 sm:w-8 sm:pl-3" />
-              <TableHead className="w-16 text-sm text-muted-foreground sm:w-[96px]">
+              <TableHead className="w-16 text-md text-muted-foreground sm:w-[96px]">
                 Qty
               </TableHead>
-              <TableHead className="w-20 text-sm text-muted-foreground sm:w-24">
+              <TableHead className="w-20 text-md text-muted-foreground sm:w-24">
                 Unit
               </TableHead>
-              <TableHead className="text-sm text-muted-foreground">
+              <TableHead className="text-md text-muted-foreground">
                 Ingredient / Recipe
               </TableHead>
               {showNotes ? (
-                <TableHead className="hidden text-sm text-muted-foreground sm:table-cell">
+                <TableHead className="hidden text-md text-muted-foreground sm:table-cell">
                   Notes
                 </TableHead>
               ) : null}
               {percentMode ? (
-                <TableHead className="w-16 text-right text-sm text-muted-foreground">
+                <TableHead className="w-16 text-right text-md text-muted-foreground">
                   <Menu>
                     <MenuTrigger
                       render={
@@ -1510,7 +1510,7 @@ export function RecipeItemsTable({
               <TableRow className="h-11 hover:!bg-transparent">
                 <TableCell
                   colSpan={columns}
-                  className="pl-3 text-base text-muted-foreground"
+                  className="pl-3 text-md text-muted-foreground"
                 >
                   No ingredients yet.
                 </TableCell>
@@ -1579,7 +1579,7 @@ export function RecipeItemsTable({
                               <SelectTrigger
                                 size="sm"
                                 aria-label="Unit"
-                                className="w-full border-transparent bg-transparent px-2 text-base enabled:not-focus:hover:border-transparent"
+                                className="w-full border-transparent bg-transparent px-2 text-md enabled:not-focus:hover:border-transparent"
                               >
                                 <SelectValue />
                               </SelectTrigger>
@@ -1606,7 +1606,7 @@ export function RecipeItemsTable({
                                           }
                                         />
                                       ) : (
-                                        <span className="block truncate px-2 text-base">
+                                        <span className="block truncate px-2 text-md">
                                           {item.displayName}
                                         </span>
                                       )}
@@ -1654,7 +1654,7 @@ export function RecipeItemsTable({
                                 )}
                               </div>
                               {item.excludedFromCost ? (
-                                <span className="shrink-0 text-base text-muted-foreground">
+                                <span className="shrink-0 text-md text-muted-foreground">
                                   Not costed
                                 </span>
                               ) : null}
@@ -1673,7 +1673,7 @@ export function RecipeItemsTable({
                           {percentMode ? (
                             <TableCell
                               className={cn(
-                                "w-16 text-right text-base text-muted-foreground tabular-nums",
+                                "w-16 text-right text-md text-muted-foreground tabular-nums",
                                 bakers &&
                                   item.key === base?.key &&
                                   "font-medium text-foreground"
@@ -1758,7 +1758,7 @@ export function RecipeItemsTable({
         <>
           <div className="relative mt-2">
             <Input
-              className="h-8 pr-8 text-base"
+              className="h-8 pr-8 text-md"
               value={quickAdd}
               placeholder="250 g cake flour, sifted · # Section · > Note"
               readOnly={!hydrated}
@@ -1841,7 +1841,7 @@ export function RecipeItemsTable({
             ) : null}
           </div>
           {quickAddError ? (
-            <p role="alert" className="mt-1 text-base text-destructive">
+            <p role="alert" className="mt-1 text-md text-destructive">
               {quickAddError}
             </p>
           ) : null}

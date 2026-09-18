@@ -97,7 +97,7 @@ export function SubscribeCard({
   }
 
   const secondaryClassName = cn(
-    "mt-6 self-center text-sm leading-5",
+    "mt-6 self-center text-md leading-5",
     authLinkClassName
   )
 

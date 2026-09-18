@@ -193,7 +193,7 @@ export function SupplierDialog({
           </div>
 
           {form.errors[NAME_FIELD] || form.failure ? (
-            <p role="alert" className="text-base text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {form.errors[NAME_FIELD] ?? form.failure?.message}
             </p>
           ) : null}

@@ -316,7 +316,7 @@ export function IngredientChrome({
               <span className="truncate">{name}</span>
             </PageTitle>
             {archived ? (
-              <span className="shrink-0 text-base text-muted-foreground">
+              <span className="shrink-0 text-md text-muted-foreground">
                 Archived
               </span>
             ) : null}

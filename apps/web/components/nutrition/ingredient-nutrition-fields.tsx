@@ -52,7 +52,7 @@ function SentRequestValues({
         {request.source ? `${request.source} — ` : ""}sent per{" "}
         {formatAmount(request.servingGrams)} g
       </FieldDescription>
-      <dl className="grid grid-cols-2 gap-x-4 text-base text-muted-foreground">
+      <dl className="grid grid-cols-2 gap-x-4 text-md text-muted-foreground">
         {stated.map((field) => (
           <div key={field.key} className="flex justify-between gap-2 py-0.5">
             <dt>{field.label}</dt>
@@ -146,9 +146,7 @@ function AllergenHintRow({
   if (keys.length === 0) return null
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-base font-medium text-muted-foreground">
-        {label}
-      </span>
+      <span className="text-md font-medium text-muted-foreground">{label}</span>
       <div role="group" aria-label={label} className="flex flex-wrap gap-1.5">
         {keys.map((key) => (
           <span
@@ -159,7 +157,7 @@ function AllergenHintRow({
               type="button"
               aria-label={`Confirm ${allergenLabel(key)}`}
               onClick={() => onConfirm(key)}
-              className="inline-flex h-5 items-center gap-1 rounded-full pr-1 pl-2 text-2xs font-medium whitespace-nowrap text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
+              className="inline-flex h-5 items-center gap-1 rounded-full pr-1 pl-2 text-xs font-medium whitespace-nowrap text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
             >
               {allergenLabel(key)}
               <Check className="size-3" aria-hidden />
@@ -406,7 +404,7 @@ export function IngredientNutritionFields({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <span className="text-sm leading-none font-medium">Nutrition data</span>
+        <span className="text-md leading-none font-medium">Nutrition data</span>
         <UsdaFoodCombobox value={nutrition} onChoose={choose} onClear={clear} />
         {packageIngredients ? (
           <div className="flex flex-col gap-1">
@@ -417,7 +415,7 @@ export function IngredientNutritionFields({
               <button
                 type="button"
                 onClick={() => setPackageOpen(true)}
-                className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+                className="w-fit text-md text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
               >
                 Show all
               </button>
@@ -426,7 +424,7 @@ export function IngredientNutritionFields({
         ) : null}
         {requestPending ? (
           <div className="flex flex-col gap-1">
-            <span className="text-base text-muted-foreground">
+            <span className="text-md text-muted-foreground">
               Request pending
             </span>
             {sentRequest ? (
@@ -436,7 +434,7 @@ export function IngredientNutritionFields({
                 <button
                   type="button"
                   onClick={() => setSentOpen(true)}
-                  className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+                  className="w-fit text-md text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
                 >
                   Show what was sent
                 </button>
@@ -447,7 +445,7 @@ export function IngredientNutritionFields({
           <button
             type="button"
             onClick={() => setRequestOpen(true)}
-            className="w-fit text-base text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
+            className="w-fit text-md text-muted-foreground underline decoration-1 underline-offset-4 outline-none hover:text-foreground focus-visible:text-foreground"
           >
             No match? Request a custom value
           </button>
@@ -474,7 +472,7 @@ export function IngredientNutritionFields({
       </div>
 
       <div className="flex flex-col gap-2.5">
-        <label className="flex items-center gap-2.5 text-base">
+        <label className="flex items-center gap-2.5 text-md">
           <Checkbox
             checked={nonEdible}
             onCheckedChange={(checked) => {
@@ -489,7 +487,7 @@ export function IngredientNutritionFields({
           />
           Not food (packaging, equipment)
         </label>
-        <label className="flex items-center gap-2.5 text-base">
+        <label className="flex items-center gap-2.5 text-md">
           <Checkbox
             checked={sugarsAreAdded}
             onCheckedChange={(checked) => {
@@ -507,7 +505,7 @@ export function IngredientNutritionFields({
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm leading-none font-medium">Allergens</span>
+        <span className="text-md leading-none font-medium">Allergens</span>
         <FieldDescription>
           Catalog defaults are already selected. Tap to change them.
         </FieldDescription>

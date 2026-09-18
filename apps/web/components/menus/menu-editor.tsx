@@ -536,7 +536,7 @@ export function MenuEditor({
                 Reset baseline
               </Button>
             ) : null}
-            <label className="flex h-8 items-center gap-2.5 text-sm font-medium text-foreground">
+            <label className="flex h-8 items-center gap-2.5 text-md font-medium text-foreground">
               <Switch
                 size="sm"
                 checked={trackVariance}

@@ -60,16 +60,16 @@ export function IntegrationRow({
           <span className="text-md font-medium text-foreground">{name}</span>
           {status}
         </span>
-        <span className="mt-1 block text-sm text-muted-foreground">
+        <span className="mt-1 block text-md text-muted-foreground">
           {description}
         </span>
         {error ? (
-          <span className="mt-1 block text-base leading-[1.55] text-destructive">
+          <span className="mt-1 block text-md leading-[1.55] text-destructive">
             {error}
           </span>
         ) : null}
         {note ? (
-          <span className="mt-1 block text-base leading-[1.55] text-muted-foreground">
+          <span className="mt-1 block text-md leading-[1.55] text-muted-foreground">
             {note}
           </span>
         ) : null}

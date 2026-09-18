@@ -68,7 +68,7 @@ const BUILT_IN_PAYMENT_METHODS: Array<{ value: string; label: string }> = [
 ]
 
 const cellInput =
-  "h-8 rounded-md border-transparent bg-transparent px-2 text-base md:text-base enabled:not-focus:hover:border-transparent"
+  "h-8 rounded-md border-transparent bg-transparent px-2 text-md md:text-md enabled:not-focus:hover:border-transparent"
 
 type LineState = {
   key: string
@@ -246,10 +246,10 @@ function TotalLine({
 }) {
   return (
     <div className="flex justify-between gap-6 py-1">
-      <span className={cn("text-base", strong && "font-medium")}>{label}</span>
+      <span className={cn("text-md", strong && "font-medium")}>{label}</span>
       <span
         className={cn(
-          "tabular text-base whitespace-nowrap",
+          "tabular text-md whitespace-nowrap",
           strong && "font-medium"
         )}
       >
@@ -662,7 +662,7 @@ export function InvoiceEditor({
               href={initial.driveWebViewLink}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center gap-1 text-md text-muted-foreground hover:text-foreground"
             >
               Open in Drive
               <ExternalLink
@@ -785,7 +785,7 @@ export function InvoiceEditor({
                 <TableRow className="h-11 hover:!bg-transparent">
                   <TableCell
                     colSpan={columnCount}
-                    className="pl-3 text-base text-muted-foreground"
+                    className="pl-3 text-md text-muted-foreground"
                   >
                     No lines yet.
                   </TableCell>
@@ -1111,7 +1111,7 @@ export function InvoiceEditor({
           {mismatch ? (
             <p
               role="status"
-              className="mt-1 text-base leading-[1.55] text-muted-foreground"
+              className="mt-1 text-md leading-[1.55] text-muted-foreground"
             >
               {`Lines add up to ${formatCents(
                 lineSumCents + taxCents,

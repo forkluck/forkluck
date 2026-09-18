@@ -256,12 +256,12 @@ export function CategoriesDialog({
                     {row.name}
                   </span>
                   {row.count === null ? null : (
-                    <span className="text-sm whitespace-nowrap text-muted-foreground tabular-nums">
+                    <span className="text-md whitespace-nowrap text-muted-foreground tabular-nums">
                       {row.count}
                     </span>
                   )}
                   {row.supply ? (
-                    <span className="text-sm whitespace-nowrap text-muted-foreground">
+                    <span className="text-md whitespace-nowrap text-muted-foreground">
                       Supply
                     </span>
                   ) : null}
@@ -298,7 +298,7 @@ export function CategoriesDialog({
         </div>
 
         {error ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {error}
           </p>
         ) : null}

@@ -297,7 +297,7 @@ function GramsInput({
       }}
       className={cn(
         inputClassName,
-        "ml-auto h-7 w-20 px-2 text-right text-sm tabular-nums md:text-sm"
+        "ml-auto h-7 w-20 px-2 text-right text-md tabular-nums md:text-md"
       )}
     />
   )
@@ -337,7 +337,7 @@ function PasteFormulaDialog({
           </DialogTitle>
         </DialogHeader>
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : null}
@@ -345,7 +345,7 @@ function PasteFormulaDialog({
           <div className="grid gap-2">
             <label
               htmlFor="paste-formula-title"
-              className="text-sm font-medium"
+              className="text-md font-medium"
             >
               Name
             </label>
@@ -360,7 +360,7 @@ function PasteFormulaDialog({
             />
           </div>
           <div className="grid gap-2">
-            <label htmlFor="paste-formula-text" className="text-sm font-medium">
+            <label htmlFor="paste-formula-text" className="text-md font-medium">
               Ingredients
             </label>
             <Textarea
@@ -370,7 +370,7 @@ function PasteFormulaDialog({
               placeholder={"500 g bread flour\n2 cups water\n10 g salt"}
               onChange={(event) => setText(event.target.value)}
             />
-            <p className="text-base leading-5 text-muted-foreground">
+            <p className="text-md leading-5 text-muted-foreground">
               One ingredient per line. A line the page cannot weigh keeps its
               row, with a box to type the grams.
             </p>
@@ -584,7 +584,7 @@ function AddRecipePopover({
         </div>
         <div className="flex max-h-64 flex-col overflow-y-auto p-1.5 pt-0">
           {matches.length === 0 ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
               No recipes match
             </span>
           ) : null}
@@ -598,11 +598,11 @@ function AddRecipePopover({
                 onClick={() => choose(option.publicId)}
                 className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-disabled-foreground"
               >
-                <span className="min-w-0 flex-1 truncate text-base">
+                <span className="min-w-0 flex-1 truncate text-md">
                   {option.title}
                 </span>
                 {option.category ? (
-                  <span className="max-w-20 truncate text-base text-muted-foreground">
+                  <span className="max-w-20 truncate text-md text-muted-foreground">
                     {option.category}
                   </span>
                 ) : null}
@@ -616,7 +616,7 @@ function AddRecipePopover({
               setQuery("")
               onPaste()
             }}
-            className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-base outline-none hover:bg-accent focus-visible:bg-accent"
+            className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent"
           >
             <ClipboardPaste
               className="size-[17px]"
@@ -680,7 +680,7 @@ function ColumnHeader({
         />
         <span
           className={cn(
-            "min-w-0 truncate text-base font-medium",
+            "min-w-0 truncate text-md font-medium",
             active ? "text-foreground" : "text-muted-foreground"
           )}
         >
@@ -737,7 +737,7 @@ function FormulaValue({
     ? lineOverrideId(formula, value.line, gramOverrides)
     : null
   if (value.line?.note === "nonEdible") {
-    return <span className="text-base text-muted-foreground">Not food</span>
+    return <span className="text-md text-muted-foreground">Not food</span>
   }
   if (value.line && overrideId !== null) {
     return (
@@ -749,7 +749,7 @@ function FormulaValue({
           onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
         />
         {value.line.written ? (
-          <span className="text-base text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             Recipe says {value.line.written}
           </span>
         ) : null}
@@ -770,7 +770,7 @@ function FormulaValue({
     return (
       <span className={cn("tabular-nums", className)}>
         {formatCompareDeltaPoints(value.percent - baseline)}
-        <span className="block text-base font-normal text-muted-foreground">
+        <span className="block text-md font-normal text-muted-foreground">
           {formatComparePercent(value.percent)}
         </span>
       </span>
@@ -780,12 +780,12 @@ function FormulaValue({
     <span className={cn("tabular-nums", className)}>
       {formatComparePercent(value.percent)}
       {showGrams && value.grams !== null ? (
-        <span className="block text-base font-normal text-muted-foreground">
+        <span className="block text-md font-normal text-muted-foreground">
           {formatCompareGrams(value.grams)}
         </span>
       ) : null}
       {value.line?.note === "discarded" ? (
-        <span className="block text-base font-normal text-muted-foreground">
+        <span className="block text-md font-normal text-muted-foreground">
           discarded
         </span>
       ) : null}
@@ -934,7 +934,7 @@ function FormulaView({
                     <span
                       key={tick}
                       className={cn(
-                        "absolute top-1/2 -translate-y-1/2 text-2xs text-muted-foreground",
+                        "absolute top-1/2 -translate-y-1/2 text-xs text-muted-foreground",
                         index === 0
                           ? "left-0"
                           : index === 1
@@ -1011,7 +1011,7 @@ function FormulaView({
           </TableBody>
         </Table>
       </TableFrame>
-      <div className="mt-3.5 flex flex-col gap-2 text-sm text-muted-foreground md:flex-row md:items-center">
+      <div className="mt-3.5 flex flex-col gap-2 text-md text-muted-foreground md:flex-row md:items-center">
         <p className="flex-1">
           {baseId
             ? `Differences in points against ${
@@ -1087,7 +1087,7 @@ function FormulaPlotRow({
                 {row.label}
               </span>
               {note ? (
-                <span className="block text-base text-muted-foreground">
+                <span className="block text-md text-muted-foreground">
                   Hydration
                 </span>
               ) : null}
@@ -1114,19 +1114,19 @@ function FormulaPlotRow({
                   "block truncate",
                   row.kind === "group"
                     ? "text-md font-semibold text-foreground"
-                    : "text-base text-muted-foreground"
+                    : "text-md text-muted-foreground"
                 )}
               >
                 {row.label}
               </span>
               {row.kind === "group" && note ? (
-                <span className="block text-base text-muted-foreground">
+                <span className="block text-md text-muted-foreground">
                   Hydration
                 </span>
               ) : null}
               {unmappedIn.length > 0 &&
               (row.kind === "ingredient" || row.group.rows.length === 1) ? (
-                <span className="flex items-center gap-1.5 text-base text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-md text-muted-foreground">
                   No profile
                   {unmappedPasted && canLink ? (
                     <button
@@ -1175,7 +1175,7 @@ function FormulaPlotRow({
             "w-[136px] min-w-[136px] text-right",
             row.kind === "group"
               ? "text-md font-medium text-foreground"
-              : "text-base text-muted-foreground"
+              : "text-md text-muted-foreground"
           )}
         >
           <FormulaValue
@@ -1358,7 +1358,7 @@ function SpecSheetView({
                     <X strokeWidth={2} aria-hidden="true" />
                   </Button>
                 </div>
-                <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                <p className="mt-1 flex items-center gap-2 text-md text-muted-foreground">
                   <span className="min-w-0 truncate">
                     {formula.source === "pasted"
                       ? "Pasted recipe"
@@ -1379,11 +1379,11 @@ function SpecSheetView({
                   </Button>
                 </p>
                 {basisNote(formula) ? (
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-md text-muted-foreground">
                     {basisNote(formula)}
                   </p>
                 ) : null}
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-md text-muted-foreground">
                   {formatCompareGrams(formula.roleTotals.flour.grams)} flour ·{" "}
                   {formatCompareGrams(formula.totalGrams)} dough
                 </p>
@@ -1391,7 +1391,7 @@ function SpecSheetView({
                     so a gap is said up here, not in a footnote. */}
                 <p
                   className={cn(
-                    "mt-1 text-sm",
+                    "mt-1 text-md",
                     partial
                       ? "font-medium text-foreground"
                       : "text-muted-foreground"
@@ -1418,7 +1418,7 @@ function SpecSheetView({
                     key={figure.key}
                     className="border-t border-border pt-4 pb-[18px]"
                   >
-                    <h3 className="text-base font-medium text-muted-foreground">
+                    <h3 className="text-md font-medium text-muted-foreground">
                       {specFigureLabel(figure.key, mode)}
                       {figure.key === "solids" ? (
                         <span className="font-normal text-muted-foreground">
@@ -1433,7 +1433,7 @@ function SpecSheetView({
                           <span className="text-2xl font-semibold text-muted-foreground">
                             —
                           </span>
-                          <span className="text-base text-muted-foreground">
+                          <span className="text-md text-muted-foreground">
                             Nothing weighed
                           </span>
                         </>
@@ -1443,14 +1443,14 @@ function SpecSheetView({
                             className={cn(
                               "font-semibold tracking-tight text-foreground tabular-nums",
                               figure.key === "hydration"
-                                ? "text-3xl"
+                                ? "text-2xl"
                                 : "text-2xl"
                             )}
                           >
                             {formatComparePercent(value)}
                           </span>
                           {delta !== null ? (
-                            <span className="text-sm font-medium text-muted-foreground tabular-nums">
+                            <span className="text-md font-medium text-muted-foreground tabular-nums">
                               {formatCompareDeltaPoints(delta)}
                             </span>
                           ) : null}
@@ -1998,7 +1998,7 @@ export function CompareFormulas({
             </div>
           </Toolbar>
           {missingCount > 0 ? (
-            <p className="mb-4 text-base text-muted-foreground">
+            <p className="mb-4 text-md text-muted-foreground">
               {plural(missingCount, "selected recipe")} could not be opened.
             </p>
           ) : null}
@@ -2057,7 +2057,7 @@ export function CompareFormulas({
         />
       ) : null}
       {columns.length === 0 && missingCount > 0 ? (
-        <p className="mt-3 text-base text-muted-foreground">
+        <p className="mt-3 text-md text-muted-foreground">
           {plural(missingCount, "selected recipe")} could not be opened.
         </p>
       ) : null}

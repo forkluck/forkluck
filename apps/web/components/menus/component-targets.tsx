@@ -135,7 +135,7 @@ export function TargetSuggestions<T extends ComponentTarget>({
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => onPick(row)}
             className={cn(
-              "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+              "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
               index === highlighted && "bg-accent"
             )}
           >

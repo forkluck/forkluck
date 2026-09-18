@@ -229,9 +229,9 @@ function TurnStatus({
   })
   const loaded = tools.some(primoToolSucceeded)
   return status === "aborted" ? (
-    <p className="text-base text-muted-foreground">Response stopped</p>
+    <p className="text-md text-muted-foreground">Response stopped</p>
   ) : status === "error" ? (
-    <p className="text-base text-destructive">
+    <p className="text-md text-destructive">
       {loaded
         ? "Results loaded; response interrupted. Try again."
         : tools.some((part) => getToolName(part) === "draft_recipe")
@@ -447,7 +447,7 @@ export function PrimoConversation({
                       }}
                     >
                       <label
-                        className="block text-sm font-medium"
+                        className="block text-md font-medium"
                         htmlFor={`edit-${message.id}`}
                       >
                         Edit question
@@ -465,12 +465,12 @@ export function PrimoConversation({
                           })
                         }
                       />
-                      <p className="text-base text-muted-foreground">
+                      <p className="text-md text-muted-foreground">
                         Resending replaces this question and removes all later
                         messages. This question’s attached files are kept.
                       </p>
                       {activeEdit.error ? (
-                        <p role="alert" className="text-base text-destructive">
+                        <p role="alert" className="text-md text-destructive">
                           {activeEdit.error}
                         </p>
                       ) : null}
@@ -603,7 +603,7 @@ export function PrimoConversation({
                       }
                       return (
                         <div key={part.toolCallId} className="space-y-2">
-                          <p className="text-base text-muted-foreground">
+                          <p className="text-md text-muted-foreground">
                             {result.changes.join(" ")}
                           </p>
                           <PrimoRecipeDraftCard draft={result.draft} />
@@ -652,7 +652,7 @@ export function PrimoConversation({
                         onClick={() => {
                           if (isDesktop) setOpen(true)
                         }}
-                        className="inline-flex h-8 items-center gap-2 rounded-lg border border-border px-3 text-sm"
+                        className="inline-flex h-8 items-center gap-2 rounded-lg border border-border px-3 text-md"
                       >
                         <ArrowUpRight className="size-4" aria-hidden="true" />
                         {getToolName(part) === "show_recipe_batch"
@@ -684,7 +684,7 @@ export function PrimoConversation({
                   >
                     {message.createdAt || message.metadata?.createdAt ? (
                       <time
-                        className="mr-1 text-base text-muted-foreground"
+                        className="mr-1 text-md text-muted-foreground"
                         dateTime={new Date(
                           message.createdAt ?? message.metadata!.createdAt!
                         ).toISOString()}
@@ -827,12 +827,12 @@ export function PrimoConversation({
         {announcement}
       </span>
       {suggestionError ? (
-        <p role="alert" className="px-4 text-base text-destructive">
+        <p role="alert" className="px-4 text-md text-destructive">
           {suggestionError}
         </p>
       ) : null}
       {copyError ? (
-        <p role="alert" className="px-4 text-base text-destructive">
+        <p role="alert" className="px-4 text-md text-destructive">
           {copyError}
         </p>
       ) : null}
@@ -851,7 +851,7 @@ export function PrimoConversation({
       />
       {empty && !conversationError ? (
         <div className="mt-6 px-3 pb-5 max-md:group-has-[textarea:focus]/primo:hidden">
-          <p className="mb-2 px-1 text-base text-muted-foreground">
+          <p className="mb-2 px-1 text-md text-muted-foreground">
             Try one of these
           </p>
           <ul className="flex flex-col gap-1">
@@ -861,7 +861,7 @@ export function PrimoConversation({
                   type="button"
                   disabled={conversationLoading}
                   onClick={() => void sendSuggestion(question)}
-                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
+                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
                 >
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">
                     <Icon

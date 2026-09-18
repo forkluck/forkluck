@@ -114,7 +114,7 @@ export function SuppliersList() {
   return (
     <div className="max-w-[760px]">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
-        <p className="text-base text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           Who you buy from. An invoice, a pack and a skip-list row all point at
           a supplier by name.
         </p>
@@ -128,7 +128,7 @@ export function SuppliersList() {
           </p>
         ) : null}
         {rows?.length === 0 ? (
-          <p className="py-4 text-base leading-[1.55] text-muted-foreground">
+          <p className="py-4 text-md leading-[1.55] text-muted-foreground">
             No suppliers yet. Add one, or import an invoice or a supplier price
             list.
           </p>
@@ -142,12 +142,12 @@ export function SuppliersList() {
               {row.name}
             </span>
             {/* What this supplier's unremembered lines are filed under. */}
-            <span className="hidden truncate text-sm text-muted-foreground sm:block">
+            <span className="hidden truncate text-md text-muted-foreground sm:block">
               {categories.find(
                 (category) => category.id === row.defaultCategoryId
               )?.name ?? ""}
             </span>
-            <span className="text-sm whitespace-nowrap text-muted-foreground tabular-nums">
+            <span className="text-md whitespace-nowrap text-muted-foreground tabular-nums">
               {plural(row.invoiceCount, "invoice", "invoices")}
             </span>
             <RowActionsMenu label={`Actions for ${row.name}`}>
@@ -181,7 +181,7 @@ export function SuppliersList() {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-2 text-base text-destructive">
+        <p role="alert" className="mt-2 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -311,7 +311,7 @@ function MergeSupplierDialog({
               : "Pick the supplier to keep."}
           </DialogDescription>
           {form.errors[MERGE_FIELD] || form.failure ? (
-            <p role="alert" className="mt-3 text-base text-destructive">
+            <p role="alert" className="mt-3 text-md text-destructive">
               {form.errors[MERGE_FIELD] ?? form.failure?.message}
             </p>
           ) : null}

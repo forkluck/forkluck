@@ -99,7 +99,7 @@ export function CustomBatchDialog({
           <DialogTitle>Custom batch</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
-          <label className="grid gap-2 text-sm font-medium">
+          <label className="grid gap-2 text-md font-medium">
             Multiply by
             <Input
               type="number"
@@ -115,7 +115,7 @@ export function CustomBatchDialog({
               }}
             />
           </label>
-          <div className="grid gap-2 text-sm font-medium">
+          <div className="grid gap-2 text-md font-medium">
             <span>
               Or make
               {recipeYield ? (
@@ -146,7 +146,7 @@ export function CustomBatchDialog({
           </div>
         </div>
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : null}

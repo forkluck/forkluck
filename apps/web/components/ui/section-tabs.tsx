@@ -35,7 +35,7 @@ function SectionTabs({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const tabClassName =
-  "relative mb-2 rounded-lg px-2.5 py-1.5 text-base font-medium whitespace-nowrap outline-none"
+  "relative mb-2 rounded-lg px-2.5 py-1.5 text-md font-medium whitespace-nowrap outline-none"
 
 /** Reports this link's pending navigation to the row, which moves the bar. */
 function PendingWatch({ href }: { href: string }) {

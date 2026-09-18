@@ -7,7 +7,7 @@
 
 /** The centred 17px title a screen opens with. */
 export const authHeadingClassName =
-  "text-center text-xl leading-6 font-semibold tracking-[-0.01em]"
+  "text-center text-lg leading-6 font-semibold tracking-[-0.01em]"
 
 /** The centred 14px line under a title that has something to say. */
 export const authSubtitleClassName =
@@ -15,7 +15,7 @@ export const authSubtitleClassName =
 
 /** The centred 13px line under the button that switches screens. */
 export const authSwitchClassName =
-  "mt-6 text-center text-sm leading-5 text-muted-foreground"
+  "mt-6 text-center text-md leading-5 text-muted-foreground"
 
 /**
  * The ink link inside it: medium weight, no underline, lifting to the soft

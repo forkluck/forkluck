@@ -65,7 +65,7 @@ export function KitchenSwitcher({
             strokeWidth={1.8}
             aria-hidden="true"
           />
-          <span className="min-w-0 flex-1 truncate text-sm leading-none font-medium text-sidebar-foreground">
+          <span className="min-w-0 flex-1 truncate text-md leading-none font-medium text-sidebar-foreground">
             {kitchenLabel(active)}
           </span>
           <ChevronDown

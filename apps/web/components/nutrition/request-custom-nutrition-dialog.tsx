@@ -142,7 +142,9 @@ export function RequestCustomNutritionDialog({
           <div className="flex flex-col gap-2">
             <Label htmlFor="custom-nutrition-source">
               Source
-              <span className="font-normal text-muted-foreground">optional</span>
+              <span className="font-normal text-muted-foreground">
+                optional
+              </span>
             </Label>
             <Input
               id="custom-nutrition-source"
@@ -180,7 +182,9 @@ export function RequestCustomNutritionDialog({
                 <Label htmlFor={fieldId(field.key)}>
                   {field.label}
                   {field.required ? null : (
-                    <span className="font-normal text-muted-foreground">optional</span>
+                    <span className="font-normal text-muted-foreground">
+                      optional
+                    </span>
                   )}
                 </Label>
                 <InputGroup>
@@ -207,7 +211,9 @@ export function RequestCustomNutritionDialog({
           <div className="flex flex-col gap-2">
             <Label htmlFor="custom-nutrition-note">
               Note
-              <span className="font-normal text-muted-foreground">optional</span>
+              <span className="font-normal text-muted-foreground">
+                optional
+              </span>
             </Label>
             <Textarea
               id="custom-nutrition-note"

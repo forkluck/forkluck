@@ -39,9 +39,9 @@ const priceText = (cents: number | null) =>
 const PORTION_UNIT_OPTIONS = servingUnitOptions()
 const rowClass =
   "flex items-center justify-between gap-4 border-b border-muted py-3 last:border-b-0"
-const labelClass = "text-base text-muted-foreground"
-const moneyLabelClass = "text-base font-medium text-foreground"
-const readOnlyValueClass = "w-40 text-base font-medium tabular-nums"
+const labelClass = "text-md text-muted-foreground"
+const moneyLabelClass = "text-md font-medium text-foreground"
+const readOnlyValueClass = "w-40 text-md font-medium tabular-nums"
 
 const signedDollarsToCents = (input: string): number | null => {
   const cleaned = input.replace(/[$,\s]/g, "")
@@ -473,7 +473,7 @@ export function RecipeCostView({
 
   return (
     <div className="w-full max-w-[1180px] pb-16">
-      <div className="mb-4 flex items-center gap-3 text-sm">
+      <div className="mb-4 flex items-center gap-3 text-md">
         <span className="font-medium text-foreground">Batch size</span>
         <BatchSizeSelect
           value={batch}
@@ -577,7 +577,7 @@ export function RecipeCostView({
             </span>
             {portionCostCents !== null &&
             !Number.isInteger(portionCostCents) ? (
-              <span className="block text-base text-muted-foreground">
+              <span className="block text-md text-muted-foreground">
                 uses unrounded cost
               </span>
             ) : null}

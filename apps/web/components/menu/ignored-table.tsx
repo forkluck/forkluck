@@ -250,7 +250,7 @@ export function IgnoredTable({
                       <div className="overflow-x-auto border-t border-muted">
                         <div
                           className={cn(
-                            "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+                            "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
                             GRID
                           )}
                         >
@@ -304,19 +304,19 @@ export function IgnoredTable({
                             >
                               {displayName(row)}
                             </span>
-                            <span className="truncate text-base text-muted-foreground tabular-nums">
+                            <span className="truncate text-md text-muted-foreground tabular-nums">
                               {row.sku || "—"}
                             </span>
-                            <span className="text-right text-base text-muted-foreground tabular-nums">
+                            <span className="text-right text-md text-muted-foreground tabular-nums">
                               {quantityFormat.format(row.quantity)}
                             </span>
-                            <span className="text-right text-base text-muted-foreground tabular-nums">
+                            <span className="text-right text-md text-muted-foreground tabular-nums">
                               {formatCents(
                                 row.netSalesCents,
                                 row.currencyCode || currencyCode
                               )}
                             </span>
-                            <span className="text-right text-base text-muted-foreground tabular-nums">
+                            <span className="text-right text-md text-muted-foreground tabular-nums">
                               {row.lastSoldAt
                                 ? formatFullDate(row.lastSoldAt, timezone)
                                 : "—"}
@@ -327,7 +327,7 @@ export function IgnoredTable({
                               <Link
                                 href="/integrations/sales/mapping/rules"
                                 title="Ignored by an auto-ignore rule"
-                                className="justify-self-end text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                                className="justify-self-end text-md text-muted-foreground underline underline-offset-2 hover:text-foreground"
                               >
                                 Rule
                               </Link>
@@ -354,7 +354,7 @@ export function IgnoredTable({
           )}
 
           {capped ? (
-            <p className="mt-3 text-base text-muted-foreground">
+            <p className="mt-3 text-md text-muted-foreground">
               Showing the first {shown}. Restore some to see the rest.
             </p>
           ) : null}

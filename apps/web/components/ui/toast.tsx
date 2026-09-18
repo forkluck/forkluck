@@ -60,7 +60,7 @@ function ToastList() {
       <ToastPrimitive.Description className="text-background/70" />
       {/* Renders nothing unless the toast carries `actionProps`: the Undo an
           archive offers. A 28px outline button on the ink, like Close. */}
-      <ToastPrimitive.Action className="mt-1.5 h-7 self-start rounded-md border border-background/30 px-2 text-sm font-medium text-background hover:bg-background/15 focus-visible:border-background focus-visible:outline-none disabled:opacity-60" />
+      <ToastPrimitive.Action className="mt-1.5 h-7 self-start rounded-md border border-background/30 px-2 text-md font-medium text-background hover:bg-background/15 focus-visible:border-background focus-visible:outline-none disabled:opacity-60" />
       <ToastPrimitive.Close
         aria-label="Dismiss"
         className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-transparent text-background/70 hover:bg-background/15 hover:text-background focus-visible:border-background focus-visible:outline-none"

@@ -145,12 +145,10 @@ function ImportSummary({
           {preview.source?.label ?? "Purchase report"}
         </span>
         {preview.source ? (
-          <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
-            Detected
-          </Badge>
+          <Badge className="rounded-sm px-[7px] py-0.5 text-xs">Detected</Badge>
         ) : null}
       </div>
-      <p className="mt-0.5 text-base text-muted-foreground">
+      <p className="mt-0.5 text-md text-muted-foreground">
         {periodLabel(preview)}
       </p>
       <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-muted pt-3 sm:grid-cols-4">
@@ -177,7 +175,7 @@ function ReadyTable({
   const unitPriceUnit = preferredWeightUnit(measurementSystem)
   if (entries.length === 0) return null
   const headClass =
-    "py-0 pr-3 pl-0 text-2xs leading-none font-medium whitespace-nowrap text-ink-soft last:pr-0"
+    "py-0 pr-3 pl-0 text-xs leading-none font-medium whitespace-nowrap text-ink-soft last:pr-0"
   const cellClass = "py-0 pr-3 pl-0 last:pr-0"
   return (
     <div className="max-h-64 overflow-auto border-t border-b border-t-muted border-b-border px-0.5">
@@ -204,10 +202,10 @@ function ReadyTable({
             >
               {preview.source ? (
                 <td className={cn(cellClass, "whitespace-nowrap")}>
-                  <span className="text-base text-muted-foreground">
+                  <span className="text-md text-muted-foreground">
                     {entry.externalId}
                   </span>
-                  <Badge className="ml-2 rounded-sm px-[7px] py-0.5 text-2xs">
+                  <Badge className="ml-2 rounded-sm px-[7px] py-0.5 text-xs">
                     {entry.status === "new" ? "New" : "Update"}
                   </Badge>
                 </td>
@@ -218,7 +216,7 @@ function ReadyTable({
               <td
                 className={cn(
                   cellClass,
-                  "text-right text-base whitespace-nowrap text-muted-foreground tabular-nums"
+                  "text-right text-md whitespace-nowrap text-muted-foreground tabular-nums"
                 )}
               >
                 {entry.rawSize || `${entry.packAmount} ${entry.packUnit}`}
@@ -226,7 +224,7 @@ function ReadyTable({
               <td
                 className={cn(
                   cellClass,
-                  "text-right text-base whitespace-nowrap text-muted-foreground tabular-nums"
+                  "text-right text-md whitespace-nowrap text-muted-foreground tabular-nums"
                 )}
               >
                 {entry.quantity ?? "—"}
@@ -234,7 +232,7 @@ function ReadyTable({
               <td
                 className={cn(
                   cellClass,
-                  "text-right text-base whitespace-nowrap text-muted-foreground tabular-nums"
+                  "text-right text-md whitespace-nowrap text-muted-foreground tabular-nums"
                 )}
               >
                 {formatCents(entry.packPriceCents, currencyCode)}
@@ -242,7 +240,7 @@ function ReadyTable({
               <td
                 className={cn(
                   cellClass,
-                  "text-right text-base whitespace-nowrap text-muted-foreground tabular-nums"
+                  "text-right text-md whitespace-nowrap text-muted-foreground tabular-nums"
                 )}
               >
                 {formatUnitPrice(
@@ -277,24 +275,24 @@ function ReviewQueue({
   )
   return (
     <details className="group rounded-xl border border-border">
-      <summary className="flex h-12 cursor-pointer list-none items-center gap-2.5 px-3.5 text-base [&::-webkit-details-marker]:hidden">
+      <summary className="flex h-12 cursor-pointer list-none items-center gap-2.5 px-3.5 text-md [&::-webkit-details-marker]:hidden">
         <TriangleAlert
           className="size-4 shrink-0 text-warning"
           strokeWidth={1.8}
           aria-hidden="true"
         />
         Supplier rows that need review
-        <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
+        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
           {unresolved.length}
         </Badge>
-        <span className="ml-auto text-base text-muted-foreground group-open:hidden">
+        <span className="ml-auto text-md text-muted-foreground group-open:hidden">
           Show
         </span>
       </summary>
       <div className="border-t border-muted">
         {unresolved.length > 0 ? (
           <div className="flex flex-col items-start gap-2 border-b border-muted px-3.5 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-            <p className="text-base leading-[1.55] text-muted-foreground">
+            <p className="text-md leading-[1.55] text-muted-foreground">
               Resolve the products you care about, or ignore rows you never want
               to see again.
             </p>
@@ -329,7 +327,7 @@ function ReviewQueue({
                       {row.externalId ? `${row.externalId} · ` : ""}
                       {row.name}
                     </p>
-                    <p className="mt-0.5 truncate text-base text-muted-foreground">
+                    <p className="mt-0.5 truncate text-md text-muted-foreground">
                       {row.rawSize ? `${row.rawSize} · ` : ""}
                       {row.reason}
                     </p>
@@ -337,7 +335,7 @@ function ReviewQueue({
                   <div className="flex shrink-0 items-center gap-1.5">
                     {row.mode === "ignored" ? (
                       <>
-                        <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
+                        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
                           Ignored
                         </Badge>
                         <Button
@@ -352,7 +350,7 @@ function ReviewQueue({
                       </>
                     ) : row.mode === "resolved" ? (
                       <>
-                        <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
+                        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
                           Resolved
                         </Badge>
                         <Button
@@ -489,7 +487,7 @@ function ReviewQueue({
                       </LabeledShell>
                     </div>
 
-                    <p className="mt-3 text-base leading-[1.55] text-muted-foreground">
+                    <p className="mt-3 text-md leading-[1.55] text-muted-foreground">
                       Enter the pack in the unit it was bought by. A pack
                       counted in pieces needs the weight of one before recipes
                       that weigh it can cost; set that on the ingredient’s
@@ -534,7 +532,7 @@ function ImportReceiptView({
           {receipt.imported} supplier product
           {receipt.imported === 1 ? "" : "s"} saved
         </p>
-        <p className="mt-0.5 text-base text-muted-foreground">
+        <p className="mt-0.5 text-md text-muted-foreground">
           The receipt is in Import history and can be undone while it is the
           latest active import.
         </p>
@@ -703,7 +701,7 @@ function ImportBody({
             ? "Reading the file…"
             : fileName || "Drop a purchase report to upload"}
         </span>
-        <span className="mt-1 text-sm text-muted-foreground">
+        <span className="mt-1 text-md text-muted-foreground">
           Supplier exports and other .xlsx or .csv reports
         </span>
         <input
@@ -732,7 +730,7 @@ function ImportBody({
       />
 
       {error ? (
-        <p className="text-base text-destructive" role="alert">
+        <p className="text-md text-destructive" role="alert">
           {error}
         </p>
       ) : null}

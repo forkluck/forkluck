@@ -148,7 +148,7 @@ function RecentList({ close }: { close: () => void }) {
           label="Search chats"
           placeholder="Search chats…"
           className="max-w-none min-w-0 flex-1"
-          inputClassName="text-lg md:text-sm"
+          inputClassName="text-lg md:text-md"
         />
         <Button
           variant="secondary"
@@ -163,7 +163,7 @@ function RecentList({ close }: { close: () => void }) {
         </Button>
       </div>
       {error ? (
-        <div role="alert" className="pb-2 text-sm text-destructive">
+        <div role="alert" className="pb-2 text-md text-destructive">
           {error}
           <Button variant="ghost" size="xs" onClick={reload}>
             Retry
@@ -178,7 +178,7 @@ function RecentList({ close }: { close: () => void }) {
           {rows.length ? (
             groupConversationsByDate(rows).map((group) => (
               <section key={group.label} className="mb-3">
-                <h3 className="py-1 text-2xs font-medium text-muted-foreground">
+                <h3 className="py-1 text-xs font-medium text-muted-foreground">
                   {group.label}
                 </h3>
                 {group.items.map((row) => (
@@ -284,7 +284,7 @@ function RecentList({ close }: { close: () => void }) {
                     {pending === row.id ? (
                       <span
                         role="status"
-                        className="text-base text-muted-foreground"
+                        className="text-md text-muted-foreground"
                       >
                         Saving…
                       </span>
@@ -298,7 +298,7 @@ function RecentList({ close }: { close: () => void }) {
               <Spinner size="md" delayed label="Loading chats" />
             </div>
           ) : !error ? (
-            <p className="py-8 text-center text-base text-muted-foreground">
+            <p className="py-8 text-center text-md text-muted-foreground">
               {query
                 ? "No chats match your search."
                 : archived
@@ -318,7 +318,7 @@ function RecentList({ close }: { close: () => void }) {
           Load more
         </Button>
       ) : null}
-      <label className="-mx-6 mt-2 flex h-11 items-center justify-between border-t border-border px-6 text-sm">
+      <label className="-mx-6 mt-2 flex h-11 items-center justify-between border-t border-border px-6 text-md">
         Show archived chats
         <Switch
           checked={archived}

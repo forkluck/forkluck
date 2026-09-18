@@ -90,7 +90,7 @@ export function ReceiptFeedback({
 
   return (
     <div className="ml-auto flex items-center gap-1">
-      <span className="mr-1 text-base text-muted-foreground" role="status">
+      <span className="mr-1 text-md text-muted-foreground" role="status">
         {invoice.feedback ? "Feedback sent" : "Feedback"}
       </span>
       <Button
@@ -177,7 +177,7 @@ export function ReceiptFeedback({
               </div>
             </fieldset>
             {form.failure || form.errors[noteId] ? (
-              <p className="mt-2 text-base text-destructive" role="alert">
+              <p className="mt-2 text-md text-destructive" role="alert">
                 {form.failure?.message ?? form.errors[noteId]}
               </p>
             ) : null}

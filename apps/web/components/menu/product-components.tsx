@@ -254,7 +254,7 @@ function ComponentRow({
           ) : null}
         </span>
         {hint ? (
-          <span className="block truncate text-base text-muted-foreground">
+          <span className="block truncate text-md text-muted-foreground">
             {hint}
           </span>
         ) : null}
@@ -377,7 +377,7 @@ export function ProductComponentsCard({
         >
           {label}
         </h3>
-        <span className="text-base text-muted-foreground">
+        <span className="text-md text-muted-foreground">
           {sectionRows.length}
         </span>
       </div>
@@ -475,7 +475,7 @@ export function ProductComponentsCard({
       )}
 
       {error ? (
-        <p role="alert" className="text-base text-destructive">
+        <p role="alert" className="text-md text-destructive">
           {error}
         </p>
       ) : null}

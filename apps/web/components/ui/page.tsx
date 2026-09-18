@@ -213,7 +213,7 @@ function EmptyState({
         {title}
       </EmptyStateTitle>
       {description ? (
-        <p className="mx-auto mt-2 max-w-[46ch] text-base leading-[1.55] text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-[46ch] text-md leading-[1.55] text-muted-foreground">
           {description}
         </p>
       ) : null}

@@ -202,7 +202,7 @@ export function ForgotPasswordForm() {
         onClick={resendCode}
         disabled={pending}
         className={cn(
-          "mt-6 self-center text-sm leading-5 disabled:pointer-events-none disabled:opacity-50",
+          "mt-6 self-center text-md leading-5 disabled:pointer-events-none disabled:opacity-50",
           authLinkClassName
         )}
       >

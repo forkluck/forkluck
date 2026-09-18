@@ -160,7 +160,7 @@ export function ImportProductsDialog({
           onChange={(event) => setQuery(event.target.value)}
         />
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : null}
@@ -170,12 +170,12 @@ export function ImportProductsDialog({
               <Spinner size="sm" />
             </div>
           ) : rows.length === 0 ? (
-            <p className="py-6 text-center text-base text-muted-foreground">
+            <p className="py-6 text-center text-md text-muted-foreground">
               No products match.
             </p>
           ) : (
             <>
-              <label className="flex h-9 items-center gap-3 border-b border-muted text-base font-medium text-muted-foreground">
+              <label className="flex h-9 items-center gap-3 border-b border-muted text-md font-medium text-muted-foreground">
                 <Checkbox
                   checked={allSelected}
                   indeterminate={!allSelected && someSelected}
@@ -192,7 +192,7 @@ export function ImportProductsDialog({
                 return (
                   <label
                     key={row.id}
-                    className="flex items-center gap-3 border-b border-muted py-2.5 text-base last:border-b-0 sm:h-11 sm:py-0"
+                    className="flex items-center gap-3 border-b border-muted py-2.5 text-md last:border-b-0 sm:h-11 sm:py-0"
                   >
                     <Checkbox
                       checked={onMenu || selected.includes(row.id)}
@@ -211,7 +211,7 @@ export function ImportProductsDialog({
                           </Badge>
                         ) : null}
                       </span>
-                      <span className="mt-0.5 block text-base text-muted-foreground tabular-nums sm:hidden">
+                      <span className="mt-0.5 block text-md text-muted-foreground tabular-nums sm:hidden">
                         {quantityFormat.format(row.sales.totalQuantity)} units ·{" "}
                         {row.sales.sharedToMembers
                           ? "Shared"

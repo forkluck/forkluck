@@ -110,7 +110,7 @@ export function DemandByWeek({ forecast }: { forecast: MenuForecast }) {
           </TableBody>
         </Table>
       </TableFrame>
-      <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+      <div className="mt-3 space-y-1 text-md text-muted-foreground">
         {sentences.map((sentence) => (
           <p key={sentence}>{sentence}</p>
         ))}

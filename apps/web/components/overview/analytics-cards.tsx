@@ -26,7 +26,7 @@ export function AnalyticsCard({
 export function CardLabel({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-base font-medium text-muted-foreground", className)}
+      className={cn("text-md font-medium text-muted-foreground", className)}
       {...props}
     />
   )
@@ -37,7 +37,7 @@ export function CardMetric({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       className={cn(
-        "text-3xl leading-none font-semibold tracking-[-0.02em] tabular-nums",
+        "text-2xl leading-none font-semibold tracking-[-0.02em] tabular-nums",
         className
       )}
       {...props}
@@ -49,7 +49,7 @@ export function CardMetric({ className, ...props }: React.ComponentProps<"p">) {
 export function CardNote({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-base text-muted-foreground tabular-nums", className)}
+      className={cn("text-md text-muted-foreground tabular-nums", className)}
       {...props}
     />
   )
@@ -107,7 +107,7 @@ export function ListHeader({
   return (
     <div
       className={cn(
-        "mx-5 border-b border-border pb-1.5 text-2xs font-medium text-ink-soft",
+        "mx-5 border-b border-border pb-1.5 text-xs font-medium text-ink-soft",
         className
       )}
       {...props}
@@ -153,7 +153,7 @@ export function ColumnLabel({
 /** What a list card says instead of rows when it has nothing to list. */
 export function ListCardEmpty({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-5 pb-6 text-base leading-[1.55] text-muted-foreground">
+    <p className="px-5 pb-6 text-md leading-[1.55] text-muted-foreground">
       {children}
     </p>
   )

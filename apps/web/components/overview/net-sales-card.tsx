@@ -43,7 +43,7 @@ export function NetSalesCard({
     return (
       <AnalyticsCard className="px-4 pt-[22px] pb-[18px] sm:px-6">
         <CardLabel>Net sales</CardLabel>
-        <p className="mt-2 text-4xl leading-none font-semibold tracking-[-0.03em] text-disabled-foreground tabular-nums">
+        <p className="mt-2 text-2xl leading-none font-semibold tracking-[-0.03em] text-disabled-foreground tabular-nums">
           {formatWholeCents(0, currencyCode)}
         </p>
         <CardNote className="mt-[26px] leading-[1.55]">
@@ -61,7 +61,7 @@ export function NetSalesCard({
     <AnalyticsCard className="px-4 pt-[22px] pb-[18px] sm:px-6">
       <CardLabel>Net sales</CardLabel>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <p className="text-4xl leading-none font-semibold tracking-[-0.03em] tabular-nums">
+        <p className="text-2xl leading-none font-semibold tracking-[-0.03em] tabular-nums">
           {formatWholeCents(totals.currentCents, currencyCode)}
         </p>
         <MetricComparisonBadge
@@ -86,7 +86,7 @@ export function NetSalesCard({
             tickCount={3}
             tickLine={false}
             axisLine={false}
-            tick={{ className: "fill-muted-foreground text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-xs" }}
             tickFormatter={(value: number) =>
               formatAxisCents(value, currencyCode)
             }
@@ -97,7 +97,7 @@ export function NetSalesCard({
             axisLine={false}
             tickMargin={10}
             interval={0}
-            tick={{ className: "fill-muted-foreground text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-xs" }}
             tickFormatter={(value: string, index: number) =>
               bars[index]?.showLabel ? value : ""
             }

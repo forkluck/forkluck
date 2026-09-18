@@ -24,7 +24,7 @@ const helper = dataTableColumns<SavedComparisonRow>()
 
 function Cell({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-base whitespace-nowrap text-muted-foreground">
+    <span className="text-md whitespace-nowrap text-muted-foreground">
       {children}
     </span>
   )
@@ -116,7 +116,7 @@ export function SavedComparisonsTable({
         header: "Recipes",
         meta: { className: "w-[44%] max-w-0", minWidth: 200 },
         cell: ({ getValue }) => (
-          <span className="block min-w-0 truncate text-base text-muted-foreground">
+          <span className="block min-w-0 truncate text-md text-muted-foreground">
             {getValue() as string}
           </span>
         ),

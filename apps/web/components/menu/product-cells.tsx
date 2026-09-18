@@ -200,7 +200,7 @@ export function AlertFlag({
             key={fix.label}
             type="button"
             onClick={fix.onClick}
-            className="self-start rounded-md border border-transparent text-sm text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:outline-none"
+            className="self-start rounded-md border border-transparent text-md text-primary underline-offset-4 hover:underline focus-visible:border-foreground focus-visible:outline-none"
           >
             {fix.label}
           </button>
@@ -229,14 +229,14 @@ export function CountCell({
   children: React.ReactNode
 }) {
   if (count === 0) {
-    return <span className="text-base text-muted-foreground">—</span>
+    return <span className="text-md text-muted-foreground">—</span>
   }
 
   return (
     <Popover>
       <PopoverTrigger
         aria-label={`${count} ${label[count === 1 ? 0 : 1]}`}
-        className="group/count relative -ml-2 flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-2 text-base text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
+        className="group/count relative -ml-2 flex h-[30px] items-center rounded-lg border border-transparent pr-[21px] pl-2 text-md text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
         onClick={(event) => event.stopPropagation()}
       >
         {count}
@@ -282,12 +282,12 @@ export function CountRow({
   detail?: React.ReactNode
 }) {
   return (
-    <span className="flex h-8 items-center gap-2 px-2.5 text-base text-foreground">
+    <span className="flex h-8 items-center gap-2 px-2.5 text-md text-foreground">
       <span className="flex min-w-0 items-center gap-2 truncate">
         {children}
       </span>
       {detail ? (
-        <span className="ml-auto shrink-0 text-base text-muted-foreground tabular-nums">
+        <span className="ml-auto shrink-0 text-md text-muted-foreground tabular-nums">
           {detail}
         </span>
       ) : null}
@@ -309,12 +309,12 @@ export type SkuEntry = {
  */
 export function SkuCell({ entries }: { entries: SkuEntry[] }) {
   if (entries.length === 0) {
-    return <span className="text-base text-muted-foreground">—</span>
+    return <span className="text-md text-muted-foreground">—</span>
   }
 
   if (entries.length === 1) {
     return (
-      <span className="truncate text-base text-muted-foreground tabular-nums">
+      <span className="truncate text-md text-muted-foreground tabular-nums">
         {entries[0].sku}
       </span>
     )
@@ -325,7 +325,7 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
       <Popover>
         <PopoverTrigger
           aria-label={`${entries.length} SKUs`}
-          className="group/sku relative -ml-1 flex h-[30px] min-w-0 items-center gap-1 rounded-lg border border-transparent pr-[21px] pl-1 text-base text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
+          className="group/sku relative -ml-1 flex h-[30px] min-w-0 items-center gap-1 rounded-lg border border-transparent pr-[21px] pl-1 text-md text-muted-foreground tabular-nums outline-none hover:bg-muted focus-visible:border-foreground data-popup-open:bg-muted"
         >
           <span className="truncate">{entries[0].sku}</span>
           <span className="flex-none">+{entries.length - 1}</span>
@@ -344,14 +344,14 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
           {entries.map((entry) => (
             <span key={entry.sku} className="flex flex-col px-2.5 py-1.5">
               <span className="flex items-baseline justify-between gap-3">
-                <span className="truncate text-base text-foreground">
+                <span className="truncate text-md text-foreground">
                   {entry.label}
                 </span>
-                <span className="flex-none text-base text-muted-foreground tabular-nums">
+                <span className="flex-none text-md text-muted-foreground tabular-nums">
                   {entry.sku}
                 </span>
               </span>
-              <span className="mt-0.5 text-base text-muted-foreground">
+              <span className="mt-0.5 text-md text-muted-foreground">
                 {entry.detail}
                 {entry.multiplier === 1 ? "" : ` · ×${entry.multiplier}`}
               </span>
@@ -366,7 +366,7 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
 /** The "no rows" line inside an otherwise valid table frame. */
 export function TableEmptyRow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-4 py-10 text-center text-base text-muted-foreground">
+    <p className="px-4 py-10 text-center text-md text-muted-foreground">
       {children}
     </p>
   )
