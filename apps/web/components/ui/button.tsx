@@ -125,7 +125,15 @@ function Button({
           />
         </span>
       ) : null}
-      <span className={cn("contents", pending && "opacity-0")}>{children}</span>
+      {/* A real inline box, not `contents`: opacity needs a box to act on. */}
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5",
+          pending && "opacity-0"
+        )}
+      >
+        {children}
+      </span>
     </ButtonPrimitive>
   )
 }
