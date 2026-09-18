@@ -428,22 +428,20 @@ export function ClickableDemo() {
 
 const BADGE_VARIANTS = [
   "default",
-  "secondary",
+  "info",
   "success",
   "warning",
-  "destructive",
-  "outline",
-  "ghost",
+  "caution",
+  "critical",
 ] as const
 
 const BADGE_LABELS: Record<(typeof BADGE_VARIANTS)[number], string> = {
   default: "Package",
-  secondary: "Draft",
+  info: "Scheduled",
   success: "On target",
-  warning: "Unmatched",
-  destructive: "No price",
-  outline: "Sub recipe",
-  ghost: "Archived",
+  warning: "Over target",
+  caution: "Unmatched",
+  critical: "No price",
 }
 
 /** 13. Badge */
@@ -500,7 +498,7 @@ export function ChipDemo() {
           <Badge>Case</Badge>
         </Labeled>
         <Labeled label="Badge, row outline">
-          <Badge variant="outline">Sub recipe</Badge>
+          <Badge>Sub recipe</Badge>
         </Labeled>
       </Row>
       <div className="max-w-[220px]">

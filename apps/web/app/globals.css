@@ -47,6 +47,11 @@
   --color-warning-border: var(--warning-border);
   --color-warning-strong: var(--warning-strong);
   --color-warning-hover: var(--warning-hover);
+  --color-caution: var(--caution);
+  --color-caution-foreground: var(--caution-foreground);
+  --color-caution-fill: var(--caution-fill);
+  --color-info: var(--info);
+  --color-info-fill: var(--info-fill);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -200,13 +205,21 @@
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning: #c8880c;
-  --warning-foreground: #6b4708;
-  --warning-fill: #fdf8ec;
-  --warning-fill-hover: #f8eed6;
-  --warning-border: #f6e6bf;
-  --warning-strong: #e3cd97;
-  --warning-hover: #fbf1d8;
+  --warning: #ea580c;
+  --warning-foreground: #9a3412;
+  --warning-fill: #ffedd5;
+  --warning-fill-hover: #fed7aa;
+  --warning-border: #fed7aa;
+  --warning-strong: #fdba74;
+  --warning-hover: #ffe4cc;
+  /* Caution: the yellow, a step under warning. Ink 8.1:1 on its fill. */
+  --caution: #ca8a04;
+  --caution-foreground: #713f12;
+  --caution-fill: #fef9c3;
+  /* Info: the blue as a label. --brand itself is 3.5:1 on --brand-fill, so
+     the info ink is the deeper blue, 5.2:1 there. */
+  --info: #1d4ed8;
+  --info-fill: var(--brand-fill);
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;

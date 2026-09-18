@@ -138,7 +138,7 @@ function ProductNameCell({ product }: { product: SalesProductRow }) {
       >
         {product.name}
       </Link>
-      {isBundle(product) ? <Badge variant="secondary">Bundle</Badge> : null}
+      {isBundle(product) ? <Badge>Bundle</Badge> : null}
     </span>
   )
 }
@@ -440,7 +440,7 @@ export function ProductsTable({
         header: "Status",
         meta: { align: "center", className: "w-[10%]", minWidth: 96 },
         cell: ({ row }) => (
-          <Badge variant={row.original.isActive ? "success" : "secondary"}>
+          <Badge variant={row.original.isActive ? "success" : "default"}>
             {row.original.isActive ? "Active" : "Inactive"}
           </Badge>
         ),

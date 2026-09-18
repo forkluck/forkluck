@@ -247,7 +247,7 @@ export function IngredientCombobox({
                     className={cn(ROW_CLASS, "justify-between gap-3")}
                   >
                     <span className="min-w-0 truncate">{row.name}</span>
-                    <Badge variant="secondary">
+                    <Badge>
                       {pendingId === row.id ? "Adding…" : "Catalog"}
                     </Badge>
                   </button>

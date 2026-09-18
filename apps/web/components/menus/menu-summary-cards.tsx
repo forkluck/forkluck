@@ -39,7 +39,7 @@ export function MenuSummaryCards({
           trackVariance && pointChange !== null && pointChange !== 0 ? (
             <Badge
               aria-label="Menu cost % vs original"
-              variant={pointChange <= 0 ? "success" : "destructive"}
+              variant={pointChange <= 0 ? "success" : "critical"}
               className="whitespace-nowrap"
             >
               {formatSignedPoints(pointChange)}
@@ -63,7 +63,7 @@ export function MenuSummaryCards({
           trackVariance && revenueChange !== 0 ? (
             <Badge
               aria-label="Total revenue vs original"
-              variant={revenueChange >= 0 ? "success" : "destructive"}
+              variant={revenueChange >= 0 ? "success" : "critical"}
               className="whitespace-nowrap"
             >
               {formatSignedCents(revenueChange, currencyCode)}
@@ -83,7 +83,7 @@ export function MenuSummaryCards({
           trackVariance && profitChange !== 0 ? (
             <Badge
               aria-label="Total profit vs original"
-              variant={profitChange >= 0 ? "success" : "destructive"}
+              variant={profitChange >= 0 ? "success" : "critical"}
               className="whitespace-nowrap"
             >
               {formatSignedCents(profitChange, currencyCode)}

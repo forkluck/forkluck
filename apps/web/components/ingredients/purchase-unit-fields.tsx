@@ -326,7 +326,6 @@ function InvoiceItemSearch({
                   </Tooltip>
                 ) : null}
                 <Badge
-                  variant="secondary"
                   // A long supplier name gives way to the description rather
                   // than truncating the one thing the cook is reading for.
                   className="max-w-[40%] shrink"

@@ -843,7 +843,7 @@ export function MenuItemsTable({
                             >
                               {item.name}
                             </GuardedLink>
-                            <Badge variant="secondary">
+                            <Badge>
                               {item.recipeId ? "Recipe" : "Product"}
                             </Badge>
                           </span>

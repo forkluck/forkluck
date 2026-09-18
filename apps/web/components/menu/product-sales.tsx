@@ -237,7 +237,7 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
             These quantities are included in the product view.
           </p>
         </div>
-        <Badge variant="secondary">{rows.length} entries</Badge>
+        <Badge>{rows.length} entries</Badge>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[380px]">

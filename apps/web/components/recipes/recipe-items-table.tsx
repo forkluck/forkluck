@@ -740,10 +740,10 @@ function IngredientSuggestions({
             ) : null}
           </span>
           {row.preparation === null && row.kind === "recipe" ? (
-            <Badge variant="secondary">Recipe</Badge>
+            <Badge>Recipe</Badge>
           ) : null}
           {row.preparation === null && row.kind === "catalog" ? (
-            <Badge variant="secondary">Catalog</Badge>
+            <Badge>Catalog</Badge>
           ) : null}
         </button>
       ))}

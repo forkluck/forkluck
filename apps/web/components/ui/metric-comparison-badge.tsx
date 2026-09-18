@@ -31,7 +31,7 @@ export function MetricComparisonBadge({
   return (
     <Badge
       aria-label={label}
-      variant={isFavorable ? "success" : "destructive"}
+      variant={isFavorable ? "success" : "critical"}
       className="whitespace-nowrap"
     >
       {formatSignedPercent(change)}

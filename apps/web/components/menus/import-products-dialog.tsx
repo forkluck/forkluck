@@ -205,9 +205,7 @@ export function ImportProductsDialog({
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-2">
                         <span className="truncate">{row.name}</span>
-                        {onMenu ? (
-                          <Badge variant="secondary">On menu</Badge>
-                        ) : null}
+                        {onMenu ? <Badge>On menu</Badge> : null}
                       </span>
                       <span className="mt-0.5 block text-md text-muted-foreground tabular-nums sm:hidden">
                         {quantityFormat.format(row.sales.totalQuantity)} units ·{" "}

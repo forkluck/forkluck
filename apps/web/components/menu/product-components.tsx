@@ -240,14 +240,14 @@ function ComponentRow({
           ) : (
             <span className="truncate text-md text-foreground">{name}</span>
           )}
-          <Badge variant="secondary">
+          <Badge>
             {component.productId
               ? "Product"
               : component.recipeId
                 ? "Recipe"
                 : "Ingredient"}
           </Badge>
-          {component.nonEdible ? <Badge variant="outline">Supply</Badge> : null}
+          {component.nonEdible ? <Badge>Supply</Badge> : null}
         </span>
         {hint ? (
           <span className="block truncate text-md text-muted-foreground">

@@ -57,10 +57,10 @@ export function SupplierActivity({
                 <Badge
                   variant={
                     run.status === "failed"
-                      ? "destructive"
+                      ? "critical"
                       : run.status === "succeeded"
                         ? "success"
-                        : "outline"
+                        : "default"
                   }
                 >
                   {RUN_STATUS_LABELS[run.status]}

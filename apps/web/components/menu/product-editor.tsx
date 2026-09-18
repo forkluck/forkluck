@@ -352,7 +352,7 @@ function VariantsCard({ product }: { product: ProductDetail }) {
                   </TableCell>
                   <TableCell className="text-right">
                     {variant.quantityMultiplier > 1 ? (
-                      <Badge variant="secondary" title="Units per sale">
+                      <Badge title="Units per sale">
                         ×{formatMultiplier(variant.quantityMultiplier)}
                       </Badge>
                     ) : (

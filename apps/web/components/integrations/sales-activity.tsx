@@ -80,14 +80,14 @@ export function SalesActivity({
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="truncate text-md">{item.fileName}</p>
                     {item.undoneAt ? (
-                      <Badge variant="outline">Undone</Badge>
+                      <Badge>Undone</Badge>
                     ) : (
                       <Badge>
                         {item.channel === "square" ? "Square" : "Shopify"}
                       </Badge>
                     )}
                     {item.source === "api" && !item.undoneAt ? (
-                      <Badge variant="outline">Synced</Badge>
+                      <Badge>Synced</Badge>
                     ) : null}
                   </div>
                   <p className="mt-0.5 text-md text-muted-foreground">
@@ -154,10 +154,10 @@ export function SalesActivity({
                     <Badge
                       variant={
                         run.status === "failed"
-                          ? "destructive"
+                          ? "critical"
                           : run.status === "succeeded"
                             ? "success"
-                            : "outline"
+                            : "default"
                       }
                     >
                       {RUN_STATUS_LABELS[run.status]}

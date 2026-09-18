@@ -141,11 +141,11 @@ export function TargetSuggestions<T extends ComponentTarget>({
           >
             <span className="min-w-0 flex-1 truncate">{row.name}</span>
             {row.kind === "recipe" ? (
-              <Badge variant="secondary">Recipe</Badge>
+              <Badge>Recipe</Badge>
             ) : row.kind === "product" ? (
-              <Badge variant="secondary">Product</Badge>
+              <Badge>Product</Badge>
             ) : row.nonEdible ? (
-              <Badge variant="outline">Supply</Badge>
+              <Badge>Supply</Badge>
             ) : null}
           </button>
         ))}

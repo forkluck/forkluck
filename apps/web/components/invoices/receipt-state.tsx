@@ -311,12 +311,12 @@ export function lineBadge(
   categories: ExpenseCategoryRow[]
 ): {
   label: string
-  variant: "default" | "outline" | "success" | "warning"
+  variant: "default" | "success" | "warning"
 } {
   if (line.mode === "ignored") {
     return {
       label: line.propagated ? "Same item" : "Ignored",
-      variant: "outline",
+      variant: "default",
     }
   }
   if (line.mode === "resolved") {
@@ -337,7 +337,7 @@ export function lineBadge(
     case "new":
       return { label: "New product", variant: "success" }
     case "ignored":
-      return { label: "Ignored", variant: "outline" }
+      return { label: "Ignored", variant: "default" }
     default:
       return { label: "Expense", variant: "default" }
   }

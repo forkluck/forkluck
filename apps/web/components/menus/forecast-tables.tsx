@@ -133,14 +133,10 @@ export function ProductForecastTable({
                         {product.productName}
                       </Link>
                       {!product.menuMember ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Included
-                        </Badge>
+                        <Badge className="ml-2">Included</Badge>
                       ) : null}
                       {!product.isActive ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Inactive
-                        </Badge>
+                        <Badge className="ml-2">Inactive</Badge>
                       ) : null}
                     </TableCell>
                     <TableCell
@@ -235,7 +231,7 @@ export function SectionHeader({
         <h2 className="text-md font-semibold text-foreground">{title}</h2>
         <p className="mt-1 text-md text-muted-foreground">{subtitle}</p>
       </div>
-      <Badge variant="secondary">{badge}</Badge>
+      <Badge>{badge}</Badge>
     </div>
   )
 }
@@ -442,9 +438,7 @@ export function MaterialsTable({
                         {row.ingredientName}
                       </Link>
                       {row.kind === "supply" ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Supply
-                        </Badge>
+                        <Badge className="ml-2">Supply</Badge>
                       ) : null}
                       {note ? (
                         <div className="mt-0.5 text-md text-muted-foreground">

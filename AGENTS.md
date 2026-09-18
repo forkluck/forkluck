@@ -86,15 +86,21 @@ side; name the field token and the field follows the field.
 
 ## Semantic color
 
-One red and one green, each in two parts: the ink and the pale fill it sits on
-(`--destructive` / `--destructive-fill`, `--success` / `--success-fill`). Do
-not add a second shade for a state that "reads softer" than an action — the app
-carried a second red and a second green on that theory and the cooler green
-failed AA against 11.5px text on its own fill. A new semantic color needs a
-contrast check against every ground it lands on, in the pull request.
+Five tones, each in two parts, the ink and the pale fill it sits on: red
+(`--destructive` on white, `--destructive-strong` on `--destructive-fill`),
+green (`--success` / `--success-fill`), orange for warning
+(`--warning-foreground` / `--warning-fill`, `--warning` for the icon and the
+edge), yellow for caution (`--caution-foreground` / `--caution-fill`), and
+blue for info (`--info` on `--info-fill`, the brand fill). Every pair clears
+4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. Do
+not add a second shade for a state that "reads softer" than an action — the
+app carried a second red and a second green on that theory and the cooler
+green failed AA against 11.5px text on its own fill. A new semantic color
+needs a contrast check against every ground it lands on, in the pull request.
 
-Blue (`--brand`) is data and selection only: chart marks, progress fills, the
-icon tile, the fill of a selected card. Filled buttons are ink, never blue.
+Blue (`--brand`) is data, selection and the link: chart marks, progress
+fills, the icon tile, the fill of a selected card, the text of a link. Filled
+buttons are ink, never blue.
 
 ## Menus
 
