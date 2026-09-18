@@ -391,7 +391,7 @@ export function PressButtonDemo() {
 /** 12. Clickable */
 export function ClickableDemo() {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="max-w-md">
       <Labeled label="Whole card is the link" className="w-full">
         <Card render={<a href="#clickable" />} className="w-full">
           <CardHeader>
@@ -400,17 +400,6 @@ export function ClickableDemo() {
           </CardHeader>
           <CardContent>
             <p>Flour, butter, milk, yeast, salt, sugar.</p>
-          </CardContent>
-        </Card>
-      </Labeled>
-      <Labeled label="Same shell, no destination" className="w-full">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Pain au chocolat</CardTitle>
-            <CardDescription>36 pieces per batch</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Flour, butter, milk, yeast, salt, batons.</p>
           </CardContent>
         </Card>
       </Labeled>
