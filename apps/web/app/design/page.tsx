@@ -87,9 +87,7 @@ export default function DesignGuidePage() {
                 id={id}
                 className="scroll-mt-20 border-t border-border py-10 first:border-t-0"
               >
-                <h2 className="mb-6 text-xl font-semibold tracking-[-0.01em]">
-                  {title}
-                </h2>
+                <h2 className="mb-6 text-md font-semibold">{title}</h2>
                 <Demo />
               </section>
             ))}
@@ -97,9 +95,7 @@ export default function DesignGuidePage() {
               id="design-tokens"
               className="scroll-mt-20 border-t border-border py-10 first:border-t-0"
             >
-              <h2 className="mb-6 text-xl font-semibold tracking-[-0.01em]">
-                Design tokens
-              </h2>
+              <h2 className="mb-6 text-md font-semibold">Design tokens</h2>
               <dl className="grid gap-x-10 gap-y-2 md:grid-cols-2">
                 {TOKENS.map(({ token, value }) => (
                   <div
