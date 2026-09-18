@@ -359,7 +359,6 @@ export function ButtonGroupDemo() {
 
 /** 11. Press button */
 export function PressButtonDemo() {
-  const [grams, setGrams] = React.useState(true)
   return (
     <div className="flex flex-col gap-8">
       <Matrix
@@ -385,13 +384,7 @@ export function PressButtonDemo() {
           )
         }
       />
-      <Row>
-        <Labeled label="Holds its own state">
-          <Toggle pressed={grams} onPressedChange={setGrams}>
-            Weigh in grams
-          </Toggle>
-        </Labeled>
-      </Row>
+      <Row></Row>
     </div>
   )
 }
