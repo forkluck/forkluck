@@ -136,7 +136,7 @@ function ManualSalesForm({
   return (
     <form onSubmit={(event) => void submit(event)} className="flex flex-col">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">
+        <h3 className="text-md font-semibold text-foreground">
           Record manual sales
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -230,7 +230,7 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
     <section>
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-md font-semibold text-foreground">
             Manual entries
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -330,7 +330,7 @@ export function ProductSalesSection({
         <div className="flex items-baseline gap-2">
           <h2
             id="product-sales-heading"
-            className="text-lg font-semibold text-foreground"
+            className="text-md font-semibold text-foreground"
           >
             Sales
           </h2>

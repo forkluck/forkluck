@@ -377,7 +377,7 @@ export function RecipeNutritionView({
   return (
     <div className="w-full max-w-[1180px] pb-16">
       {/* The printed page is the preview alone, so it names the recipe. */}
-      <h2 className="mb-4 hidden text-xl font-semibold print:block">
+      <h2 className="mb-4 hidden text-md font-semibold print:block">
         {recipeTitle}
       </h2>
       <div className="flex flex-col gap-2 print:hidden">

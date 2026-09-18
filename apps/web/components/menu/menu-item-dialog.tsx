@@ -457,7 +457,7 @@ export function MenuItemDialog({
         className="top-12 max-h-[calc(100dvh-96px)] translate-y-0 gap-0 overflow-x-hidden overflow-y-auto pb-[22px] [--dialog-px:28px] [--dialog-py:26px]"
       >
         <DialogHeader>
-          <DialogTitle className="text-xl">Link catalog item</DialogTitle>
+          <DialogTitle>Link catalog item</DialogTitle>
           <DialogDescription className="sr-only">
             Link this catalog item to a product, or to a box of them.
           </DialogDescription>

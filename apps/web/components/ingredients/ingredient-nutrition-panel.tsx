@@ -70,7 +70,7 @@ export function IngredientNutritionPanel({
       <hr className="mt-8 h-1.5 w-full max-w-[640px] rounded-sm border-0 bg-secondary print:hidden" />
       <section className="mt-6 max-w-[640px]">
         <div className="flex min-h-8 items-center justify-between gap-3 print:hidden">
-          <h2 className="text-lg font-semibold">Preview</h2>
+          <h2 className="text-md font-semibold">Preview</h2>
           {per100g ? (
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               Serving (g)

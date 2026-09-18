@@ -76,7 +76,7 @@ export function GuestBookView({ book }: { book: GuestBook }) {
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              <h2 className="text-lg font-semibold">{recipe.title}</h2>
+              <h2 className="text-md font-semibold">{recipe.title}</h2>
               {/* At 1x, so the line does not move while the sheet scales. */}
               {recipe.yieldAmount !== null ? (
                 <span className="text-base text-muted-foreground tabular-nums">

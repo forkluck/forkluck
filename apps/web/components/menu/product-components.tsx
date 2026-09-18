@@ -373,7 +373,7 @@ export function ProductComponentsCard({
       <div className="mb-2 flex items-baseline gap-2">
         <h3
           id={`product-${label.toLowerCase()}-heading`}
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           {label}
         </h3>
@@ -428,7 +428,7 @@ export function ProductComponentsCard({
       <div className="flex items-center justify-between gap-4">
         <h2
           id="product-composition-heading"
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           Product composition
         </h2>

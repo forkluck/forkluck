@@ -579,7 +579,7 @@ function Section({
       {title ? (
         <div className="mb-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <h2 className="text-md font-semibold text-foreground">{title}</h2>
             {description ? (
               <p className="mt-1 text-sm text-muted-foreground">
                 {description}

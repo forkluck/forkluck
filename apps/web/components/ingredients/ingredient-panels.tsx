@@ -210,7 +210,7 @@ function UnitConversionSection({
     <section className="mt-6 max-w-[640px]">
       <div className="flex min-h-8 items-center justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          <h2 className="text-lg font-semibold">UOM</h2>
+          <h2 className="text-md font-semibold">UOM</h2>
           <Tooltip>
             <TooltipTrigger
               render={
@@ -405,7 +405,7 @@ export function IngredientCostPanel({
   return (
     <section className={embedded ? "mt-6 max-w-[640px]" : "max-w-[640px]"}>
       <div className="flex min-h-8 items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">Cost</h2>
+        <h2 className="text-md font-semibold">Cost</h2>
         <div className="relative">
           <Menu>
             <MenuTrigger
@@ -461,7 +461,7 @@ function UsedInSection({
   return (
     <section className="mt-6 max-w-[640px]">
       <div className="flex min-h-8 items-center gap-1.5">
-        <h2 className="text-lg font-semibold">Used in</h2>
+        <h2 className="text-md font-semibold">Used in</h2>
         {rows.length > 0 ? (
           <span className="text-sm text-muted-foreground tabular-nums">
             {rows.length}
@@ -497,7 +497,7 @@ function UsedInProductsSection({
   return (
     <section className="mt-6 max-w-[640px]">
       <div className="flex min-h-8 items-center gap-1.5">
-        <h2 className="text-lg font-semibold">Used in</h2>
+        <h2 className="text-md font-semibold">Used in</h2>
         {rows.length > 0 ? (
           <span className="text-sm text-muted-foreground tabular-nums">
             {rows.length}
@@ -815,7 +815,7 @@ function NewSupplyCostSection() {
   return (
     <section className="mt-6 max-w-[640px]">
       <div className="flex min-h-8 items-center">
-        <h2 className="text-lg font-semibold">Cost</h2>
+        <h2 className="text-md font-semibold">Cost</h2>
       </div>
       <div className="mt-3">
         <PurchaseUnitFields

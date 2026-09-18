@@ -121,7 +121,7 @@ export function IngredientTagsCard({
         }}
       >
         <div className="mb-3 flex min-h-7 items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold">Tags</h2>
+          <h2 className="text-md font-semibold">Tags</h2>
           {value.length > 0 ? (
             <PopoverTrigger
               type="button"

@@ -81,9 +81,7 @@ export function MenuForecast({
       actions={<ForecastActions forecast={forecast} />}
     >
       <header>
-        <h2 className="text-xl font-semibold tracking-tight">
-          Production forecast
-        </h2>
+        <h2 className="text-md font-semibold">Production forecast</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Expected demand and the preparation it requires, before subtracting
           stock or food already prepared.

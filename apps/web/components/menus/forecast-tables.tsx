@@ -233,7 +233,7 @@ export function SectionHeader({
   return (
     <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+        <h2 className="text-md font-semibold text-foreground">{title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
       </div>
       <Badge variant="secondary">{badge}</Badge>

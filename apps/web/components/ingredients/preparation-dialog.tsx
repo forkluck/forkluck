@@ -211,7 +211,7 @@ export function PreparationDialog({
         >
           <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1.5">
-              <h3 className="text-lg font-semibold">UOM</h3>
+              <h3 className="text-md font-semibold">UOM</h3>
               <Tooltip>
                 <TooltipTrigger
                   render={

@@ -138,7 +138,7 @@ function ReceiptView({
   return (
     <div className="rounded-xl border border-border p-5">
       <Badge variant="success">Import complete</Badge>
-      <h3 className="mt-3 text-xl leading-none font-semibold tracking-[-0.01em]">
+      <h3 className="mt-3 text-md leading-none font-semibold">
         {receipt.invoices} invoice{receipt.invoices === 1 ? "" : "s"} saved
       </h3>
       <p className="mt-2 text-base leading-[1.55] text-muted-foreground">

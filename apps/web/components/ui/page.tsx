@@ -209,7 +209,7 @@ function EmptyState({
       )}
       {...props}
     >
-      <EmptyStateTitle className="text-xl leading-[normal] font-semibold tracking-[-0.01em] text-foreground">
+      <EmptyStateTitle className="text-md leading-[normal] font-semibold text-foreground">
         {title}
       </EmptyStateTitle>
       {description ? (

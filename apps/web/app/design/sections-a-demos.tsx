@@ -184,24 +184,16 @@ export function SectionDemo() {
 /** 3. Heading */
 export function HeadingDemo() {
   return (
-    <Row>
+    <div className="flex flex-col items-start gap-6">
       <Labeled label="2xl, page title">
         <span className="text-2xl font-semibold tracking-[-0.02em]">
           Butter croissant
         </span>
       </Labeled>
-      <Labeled label="xl, dialog title">
-        <span className="text-xl font-semibold tracking-[-0.01em]">
-          Delete this recipe?
-        </span>
-      </Labeled>
-      <Labeled label="lg, card heading">
-        <span className="text-lg font-semibold">Costing</span>
-      </Labeled>
-      <Labeled label="md, list title">
+      <Labeled label="md, every other heading">
         <span className="text-md font-semibold">Dry goods</span>
       </Labeled>
-    </Row>
+    </div>
   )
 }
 

@@ -407,9 +407,7 @@ export function ModifiersTable({
           className="top-12 flex h-[min(640px,calc(100dvh-96px))] translate-y-0 flex-col overflow-hidden pb-[22px] [--dialog-px:28px] [--dialog-py:26px]"
         >
           <DialogHeader>
-            <DialogTitle className="text-xl">
-              {openList?.name ?? "Modifier list"}
-            </DialogTitle>
+            <DialogTitle>{openList?.name ?? "Modifier list"}</DialogTitle>
           </DialogHeader>
 
           {associationGroups.length ? (

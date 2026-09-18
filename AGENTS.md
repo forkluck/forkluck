@@ -205,10 +205,13 @@ if none of the ten fits, the change is to the scale, not to the call site.
 
 Each step has a job: `2xs` chips, badges and menu group labels; `xs` help
 text and meta; `sm` controls — buttons, labels, tabs; `base` body — table
-cells, dialog copy, nav; `md` field text and list titles; `lg` card headings,
-and the 16px floor that keeps iOS from zooming a focused field; `xl` dialog
-titles and section headings; `2xl` page titles; `3xl` metric numerals; `4xl`
-the hero numeral. The Nutrition Facts label keeps its own sizes because it
+cells, dialog copy, nav; `md` field text and every heading below the page
+title (dialog titles, section, card and list headings all sit here, at 600);
+`lg` the 16px floor that keeps iOS from zooming a focused field, and the
+wordmark; `xl` inline figures such as a dialog's summary numbers; `2xl` page
+titles; `3xl` metric numerals; `4xl` the hero numeral. Headings come in two
+sizes only, `2xl` for the page title and `md` for everything under it; a
+heading at `lg` or `xl` is a regression, not a choice. The Nutrition Facts label keeps its own sizes because it
 imitates a regulated format, the way table rows sit outside the control
 height ladder. `apps/web/tests/type-scale-pins.test.ts` refuses any other size.
 

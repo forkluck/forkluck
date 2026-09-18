@@ -310,7 +310,7 @@ function VariantsCard({ product }: { product: ProductDetail }) {
       <div className="mb-2 flex items-baseline gap-2">
         <h2
           id="variants-heading"
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           Variants
         </h2>

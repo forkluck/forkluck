@@ -252,7 +252,7 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
 
       <section className="grid gap-8">
         <div className="grid gap-3">
-          <h2 className="text-lg font-semibold">Ingredients</h2>
+          <h2 className="text-md font-semibold">Ingredients</h2>
           <IngredientTable
             items={recipe.items}
             scale={batch.scale}
@@ -296,7 +296,7 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
 
       {recipe.steps.length ? (
         <section className="grid gap-3">
-          <h2 className="text-lg font-semibold">Prep method</h2>
+          <h2 className="text-md font-semibold">Prep method</h2>
           <div className="grid gap-3">
             {recipe.steps.map((entry, index) => {
               if (entry.kind === "header") {

@@ -514,7 +514,7 @@ export function RecipeCostView({
       {/* The same band the recipe page draws between sections. */}
       <div className="mt-8 mb-7 border-t-[6px] border-secondary" />
       <div className="max-w-[560px]">
-        <h3 className="border-b border-muted pb-2 text-lg font-semibold text-foreground">
+        <h3 className="border-b border-muted pb-2 text-md font-semibold text-foreground">
           Per portion
         </h3>
 

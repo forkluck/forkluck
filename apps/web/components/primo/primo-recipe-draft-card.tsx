@@ -62,7 +62,7 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
       </div>
 
       <div className="px-4 py-4">
-        <h3 className="font-heading text-xl leading-7 font-semibold tracking-tight text-foreground">
+        <h3 className="font-heading text-md leading-none font-semibold text-foreground">
           {draft.title}
         </h3>
         {draft.description ? (
