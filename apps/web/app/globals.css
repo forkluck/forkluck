@@ -179,12 +179,15 @@
      state reads differently from an action. The theory cost contrast: the
      cooler green failed AA on its own fill (3.55:1 against 11.5px text).
      One pair each now, and the red is the vivid one, which is the point of a
-     destructive action. --destructive-fill sits a shade lighter than the
-     #fef3f2 it replaced so a red chip's text clears 4.5:1 (4.60) against the
-     brighter ink; white on --destructive is 4.83:1, --success on its own fill
-     4.65:1. */
+     destructive action. --destructive is the ink on white and the fill of the
+     critical button (white on it is 4.83:1). --destructive-fill is the pale
+     ground for a red badge, the critical text button and a red menu row; the
+     ink on that ground is --destructive-strong, because --destructive itself
+     lands at 4.1:1 there. --success on its own fill is 4.65:1. */
   --destructive: #d92d20;
-  --destructive-fill: #fef8f7;
+  /* On this fill the ink is --destructive-strong (5.6:1); --destructive itself
+     is 4.1:1 here, under AA for 14px text. */
+  --destructive-fill: #ffe7e6;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */

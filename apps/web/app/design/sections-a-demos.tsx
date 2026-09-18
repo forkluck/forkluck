@@ -319,7 +319,7 @@ export function ButtonDemo() {
         </Button>
       </Labeled>
       <Labeled label="Icon button">
-        <Button variant="outline" size="icon" aria-label="Edit">
+        <Button variant="secondary" size="icon" aria-label="Edit">
           <SquarePen aria-hidden="true" />
         </Button>
       </Labeled>

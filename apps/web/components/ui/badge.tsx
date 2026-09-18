@@ -40,7 +40,7 @@ const badgeVariants = cva(
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary-strong",
         // A state on a row, not an action to take — the ink on a pale fill,
         // never the filled red of a destructive button.
-        destructive: "bg-destructive-fill text-destructive",
+        destructive: "bg-destructive-fill text-destructive-strong",
         // A metric moving the right way.
         success: "bg-success-fill text-success",
         // Needs attention: over target, unmatched, waiting on someone.

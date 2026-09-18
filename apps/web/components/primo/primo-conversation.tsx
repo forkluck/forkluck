@@ -794,7 +794,7 @@ export function PrimoConversation({
             <WorkingMarker />
           ) : null}
           {error && lastMessage?.role !== "assistant" ? (
-            <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive">
+            <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive-strong">
               <p>Primo couldn’t finish this question. Retry to continue.</p>
               <Button
                 type="button"

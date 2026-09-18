@@ -60,10 +60,10 @@ const buttonVariants = cva(
           "text-muted-foreground hover:border-muted hover:bg-muted hover:text-foreground aria-expanded:border-muted aria-expanded:bg-muted aria-expanded:text-foreground",
         destructive:
           "border-destructive bg-destructive text-white hover:border-destructive-strong hover:bg-destructive-strong focus-visible:border-foreground disabled:border-border disabled:bg-background",
-        // The critical action that is not the main one on its screen: red
-        // ink, no chrome until hover, when it takes the pale red fill.
+        // The critical action that is not the main one on its screen: the
+        // strong red ink on the pale red fill, the edge firming on hover.
         critical:
-          "text-destructive hover:border-destructive-fill hover:bg-destructive-fill aria-expanded:border-destructive-fill aria-expanded:bg-destructive-fill",
+          "border-destructive-fill bg-destructive-fill text-destructive-strong hover:border-destructive-strong disabled:border-border disabled:bg-background aria-expanded:border-destructive-strong",
         // A link-shaped action is ink, never blue — blue is data and
         // selection. The hairline underline firms to ink on hover, the way
         // the outline button's border does.
@@ -86,10 +86,10 @@ const buttonVariants = cva(
 
 /**
  * `pending` is the in-flight state of an async action: the button disables (so
- * a second press is dropped), announces `aria-busy`, and leads with the sm
- * Spinner while keeping its label — the width barely moves and the intent
- * stays readable. The disabled grey is deliberate: it is the same rest the
- * app's "Saving…" buttons already take.
+ * a second press is dropped), announces `aria-busy`, and swaps its label for
+ * the sm Spinner. The label stays in the box at zero opacity, so the button
+ * keeps its width and its accessible name; the spinner draws in the label's
+ * own colour at low opacity, light grey on ink and grey on white alike.
  */
 function Button({
   className,
@@ -107,11 +107,25 @@ function Button({
       data-pending={pending || undefined}
       aria-busy={pending || undefined}
       disabled={disabled || pending}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        pending && "relative"
+      )}
       {...props}
     >
-      {pending ? <Spinner size="sm" label="" className="-ml-0.5" /> : null}
-      {children}
+      {pending ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Spinner
+            size="sm"
+            label=""
+            className="[&>span]:border-current/25 [&>span]:border-t-current/70"
+          />
+        </span>
+      ) : null}
+      <span className={cn("contents", pending && "opacity-0")}>{children}</span>
     </ButtonPrimitive>
   )
 }

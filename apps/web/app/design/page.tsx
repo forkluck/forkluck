@@ -17,7 +17,7 @@ const TOKENS: { token: string; value: string }[] = [
   { token: "--brand-tile", value: "#e7effb" },
   { token: "--brand-selected", value: "#f6f9fe" },
   { token: "--destructive", value: "#d92d20" },
-  { token: "--destructive-fill", value: "#fef8f7" },
+  { token: "--destructive-fill", value: "#ffe7e6" },
   { token: "--destructive-strong", value: "#b42318" },
   { token: "--success", value: "#2f7a4f" },
   { token: "--success-fill", value: "#eaf4ee" },

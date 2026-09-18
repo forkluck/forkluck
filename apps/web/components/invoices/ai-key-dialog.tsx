@@ -173,8 +173,8 @@ export function AiKeyDialog({
             {configured ? (
               <Button
                 type="button"
-                variant="ghost"
-                className="mr-auto text-destructive hover:bg-destructive-fill hover:text-destructive"
+                variant="critical"
+                className="mr-auto"
                 pending={removing}
                 onClick={() => void remove()}
               >

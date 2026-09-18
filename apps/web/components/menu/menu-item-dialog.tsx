@@ -750,7 +750,7 @@ export function MenuItemDialog({
                     current.filter((_, rowIndex) => rowIndex !== index)
                   )
                 }
-                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive-fill hover:text-destructive"
+                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive-fill hover:text-destructive-strong"
               >
                 <Trash2 className="size-4" />
               </button>
