@@ -87,22 +87,35 @@ describe("visual guide sections 1 to 26", () => {
     }
   )
 
-  it("lays the button out as a matrix of variants by size", () => {
+  it("lays the button out as the six variants, one size and two icon sizes", () => {
     const buttonSection = SECTIONS_A.find((section) => section.id === "button")
     const Demo = buttonSection!.Demo
-    const { container } = render(<Demo />)
+    render(<Demo />)
 
-    const table = container.querySelector("table")
-    expect(table).not.toBeNull()
-    const columns = within(table!)
-      .getAllByRole("columnheader")
-      .map((header) => header.textContent)
-    expect(columns).toContain("outline")
-    expect(columns).toContain("destructive")
-    const rows = within(table!)
-      .getAllByRole("rowheader")
-      .map((header) => header.textContent)
-    expect(rows).toEqual(["xs", "sm", "default", "lg"])
+    for (const label of [
+      "Primary",
+      "Secondary",
+      "Tertiary",
+      "Ghost",
+      "Critical",
+      "Critical text",
+      "Disabled",
+      "With icon",
+      "Icon button",
+      "Compact icon button",
+      "Spinner",
+    ]) {
+      expect(screen.getByText(label)).toBeTruthy()
+    }
+    expect(
+      screen.getByRole("button", { name: "More actions" }).className
+    ).toContain("size-6")
+    expect(screen.getByRole("button", { name: "Edit" }).className).toContain(
+      "size-8"
+    )
+    expect(
+      screen.getByRole("button", { name: "Saving" }).getAttribute("aria-busy")
+    ).toBe("true")
   })
 
   it("keeps the page demo off the article's landmarks and headings", () => {
