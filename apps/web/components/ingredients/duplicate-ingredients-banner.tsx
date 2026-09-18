@@ -79,7 +79,7 @@ export function DuplicateIngredientsBanner({
               ))}
             </div>
             {error ? (
-              <p className="text-xs text-destructive" role="alert">
+              <p className="text-md text-destructive" role="alert">
                 {error}
               </p>
             ) : null}
@@ -120,7 +120,7 @@ function DuplicateRow({
         {pair.leftName} <span className="text-disabled-foreground">/</span>{" "}
         {pair.rightName}
       </p>
-      <p className="mt-0.5 text-xs text-faint">{pair.reason}</p>
+      <p className="mt-0.5 text-md text-muted-foreground">{pair.reason}</p>
       <div className="mt-2.5 flex flex-wrap gap-2">
         <Button
           variant="outline"

@@ -84,7 +84,7 @@ function TabPill({
         type: "button",
         "aria-current": active ? "page" : undefined,
         className: cn(
-          "flex h-7 items-center rounded-full border border-transparent px-3.5 text-sm leading-none font-medium whitespace-nowrap outline-none focus-visible:border-foreground",
+          "flex h-7 items-center rounded-full border border-transparent px-3.5 text-md leading-none font-medium whitespace-nowrap outline-none focus-visible:border-foreground",
           shown
             ? "bg-card text-foreground"
             : "text-muted-foreground hover:text-foreground",

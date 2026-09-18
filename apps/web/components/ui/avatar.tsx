@@ -17,9 +17,9 @@ import { cn } from "@/lib/utils"
  * the size — 11.5px, 12.5px, 13px — and never carry colour of their own.
  */
 const avatarSizes = {
-  sm: "size-6 text-2xs",
+  sm: "size-6 text-xs",
   default: "size-8 text-xs",
-  lg: "size-9 text-sm",
+  lg: "size-9 text-md",
 } as const
 
 function Avatar({

@@ -10,6 +10,7 @@ import type { PriceLineMatch } from "@/components/ingredients/price-line-dialog"
 import { Badge } from "@/components/ui/badge"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
+import { linkClassName } from "@/components/ui/link"
 import { WarningLine } from "@/components/recipes/warning-line"
 
 import {
@@ -142,16 +143,16 @@ function TotalRow({
     <TableRow className="hover:bg-transparent">
       <TableCell
         colSpan={span}
-        className={cn("text-base", strong && "font-medium", edge)}
+        className={cn("text-md", strong && "font-medium", edge)}
       >
         {label}
         {hint ? (
-          <span className="block text-xs text-muted-foreground">{hint}</span>
+          <span className="block text-md text-muted-foreground">{hint}</span>
         ) : null}
       </TableCell>
       <TableCell
         className={cn(
-          "text-right text-base whitespace-nowrap tabular-nums",
+          "text-right text-md whitespace-nowrap tabular-nums",
           strong && "font-medium",
           edge,
           valueClass
@@ -159,7 +160,7 @@ function TotalRow({
       >
         {value}
         {valueHint ? (
-          <span className="block text-xs font-normal text-muted-foreground">
+          <span className="block text-md font-normal text-muted-foreground">
             {valueHint}
           </span>
         ) : null}
@@ -256,7 +257,7 @@ export function RecipeCostingPanel({
 
   if (lines.length === 0) {
     return (
-      <p className="text-base text-muted-foreground">
+      <p className="text-md text-muted-foreground">
         Add ingredients on the Recipe tab and their cost lands here.
       </p>
     )
@@ -323,9 +324,7 @@ export function RecipeCostingPanel({
                         {line.ingredientName}
                       </span>
                       {lineKinds[index] === "subrecipe" ? (
-                        <Badge variant="secondary" size="row">
-                          Recipe
-                        </Badge>
+                        <Badge>Recipe</Badge>
                       ) : null}
                     </span>
                   </TableCell>
@@ -339,7 +338,7 @@ export function RecipeCostingPanel({
                             <span
                               role="img"
                               aria-label={alertLabel}
-                              className="flex size-5 items-center justify-center rounded-md text-warning"
+                              className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                             />
                           }
                         >
@@ -353,17 +352,17 @@ export function RecipeCostingPanel({
                       </Tooltip>
                     ) : null}
                   </TableCell>
-                  <TableCell className="pr-8 text-right text-base whitespace-nowrap text-muted-foreground tabular-nums">
+                  <TableCell className="pr-8 text-right text-md whitespace-nowrap text-muted-foreground tabular-nums">
                     <span className="block">{quantity.measure}</span>
                     {quantity.equivalent ? (
-                      <span className="block text-xs text-muted-foreground/80">
+                      <span className="block text-md text-muted-foreground/80">
                         {quantity.equivalent}
                       </span>
                     ) : null}
                   </TableCell>
                   <TableCell
                     className={cn(
-                      "relative text-right text-base whitespace-nowrap tabular-nums",
+                      "relative text-right text-md whitespace-nowrap tabular-nums",
                       costGutter
                     )}
                   >
@@ -377,7 +376,10 @@ export function RecipeCostingPanel({
                       fixUnitHref ? (
                         <GuardedLink
                           href={fixUnitHref}
-                          className="inline-flex items-center text-primary underline-offset-4 hover:underline"
+                          className={cn(
+                            "inline-flex items-center",
+                            linkClassName
+                          )}
                         >
                           Open UOM
                           <ChevronRight
@@ -516,7 +518,7 @@ export function RecipeCostingPanel({
                           <span
                             role="img"
                             aria-label="Total yield needed for cost per yield"
-                            className="flex size-5 items-center justify-center rounded-md text-warning"
+                            className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                           />
                         }
                       >

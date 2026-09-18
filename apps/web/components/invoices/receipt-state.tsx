@@ -50,7 +50,7 @@ export const LINE_GRID =
   "gap-3 md:grid md:grid-cols-[minmax(0,1fr)_128px_136px_84px_96px]"
 
 /** Column name repeated inside a stacked row; the header row takes over at md. */
-export const LINE_LABEL = "text-2xs font-medium text-ink-soft md:hidden"
+export const LINE_LABEL = "text-xs font-medium text-ink-soft md:hidden"
 
 export const DOCUMENT_LABELS = {
   invoice: "Invoice",
@@ -62,9 +62,9 @@ export const DOCUMENT_LABELS = {
 /** The one inline notice shape in this dialog: the handoff's yellow banner. */
 export function Notice({ children }: { children: React.ReactNode }) {
   return (
-    <p className="flex items-start gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-xs leading-[1.55] text-warning-foreground">
+    <p className="flex items-start gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md leading-[1.55] text-warning-foreground">
       <TriangleAlert
-        className="mt-px size-4 shrink-0 text-warning"
+        className="mt-px size-4 shrink-0 text-warning-foreground"
         strokeWidth={1.8}
         aria-hidden="true"
       />
@@ -311,12 +311,12 @@ export function lineBadge(
   categories: ExpenseCategoryRow[]
 ): {
   label: string
-  variant: "default" | "outline" | "success" | "warning"
+  variant: "default" | "success" | "warning"
 } {
   if (line.mode === "ignored") {
     return {
       label: line.propagated ? "Same item" : "Ignored",
-      variant: "outline",
+      variant: "default",
     }
   }
   if (line.mode === "resolved") {
@@ -337,7 +337,7 @@ export function lineBadge(
     case "new":
       return { label: "New product", variant: "success" }
     case "ignored":
-      return { label: "Ignored", variant: "outline" }
+      return { label: "Ignored", variant: "default" }
     default:
       return { label: "Expense", variant: "default" }
   }

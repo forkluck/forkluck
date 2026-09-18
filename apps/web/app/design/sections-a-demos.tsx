@@ -2,17 +2,27 @@
 
 import * as React from "react"
 import {
-  ArrowUpRight,
+  Building2,
   Check,
   Clock,
+  Ellipsis,
+  KeyRound,
+  Plus,
   SquarePen,
   TrendingUp,
   TriangleAlert,
+  User,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  ClickableRowBody,
+  ClickableRows,
+  clickableRowClassName,
+} from "@/components/ui/clickable"
+import { TextLink } from "@/components/ui/link"
 import {
   Card,
   CardContent,
@@ -184,108 +194,88 @@ export function SectionDemo() {
 /** 3. Heading */
 export function HeadingDemo() {
   return (
-    <Row>
+    <div className="flex flex-col items-start gap-6">
       <Labeled label="2xl, page title">
         <span className="text-2xl font-semibold tracking-[-0.02em]">
           Butter croissant
         </span>
       </Labeled>
-      <Labeled label="xl, dialog title">
-        <span className="text-xl font-semibold tracking-[-0.01em]">
-          Delete this recipe?
-        </span>
-      </Labeled>
-      <Labeled label="lg, card heading">
-        <span className="text-lg font-semibold">Costing</span>
-      </Labeled>
-      <Labeled label="md, list title">
+      <Labeled label="md, every other heading">
         <span className="text-md font-semibold">Dry goods</span>
       </Labeled>
-    </Row>
+    </div>
   )
 }
 
 /** 4. Text */
 export function TextDemo() {
   return (
-    <Row>
-      <Labeled label="Foreground">
-        <span className="text-base text-foreground">12 cases of butter</span>
+    <div className="flex flex-col items-start gap-6">
+      <Labeled label="Regular text">
+        <span className="text-md text-foreground">12 cases of butter</span>
       </Labeled>
-      <Labeled label="Muted">
-        <span className="text-base text-muted-foreground">
+      <Labeled label="Subdued text">
+        <span className="text-md text-muted-foreground">
           Priced from the invoice
         </span>
       </Labeled>
-      <Labeled label="Faint">
-        <span className="text-base text-faint">No photo on file</span>
+      <Labeled label="Success tone">
+        <span className="text-md text-success">Cost fell 3.1%</span>
       </Labeled>
-      <Labeled label="Success">
-        <span className="text-base text-success">Cost fell 3.1%</span>
+      <Labeled label="Critical tone">
+        <span className="text-md text-destructive">Two have no price</span>
       </Labeled>
-      <Labeled label="Destructive">
-        <span className="text-base text-destructive">Two have no price</span>
-      </Labeled>
-      <Labeled label="Warning">
-        <span className="text-base text-warning-foreground">
+      <Labeled label="Warning tone">
+        <span className="text-md text-warning-foreground">
           Four lines unmatched
         </span>
       </Labeled>
-      <Labeled label="2xs meta">
-        <span className="text-2xs text-faint">Updated by the kitchen</span>
-      </Labeled>
-    </Row>
+    </div>
   )
 }
 
 /** 5. Paragraph */
 export function ParagraphDemo() {
   return (
-    <Row className="items-start">
-      <Labeled label="Body, 13.5px over 1.65" className="max-w-[46ch]">
-        <p className="text-base leading-[1.65] text-muted-foreground">
+    <div className="flex flex-col items-start gap-6">
+      <Labeled label="Regular paragraph" className="max-w-[46ch]">
+        <p className="text-md leading-[1.55] text-foreground">
           A recipe holds its components, its yield and the method the kitchen
           follows. Costing reads the last price paid for each ingredient, so a
           delivery that moved the price of butter moves the plate cost of every
           recipe that uses it.
         </p>
       </Labeled>
-      <Labeled label="Help, 12.5px over 1.55" className="max-w-[46ch]">
-        <p className="text-xs leading-[1.55] text-muted-foreground">
+      <Labeled label="Subdued paragraph" className="max-w-[46ch]">
+        <p className="text-md leading-[1.55] text-muted-foreground">
           Prices come from the most recent invoice line matched to the
           ingredient.
         </p>
       </Labeled>
-    </Row>
+    </div>
   )
 }
 
 /** 6. Link */
 export function LinkDemo() {
   return (
-    <Row>
-      <Labeled label="Parent link">
-        <PageParent href="#link">Ingredients</PageParent>
+    <div className="flex flex-col items-start gap-6">
+      <Labeled label="Default link">
+        <TextLink href="#link">Last Baldor invoice</TextLink>
       </Labeled>
-      <Labeled label="Link button">
-        <Button variant="link" nativeButton={false} render={<a href="#link" />}>
-          View the invoice
-        </Button>
+      <Labeled label="Critical link">
+        <TextLink href="#link" tone="critical">
+          Delete this recipe
+        </TextLink>
       </Labeled>
-      <Labeled label="Link badge">
-        <Badge variant="link" render={<a href="#link" />}>
-          Baldor
-          <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
-        </Badge>
-      </Labeled>
-    </Row>
+    </div>
   )
 }
 
 /** 7. Unordered list */
 export function UnorderedListDemo() {
   return (
-    <ul className="flex list-disc flex-col gap-1 pl-5 text-base text-muted-foreground">
+    <ul className="flex list-disc flex-col gap-1 pl-5 text-md text-foreground">
       <li>Laminate the dough in three single folds</li>
       <li>Rest 30 minutes between folds</li>
       <li>Proof at 26 C until doubled</li>
@@ -296,7 +286,7 @@ export function UnorderedListDemo() {
 /** 8. Ordered list */
 export function OrderedListDemo() {
   return (
-    <ol className="flex list-decimal flex-col gap-1 pl-5 text-base text-muted-foreground">
+    <ol className="flex list-decimal flex-col gap-1 pl-5 text-md text-foreground">
       <li>Weigh the detrempe and the butter block</li>
       <li>Lock the butter in and chill for an hour</li>
       <li>Roll, cut and shape 48 pieces</li>
@@ -304,85 +294,51 @@ export function OrderedListDemo() {
   )
 }
 
-const BUTTON_VARIANTS = [
-  "default",
-  "outline",
-  "secondary",
-  "ghost",
-  "quiet",
-  "filter",
-  "destructive",
-  "link",
-] as const
-
-const BUTTON_SIZES = ["xs", "sm", "default", "lg"] as const
-
-const BUTTON_LABELS: Record<(typeof BUTTON_VARIANTS)[number], string> = {
-  default: "Save recipe",
-  outline: "Duplicate",
-  secondary: "Actions",
-  ghost: "Cancel",
-  quiet: "Reset",
-  filter: "Status",
-  destructive: "Delete",
-  link: "Open invoice",
-}
-
-const ICON_BUTTON_SIZES = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const
-
 /** 9. Button */
 export function ButtonDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Matrix
-        columns={BUTTON_VARIANTS}
-        rows={BUTTON_SIZES}
-        cell={(variant, size) => (
-          <Button variant={variant} size={size}>
-            {BUTTON_LABELS[variant]}
-            {variant === "filter" ? (
-              <span className="font-medium text-foreground">Active</span>
-            ) : null}
-          </Button>
-        )}
-      />
-      <Matrix
-        columns={ICON_BUTTON_SIZES}
-        rows={["ghost", "outline", "secondary", "default"] as const}
-        cell={(size, variant) => (
-          <Button
-            variant={variant}
-            size={size}
-            aria-label={`Edit the recipe, ${variant} ${size}`}
-          >
-            <SquarePen aria-hidden="true" />
-          </Button>
-        )}
-      />
-      <Row>
-        <Labeled label="Pending">
-          <Button pending>Saving</Button>
-        </Labeled>
-        <Labeled label="Pending, outline">
-          <Button variant="outline" pending>
-            Recosting
-          </Button>
-        </Labeled>
-        <Labeled label="Disabled">
-          <Button disabled>Save recipe</Button>
-        </Labeled>
-        <Labeled label="Disabled, outline">
-          <Button variant="outline" disabled>
-            Duplicate
-          </Button>
-        </Labeled>
-        <Labeled label="Disabled, ghost">
-          <Button variant="ghost" disabled>
-            Cancel
-          </Button>
-        </Labeled>
-      </Row>
-    </div>
+    <Row>
+      <Labeled label="Primary">
+        <Button>Save recipe</Button>
+      </Labeled>
+      <Labeled label="Secondary">
+        <Button variant="outline">Duplicate</Button>
+      </Labeled>
+      <Labeled label="Tertiary">
+        <Button variant="secondary">Actions</Button>
+      </Labeled>
+      <Labeled label="Ghost">
+        <Button variant="ghost">Cancel</Button>
+      </Labeled>
+      <Labeled label="Critical">
+        <Button variant="destructive">Delete</Button>
+      </Labeled>
+      <Labeled label="Critical text">
+        <Button variant="critical">Delete</Button>
+      </Labeled>
+      <Labeled label="Disabled">
+        <Button disabled>Save recipe</Button>
+      </Labeled>
+      <Labeled label="With icon">
+        <Button variant="outline">
+          <Plus data-icon="inline-start" aria-hidden="true" />
+          Add ingredient
+        </Button>
+      </Labeled>
+      <Labeled label="Icon button">
+        <Button variant="secondary" size="icon" aria-label="Edit">
+          <SquarePen aria-hidden="true" />
+        </Button>
+      </Labeled>
+      <Labeled label="Compact icon button">
+        <Button variant="ghost" size="icon-compact" aria-label="More actions">
+          <Ellipsis aria-hidden="true" />
+        </Button>
+      </Labeled>
+      <Labeled label="Spinner">
+        <Button pending>Saving</Button>
+      </Labeled>
+    </Row>
   )
 }
 
@@ -410,7 +366,6 @@ export function ButtonGroupDemo() {
 
 /** 11. Press button */
 export function PressButtonDemo() {
-  const [grams, setGrams] = React.useState(true)
   return (
     <div className="flex flex-col gap-8">
       <Matrix
@@ -436,13 +391,6 @@ export function PressButtonDemo() {
           )
         }
       />
-      <Row>
-        <Labeled label="Holds its own state">
-          <Toggle pressed={grams} onPressedChange={setGrams}>
-            Weigh in grams
-          </Toggle>
-        </Labeled>
-      </Row>
     </div>
   )
 }
@@ -450,89 +398,68 @@ export function PressButtonDemo() {
 /** 12. Clickable */
 export function ClickableDemo() {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <Labeled label="Whole card is the link" className="w-full">
-        <Card render={<a href="#clickable" />} className="w-full">
-          <CardHeader>
-            <CardTitle>Butter croissant</CardTitle>
-            <CardDescription>48 pieces per batch</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Flour, butter, milk, yeast, salt, sugar.</p>
-          </CardContent>
-        </Card>
-      </Labeled>
-      <Labeled label="Same shell, no destination" className="w-full">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Pain au chocolat</CardTitle>
-            <CardDescription>36 pieces per batch</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Flour, butter, milk, yeast, salt, batons.</p>
-          </CardContent>
-        </Card>
-      </Labeled>
+    <div className="max-w-[560px]">
+      <ClickableRows>
+        <button type="button" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={User}
+            title="Account details"
+            note="The name and email this workspace belongs to."
+          />
+        </button>
+        <a href="#clickable" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={Building2}
+            title="Kitchen"
+            note="Name, currency and the week the reports start on."
+          />
+        </a>
+        <button type="button" className={clickableRowClassName}>
+          <ClickableRowBody
+            icon={KeyRound}
+            title="Password"
+            note="Last changed in August."
+          />
+        </button>
+      </ClickableRows>
     </div>
   )
 }
 
 const BADGE_VARIANTS = [
   "default",
-  "secondary",
+  "info",
   "success",
   "warning",
-  "destructive",
-  "outline",
-  "ghost",
-  "link",
+  "caution",
+  "critical",
 ] as const
 
 const BADGE_LABELS: Record<(typeof BADGE_VARIANTS)[number], string> = {
   default: "Package",
-  secondary: "Draft",
+  info: "Scheduled",
   success: "On target",
-  warning: "Unmatched",
-  destructive: "No price",
-  outline: "Sub recipe",
-  ghost: "Archived",
-  link: "Baldor",
+  warning: "Over target",
+  caution: "Unmatched",
+  critical: "No price",
 }
 
 /** 13. Badge */
 export function BadgeDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Matrix
-        columns={BADGE_VARIANTS}
-        rows={["default", "row"] as const}
-        cell={(variant, size) => (
-          <Badge variant={variant} size={size}>
-            {BADGE_LABELS[variant]}
-          </Badge>
-        )}
-      />
-      <Row>
-        <Labeled label="Leading icon">
-          <Badge variant="success">
-            <TrendingUp data-icon="inline-start" aria-hidden="true" />
-            4.2%
-          </Badge>
+    <Row>
+      {BADGE_VARIANTS.map((variant) => (
+        <Labeled key={variant} label={variant}>
+          <Badge variant={variant}>{BADGE_LABELS[variant]}</Badge>
         </Labeled>
-        <Labeled label="Trailing icon">
-          <Badge variant="link" render={<a href="#badge" />}>
-            Baldor
-            <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
-          </Badge>
-        </Labeled>
-        <Labeled label="Row size, leading icon">
-          <Badge size="row" variant="warning">
-            <TriangleAlert data-icon="inline-start" aria-hidden="true" />
-            Over target
-          </Badge>
-        </Labeled>
-      </Row>
-    </div>
+      ))}
+      <Labeled label="Leading icon">
+        <Badge variant="success">
+          <TrendingUp data-icon="inline-start" aria-hidden="true" />
+          4.2%
+        </Badge>
+      </Labeled>
+    </Row>
   )
 }
 
@@ -568,12 +495,10 @@ export function ChipDemo() {
           <Chip pressed>Milk</Chip>
         </Labeled>
         <Labeled label="Badge, row size">
-          <Badge size="row">Case</Badge>
+          <Badge>Case</Badge>
         </Labeled>
         <Labeled label="Badge, row outline">
-          <Badge size="row" variant="outline">
-            Sub recipe
-          </Badge>
+          <Badge>Sub recipe</Badge>
         </Labeled>
       </Row>
       <div className="max-w-[220px]">
@@ -633,7 +558,9 @@ export function ClickableChipDemo() {
             </Chip>
           ))}
           {tags.length === 0 ? (
-            <span className="text-xs text-faint">Every tag removed</span>
+            <span className="text-xs text-muted-foreground">
+              Every tag removed
+            </span>
           ) : null}
         </div>
       </Labeled>
@@ -660,13 +587,13 @@ export function SpinnerDemo() {
         </Labeled>
       </Row>
       <LoadingRegion pending label="Loading recipes" className="min-h-40">
-        <p className="text-base text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           48 recipes, costed on Monday. The numbers stay legible while the
           screen waits.
         </p>
       </LoadingRegion>
       <div className="relative h-32 rounded-xl border border-border bg-card">
-        <p className="p-4 text-base text-muted-foreground">
+        <p className="p-4 text-md text-muted-foreground">
           Butter croissant, Pain au chocolat, Kouign amann
         </p>
         <TableBusy />
@@ -797,7 +724,7 @@ export function IconDemo() {
         </Labeled>
         <Labeled label="Warning">
           <TriangleAlert
-            className="size-[17px] text-warning"
+            className="size-[17px] text-warning-foreground"
             aria-hidden="true"
           />
         </Labeled>

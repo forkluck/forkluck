@@ -101,12 +101,12 @@ export function ReceiptPager({
       <span className="min-w-0 truncate text-md font-medium text-foreground">
         {title}
       </span>
-      <span className="text-base text-muted-foreground">·</span>
-      <span className="min-w-0 truncate text-base text-muted-foreground">
+      <span className="text-md text-muted-foreground">·</span>
+      <span className="min-w-0 truncate text-md text-muted-foreground">
         {subtitle}
       </span>
-      <span className="text-base text-muted-foreground">·</span>
-      <span className="tabular text-base whitespace-nowrap text-muted-foreground">
+      <span className="text-md text-muted-foreground">·</span>
+      <span className="tabular text-md whitespace-nowrap text-muted-foreground">
         {position} of {count}
       </span>
 
@@ -153,13 +153,13 @@ export function ReceiptPager({
         Files ({filesCount})
       </Button>
       {readingLabel ? (
-        <span className="text-xs text-muted-foreground">{readingLabel}</span>
+        <span className="text-md text-muted-foreground">{readingLabel}</span>
       ) : null}
       {children}
 
       <span className="ml-auto flex items-center gap-2">
         {blocker ? (
-          <span className="text-xs text-muted-foreground">{blocker}</span>
+          <span className="text-md text-muted-foreground">{blocker}</span>
         ) : null}
         {isDriveFile && onNeverOffer ? (
           <Button type="button" variant="ghost" onClick={onNeverOffer}>

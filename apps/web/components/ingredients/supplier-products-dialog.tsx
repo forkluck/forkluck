@@ -73,7 +73,7 @@ export function SupplierProductsDialog({
         </DialogHeader>
 
         {cheaper ? (
-          <div className="rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-base leading-[1.55] text-warning-foreground">
+          <div className="rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md leading-[1.55] text-warning-foreground">
             {sourceLabel(cheaper.item.supplier)} {cheaper.item.externalId} is
             about {Math.round(cheaper.savingsPercent)}% less per {unitPriceUnit}
             .
@@ -86,13 +86,9 @@ export function SupplierProductsDialog({
               <div className="min-w-0 flex-1">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-md">{item.title}</span>
-                  {isPreferred(item) ? (
-                    <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
-                      Preferred
-                    </Badge>
-                  ) : null}
+                  {isPreferred(item) ? <Badge>Preferred</Badge> : null}
                 </div>
-                <p className="mt-0.5 truncate text-xs text-faint">
+                <p className="mt-0.5 truncate text-md text-muted-foreground">
                   {sourceLabel(item.supplier)} {item.externalId} ·{" "}
                   {item.rawSize} ·{" "}
                   {formatCents(item.packPriceCents, currencyCode)} ·{" "}
@@ -106,13 +102,13 @@ export function SupplierProductsDialog({
                   / {unitPriceUnit}
                 </p>
                 {item.periodEnd ? (
-                  <p className="mt-0.5 truncate text-xs text-faint">
+                  <p className="mt-0.5 truncate text-md text-muted-foreground">
                     Price through {formatCalendarDate(item.periodEnd)}
                   </p>
                 ) : null}
               </div>
               {isPreferred(item) ? (
-                <span className="shrink-0 text-xs text-faint">
+                <span className="shrink-0 text-md text-muted-foreground">
                   Used for costing
                 </span>
               ) : (
@@ -124,7 +120,7 @@ export function SupplierProductsDialog({
           ))}
         </div>
         {failure ? (
-          <p className="text-xs text-destructive" role="alert">
+          <p className="text-md text-destructive" role="alert">
             {failure.message}
           </p>
         ) : null}

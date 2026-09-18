@@ -74,16 +74,12 @@ export function ReceiptReview({
   return (
     <div className="flex min-h-0 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge size="row">{DOCUMENT_LABELS[invoice.result.documentType]}</Badge>
+        <Badge>{DOCUMENT_LABELS[invoice.result.documentType]}</Badge>
         {invoice.result.duplicate ? (
-          <Badge variant="warning" size="row">
-            Already imported
-          </Badge>
+          <Badge variant="warning">Already imported</Badge>
         ) : null}
         {reviewCount > 0 ? (
-          <Badge variant="warning" size="row">
-            {reviewCount} to review
-          </Badge>
+          <Badge variant="warning">{reviewCount} to review</Badge>
         ) : null}
         <ReceiptFeedback
           key={invoice.key}
@@ -137,7 +133,7 @@ export function ReceiptReview({
         <div
           className={cn(
             LINE_GRID,
-            "sticky top-0 z-10 hidden items-center border-b border-border bg-card px-3 py-2 text-2xs leading-none font-medium text-ink-soft"
+            "sticky top-0 z-10 hidden items-center border-b border-border bg-card px-3 py-2 text-xs leading-none font-medium text-ink-soft"
           )}
         >
           <span>Line</span>
@@ -200,13 +196,13 @@ export function ReceiptReview({
                 <span className="min-w-0">
                   <span className="line-clamp-2 text-md break-words text-foreground">
                     {line.entry.sku ? (
-                      <span className="mr-1.5 text-sm text-faint">
+                      <span className="mr-1.5 text-md text-muted-foreground">
                         {line.entry.sku.toUpperCase()}
                       </span>
                     ) : null}
                     {line.entry.description}
                   </span>
-                  <span className="mt-0.5 line-clamp-2 text-xs break-words text-faint">
+                  <span className="mt-0.5 line-clamp-2 text-md break-words text-muted-foreground">
                     {[
                       line.entry.packSize,
                       line.entry.match.kind === "update"
@@ -227,9 +223,7 @@ export function ReceiptReview({
                 </span>
                 <span className="flex flex-col items-start gap-1">
                   <span className={LINE_LABEL}>Status</span>
-                  <Badge variant={badge.variant} size="row">
-                    {badge.label}
-                  </Badge>
+                  <Badge variant={badge.variant}>{badge.label}</Badge>
                   {line.mode === "review" &&
                   !lineIsExpense(line, categories) ? (
                     <span className="flex gap-1">
@@ -239,7 +233,6 @@ export function ReceiptReview({
                             <Button
                               type="button"
                               variant="outline"
-                              size="xs"
                               onClick={() =>
                                 onChangeLine(invoice.key, line.key, {
                                   mode: "resolving",
@@ -252,7 +245,6 @@ export function ReceiptReview({
                           <Button
                             type="button"
                             variant="ghost"
-                            size="xs"
                             onClick={() =>
                               onChangeLine(invoice.key, line.key, {
                                 mode: "ignored",
@@ -266,7 +258,6 @@ export function ReceiptReview({
                         <Button
                           type="button"
                           variant="outline"
-                          size="xs"
                           onClick={() =>
                             onChangeLine(invoice.key, line.key, {
                               mode: "resolved",
@@ -281,7 +272,6 @@ export function ReceiptReview({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="xs"
                       onClick={() =>
                         onChangeLine(invoice.key, line.key, {
                           mode:
@@ -322,7 +312,7 @@ export function ReceiptReview({
                     ))}
                   </select>
                 </span>
-                <span className="tabular flex items-center justify-between gap-3 text-base whitespace-nowrap text-muted-foreground md:justify-end">
+                <span className="tabular flex items-center justify-between gap-3 text-md whitespace-nowrap text-muted-foreground md:justify-end">
                   <span className={LINE_LABEL}>Qty</span>
                   <span className="flex min-w-0 items-center justify-end gap-1">
                     <Input
@@ -338,12 +328,12 @@ export function ReceiptReview({
                       placeholder="—"
                       aria-label={`Quantity for ${line.entry.description}`}
                       aria-invalid={!lineQuantityIsValid(line)}
-                      className="tabular h-8 w-16 px-2 text-right text-sm md:text-sm"
+                      className="tabular h-8 w-16 px-2 text-right text-md md:text-md"
                     />
                     {line.entry.unit ? <span>{line.entry.unit}</span> : null}
                   </span>
                 </span>
-                <span className="tabular flex items-baseline justify-between gap-3 text-base whitespace-nowrap text-muted-foreground md:block md:pt-1.5 md:text-right">
+                <span className="tabular flex items-baseline justify-between gap-3 text-md whitespace-nowrap text-muted-foreground md:block md:pt-1.5 md:text-right">
                   <span className={LINE_LABEL}>Amount</span>
                   {line.entry.lineAmountCents === null ? (
                     <Input
@@ -357,7 +347,7 @@ export function ReceiptReview({
                       placeholder="0.00"
                       aria-label={`Amount for ${line.entry.description}`}
                       aria-invalid={parseMoneyToCents(line.lineAmount) === null}
-                      className="tabular h-8 text-right text-sm md:-mt-1.5 md:text-sm"
+                      className="tabular h-8 text-right text-md md:-mt-1.5 md:text-md"
                     />
                   ) : (
                     formatCents(line.entry.lineAmountCents, currencyCode)
@@ -370,7 +360,6 @@ export function ReceiptReview({
                   <Button
                     type="button"
                     variant="outline"
-                    size="xs"
                     onClick={() =>
                       onChangeLine(invoice.key, line.key, {
                         // An incomplete suggestion still needs a pack and a
@@ -390,7 +379,6 @@ export function ReceiptReview({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="xs"
                     onClick={() =>
                       onChangeLine(invoice.key, line.key, { mode: "resolving" })
                     }
@@ -439,7 +427,7 @@ export function ReceiptReview({
                     currencyCode={currencyCode}
                     fallbackName={line.entry.description}
                   />
-                  <label className="mt-3 flex items-center gap-2.5 text-xs text-foreground">
+                  <label className="mt-3 flex items-center gap-2.5 text-md text-foreground">
                     <Checkbox
                       checked={line.remember}
                       onCheckedChange={(checked) =>
@@ -450,7 +438,7 @@ export function ReceiptReview({
                     />
                     Remember for {invoice.supplierName || "this supplier"}
                   </label>
-                  <p className="mt-1 pl-6.5 text-xs text-muted-foreground">
+                  <p className="mt-1 pl-6.5 text-md text-muted-foreground">
                     {line.entry.description} →{" "}
                     {ingredients.find(
                       (ingredient) => ingredient.id === line.ingredientId

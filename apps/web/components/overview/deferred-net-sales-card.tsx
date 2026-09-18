@@ -47,7 +47,7 @@ export function DeferredNetSalesCard({
       aria-label="Loading net sales chart"
     >
       <CardLabel>Net sales</CardLabel>
-      <p className="mt-2 text-4xl leading-none font-semibold tracking-[-0.03em] tabular-nums">
+      <p className="mt-2 text-2xl leading-none font-semibold tracking-[-0.03em] tabular-nums">
         {formatWholeCents(totals.currentCents, currencyCode)}
       </p>
       <div className="mt-[26px] grid h-[188px] place-items-center">

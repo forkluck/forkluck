@@ -140,7 +140,7 @@ export function IgnoreRulesTable({ rules }: { rules: SalesIgnoreRuleRow[] }) {
           <div className="overflow-x-auto">
             <div
               className={cn(
-                "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+                "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
                 GRID
               )}
             >
@@ -152,7 +152,7 @@ export function IgnoreRulesTable({ rules }: { rules: SalesIgnoreRuleRow[] }) {
             </div>
 
             {rows.length === 0 ? (
-              <p className="px-3.5 py-6 text-center text-base text-muted-foreground">
+              <p className="px-3.5 py-6 text-center text-md text-muted-foreground">
                 No rules match that filter.
               </p>
             ) : (
@@ -167,11 +167,11 @@ export function IgnoreRulesTable({ rules }: { rules: SalesIgnoreRuleRow[] }) {
                   <span className="truncate text-md text-foreground">
                     {describeRule(rule)}
                   </span>
-                  <span className="truncate text-base text-muted-foreground">
+                  <span className="truncate text-md text-muted-foreground">
                     {ruleChannelLabel(rule.channel)}
                   </span>
                   <span
-                    className="text-right text-base text-muted-foreground tabular-nums"
+                    className="text-right text-md text-muted-foreground tabular-nums"
                     title="Products this rule currently holds"
                   >
                     {rule.ignoredCount}

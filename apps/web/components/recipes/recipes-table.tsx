@@ -55,7 +55,7 @@ const helper = dataTableColumns<RecipeHealth>()
 /** Secondary cell: 13.5px `--muted-foreground`, one step under the name. */
 function Cell({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-base whitespace-nowrap text-muted-foreground">
+    <span className="text-md whitespace-nowrap text-muted-foreground">
       {children}
     </span>
   )
@@ -308,9 +308,7 @@ export function RecipesTable({
               {row.original.title}
             </GuardedLink>
             {row.original.status === "archived" ? (
-              <Badge size="row" className="rounded-sm px-[7px] text-2xs">
-                Archived
-              </Badge>
+              <Badge>Archived</Badge>
             ) : null}
           </span>
         ),

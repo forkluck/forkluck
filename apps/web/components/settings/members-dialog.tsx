@@ -159,7 +159,7 @@ export function MembersDialog({
             Invite
           </Button>
           {invite.errors[EMAIL_FIELD] || invite.failure ? (
-            <p role="alert" className="w-full text-base text-destructive">
+            <p role="alert" className="w-full text-md text-destructive">
               {invite.errors[EMAIL_FIELD] ?? invite.failure?.message}
             </p>
           ) : null}
@@ -169,7 +169,7 @@ export function MembersDialog({
           {rows?.members.map((member) => (
             <div
               key={member.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-md"
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate">{member.name}</span>
@@ -192,7 +192,7 @@ export function MembersDialog({
                 />
                 <Button
                   variant="ghost"
-                  size="icon-xs"
+                  size="icon-compact"
                   aria-label={`Remove ${member.name}`}
                   pending={busyId === member.id}
                   onClick={() =>
@@ -209,7 +209,7 @@ export function MembersDialog({
           {rows?.invites.map((pending) => (
             <div
               key={pending.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-md"
             >
               <span className="truncate">{pending.email}</span>
               <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export function MembersDialog({
                 </span>
                 <Button
                   variant="ghost"
-                  size="icon-xs"
+                  size="icon-compact"
                   aria-label={`Revoke ${pending.email}`}
                   pending={busyId === pending.id}
                   onClick={() =>
@@ -233,12 +233,12 @@ export function MembersDialog({
             </div>
           ))}
           {rows && rows.members.length === 0 && rows.invites.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No members yet.</p>
+            <p className="text-md text-muted-foreground">No members yet.</p>
           ) : null}
         </div>
 
         {error ? (
-          <p role="alert" className="text-base text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
         ) : null}

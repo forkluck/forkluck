@@ -42,7 +42,6 @@ export function PrimoAttachmentPreview({
     <>
       <Button
         type="button"
-        size="sm"
         variant="ghost"
         className="max-w-full min-w-0"
         pending={pending}
@@ -52,7 +51,7 @@ export function PrimoAttachmentPreview({
         <span className="truncate">{file.name}</span>
       </Button>
       {error ? (
-        <span role="alert" className="text-xs text-destructive">
+        <span role="alert" className="text-md text-destructive">
           {error}
         </span>
       ) : null}
@@ -73,14 +72,14 @@ export function PrimoAttachmentPreview({
                 alt={file.name}
               />
             ) : null}
-            <pre className="font-sans text-base leading-6 break-words whitespace-pre-wrap">
+            <pre className="font-sans text-md leading-6 break-words whitespace-pre-wrap">
               {content}
             </pre>
           </div>
           <a
             href={url}
             download
-            className="inline-flex h-8 items-center justify-center gap-2 rounded-lg border border-border px-3 text-sm"
+            className="inline-flex h-8 items-center justify-center gap-2 rounded-lg border border-border px-3 text-md"
           >
             <Download className="size-4" aria-hidden="true" />
             Download original

@@ -12,7 +12,7 @@ const hint = () => screen.getByText(/8 characters/).closest("p")!
 it("stays faint until the password reaches eight characters", () => {
   const { rerender } = render(<PasswordHint password="short" />)
   expect(hint().dataset.met).toBeUndefined()
-  expect(hint().className).toContain("text-faint")
+  expect(hint().className).toContain("text-muted-foreground")
 
   rerender(<PasswordHint password="longenough" />)
   expect(hint().dataset.met).toBe("true")

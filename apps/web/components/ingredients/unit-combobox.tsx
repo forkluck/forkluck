@@ -23,7 +23,7 @@ export const MAX_UNIT_LENGTH = 40
  * this combobox, and the two have to stay the same object.
  */
 export const inlineChipClassName =
-  "flex h-7 items-center gap-1 rounded-lg px-1.5 text-2xs font-semibold text-foreground outline-none hover:bg-accent focus-visible:bg-accent"
+  "flex h-7 items-center gap-1 rounded-lg px-1.5 text-xs font-semibold text-foreground outline-none hover:bg-accent focus-visible:bg-accent"
 
 /** "cup" stays a word: a lone "c" reads as nothing in a kitchen. */
 /**
@@ -95,12 +95,12 @@ export function UnitCombobox({
       aria-invalid={invalid || undefined}
       disabled={disabled}
       className={cn(
-        "disabled:cursor-not-allowed disabled:text-faint aria-invalid:text-destructive data-popup-open:bg-fill-soft",
+        "disabled:cursor-not-allowed disabled:text-muted-foreground aria-invalid:text-destructive data-popup-open:bg-fill-soft",
         chip
           ? cn(inlineChipClassName, "w-auto min-w-0 justify-center self-center")
           : cn(
               "flex h-12 w-full items-center justify-between gap-1.5 px-3.5 text-left text-md outline-none focus-visible:bg-fill-soft",
-              value ? "text-foreground" : "text-faint"
+              value ? "text-foreground" : "text-muted-foreground"
             ),
         !chip && className
       )}
@@ -140,7 +140,10 @@ export function UnitCombobox({
           the amount, outside the button so it never takes the hover fill. */}
       {chip ? (
         <span className={cn("flex items-center self-center", className)}>
-          <span aria-hidden="true" className="pr-1 text-sm text-faint">
+          <span
+            aria-hidden="true"
+            className="pr-1 text-md text-muted-foreground"
+          >
             /
           </span>
           {trigger}
@@ -182,7 +185,7 @@ export function UnitCombobox({
               type="button"
               onClick={() => choose(null)}
               className={cn(
-                "flex min-h-9 w-full shrink-0 items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                "flex min-h-9 w-full shrink-0 items-center rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                 !value && "bg-accent"
               )}
             >
@@ -190,7 +193,7 @@ export function UnitCombobox({
             </button>
           ) : null}
           {matches.length === 0 ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
               No results
             </span>
           ) : null}
@@ -198,7 +201,7 @@ export function UnitCombobox({
             <React.Fragment key={option.slug}>
               {option.heading &&
               option.heading !== matches[index - 1]?.heading ? (
-                <span className="shrink-0 px-2.5 pt-2 pb-1 text-2xs leading-none font-medium text-faint">
+                <span className="shrink-0 px-2.5 pt-2 pb-1 text-xs leading-none font-medium text-muted-foreground">
                   {option.heading}
                 </span>
               ) : null}
@@ -206,7 +209,7 @@ export function UnitCombobox({
                 type="button"
                 onClick={() => choose(option.slug)}
                 className={cn(
-                  "flex min-h-9 w-full shrink-0 items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  "flex min-h-9 w-full shrink-0 items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                   value === option.slug && "bg-accent"
                 )}
               >

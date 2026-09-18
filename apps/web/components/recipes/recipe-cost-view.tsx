@@ -13,10 +13,10 @@ import { BatchSizeSelect } from "@/components/recipes/batch-size-select"
 import { CustomBatchDialog } from "@/components/recipes/custom-batch-dialog"
 import { RecipeCostingPanel } from "@/components/recipes/recipe-panels"
 import { WarningLine } from "@/components/recipes/warning-line"
-import { Button } from "@/components/ui/button"
 import { Input, InputAffix, InputGroup } from "@/components/ui/input"
 import { MeasureField } from "@/components/ui/measure-field"
 import { useToast } from "@/components/ui/toast"
+import { linkClassName } from "@/components/ui/link"
 import { scaleBatchCost } from "@/lib/benchcost/math"
 import { centsToDollarInput, dollarsToCents, formatCents } from "@/lib/money"
 import { recipePortions } from "@/lib/recipe/portions"
@@ -39,9 +39,9 @@ const priceText = (cents: number | null) =>
 const PORTION_UNIT_OPTIONS = servingUnitOptions()
 const rowClass =
   "flex items-center justify-between gap-4 border-b border-muted py-3 last:border-b-0"
-const labelClass = "text-base text-muted-foreground"
-const moneyLabelClass = "text-base font-medium text-foreground"
-const readOnlyValueClass = "w-40 text-base font-medium tabular-nums"
+const labelClass = "text-md text-muted-foreground"
+const moneyLabelClass = "text-md font-medium text-foreground"
+const readOnlyValueClass = "w-40 text-md font-medium tabular-nums"
 
 const signedDollarsToCents = (input: string): number | null => {
   const cleaned = input.replace(/[$,\s]/g, "")
@@ -473,7 +473,7 @@ export function RecipeCostView({
 
   return (
     <div className="w-full max-w-[1180px] pb-16">
-      <div className="mb-4 flex items-center gap-3 text-sm">
+      <div className="mb-4 flex items-center gap-3 text-md">
         <span className="font-medium text-foreground">Batch size</span>
         <BatchSizeSelect
           value={batch}
@@ -514,7 +514,7 @@ export function RecipeCostView({
       {/* The same band the recipe page draws between sections. */}
       <div className="mt-8 mb-7 border-t-[6px] border-secondary" />
       <div className="max-w-[560px]">
-        <h3 className="border-b border-muted pb-2 text-lg font-semibold text-foreground">
+        <h3 className="border-b border-muted pb-2 text-md font-semibold text-foreground">
           Per portion
         </h3>
 
@@ -577,7 +577,7 @@ export function RecipeCostView({
             </span>
             {portionCostCents !== null &&
             !Number.isInteger(portionCostCents) ? (
-              <span className="block text-xs text-muted-foreground">
+              <span className="block text-md text-muted-foreground">
                 uses unrounded cost
               </span>
             ) : null}
@@ -695,15 +695,15 @@ export function RecipeCostView({
             Suggested at {targetPercent}% food cost
           </span>
           {suggestedPriceCents !== null && canEditCosting ? (
-            <Button
+            <button
               type="button"
-              variant="link"
-              className="h-auto w-40 justify-start p-0"
-              pending={suggestedPricePending}
+              className={cn("w-40 text-left", linkClassName)}
+              disabled={suggestedPricePending}
+              aria-busy={suggestedPricePending || undefined}
               onClick={() => void applySuggestedPrice()}
             >
               Use {formatCents(suggestedPriceCents)}
-            </Button>
+            </button>
           ) : (
             <span className={readOnlyValueClass}>
               {suggestedPriceCents === null
@@ -720,7 +720,7 @@ export function RecipeCostView({
             {canEditCosting && draftServingAmount && recipeYield ? (
               <GuardedLink
                 href={`/recipes/${recipePublicId}/recipe#uom-equivalency`}
-                className="inline-flex items-center font-medium text-primary hover:underline hover:underline-offset-4"
+                className={cn("inline-flex items-center", linkClassName)}
               >
                 Open UOM
                 <ChevronRight className="size-3.5" aria-hidden="true" />

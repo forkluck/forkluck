@@ -447,7 +447,7 @@ function Field({
   children: React.ReactNode
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-foreground">
+    <label className="grid gap-2 text-md font-medium text-foreground">
       <span>{label}</span>
       {children}
     </label>
@@ -481,7 +481,7 @@ function HintLine({
     <p
       role={error && children ? "alert" : undefined}
       className={cn(
-        "text-xs font-normal",
+        "text-md font-normal",
         error ? "text-destructive" : "text-muted-foreground"
       )}
     >
@@ -579,9 +579,9 @@ function Section({
       {title ? (
         <div className="mb-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <h2 className="text-md font-semibold text-foreground">{title}</h2>
             {description ? (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-md text-muted-foreground">
                 {description}
               </p>
             ) : null}
@@ -1457,16 +1457,11 @@ export function RecipeEditor({
       <div className="grid min-w-0 gap-8">
         {conflict ? (
           <SaveBanner text={conflict.message}>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => window.location.reload()}
-            >
+            <Button type="button" onClick={() => window.location.reload()}>
               Reload
             </Button>
             <Button
               type="button"
-              size="sm"
               variant="outline"
               onClick={() => {
                 discardDraft()
@@ -1481,7 +1476,6 @@ export function RecipeEditor({
           <SaveBanner text="This device kept changes that never reached the server.">
             <Button
               type="button"
-              size="sm"
               onClick={() => {
                 applyRecovery(restorable as RecipeRecovery)
                 dismissRestore()
@@ -1489,12 +1483,7 @@ export function RecipeEditor({
             >
               Restore
             </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              onClick={discardDraft}
-            >
+            <Button type="button" variant="outline" onClick={discardDraft}>
               Discard
             </Button>
           </SaveBanner>
@@ -1608,7 +1597,7 @@ export function RecipeEditor({
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <label className="mt-4 flex h-9 w-fit items-center gap-3 text-sm font-medium text-foreground">
+                    <label className="mt-4 flex h-9 w-fit items-center gap-3 text-md font-medium text-foreground">
                       <Switch
                         checked={autoSumYieldEnabled}
                         disabled={!hasMeasuredLines}
@@ -1636,9 +1625,9 @@ export function RecipeEditor({
                 ) : null}
               </Tooltip>
               {autoYieldHint ? (
-                <p className="flex items-center gap-2 text-xs text-warning-foreground">
+                <p className="flex items-center gap-2 text-md text-warning-foreground">
                   <TriangleAlert
-                    className="size-3.5 shrink-0 text-warning"
+                    className="size-3.5 shrink-0 text-warning-foreground"
                     strokeWidth={1.9}
                     aria-hidden="true"
                   />
@@ -1679,7 +1668,7 @@ export function RecipeEditor({
           title="Ingredients"
           action={
             batchWeight ? (
-              <span className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+              <span className="flex items-center gap-1.5 text-md font-normal text-muted-foreground">
                 {batchWeight.missing.length > 0 ? (
                   <Tooltip>
                     <TooltipTrigger
@@ -1687,7 +1676,7 @@ export function RecipeEditor({
                         <span
                           role="img"
                           aria-label={`Excluded from batch weight: ${batchWeight.missing.join(", ")}.`}
-                          className="flex size-5 items-center justify-center rounded-md text-warning"
+                          className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                         />
                       }
                     >
@@ -1784,7 +1773,7 @@ export function RecipeEditor({
                 className="group/row grid grid-cols-[20px_minmax(0,1fr)_60px] items-start gap-2"
               >
                 {/* The number is the handle: hover it and the grip takes its place. */}
-                <span className="relative pt-2 text-sm text-muted-foreground tabular-nums">
+                <span className="relative pt-2 text-md text-muted-foreground tabular-nums">
                   <span className="group-hover/row:invisible">
                     {step.kind === "instruction"
                       ? steps
@@ -1852,12 +1841,12 @@ export function RecipeEditor({
                     />
                   )}
                   {stepTimeLabel(step) !== "Time" ? (
-                    <span className="text-xs text-muted-foreground tabular-nums">
+                    <span className="text-md text-muted-foreground tabular-nums">
                       {stepTimeLabel(step)}
                     </span>
                   ) : null}
                   {step.media.length ? (
-                    <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap gap-2 text-md text-muted-foreground">
                       {step.media.map((media) => (
                         <a
                           key={media.id}
@@ -1879,7 +1868,7 @@ export function RecipeEditor({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon-compact"
                       aria-label={`Time for step ${index + 1}`}
                       title={stepTimeLabel(step)}
                       onClick={() => openLabor(step)}
@@ -1966,7 +1955,7 @@ export function RecipeEditor({
                 <Tooltip>
                   <TooltipTrigger
                     render={
-                      <label className="flex h-9 w-fit items-center gap-3 text-sm font-medium text-foreground">
+                      <label className="flex h-9 w-fit items-center gap-3 text-md font-medium text-foreground">
                         <Switch
                           checked={autoPrepTimeEnabled}
                           disabled={stepLaborSeconds === null}
@@ -2000,7 +1989,7 @@ export function RecipeEditor({
                     <h3
                       id="uom-equivalency"
                       tabIndex={-1}
-                      className="scroll-mt-6 text-sm font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      className="scroll-mt-6 text-md font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
                       UOM
                     </h3>
@@ -2023,7 +2012,7 @@ export function RecipeEditor({
                     </Tooltip>
                   </div>
                   {declaredYield ? (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-md text-muted-foreground">
                       Yield: {formatKitchenAmount(Number(declaredYield.amount))}{" "}
                       {declaredYield.unit === "cup"
                         ? "cup"
@@ -2090,7 +2079,7 @@ export function RecipeEditor({
               <span className="flex items-center gap-1.5">
                 Used in
                 {usedInRows.length > 0 ? (
-                  <span className="text-sm font-normal text-muted-foreground tabular-nums">
+                  <span className="text-md font-normal text-muted-foreground tabular-nums">
                     {usedInRows.length}
                   </span>
                 ) : null}
@@ -2109,7 +2098,7 @@ export function RecipeEditor({
                   key={comment.id}
                   className="group/row rounded-lg bg-muted/50 p-3"
                 >
-                  <div className="flex items-center justify-between gap-3 text-xs leading-4 text-muted-foreground">
+                  <div className="flex items-center justify-between gap-3 text-md text-muted-foreground">
                     <span className="font-medium text-foreground">
                       {comment.authorName}
                     </span>
@@ -2165,7 +2154,7 @@ export function RecipeEditor({
                       }}
                     />
                     {commentError ? (
-                      <p role="alert" className="mt-1 text-xs text-destructive">
+                      <p role="alert" className="mt-1 text-md text-destructive">
                         {commentError}
                       </p>
                     ) : null}

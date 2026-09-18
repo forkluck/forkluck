@@ -23,10 +23,10 @@ export function GuestBookView({ book }: { book: GuestBook }) {
   return (
     <GuestPage>
       <div className="grid gap-2">
-        <h1 className="text-3xl leading-tight font-semibold tracking-[-0.01em]">
+        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.01em]">
           {book.title}
         </h1>
-        <p className="text-base text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           Shared by {book.ownerName}
         </p>
         {book.role === "editor" ? (
@@ -42,7 +42,6 @@ export function GuestBookView({ book }: { book: GuestBook }) {
         {/* A closed entry does not print, so paper needs one press first. */}
         <Button
           variant="outline"
-          size="sm"
           className="w-fit print:hidden"
           onClick={() =>
             setOpen(
@@ -76,10 +75,10 @@ export function GuestBookView({ book }: { book: GuestBook }) {
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              <h2 className="text-lg font-semibold">{recipe.title}</h2>
+              <h2 className="text-md font-semibold">{recipe.title}</h2>
               {/* At 1x, so the line does not move while the sheet scales. */}
               {recipe.yieldAmount !== null ? (
-                <span className="text-base text-muted-foreground tabular-nums">
+                <span className="text-md text-muted-foreground tabular-nums">
                   Makes {formatYield(recipe.yieldAmount, recipe.yieldUnit)}
                 </span>
               ) : null}

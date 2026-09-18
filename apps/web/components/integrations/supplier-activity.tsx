@@ -4,6 +4,7 @@ import Link from "next/link"
 
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { Badge } from "@/components/ui/badge"
+import { linkClassName } from "@/components/ui/link"
 import type { ConnectorProvider, ConnectorSyncRun } from "@/lib/backend/types"
 import { formatDateTime } from "@/lib/datetime"
 
@@ -40,9 +41,9 @@ export function SupplierActivity({
       >
         Sync runs
       </h2>
-      <p className="mt-1 text-base text-muted-foreground">
+      <p className="mt-1 text-md text-muted-foreground">
         Documents pulled from connected suppliers.{" "}
-        <Link href="/ingredients" className="underline underline-offset-4">
+        <Link href="/ingredients" className={linkClassName}>
           Price imports
         </Link>{" "}
         are undone on Ingredients.
@@ -56,16 +57,16 @@ export function SupplierActivity({
                 <Badge
                   variant={
                     run.status === "failed"
-                      ? "destructive"
+                      ? "critical"
                       : run.status === "succeeded"
                         ? "success"
-                        : "outline"
+                        : "default"
                   }
                 >
                   {RUN_STATUS_LABELS[run.status]}
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-faint">
+              <p className="mt-0.5 text-md text-muted-foreground">
                 {run.startedAt
                   ? `Started ${formatDateTime(new Date(run.startedAt), timezone)}`
                   : `Queued ${formatDateTime(new Date(run.queuedAt), timezone)}`}
@@ -73,7 +74,7 @@ export function SupplierActivity({
                   ? ` · finished ${formatDateTime(new Date(run.finishedAt), timezone)}`
                   : ""}
               </p>
-              <p className="mt-0.5 text-xs text-faint">
+              <p className="mt-0.5 text-md text-muted-foreground">
                 {run.progress.documentsImported} imported ·{" "}
                 {run.progress.documentsSkipped} skipped ·{" "}
                 {run.progress.linesNeedingReview} needing review
@@ -82,7 +83,7 @@ export function SupplierActivity({
           ))}
         </div>
       ) : (
-        <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-base text-muted-foreground">
+        <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-md text-muted-foreground">
           No supplier syncs yet.
         </p>
       )}

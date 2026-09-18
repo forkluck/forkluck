@@ -78,7 +78,7 @@ function MenuContent({
  * menu and a command menu still agree about where text begins.
  */
 const itemClassName =
-  "flex h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-none select-none data-disabled:cursor-not-allowed data-disabled:text-disabled-foreground data-highlighted:bg-accent [&.text-destructive]:data-highlighted:bg-destructive-fill [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]"
+  "flex h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-none select-none data-disabled:cursor-not-allowed data-disabled:text-disabled-foreground data-highlighted:bg-accent [&.text-destructive]:data-highlighted:bg-destructive-fill [&.text-destructive]:data-highlighted:text-destructive-strong [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]"
 
 function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
   return (

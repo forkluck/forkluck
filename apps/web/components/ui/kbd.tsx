@@ -16,7 +16,7 @@ function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
     <kbd
       data-slot="kbd"
       className={cn(
-        "rounded-sm border border-current/25 px-1.5 py-[3px] font-sans text-2xs leading-none font-medium",
+        "rounded-sm border border-current/25 px-1.5 py-[3px] font-sans text-xs leading-none font-medium",
         className
       )}
       {...props}

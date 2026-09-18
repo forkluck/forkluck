@@ -90,13 +90,13 @@ export function ReceiptFeedback({
 
   return (
     <div className="ml-auto flex items-center gap-1">
-      <span className="mr-1 text-xs text-faint" role="status">
+      <span className="mr-1 text-md text-muted-foreground" role="status">
         {invoice.feedback ? "Feedback sent" : "Feedback"}
       </span>
       <Button
         type="button"
         variant="ghost"
-        size="icon-sm"
+        size="icon-compact"
         aria-label="Receipt read correctly"
         title="Receipt read correctly"
         aria-pressed={invoice.feedback?.rating === "up"}
@@ -107,7 +107,7 @@ export function ReceiptFeedback({
       <Button
         type="button"
         variant="ghost"
-        size="icon-sm"
+        size="icon-compact"
         aria-label="Report a receipt problem"
         title="Report a receipt problem"
         aria-pressed={invoice.feedback?.rating === "down"}
@@ -177,7 +177,7 @@ export function ReceiptFeedback({
               </div>
             </fieldset>
             {form.failure || form.errors[noteId] ? (
-              <p className="mt-2 text-base text-destructive" role="alert">
+              <p className="mt-2 text-md text-destructive" role="alert">
                 {form.failure?.message ?? form.errors[noteId]}
               </p>
             ) : null}

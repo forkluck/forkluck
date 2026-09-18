@@ -137,7 +137,7 @@ export function AiKeyDialog({
 
         {configured ? (
           <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-fill-soft px-3 py-2.5">
-            <span className="text-base text-muted-foreground">
+            <span className="text-md text-muted-foreground">
               sk-ant-…{hint}
             </span>
             <Badge variant="success">Connected</Badge>
@@ -164,7 +164,7 @@ export function AiKeyDialog({
           />
 
           {form.errors[KEY_FIELD] || form.failure || removeError ? (
-            <p className="mt-2 text-base text-destructive" role="alert">
+            <p className="mt-2 text-md text-destructive" role="alert">
               {form.errors[KEY_FIELD] ?? form.failure?.message ?? removeError}
             </p>
           ) : null}
@@ -173,8 +173,8 @@ export function AiKeyDialog({
             {configured ? (
               <Button
                 type="button"
-                variant="ghost"
-                className="mr-auto text-destructive hover:bg-destructive-fill hover:text-destructive"
+                variant="critical"
+                className="mr-auto"
                 pending={removing}
                 onClick={() => void remove()}
               >

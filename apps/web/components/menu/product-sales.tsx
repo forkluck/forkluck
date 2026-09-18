@@ -136,10 +136,10 @@ function ManualSalesForm({
   return (
     <form onSubmit={(event) => void submit(event)} className="flex flex-col">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">
+        <h3 className="text-md font-semibold text-foreground">
           Record manual sales
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-md text-muted-foreground">
           Add one day at a time for sales that did not come from a connected
           channel. Use zero quantity to remove that day.
         </p>
@@ -188,10 +188,10 @@ function ManualSalesForm({
           </Field>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p role="alert" className="text-xs text-destructive">
+          <p role="alert" className="text-md text-destructive">
             {error}
           </p>
-          <Button type="submit" size="lg" pending={pending}>
+          <Button type="submit" pending={pending}>
             Record sale
           </Button>
         </div>
@@ -230,14 +230,14 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
     <section>
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-md font-semibold text-foreground">
             Manual entries
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-md text-muted-foreground">
             These quantities are included in the product view.
           </p>
         </div>
-        <Badge variant="secondary">{rows.length} entries</Badge>
+        <Badge>{rows.length} entries</Badge>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[380px]">
@@ -267,7 +267,6 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
                     pending={pendingId === row.id}
                     onClick={() => void remove(row)}
                     aria-label={`Remove manual sale ${row.soldOn}`}
@@ -281,7 +280,7 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
         </Table>
       </TableFrame>
       {error ? (
-        <p role="alert" className="mt-2 text-xs text-destructive">
+        <p role="alert" className="mt-2 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -292,7 +291,7 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
 function IncompleteBanner({ product }: { product: ProductDetail }) {
   const missingCount = manualRowsWithMissingTotals(manualRows(product))
   return (
-    <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
+    <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-md text-muted-foreground">
       {missingCount > 0
         ? `${missingCount} manual ${missingCount === 1 ? "sale is" : "sales are"} missing a total net amount.`
         : "Manual revenue details are incomplete; enter total net amounts to include them."}
@@ -330,11 +329,11 @@ export function ProductSalesSection({
         <div className="flex items-baseline gap-2">
           <h2
             id="product-sales-heading"
-            className="text-lg font-semibold text-foreground"
+            className="text-md font-semibold text-foreground"
           >
             Sales
           </h2>
-          <span className="text-xs text-faint">
+          <span className="text-md text-muted-foreground">
             {period
               ? formatDateRangeLabel(period.startDate, period.endDate)
               : `${all.length} days`}
@@ -368,18 +367,14 @@ export function ProductSalesSection({
       ) : null}
       <div className="mb-3 grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card">
         <div className="px-4 py-3">
-          <p className="text-2xs font-medium tracking-wide text-faint uppercase">
-            Units
-          </p>
-          <p className="mt-1 text-xl leading-7 font-semibold tracking-tight text-foreground tabular-nums">
+          <p className="text-md font-medium text-muted-foreground">Units</p>
+          <p className="mt-1 text-lg leading-7 font-semibold tracking-tight text-foreground tabular-nums">
             {quantityFormat.format(totals.totalQuantity)}
           </p>
         </div>
         <div className="border-l border-border px-4 py-3 text-right">
-          <p className="text-2xs font-medium tracking-wide text-faint uppercase">
-            Net sales
-          </p>
-          <p className="mt-1 text-xl leading-7 font-semibold tracking-tight text-foreground tabular-nums">
+          <p className="text-md font-medium text-muted-foreground">Net sales</p>
+          <p className="mt-1 text-lg leading-7 font-semibold tracking-tight text-foreground tabular-nums">
             {formatCents(totals.netSalesCents, product.currencyCode)}
           </p>
         </div>
@@ -402,7 +397,7 @@ export function ProductSalesSection({
                     {dateLabel(row.soldOn)}
                   </TableCell>
                   <TableCell>
-                    <span className="flex items-center gap-2 text-base text-foreground">
+                    <span className="flex items-center gap-2 text-md text-foreground">
                       {row.channel === "square" || row.channel === "shopify" ? (
                         <ChannelIcon channel={row.channel} />
                       ) : null}

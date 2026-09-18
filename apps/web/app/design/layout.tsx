@@ -38,13 +38,13 @@ export default function DesignLayout({
         </div>
         <a
           href="https://app.forkluck.com"
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="text-md text-muted-foreground hover:text-foreground"
         >
           Open app
         </a>
       </header>
       {children}
-      <footer className="flex items-center gap-4 px-6 py-8 text-xs text-faint">
+      <footer className="flex items-center gap-4 px-6 py-8 text-xs text-muted-foreground">
         <a
           href="https://github.com/forkluck/forkluck"
           className="hover:text-foreground"

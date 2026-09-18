@@ -186,7 +186,7 @@ export function OverviewDashboard({
 
       <LoadingRegion pending={browse.isPending} label="Loading analytics">
         {sales.incompleteManualRevenue ? (
-          <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
+          <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-md text-muted-foreground">
             Manual count-only entries are included in product quantities but
             omitted from revenue totals.
           </div>

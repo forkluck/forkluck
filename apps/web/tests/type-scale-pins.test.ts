@@ -4,19 +4,20 @@ import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
 /**
- * The type scale is ten `--text-*` steps in app/globals.css and nothing
+ * The type scale is four `--text-*` steps in app/globals.css and nothing
  * between them (AGENTS.md "Type scale"). Tailwind's own sizes are cleared
  * there, so a size off the ladder would not fail the build: an unknown name
  * renders at the browser default and an arbitrary pixel value reopens the
  * drift this pins shut. Both are caught here instead.
  */
-const STEPS = ["2xs", "xs", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "4xl"]
+const STEPS = ["xs", "md", "lg", "2xl"]
 
 /** The Nutrition Facts label imitates a regulated format on its own sizes. */
 const EXEMPT = new Set(["components/nutrition/nutrition-label.tsx"])
 
 const ARBITRARY = /(?<![\w-])text-\[[0-9.]+(px|rem|em)\]/
-const UNKNOWN_STEP = /(?<![\w-])text-(5xl|6xl|7xl|8xl|9xl)(?![\w-])/
+const UNKNOWN_STEP =
+  /(?<![\w-])text-(2xs|sm|base|xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)(?![\w-])/
 
 function tsxFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true, recursive: true })

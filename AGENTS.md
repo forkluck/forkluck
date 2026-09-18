@@ -86,15 +86,21 @@ side; name the field token and the field follows the field.
 
 ## Semantic color
 
-One red and one green, each in two parts: the ink and the pale fill it sits on
-(`--destructive` / `--destructive-fill`, `--success` / `--success-fill`). Do
-not add a second shade for a state that "reads softer" than an action — the app
-carried a second red and a second green on that theory and the cooler green
-failed AA against 11.5px text on its own fill. A new semantic color needs a
-contrast check against every ground it lands on, in the pull request.
+Five tones, each in two parts, the ink and the pale fill it sits on: red
+(`--destructive` on white, `--destructive-strong` on `--destructive-fill`),
+green (`--success` / `--success-fill`), orange for warning
+(`--warning-foreground` / `--warning-fill`, `--warning` for the icon and the
+edge), yellow for caution (`--caution-foreground` / `--caution-fill`), and
+blue for info (`--info` on `--info-fill`, the brand fill). Every pair clears
+4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. Do
+not add a second shade for a state that "reads softer" than an action — the
+app carried a second red and a second green on that theory and the cooler
+green failed AA against 11.5px text on its own fill. A new semantic color
+needs a contrast check against every ground it lands on, in the pull request.
 
-Blue (`--brand`) is data and selection only: chart marks, progress fills, the
-icon tile, the fill of a selected card. Filled buttons are ink, never blue.
+Blue (`--brand`) is data, selection and the link: chart marks, progress
+fills, the icon tile, the fill of a selected card, the text of a link. Filled
+buttons are ink, never blue.
 
 ## Menus
 
@@ -170,17 +176,17 @@ an `Intl.DateTimeFormat` or a locale method anywhere else.
 
 ## Control heights
 
-Five rungs, and a control sits on one of them: **20px** (badges and chips),
-**24px** (`xs`), **28px** (`sm`), **32px** (`default`), **36px** (`lg`). The
-icon sizes are the square counterparts at the same heights, so an icon button
-and the text button beside it line up without either being special.
+Four rungs, and a control sits on one of them: **20px** (badges and chips),
+**24px** (the compact icon-only button, a ghost in a table row or beside a
+field), **32px** (every text button and the standard icon button, the search
+field, the tab-pill track, menu triggers), **36px** (inputs and selects).
+Buttons have one size; a smaller or larger button is not a size, it is a
+different control. Every menu hangs 6px under its trigger.
 
-32px is the hinge the toolbar is built on — buttons, the search field and the
-tab-pill track all resolve to it, and every menu hangs 6px under its trigger.
-Before this was enforced the app drew fifteen control heights, and the 2px
-gaps between them bought nothing: a 30px icon button next to a 32px button
-needed its own popover offset to look right, which is a rule that exists only
-because the heights disagreed.
+Before this was enforced the app drew fifteen control heights, then seven,
+and the 2px gaps between them bought nothing: a 30px icon button next to a
+32px button needed its own popover offset to look right, which is a rule that
+exists only because the heights disagreed.
 
 Layout heights are not on this ladder and keep their own values: table rows
 and header rows (44/48px), sidebar nav items (44px), the floating field
@@ -189,28 +195,29 @@ stand next to each other in a toolbar, a form, or a table row.
 
 ## Type scale
 
-Ten sizes exist and nothing between them, declared as `--text-*` in
-`apps/web/app/globals.css`: `text-2xs` (11.5px), `text-xs` (12.5px), `text-sm`
-(13px), `text-base` (13.5px), `text-md` (14px), `text-lg` (16px), `text-xl`
-(17px), `text-2xl` (24px), `text-3xl` (26px), `text-4xl` (42px). Tailwind's
-defaults are cleared, so `text-sm` is 13px here and not 14, and no step
-carries a line-height: `normal` stays the default and prose opts in with
-`leading-*`, as the body rule in `globals.css` explains.
+Four sizes exist and nothing between them, declared as `--text-*` in
+`apps/web/app/globals.css`: `text-xs` (12px), `text-md` (14px), `text-lg`
+(16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
+`text-base` and `text-xl` do not exist here, and no step carries a
+line-height: `normal` stays the default and a paragraph opts in with
+`leading-[1.55]`, as the body rule in `globals.css` explains.
 
 An arbitrary size — `text-[13px]`, `text-[14.5px]`, any of them — is never
-correct, including when it matches a step. The app drew twenty-six sizes from
-what its primitives describe as seven, ten of them between 11 and 16 pixels,
-which is how the same card heading came to be 15, 16 and 17. Pick the step;
-if none of the ten fits, the change is to the scale, not to the call site.
+correct, including when it matches a step. The app once drew twenty-six sizes
+from a ten-step scale; the scale was cut to four on 2026-09-18 because the
+steps between were doing nothing a reader could see. Pick the step; if none of
+the four fits, the change is to the scale, not to the call site.
 
-Each step has a job: `2xs` chips, badges and menu group labels; `xs` help
-text and meta; `sm` controls — buttons, labels, tabs; `base` body — table
-cells, dialog copy, nav; `md` field text and list titles; `lg` card headings,
-and the 16px floor that keeps iOS from zooming a focused field; `xl` dialog
-titles and section headings; `2xl` page titles; `3xl` metric numerals; `4xl`
-the hero numeral. The Nutrition Facts label keeps its own sizes because it
-imitates a regulated format, the way table rows sit outside the control
-height ladder. `apps/web/tests/type-scale-pins.test.ts` refuses any other size.
+Each step has a job: `xs` badges, chips, menu group labels, tooltips and chart
+ticks, never running text; `md` everything read or pressed — body, table
+cells, dialog copy, help text, sub-lines, buttons, labels, tabs, field text,
+and every heading below the page title (at 600); `lg` the 16px floor that
+keeps iOS from zooming a focused field, the wordmark, and inline figures;
+`2xl` the page title and every numeral, metric cards and the hero figure
+alike. Headings come in two sizes, `2xl` for the page title and `md` for
+everything under it. The Nutrition Facts label keeps its own sizes because it
+imitates a regulated format. `apps/web/tests/type-scale-pins.test.ts` refuses
+any other size.
 
 ## Dialog width
 

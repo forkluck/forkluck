@@ -115,7 +115,7 @@ export function ShareDialog({
         </DialogHeader>
 
         {ownerName ? (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-md text-muted-foreground">
             Owned by <span className="text-foreground">{ownerName}</span>
           </p>
         ) : null}
@@ -141,7 +141,7 @@ export function ShareDialog({
               Share
             </Button>
             {invite.errors[EMAIL_FIELD] || invite.failure ? (
-              <p role="alert" className="w-full text-base text-destructive">
+              <p role="alert" className="w-full text-md text-destructive">
                 {invite.errors[EMAIL_FIELD] ?? invite.failure?.message}
               </p>
             ) : null}
@@ -152,7 +152,7 @@ export function ShareDialog({
           {shares.map((share) => (
             <div
               key={share.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-md"
             >
               <span className="truncate">{share.recipientName}</span>
               <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label={`Remove ${share.recipientName}`}
                     pending={busyId === share.id}
                     onClick={() =>
@@ -190,7 +190,7 @@ export function ShareDialog({
           {guestLinks.map((link) => (
             <div
               key={link.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-md"
             >
               <span className="truncate">{link.email}</span>
               <div className="flex items-center gap-2">
@@ -200,7 +200,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label={`Revoke ${link.email}`}
                     pending={busyId === link.id}
                     onClick={() =>
@@ -218,7 +218,7 @@ export function ShareDialog({
           {bookLinks.map((book) => (
             <div
               key={book.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-md"
             >
               <span className="truncate">
                 {book.email} · {book.title || `${book.recipeCount} recipes`}
@@ -230,7 +230,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     // Named apart from the guest-link button: the same address
                     // can hold both, and this one revokes every recipe in it.
                     aria-label={`Revoke the book sent to ${book.email}`}
@@ -250,7 +250,7 @@ export function ShareDialog({
           {shares.length === 0 &&
           guestLinks.length === 0 &&
           bookLinks.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-md text-muted-foreground">
               No collaborators yet.
             </p>
           ) : null}

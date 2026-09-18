@@ -310,7 +310,7 @@ export function SupplierConnectorCatalog({
         error={callback?.error ?? null}
       />
       {!connectors.configured ? (
-        <p className="p-4 text-sm leading-[1.55] text-faint">
+        <p className="p-4 text-md leading-[1.55] text-muted-foreground">
           <span>No supplier connectors configured</span>. The Drive folder and
           uploads work as usual. To connect Baldor, run the connector service
           and point this deployment at it with the three connector settings. The
@@ -334,7 +334,7 @@ export function SupplierConnectorCatalog({
           />
         ))
       ) : (
-        <p className="p-4 text-sm leading-[1.55] text-faint">
+        <p className="p-4 text-md leading-[1.55] text-muted-foreground">
           <span>No supplier connectors available</span> — your connector service
           is running, but it has not enabled a supplier for this workspace.
         </p>

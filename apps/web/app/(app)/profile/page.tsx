@@ -14,18 +14,18 @@ export default async function ProfilePage() {
     <Page>
       <PageHeader className="block">
         <PageTitle>Your profile</PageTitle>
-        <p className="mt-[5px] text-base text-muted-foreground">
+        <p className="mt-[5px] text-md text-muted-foreground">
           The account this workspace belongs to.
         </p>
       </PageHeader>
 
       <dl className="max-w-[640px] overflow-hidden rounded-xl border border-border">
         <div className="border-b border-muted px-4 py-3.5 last:border-b-0">
-          <dt className="text-base text-muted-foreground">Name</dt>
+          <dt className="text-md text-muted-foreground">Name</dt>
           <dd className="mt-[3px] text-md">{user.name}</dd>
         </div>
         <div className="border-b border-muted px-4 py-3.5 last:border-b-0">
-          <dt className="text-base text-muted-foreground">Email</dt>
+          <dt className="text-md text-muted-foreground">Email</dt>
           <dd className="mt-[3px] text-md">{user.email}</dd>
         </div>
       </dl>

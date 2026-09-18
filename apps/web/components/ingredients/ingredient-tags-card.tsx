@@ -93,14 +93,14 @@ export function IngredientTagsCard({
         aria-pressed={checked}
         disabled={!checked && value.length >= MAX_TAGS}
         onClick={() => toggle(option.name)}
-        className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left text-base outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-faint"
+        className="flex min-h-9 w-full items-center gap-3 rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent disabled:cursor-not-allowed disabled:text-muted-foreground"
       >
         <span
           className={cn(
             "flex size-[15px] shrink-0 items-center justify-center rounded-sm border",
             checked
               ? "border-foreground bg-foreground text-background"
-              : "border-faint bg-card"
+              : "border-muted-foreground bg-card"
           )}
           aria-hidden="true"
         >
@@ -121,7 +121,7 @@ export function IngredientTagsCard({
         }}
       >
         <div className="mb-3 flex min-h-7 items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold">Tags</h2>
+          <h2 className="text-md font-semibold">Tags</h2>
           {value.length > 0 ? (
             <PopoverTrigger
               type="button"
@@ -183,7 +183,7 @@ export function IngredientTagsCard({
             sideOffset={6}
             className="w-[var(--anchor-width)] max-w-(--available-width) overflow-hidden p-0"
           >
-            <PopoverTitle className="px-3.5 pt-3 text-sm font-medium">
+            <PopoverTitle className="px-3.5 pt-3 text-md font-medium">
               Tags
             </PopoverTitle>
             <div className="relative p-1.5">
@@ -218,7 +218,7 @@ export function IngredientTagsCard({
             <div className="flex max-h-[360px] flex-col overflow-y-auto p-1.5">
               {needle ? (
                 <>
-                  <span className="px-2.5 pt-1.5 pb-1 text-2xs font-medium text-faint">
+                  <span className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
                     {matches.length}{" "}
                     {matches.length === 1 ? "result" : "results"}
                   </span>
@@ -226,7 +226,7 @@ export function IngredientTagsCard({
                     <button
                       type="button"
                       onClick={addTyped}
-                      className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong"
+                      className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong"
                     >
                       <CirclePlus
                         className="size-[15px] shrink-0"
@@ -241,7 +241,7 @@ export function IngredientTagsCard({
                 <>
                   {frequent.length > 0 ? (
                     <>
-                      <span className="px-2.5 pt-1.5 pb-1 text-2xs font-medium text-faint">
+                      <span className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
                         Frequently used
                       </span>
                       {frequent.map(optionButton)}
@@ -249,14 +249,14 @@ export function IngredientTagsCard({
                   ) : null}
                   {other.length > 0 ? (
                     <>
-                      <span className="px-2.5 pt-2 pb-1 text-2xs font-medium text-faint">
+                      <span className="px-2.5 pt-2 pb-1 text-xs font-medium text-muted-foreground">
                         {frequent.length > 0 ? "Other tags" : "All tags"}
                       </span>
                       {other.map(optionButton)}
                     </>
                   ) : null}
                   {rows.length === 0 ? (
-                    <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-sm text-faint">
+                    <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-md text-muted-foreground">
                       Search to create your first tag.
                     </span>
                   ) : null}

@@ -223,7 +223,7 @@ function MultiplierChip({
         </span>
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={4} className="w-[180px] p-3">
-        <PopoverTitle className="mb-1.5 block text-xs font-medium text-muted-foreground">
+        <PopoverTitle className="mb-1.5 block text-md font-medium text-muted-foreground">
           Units per sale
         </PopoverTitle>
         <Input
@@ -242,7 +242,7 @@ function MultiplierChip({
           aria-invalid={!parsed.ok || undefined}
         />
         {!parsed.ok ? (
-          <p role="alert" className="mt-1.5 text-xs text-destructive">
+          <p role="alert" className="mt-1.5 text-md text-destructive">
             {parsed.error}
           </p>
         ) : null}
@@ -266,7 +266,7 @@ function CostIssuesCard({ issues }: { issues: ProductDetail["costIssues"] }) {
         <div className="min-w-0">
           <h2
             id="product-cost-issues-heading"
-            className="text-sm font-semibold text-foreground"
+            className="text-md font-semibold text-foreground"
           >
             Not accounted for
           </h2>
@@ -274,7 +274,7 @@ function CostIssuesCard({ issues }: { issues: ProductDetail["costIssues"] }) {
             {issues.map((issue, index) => (
               <li
                 key={`${issue.code}-${issue.path.join("/")}-${index}`}
-                className="text-sm text-muted-foreground"
+                className="text-md text-muted-foreground"
               >
                 {costIssueLine(issue)}
               </li>
@@ -310,11 +310,11 @@ function VariantsCard({ product }: { product: ProductDetail }) {
       <div className="mb-2 flex items-baseline gap-2">
         <h2
           id="variants-heading"
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           Variants
         </h2>
-        <span className="text-xs text-faint">{variants.length}</span>
+        <span className="text-md text-muted-foreground">{variants.length}</span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[560px] table-fixed">
@@ -337,12 +337,12 @@ function VariantsCard({ product }: { product: ProductDetail }) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-muted-foreground tabular-nums">
+                    <span className="text-md text-muted-foreground tabular-nums">
                       {variant.sku.trim() || "—"}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="flex items-center gap-2 text-base text-foreground">
+                    <span className="flex items-center gap-2 text-md text-foreground">
                       {variant.channel === "square" ||
                       variant.channel === "shopify" ? (
                         <ChannelIcon channel={variant.channel} />
@@ -352,15 +352,11 @@ function VariantsCard({ product }: { product: ProductDetail }) {
                   </TableCell>
                   <TableCell className="text-right">
                     {variant.quantityMultiplier > 1 ? (
-                      <Badge
-                        size="row"
-                        variant="secondary"
-                        title="Units per sale"
-                      >
+                      <Badge title="Units per sale">
                         ×{formatMultiplier(variant.quantityMultiplier)}
                       </Badge>
                     ) : (
-                      <span className="text-sm text-muted-foreground">—</span>
+                      <span className="text-md text-muted-foreground">—</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
@@ -385,7 +381,7 @@ function VariantsCard({ product }: { product: ProductDetail }) {
         </Table>
       </TableFrame>
       {error ? (
-        <p role="alert" className="mt-2 text-sm text-destructive">
+        <p role="alert" className="mt-2 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -605,7 +601,9 @@ export function ProductEditor({
               <Field>
                 <FieldTitle>
                   Description{" "}
-                  <span className="font-normal text-faint">(Optional)</span>
+                  <span className="font-normal text-muted-foreground">
+                    (Optional)
+                  </span>
                 </FieldTitle>
                 <textarea
                   value={draft.description}
@@ -613,7 +611,7 @@ export function ProductEditor({
                   onChange={(event) =>
                     setField("description", event.target.value)
                   }
-                  className="min-h-20 w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-md text-foreground outline-none placeholder:text-faint focus-visible:border-foreground"
+                  className="min-h-20 w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-md text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-foreground"
                   placeholder="A short note for your team"
                 />
               </Field>
@@ -621,7 +619,7 @@ export function ProductEditor({
               <div className="mt-3 mb-2 border-t-[6px] border-secondary" />
             </FieldGroup>
             {errors ? (
-              <p role="alert" className="mt-4 text-base text-destructive">
+              <p role="alert" className="mt-4 text-md text-destructive">
                 {errors}
               </p>
             ) : null}
@@ -710,7 +708,7 @@ export function ProductEditor({
                       }))
                   }}
                   aria-invalid={Boolean(form.errors[PRICE_FIELD]) || undefined}
-                  className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                  className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
                 />
                 <UnitCombobox
                   label="Sold by"
@@ -755,12 +753,12 @@ export function ProductEditor({
                       onChange={(event) =>
                         setSku(row.key, { sku: event.target.value })
                       }
-                      className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                      className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
                     />
                     <span className="mr-1 flex items-center self-center">
                       <span
                         aria-hidden="true"
-                        className="pr-1 text-sm text-faint"
+                        className="pr-1 text-md text-muted-foreground"
                       >
                         /
                       </span>
@@ -776,7 +774,7 @@ export function ProductEditor({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label="Remove SKU"
                     onClick={() =>
                       setField(
@@ -790,7 +788,7 @@ export function ProductEditor({
                 </div>
               ))}
               {skuError ? (
-                <p role="alert" className="text-sm text-destructive">
+                <p role="alert" className="text-md text-destructive">
                   {skuError}
                 </p>
               ) : null}
@@ -815,7 +813,7 @@ export function ProductEditor({
                 <CostIssuesCard issues={product.costIssues} />
               ) : null}
               {product.incompleteManualRevenue ? (
-                <div className="flex items-start gap-2.5 rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+                <div className="flex items-start gap-2.5 rounded-xl border border-border bg-muted px-4 py-3 text-md text-muted-foreground">
                   <span
                     aria-hidden="true"
                     className="mt-0.5 size-1.5 shrink-0 rounded-full bg-muted-foreground"

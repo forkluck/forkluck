@@ -50,7 +50,7 @@ export function TopProductsCard({
                 <span className="truncate text-md leading-5">
                   {product.name}
                 </span>
-                <span className="text-right text-base text-faint tabular-nums">
+                <span className="text-right text-md text-muted-foreground tabular-nums">
                   {quantityFormat.format(product.quantity)}
                 </span>
                 <span
@@ -59,7 +59,7 @@ export function TopProductsCard({
                       ? "Counted on the products inside this bundle"
                       : undefined
                   }
-                  className="text-right text-base text-muted-foreground tabular-nums"
+                  className="text-right text-md text-muted-foreground tabular-nums"
                 >
                   {product.sharedToMembers
                     ? "Shared"
@@ -69,7 +69,7 @@ export function TopProductsCard({
             ))}
           </ListBody>
           {hasShared ? (
-            <p className="px-5 pt-2.5 pb-1 text-xs text-muted-foreground">
+            <p className="px-5 pt-2.5 pb-1 text-md text-muted-foreground">
               Bundle sales are counted on the products inside them.
             </p>
           ) : null}

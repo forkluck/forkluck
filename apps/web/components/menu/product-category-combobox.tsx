@@ -59,7 +59,7 @@ export function ProductCategoryCombobox({
         aria-label="Category"
         className={cn(
           "flex h-9 w-full items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 text-left text-md outline-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong data-popup-open:bg-accent",
-          !value && "text-faint"
+          !value && "text-muted-foreground"
         )}
       >
         <span className="truncate">{value || "Uncategorized"}</span>
@@ -98,7 +98,7 @@ export function ProductCategoryCombobox({
             <button
               type="button"
               onClick={() => choose(typed)}
-              className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-base font-medium outline-none hover:bg-secondary-strong"
+              className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong"
             >
               <CirclePlus className="size-[15px] shrink-0" aria-hidden="true" />
               <span className="truncate">Add “{typed}”</span>
@@ -107,7 +107,7 @@ export function ProductCategoryCombobox({
           {/* Only a search that found nothing says so; an empty list is
                   not a failed search. */}
           {needle && matches.length === 0 && !canAdd ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-md text-muted-foreground">
               No results
             </span>
           ) : null}
@@ -116,7 +116,7 @@ export function ProductCategoryCombobox({
               type="button"
               onClick={() => choose("")}
               className={cn(
-                "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm text-muted-foreground outline-none hover:bg-accent focus-visible:bg-accent",
+                "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-md text-muted-foreground outline-none hover:bg-accent focus-visible:bg-accent",
                 !value && "bg-accent"
               )}
             >
@@ -129,7 +129,7 @@ export function ProductCategoryCombobox({
               type="button"
               onClick={() => choose(option)}
               className={cn(
-                "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                "flex min-h-9 w-full items-center rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                 value === option && "bg-accent"
               )}
             >

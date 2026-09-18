@@ -5,7 +5,6 @@ const TOKENS: { token: string; value: string }[] = [
   { token: "--background", value: "#ffffff" },
   { token: "--foreground", value: "#18181b" },
   { token: "--muted-foreground", value: "#52525b" },
-  { token: "--faint", value: "#71717a" },
   { token: "--ink-soft", value: "#3f3f46" },
   { token: "--border", value: "#e4e4e7" },
   { token: "--line-strong", value: "#c9c9cf" },
@@ -18,14 +17,18 @@ const TOKENS: { token: string; value: string }[] = [
   { token: "--brand-tile", value: "#e7effb" },
   { token: "--brand-selected", value: "#f6f9fe" },
   { token: "--destructive", value: "#d92d20" },
-  { token: "--destructive-fill", value: "#fef8f7" },
+  { token: "--destructive-fill", value: "#ffe7e6" },
   { token: "--destructive-strong", value: "#b42318" },
   { token: "--success", value: "#2f7a4f" },
   { token: "--success-fill", value: "#eaf4ee" },
-  { token: "--warning", value: "#c8880c" },
-  { token: "--warning-foreground", value: "#6b4708" },
-  { token: "--warning-fill", value: "#fdf8ec" },
-  { token: "--warning-border", value: "#f6e6bf" },
+  { token: "--warning-foreground", value: "#7c2d12" },
+  { token: "--warning-fill", value: "#fed7aa" },
+  { token: "--warning-border", value: "#fdba74" },
+  { token: "--caution", value: "#ca8a04" },
+  { token: "--caution-foreground", value: "#713f12" },
+  { token: "--caution-fill", value: "#fef9c3" },
+  { token: "--info", value: "#1d4ed8" },
+  { token: "--info-fill", value: "var(--brand-fill)" },
   { token: "--disabled-foreground", value: "#c9c9cf" },
   { token: "--ring", value: "var(--foreground)" },
   {
@@ -33,10 +36,7 @@ const TOKENS: { token: string; value: string }[] = [
     value: "4px, 6px, 10px, 14px, 18px",
   },
   { token: "--shadow-2xs … --shadow-2xl", value: "0 0 #0000" },
-  {
-    token: "--text-2xs … --text-4xl",
-    value: "11.5, 12.5, 13, 13.5, 14, 16, 17, 24, 26, 42px",
-  },
+  { token: "--text-xs / md / lg / 2xl", value: "12, 14, 16, 24px" },
   { token: "Control heights", value: "20, 24, 28, 32, 36px" },
   { token: "--font-body", value: "Inter" },
 ]
@@ -63,7 +63,7 @@ export default function DesignGuidePage() {
               <a
                 key={id}
                 href={`#${id}`}
-                className="text-sm text-muted-foreground hover:text-foreground"
+                className="text-md text-muted-foreground hover:text-foreground"
               >
                 {title}
               </a>
@@ -75,7 +75,7 @@ export default function DesignGuidePage() {
             <h1 className="text-2xl font-semibold tracking-[-0.02em]">
               Components
             </h1>
-            <p className="text-base text-muted-foreground">
+            <p className="text-md text-muted-foreground">
               Every variant of every component, rendered from the app&apos;s own
               code.
             </p>
@@ -87,9 +87,7 @@ export default function DesignGuidePage() {
                 id={id}
                 className="scroll-mt-20 border-t border-border py-10 first:border-t-0"
               >
-                <h2 className="mb-6 text-xl font-semibold tracking-[-0.01em]">
-                  {title}
-                </h2>
+                <h2 className="mb-6 text-md font-semibold">{title}</h2>
                 <Demo />
               </section>
             ))}
@@ -97,9 +95,7 @@ export default function DesignGuidePage() {
               id="design-tokens"
               className="scroll-mt-20 border-t border-border py-10 first:border-t-0"
             >
-              <h2 className="mb-6 text-xl font-semibold tracking-[-0.01em]">
-                Design tokens
-              </h2>
+              <h2 className="mb-6 text-md font-semibold">Design tokens</h2>
               <dl className="grid gap-x-10 gap-y-2 md:grid-cols-2">
                 {TOKENS.map(({ token, value }) => (
                   <div
@@ -111,7 +107,7 @@ export default function DesignGuidePage() {
                         {token}
                       </code>
                     </dt>
-                    <dd className="text-sm text-muted-foreground">{value}</dd>
+                    <dd className="text-md text-muted-foreground">{value}</dd>
                   </div>
                 ))}
               </dl>

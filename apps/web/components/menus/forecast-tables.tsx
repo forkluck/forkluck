@@ -66,7 +66,7 @@ function historyLabel(weeksObserved: number) {
 }
 
 /** A blank cell that still reads as a value, never as a missing render. */
-const blank = <span className="text-faint">–</span>
+const blank = <span className="text-muted-foreground">–</span>
 
 /** Rows arrive A–Z from the backend and stay that way until a header is clicked. */
 export function ProductForecastTable({
@@ -133,14 +133,10 @@ export function ProductForecastTable({
                         {product.productName}
                       </Link>
                       {!product.menuMember ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Included
-                        </Badge>
+                        <Badge className="ml-2">Included</Badge>
                       ) : null}
                       {!product.isActive ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Inactive
-                        </Badge>
+                        <Badge className="ml-2">Inactive</Badge>
                       ) : null}
                     </TableCell>
                     <TableCell
@@ -159,7 +155,7 @@ export function ProductForecastTable({
                     >
                       {units(product.busyQuantity)}
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-md text-muted-foreground">
                       {/* A full eight weeks is the norm and says nothing;
                           only thin history is worth a word. The explanation
                           sits behind one quiet icon so the column stays a
@@ -168,7 +164,6 @@ export function ProductForecastTable({
                         <span>{historyLabel(product.weeksObserved)}</span>
                         <Button
                           variant="ghost"
-                          size="xs"
                           className="print:hidden"
                           title="Why this quantity?"
                           aria-label={`Why this quantity for ${product.productName}`}
@@ -233,10 +228,10 @@ export function SectionHeader({
   return (
     <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+        <h2 className="text-md font-semibold text-foreground">{title}</h2>
+        <p className="mt-1 text-md text-muted-foreground">{subtitle}</p>
       </div>
-      <Badge variant="secondary">{badge}</Badge>
+      <Badge>{badge}</Badge>
     </div>
   )
 }
@@ -325,7 +320,7 @@ export function RecipeBatchesTable({
                       {row.recipeTitle}
                     </Link>
                     {row.yieldAmount === null || !row.yieldUnit ? (
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className="mt-1 text-md text-muted-foreground">
                         Yield not recorded; shown in batches.
                       </p>
                     ) : null}
@@ -356,7 +351,7 @@ function Buy({ row }: { row: MaterialRow }) {
   const packs = packsToBuy(row.packs)
   if (packs === null) {
     return (
-      <span className="text-faint">
+      <span className="text-muted-foreground">
         {row.purchaseSize === null || !row.purchaseUnit ? "Set pack size" : "–"}
       </span>
     )
@@ -443,12 +438,12 @@ export function MaterialsTable({
                         {row.ingredientName}
                       </Link>
                       {row.kind === "supply" ? (
-                        <Badge variant="secondary" className="ml-2">
-                          Supply
-                        </Badge>
+                        <Badge className="ml-2">Supply</Badge>
                       ) : null}
                       {note ? (
-                        <div className="mt-0.5 text-xs text-faint">{note}</div>
+                        <div className="mt-0.5 text-md text-muted-foreground">
+                          {note}
+                        </div>
                       ) : null}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
@@ -460,7 +455,7 @@ export function MaterialsTable({
                     <TableCell className="text-right text-muted-foreground tabular-nums">
                       {packLabel(row) ?? blank}
                       {row.supplierPack ? (
-                        <span className="text-faint">
+                        <span className="text-muted-foreground">
                           {" "}
                           · {row.supplierPack.supplier}
                         </span>
@@ -470,7 +465,7 @@ export function MaterialsTable({
                       {row.costCents !== null ? (
                         formatWholeCents(row.costCents, currencyCode)
                       ) : row.packs !== null ? (
-                        <span className="text-faint">No price</span>
+                        <span className="text-muted-foreground">No price</span>
                       ) : (
                         blank
                       )}

@@ -119,7 +119,7 @@ function itemChannels(row: SalesProductRow) {
 /** Secondary cell: 13.5px `--muted-foreground`, one step under the name. */
 function Cell({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-base whitespace-nowrap text-muted-foreground">
+    <span className="text-md whitespace-nowrap text-muted-foreground">
       {children}
     </span>
   )
@@ -138,11 +138,7 @@ function ProductNameCell({ product }: { product: SalesProductRow }) {
       >
         {product.name}
       </Link>
-      {isBundle(product) ? (
-        <Badge size="row" variant="secondary">
-          Bundle
-        </Badge>
-      ) : null}
+      {isBundle(product) ? <Badge>Bundle</Badge> : null}
     </span>
   )
 }
@@ -444,10 +440,7 @@ export function ProductsTable({
         header: "Status",
         meta: { align: "center", className: "w-[10%]", minWidth: 96 },
         cell: ({ row }) => (
-          <Badge
-            size="row"
-            variant={row.original.isActive ? "success" : "secondary"}
-          >
+          <Badge variant={row.original.isActive ? "success" : "default"}>
             {row.original.isActive ? "Active" : "Inactive"}
           </Badge>
         ),
@@ -490,7 +483,7 @@ export function ProductsTable({
   return (
     <>
       {error ? (
-        <p role="alert" className="mb-3 text-base text-destructive">
+        <p role="alert" className="mb-3 text-md text-destructive">
           {error}
         </p>
       ) : null}

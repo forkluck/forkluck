@@ -79,7 +79,7 @@ function ColumnSelect({
       >
         <SelectTrigger
           aria-label={label}
-          className={cn(labeledControlClassName, "justify-between text-sm")}
+          className={cn(labeledControlClassName, "justify-between text-md")}
         >
           <SelectValue />
         </SelectTrigger>
@@ -102,7 +102,7 @@ function ColumnSelect({
 function Stat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-2xs font-medium text-muted-foreground">{label}</dt>
+      <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
       <dd className="mt-1 text-md font-medium tabular-nums">{value}</dd>
     </div>
   )
@@ -132,7 +132,7 @@ function ImportReceiptView({
     <>
       <div className="rounded-lg border border-border bg-fill-soft p-4">
         <p className="text-md font-semibold">Hours imported</p>
-        <p className="mt-1 text-xs leading-[1.55] text-muted-foreground">
+        <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
           The original rows and the rate used for every cost are kept, so this
           import can be undone from the import history.
         </p>
@@ -149,7 +149,7 @@ function ImportReceiptView({
           <Stat label="Needs a rate" value={receipt.uncosted} />
         </dl>
         {notes.length ? (
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-3 text-md text-muted-foreground">
             {notes.join(" · ")}
           </p>
         ) : null}
@@ -358,7 +358,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
           <span className="text-md font-medium">
             {fileName || "Drop a timesheet here, or browse"}
           </span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             CSV or XLSX, up to 10 MB
           </span>
           <input
@@ -377,7 +377,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               <p className="truncate text-md font-medium">{fileName}</p>
               <Badge>{preview.timezone}</Badge>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground tabular-nums">
+            <p className="mt-1 text-md text-muted-foreground tabular-nums">
               {preview.periodStart} – {preview.periodEnd}
             </p>
             <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-muted pt-4 sm:grid-cols-4">
@@ -391,7 +391,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
 
         {preview ? (
           <details className="rounded-lg border border-border">
-            <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-md font-medium [&::-webkit-details-marker]:hidden">
               Column mapping
               <span className="font-normal text-muted-foreground">
                 {preview.mapping.employee} → Employee
@@ -484,7 +484,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-muted px-4 py-3">
               <div>
                 <p className="text-md font-semibold">Employees to include</p>
-                <p className="mt-1 text-xs leading-[1.55] text-muted-foreground">
+                <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
                   Uncheck anyone whose shifts should not count. Rates can be set
                   now or later.
                 </p>
@@ -529,12 +529,12 @@ function ImportBody({ onDone }: { onDone: () => void }) {
                         <span
                           className={cn(
                             "block truncate text-md",
-                            !isIncluded && "text-faint line-through"
+                            !isIncluded && "text-muted-foreground line-through"
                           )}
                         >
                           {person.name}
                         </span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                        <span className="mt-0.5 block text-md text-muted-foreground">
                           {person.shiftCount}{" "}
                           {person.shiftCount === 1 ? "shift" : "shifts"} ·{" "}
                           {formatDecimalHours(person.totalSeconds)} h ·{" "}
@@ -564,7 +564,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
                           }))
                         }
                       />
-                      <InputAffix side="end" className="text-sm">
+                      <InputAffix side="end" className="text-md">
                         / hour
                       </InputAffix>
                     </InputGroup>
@@ -577,19 +577,19 @@ function ImportBody({ onDone }: { onDone: () => void }) {
 
         {preview && includedEntries.length ? (
           <div className="max-h-64 overflow-auto rounded-lg border border-border">
-            <table className="w-full border-collapse text-base">
+            <table className="w-full border-collapse text-md">
               <thead className="sticky top-0 bg-card">
                 <tr className="border-b border-border text-left">
-                  <th className="px-4 py-3 text-2xs font-medium text-ink-soft">
+                  <th className="px-4 py-3 text-xs font-medium text-ink-soft">
                     Employee
                   </th>
-                  <th className="px-4 py-3 text-2xs font-medium text-ink-soft">
+                  <th className="px-4 py-3 text-xs font-medium text-ink-soft">
                     Clock in
                   </th>
-                  <th className="px-4 py-3 text-2xs font-medium text-ink-soft">
+                  <th className="px-4 py-3 text-xs font-medium text-ink-soft">
                     Clock out
                   </th>
-                  <th className="px-4 py-3 text-right text-2xs font-medium text-ink-soft">
+                  <th className="px-4 py-3 text-right text-xs font-medium text-ink-soft">
                     Hours
                   </th>
                 </tr>
@@ -617,22 +617,22 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               </tbody>
             </table>
             {includedEntries.length > 30 ? (
-              <p className="border-t border-muted px-4 py-3 text-xs text-muted-foreground">
+              <p className="border-t border-muted px-4 py-3 text-md text-muted-foreground">
                 Showing 30 of {includedEntries.length} included shifts.
               </p>
             ) : null}
           </div>
         ) : preview ? (
-          <p className="rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-base text-muted-foreground">
+          <p className="rounded-lg border border-dashed border-line-strong px-4 py-6 text-center text-md text-muted-foreground">
             Include at least one employee to preview their shifts.
           </p>
         ) : null}
 
         {preview?.skipped.length ? (
           <details className="rounded-lg border border-warning-border bg-warning-fill">
-            <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-warning-foreground [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-md font-medium text-warning-foreground [&::-webkit-details-marker]:hidden">
               <TriangleAlert
-                className="size-4 text-warning"
+                className="size-4 text-warning-foreground"
                 strokeWidth={1.8}
                 aria-hidden="true"
               />
@@ -643,7 +643,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
               {preview.skipped.map((row) => (
                 <p
                   key={row.position}
-                  className="px-4 py-2 text-xs text-warning-foreground"
+                  className="px-4 py-2 text-md text-warning-foreground"
                 >
                   <span className="font-medium">Row {row.position}</span>
                   {row.employeeName ? ` · ${row.employeeName}` : ""}
@@ -655,7 +655,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
         ) : null}
 
         {error ? (
-          <p className="text-xs leading-[1.55] text-destructive" role="alert">
+          <p className="text-md leading-[1.55] text-destructive" role="alert">
             {error}
           </p>
         ) : null}
@@ -697,7 +697,7 @@ export function ImportHoursDialog({
       <DialogContent size="lg" className="p-7">
         <DialogHeader>
           <DialogTitle>Import hours</DialogTitle>
-          <DialogDescription className="text-xs leading-[1.55]">
+          <DialogDescription className="text-md leading-[1.55]">
             Upload the timesheet your clock exports. Confirm the columns and the
             hourly rates before anything is saved.
           </DialogDescription>

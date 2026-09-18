@@ -240,21 +240,17 @@ function ComponentRow({
           ) : (
             <span className="truncate text-md text-foreground">{name}</span>
           )}
-          <Badge size="row" variant="secondary">
+          <Badge>
             {component.productId
               ? "Product"
               : component.recipeId
                 ? "Recipe"
                 : "Ingredient"}
           </Badge>
-          {component.nonEdible ? (
-            <Badge size="row" variant="outline">
-              Supply
-            </Badge>
-          ) : null}
+          {component.nonEdible ? <Badge>Supply</Badge> : null}
         </span>
         {hint ? (
-          <span className="block truncate text-xs text-muted-foreground">
+          <span className="block truncate text-md text-muted-foreground">
             {hint}
           </span>
         ) : null}
@@ -373,11 +369,13 @@ export function ProductComponentsCard({
       <div className="mb-2 flex items-baseline gap-2">
         <h3
           id={`product-${label.toLowerCase()}-heading`}
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           {label}
         </h3>
-        <span className="text-xs text-faint">{sectionRows.length}</span>
+        <span className="text-md text-muted-foreground">
+          {sectionRows.length}
+        </span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[420px] table-fixed">
@@ -428,7 +426,7 @@ export function ProductComponentsCard({
       <div className="flex items-center justify-between gap-4">
         <h2
           id="product-composition-heading"
-          className="text-lg font-semibold text-foreground"
+          className="text-md font-semibold text-foreground"
         >
           Product composition
         </h2>
@@ -473,7 +471,7 @@ export function ProductComponentsCard({
       )}
 
       {error ? (
-        <p role="alert" className="text-base text-destructive">
+        <p role="alert" className="text-md text-destructive">
           {error}
         </p>
       ) : null}

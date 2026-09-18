@@ -5,26 +5,20 @@ import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 
 /**
- * Emphasis comes from `variant`, never from `size`. Four levels:
- *   1 primary     → `default`    ink fill, white label. One per view.
- *   2 secondary   → `outline`    white with a hairline border (the ghost button).
- *   3 tertiary    → `secondary`  filled grey (the Actions button).
- *   4 quaternary  → `ghost`      no chrome until hover — icon buttons live here.
- * `destructive` sits outside the scale, for dangerous actions; `filter` is the
- * toolbar pill (quiet label, ink value); `link` is the link-shaped action, ink
- * on a hairline underline that firms on hover.
+ * Emphasis comes from `variant`, never from `size`:
+ *   primary    → `default`      ink fill, white label. One per view.
+ *   secondary  → `outline`      white with a hairline border.
+ *   tertiary   → `secondary`    filled grey (the Actions button).
+ *   ghost      → `ghost`        no chrome until hover; icon buttons live here.
+ *   critical   → `destructive`  red fill, white label, for the dangerous main
+ *                               action, and `critical` for the same action in
+ *                               red ink with no chrome.
  *
- * Every button, text or icon-only, is `rounded-lg`, so a toolbar of mixed
- * sizes shares one corner. Text buttons are 32px tall, `0 12px`, 500 13px,
- * with a 6px gap to a 14px icon:
- *   xs      (24px) → tightest inline actions
- *   sm      (28px) → inside table rows, step cards, inline banners
- *   default (32px) → standard: page headers, toolbars, dialogs, forms
- *   lg      (36px) → full-width form submits; matches Input height
- *
- * The four icon sizes are the square counterparts at the same four heights —
- * `icon` is a 32px `default`, `icon-lg` a 36px `lg` — so an icon button and
- * the text button beside it line up without either one being special.
+ * One height: 32px, `0 12px`, 500 14px, with a 6px gap to a 14px icon. Every
+ * text button is that size; forms, toolbars, dialogs and table rows share it.
+ * Two icon-only sizes: `icon` (32px square, the counterpart of the text
+ * button) and `icon-compact` (24px, a ghost in a row or beside a field).
+ * Every button is `rounded-lg`, so a toolbar shares one corner.
  *
  * There is no elevation and no focus ring anywhere in this design. Depth is
  * one 1px --border hairline; focus turns that border ink (--foreground), which
@@ -33,18 +27,15 @@ import { cn } from "@/lib/utils"
  *
  * Disabled dims the label and nothing else. The greyed border and white fill
  * belong to the variants that already draw chrome at rest, because a variant
- * that draws none — `ghost`, `quiet`, `link` — must not grow a box on the way
- * to being unavailable: a row's `…` sprouting an empty outline reads as a
- * button that broke, not one there is nothing behind.
+ * that draws none — `ghost`, `critical` — must not grow a box on the way to
+ * being unavailable.
  *
  * `default` is the exception it has to be: its rest border is already ink, so
- * the shared focus rule would set the colour it is wearing and the primary
- * button on every screen would take focus with no visible change at all. It
- * focuses to --background instead — the white label's colour, drawn against
- * its own ink fill.
+ * the shared focus rule would set the colour it is wearing. It focuses to
+ * --background instead, the white label's colour, drawn against its own fill.
  */
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm leading-none font-medium whitespace-nowrap outline-none select-none focus-visible:border-foreground disabled:cursor-not-allowed disabled:text-disabled-foreground aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-md leading-none font-medium whitespace-nowrap outline-none select-none focus-visible:border-foreground disabled:cursor-not-allowed disabled:text-disabled-foreground aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
   {
     variants: {
       variant: {
@@ -58,12 +49,6 @@ const buttonVariants = cva(
         // is reserved for the open-popover state, so a trigger reads as held.
         outline:
           "border-input bg-card text-foreground hover:border-line-strong disabled:border-border disabled:bg-background aria-expanded:bg-muted",
-        // The toolbar filter pill: same shell as `outline`, but the label is
-        // the quiet half and the value inside it carries the ink and the
-        // weight. Wrap the value in <span className="font-medium
-        // text-foreground"> — that is the whole pattern.
-        filter:
-          "border-input bg-card font-normal text-muted-foreground hover:border-line-strong disabled:border-border disabled:bg-background aria-expanded:border-line-strong data-popup-open:border-line-strong",
         // The border matches the fill rather than staying transparent: with
         // `bg-clip-padding` a transparent border would clip the grey to the
         // 30px padding box and the button would paint 2px shorter than the
@@ -73,25 +58,23 @@ const buttonVariants = cva(
         // Also the icon button: --muted-foreground at rest, ink on hover.
         ghost:
           "text-muted-foreground hover:border-muted hover:bg-muted hover:text-foreground aria-expanded:border-muted aria-expanded:bg-muted aria-expanded:text-foreground",
-        quiet:
-          "text-muted-foreground hover:border-muted hover:bg-muted hover:text-foreground aria-expanded:border-muted aria-expanded:bg-muted aria-expanded:text-foreground",
         destructive:
           "border-destructive bg-destructive text-white hover:border-destructive-strong hover:bg-destructive-strong focus-visible:border-foreground disabled:border-border disabled:bg-background",
+        // The critical action that is not the main one on its screen: the
+        // strong red ink on the pale red fill, the edge firming on hover.
+        critical:
+          "border-destructive-fill bg-destructive-fill text-destructive-strong hover:border-destructive-strong disabled:border-border disabled:bg-background aria-expanded:border-destructive-strong",
         // A link-shaped action is ink, never blue — blue is data and
         // selection. The hairline underline firms to ink on hover, the way
         // the outline button's border does.
-        link: "text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground",
       },
       size: {
         default:
           "h-8 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 px-2 text-xs has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        lg: "h-9 gap-1.5 px-6 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
         icon: "size-8 [&_svg:not([class*='size-'])]:size-[18px]",
-        "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3.5",
-        "icon-sm": "size-7 [&_svg:not([class*='size-'])]:size-4",
-        "icon-lg": "size-9 [&_svg:not([class*='size-'])]:size-[19px]",
+        // The compact icon-only button: a ghost in a table row or beside a
+        // field, 24px so it reads as smaller than the button next to it.
+        "icon-compact": "size-6 [&_svg:not([class*='size-'])]:size-3.5",
       },
     },
     defaultVariants: {
@@ -103,10 +86,10 @@ const buttonVariants = cva(
 
 /**
  * `pending` is the in-flight state of an async action: the button disables (so
- * a second press is dropped), announces `aria-busy`, and leads with the sm
- * Spinner while keeping its label — the width barely moves and the intent
- * stays readable. The disabled grey is deliberate: it is the same rest the
- * app's "Saving…" buttons already take.
+ * a second press is dropped), announces `aria-busy`, and swaps its label for
+ * the sm Spinner. The label stays in the box at zero opacity, so the button
+ * keeps its width and its accessible name; the spinner draws in the label's
+ * own colour at low opacity, light grey on ink and grey on white alike.
  */
 function Button({
   className,
@@ -124,11 +107,33 @@ function Button({
       data-pending={pending || undefined}
       aria-busy={pending || undefined}
       disabled={disabled || pending}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        pending && "relative"
+      )}
       {...props}
     >
-      {pending ? <Spinner size="sm" label="" className="-ml-0.5" /> : null}
-      {children}
+      {pending ? (
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Spinner
+            size="sm"
+            label=""
+            className="[&>span]:border-current/25 [&>span]:border-t-current/70"
+          />
+        </span>
+      ) : null}
+      {/* A real inline box, not `contents`: opacity needs a box to act on. */}
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5",
+          pending && "opacity-0"
+        )}
+      >
+        {children}
+      </span>
     </ButtonPrimitive>
   )
 }

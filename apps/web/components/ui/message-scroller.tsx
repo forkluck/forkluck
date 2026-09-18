@@ -27,7 +27,7 @@ function ScrollToBottom() {
   return (
     <Button
       type="button"
-      size="icon-sm"
+      size="icon-compact"
       variant="secondary"
       aria-label="Scroll to bottom"
       className="absolute right-4 bottom-2 z-10"

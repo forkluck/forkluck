@@ -24,7 +24,7 @@ export function ColumnsMenu({ columns }: { columns: ColumnChoice[] }) {
         <Columns3 strokeWidth={1.8} aria-hidden="true" />
       </MenuTrigger>
       <MenuContent className="w-[212px]">
-        <div className="px-2.5 pt-1 pb-1.5 text-2xs leading-none font-medium text-faint">
+        <div className="px-2.5 pt-1 pb-1.5 text-xs leading-none font-medium text-muted-foreground">
           Columns
         </div>
         {columns.map((column) => (

@@ -24,7 +24,7 @@ export function GoogleButton({ next = "/" }: { next?: string }) {
           ? "/api/auth/google/start"
           : `/api/auth/google/start?next=${encodeURIComponent(next)}`
       }
-      className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+      className={cn(buttonVariants({ variant: "outline" }))}
       aria-busy={pending || undefined}
       aria-disabled={pending || undefined}
       onClick={(event) => {

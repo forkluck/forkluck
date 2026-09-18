@@ -211,7 +211,7 @@ export function PreparationDialog({
         >
           <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1.5">
-              <h3 className="text-lg font-semibold">UOM</h3>
+              <h3 className="text-md font-semibold">UOM</h3>
               <Tooltip>
                 <TooltipTrigger
                   render={
@@ -229,7 +229,7 @@ export function PreparationDialog({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <label className="flex h-8 items-center gap-2.5 text-sm font-medium text-foreground">
+            <label className="flex h-8 items-center gap-2.5 text-md font-medium text-foreground">
               <Switch
                 size="sm"
                 checked={usesStandardConversion}
@@ -242,17 +242,17 @@ export function PreparationDialog({
             </label>
           </div>
 
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-2 text-md text-muted-foreground">
             Leave yield blank to use a reviewed catalog estimate when one is
             available.
           </p>
 
           <div className="mt-3 border-b border-border pb-3">
             <div className="hidden grid-cols-[1.35fr_.75fr_repeat(3,minmax(0,1fr))] gap-3 border-b border-line-strong pb-3 sm:grid">
-              <span className="text-sm font-medium">Name (required)</span>
-              <span className="text-sm font-medium">Yield</span>
+              <span className="text-md font-medium">Name (required)</span>
+              <span className="text-md font-medium">Yield</span>
               {rows.map(([label, id]) => (
-                <span key={id} className="text-sm font-medium">
+                <span key={id} className="text-md font-medium">
                   {label}
                 </span>
               ))}
@@ -261,7 +261,7 @@ export function PreparationDialog({
               <div className="min-w-0">
                 <label
                   htmlFor={NAME_FIELD}
-                  className="mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+                  className="mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
                 >
                   Name (required)
                 </label>
@@ -271,10 +271,10 @@ export function PreparationDialog({
                   value={name}
                   placeholder="Diced"
                   onChange={(event) => setName(event.target.value)}
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-md outline-none placeholder:text-faint hover:border-line-strong focus:border-foreground"
+                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-md outline-none placeholder:text-muted-foreground hover:border-line-strong focus:border-foreground"
                 />
                 {form.errors[NAME_FIELD] ? (
-                  <p role="alert" className="mt-1 text-xs text-destructive">
+                  <p role="alert" className="mt-1 text-md text-destructive">
                     {form.errors[NAME_FIELD]}
                   </p>
                 ) : null}
@@ -282,7 +282,7 @@ export function PreparationDialog({
               <div className="min-w-0">
                 <label
                   htmlFor={YIELD_FIELD}
-                  className="mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+                  className="mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
                 >
                   Yield
                 </label>
@@ -298,14 +298,14 @@ export function PreparationDialog({
                     placeholder="–"
                     aria-label="Yield percent"
                     onChange={(event) => setYieldPercent(event.target.value)}
-                    className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-faint [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-muted-foreground [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
-                  <span className="mr-2 self-center text-2xs font-semibold text-muted-foreground">
+                  <span className="mr-2 self-center text-xs font-semibold text-muted-foreground">
                     %
                   </span>
                 </div>
                 {form.errors[YIELD_FIELD] ? (
-                  <p role="alert" className="mt-1 text-xs text-destructive">
+                  <p role="alert" className="mt-1 text-md text-destructive">
                     {form.errors[YIELD_FIELD]}
                   </p>
                 ) : null}
@@ -315,7 +315,7 @@ export function PreparationDialog({
                   <div key={id} className="min-w-0">
                     <label
                       htmlFor={id}
-                      className="mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+                      className="mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
                     >
                       {label}
                     </label>
@@ -331,7 +331,7 @@ export function PreparationDialog({
                         aria-label={`${label} amount`}
                         onChange={(event) => setAmount(event.target.value)}
                         disabled={usesStandardConversion}
-                        className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-faint disabled:cursor-not-allowed disabled:text-faint [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:text-muted-foreground [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       />
                       <UnitCombobox
                         label={label}
@@ -345,7 +345,7 @@ export function PreparationDialog({
                       />
                     </div>
                     {form.errors[id] ? (
-                      <p role="alert" className="mt-1 text-xs text-destructive">
+                      <p role="alert" className="mt-1 text-md text-destructive">
                         {form.errors[id]}
                       </p>
                     ) : null}
@@ -356,7 +356,7 @@ export function PreparationDialog({
           </div>
 
           {form.failure ? (
-            <p role="alert" className="mt-3 text-xs text-destructive">
+            <p role="alert" className="mt-3 text-md text-destructive">
               {form.failure.message}
             </p>
           ) : null}

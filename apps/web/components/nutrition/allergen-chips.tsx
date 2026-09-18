@@ -19,7 +19,7 @@ const ROWS: { row: AllergenRow; label: string }[] = [
 ]
 
 const chipClassName =
-  "inline-flex h-5 items-center rounded-full border px-2 text-2xs font-medium whitespace-nowrap"
+  "inline-flex h-5 items-center rounded-full border px-2 text-xs font-medium whitespace-nowrap"
 
 /**
  * The nineteen kitchen tags in two rows, Contains and May contain. A tag sits
@@ -96,14 +96,14 @@ function AllergenRowChips({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <span className="text-md font-medium text-muted-foreground">{label}</span>
       <div
         role={readOnly ? undefined : "group"}
         aria-label={readOnly ? undefined : label}
         className="flex flex-wrap gap-1.5"
       >
         {readOnly && entries.length === 0 ? (
-          <span className="text-sm text-muted-foreground">None listed</span>
+          <span className="text-md text-muted-foreground">None listed</span>
         ) : null}
         {entries.map((entry) =>
           readOnly ? (
@@ -140,7 +140,7 @@ function AllergenRowChips({
             type="button"
             aria-expanded={expanded}
             onClick={() => setExpanded((open) => !open)}
-            className="inline-flex h-5 items-center gap-1 rounded-full px-2 text-2xs font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
+            className="inline-flex h-5 items-center gap-1 rounded-full px-2 text-xs font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
           >
             More tags
             <ChevronDown

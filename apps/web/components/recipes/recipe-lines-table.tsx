@@ -266,7 +266,7 @@ export function RecipeLinesTable({
                   key={`${line.lineNumber}-${line.rawLine}`}
                   className="h-11 hover:bg-transparent"
                 >
-                  <TableCell colSpan={5} className="text-base">
+                  <TableCell colSpan={5} className="text-md">
                     {line.rawLine}
                   </TableCell>
                   <TableCell colSpan={2}>
@@ -316,7 +316,7 @@ export function RecipeLinesTable({
                 )}
                 {line.measureRange?.requiresReview ? (
                   <span
-                    className="ml-1.5 text-2xs text-warning-foreground"
+                    className="ml-1.5 text-md text-warning-foreground"
                     title={`${formatWeight(line.measureRange.lowGrams, measurementSystem)}–${formatWeight(line.measureRange.highGrams, measurementSystem)} possible range`}
                   >
                     review
@@ -353,7 +353,7 @@ export function RecipeLinesTable({
                     </span>
                     {fromComponent ? (
                       <Badge
-                        className="shrink-0 rounded-sm px-[7px] py-0.5 text-2xs"
+                        className="shrink-0 rounded-sm px-[7px] py-0.5 text-xs"
                         title="Priced from a component recipe, not a purchased ingredient"
                       >
                         Component
@@ -416,19 +416,19 @@ export function RecipeLinesTable({
                     }
                   />
                 </TableCell>
-                <TableCell className="text-right text-base text-muted-foreground tabular-nums">
+                <TableCell className="text-right text-md text-muted-foreground tabular-nums">
                   {formatKitchenAmount(
                     (line.componentQuantity?.amount ?? line.enteredAmount) *
                       factor,
                     precisionFor(line.ingredient?.name ?? line.ingredientName)
                   )}
                 </TableCell>
-                <TableCell className="text-base whitespace-nowrap text-muted-foreground">
+                <TableCell className="text-md whitespace-nowrap text-muted-foreground">
                   {/* A fixed slot, so every row's weight note starts at the
                       same x whether the unit reads "g" or "tbsp". */}
                   <span className="inline-block w-9">{displayUnit(line)}</span>
                   {showWeightNote ? (
-                    <span className="text-2xs text-faint">
+                    <span className="text-md text-muted-foreground">
                       {canOverrideMeasure ? (
                         <button
                           type="button"
@@ -453,7 +453,7 @@ export function RecipeLinesTable({
                       aria-label={`Remove ${line.ingredientName}`}
                       title="Remove ingredient"
                       onClick={() => onDeleteLine(line.lineNumber)}
-                      className="rounded-md p-1 align-middle text-faint opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
+                      className="rounded-md p-1 align-middle text-muted-foreground opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
                     >
                       <X
                         aria-hidden="true"
@@ -474,7 +474,7 @@ export function RecipeLinesTable({
                 key={`skipped-${line.lineNumber}-${line.rawLine}`}
                 className="h-11 hover:bg-transparent"
               >
-                <TableCell colSpan={5} className="text-base">
+                <TableCell colSpan={5} className="text-md">
                   {line.rawLine}
                 </TableCell>
                 <TableCell colSpan={2}>
@@ -504,7 +504,7 @@ export function RecipeLinesTable({
                       aria-label={`Remove ${line.rawLine}`}
                       title="Remove line"
                       onClick={() => onDeleteLine(line.lineNumber)}
-                      className="rounded-md p-1 align-middle text-faint opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
+                      className="rounded-md p-1 align-middle text-muted-foreground opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
                     >
                       <X
                         aria-hidden="true"
@@ -574,7 +574,7 @@ export function RecipeLinesTable({
                     spellCheck={false}
                     aria-label="Add ingredient line"
                     aria-invalid={draftRejected || undefined}
-                    className="w-full bg-transparent text-md outline-none placeholder:text-faint"
+                    className="w-full bg-transparent text-md outline-none placeholder:text-muted-foreground"
                   />
                 </div>
               </TableCell>
@@ -596,10 +596,8 @@ export function RecipeLinesTable({
                   onClick={() => completeSuggestion(entry)}
                   className="flex h-9 w-full items-center justify-between gap-3 pl-[23px] text-left hover:bg-fill-soft focus-visible:bg-fill-soft focus-visible:outline-none"
                 >
-                  <span className="min-w-0 truncate text-base">
-                    {entry.name}
-                  </span>
-                  <span className="shrink-0 pr-2 text-xs text-muted-foreground tabular-nums">
+                  <span className="min-w-0 truncate text-md">{entry.name}</span>
+                  <span className="shrink-0 pr-2 text-md text-muted-foreground tabular-nums">
                     {formatUnitPrice(
                       entry.purchaseCostCents,
                       entry.purchaseSize,
@@ -616,7 +614,7 @@ export function RecipeLinesTable({
           {draftRejected ? (
             <TableRow className="h-9 border-b-0 hover:bg-transparent">
               <TableCell colSpan={6}>
-                <p role="alert" className="text-xs text-destructive">
+                <p role="alert" className="text-md text-destructive">
                   Add an amount, e.g. 20 g bread flour
                 </p>
               </TableCell>
@@ -624,12 +622,12 @@ export function RecipeLinesTable({
           ) : null}
           {/* The batch total lives inside the frame, on no rule of its own. */}
           <TableRow className="h-12 border-b-0 hover:bg-transparent">
-            <TableCell colSpan={4} className="text-base font-medium">
+            <TableCell colSpan={4} className="text-md font-medium">
               Total weight
             </TableCell>
             <TableCell
               colSpan={2}
-              className="text-right text-base font-medium tabular-nums"
+              className="text-right text-md font-medium tabular-nums"
             >
               {formatWeight(totalGrams, measurementSystem)}
             </TableCell>

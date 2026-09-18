@@ -2,6 +2,7 @@ import type * as React from "react"
 
 import { SECTIONS_A } from "./sections-a"
 import { SECTIONS_B } from "./sections-b"
+import { SECTIONS_C } from "./scales"
 
 /**
  * The guide's registry: every section, in the owner's order, and the
@@ -25,7 +26,11 @@ export type GuideSection = {
   Demo: React.ComponentType
 }
 
-export const SECTIONS: GuideSection[] = [...SECTIONS_A, ...SECTIONS_B]
+export const SECTIONS: GuideSection[] = [
+  ...SECTIONS_A,
+  ...SECTIONS_B,
+  ...SECTIONS_C,
+]
 
 /**
  * The contents rail: one link per section, then the tokens, which are page

@@ -97,7 +97,7 @@ export function SubscribeCard({
   }
 
   const secondaryClassName = cn(
-    "mt-6 self-center text-sm leading-5",
+    "mt-6 self-center text-md leading-5",
     authLinkClassName
   )
 
@@ -112,7 +112,7 @@ export function SubscribeCard({
         </p>
       ) : null}
 
-      <Button size="lg" pending={pending} onClick={checkout} className="mt-6">
+      <Button pending={pending} onClick={checkout} className="mt-6">
         {copy.button}
       </Button>
 

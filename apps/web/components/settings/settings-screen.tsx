@@ -1,10 +1,13 @@
 "use client"
 
 import * as React from "react"
+import {
+  ClickableRowBody,
+  clickableRowClassName,
+} from "@/components/ui/clickable"
 import Link from "next/link"
 import {
   BookOpen,
-  ChevronRight,
   CircleArrowUp,
   CreditCard,
   History,
@@ -57,8 +60,7 @@ import { useGuardedNavigate } from "@/components/navigation-blocker"
  * 14.5px title over a 13.5px note, and a chevron at the card's edge. Nothing
  * here is a form — every row opens the modal (or the screen) that owns it.
  */
-const rowClassName =
-  "flex w-full items-center gap-3 border-b border-muted px-4 py-3.5 text-left outline-none last:border-b-0 hover:bg-fill-soft focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-foreground"
+const rowClassName = clickableRowClassName
 
 function SettingsGroup({
   title,
@@ -74,7 +76,7 @@ function SettingsGroup({
     <section className="mt-[26px] first:mt-0">
       <h2 className="text-md font-semibold text-foreground">{title}</h2>
       {note ? (
-        <p className="mt-1 text-base text-muted-foreground">{note}</p>
+        <p className="mt-1 text-md text-muted-foreground">{note}</p>
       ) : null}
       <div className="mt-2.5 overflow-hidden rounded-xl border border-border">
         {children}
@@ -83,39 +85,7 @@ function SettingsGroup({
   )
 }
 
-function RowBody({
-  icon: Icon,
-  title,
-  note,
-  trailing,
-}: {
-  icon: typeof User
-  title: string
-  note: string
-  /** What sits where the chevron would, for a row that acts in place. */
-  trailing?: React.ReactNode
-}) {
-  return (
-    <>
-      <span className="flex w-[17px] flex-none items-center justify-center text-muted-foreground">
-        <Icon className="size-[17px]" strokeWidth={1.8} aria-hidden="true" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-md text-foreground">{title}</span>
-        <span className="mt-[3px] block text-base text-muted-foreground">
-          {note}
-        </span>
-      </span>
-      {trailing ?? (
-        <ChevronRight
-          className="size-[15px] flex-none text-disabled-foreground"
-          strokeWidth={2}
-          aria-hidden="true"
-        />
-      )}
-    </>
-  )
-}
+const RowBody = ClickableRowBody
 
 /**
  * A modal that starts fresh every time. The dialog stays mounted while closed
@@ -296,7 +266,7 @@ export function SettingsScreen({
           ) : null}
         </SettingsGroup>
         {newsletterError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {newsletterError}
           </p>
         ) : null}
@@ -339,7 +309,7 @@ export function SettingsScreen({
               )}
             </SettingsGroup>
             {portalError ? (
-              <p role="alert" className="mt-2 text-base text-destructive">
+              <p role="alert" className="mt-2 text-md text-destructive">
                 {portalError}
               </p>
             ) : null}
@@ -415,7 +385,6 @@ export function SettingsScreen({
               trailing={
                 <Button
                   variant="destructive"
-                  size="sm"
                   onClick={() => setDeleteOpen(true)}
                 >
                   Delete
@@ -431,7 +400,6 @@ export function SettingsScreen({
               trailing={
                 <Button
                   variant="destructive"
-                  size="sm"
                   onClick={() => setLinksOpen(true)}
                 >
                   Reset
@@ -441,12 +409,12 @@ export function SettingsScreen({
           </div>
         </SettingsGroup>
         {deleteError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {deleteError}
           </p>
         ) : null}
         {linksError ? (
-          <p role="alert" className="mt-2 text-base text-destructive">
+          <p role="alert" className="mt-2 text-md text-destructive">
             {linksError}
           </p>
         ) : null}
@@ -512,7 +480,7 @@ export function SettingsScreen({
             ))}
           </div>
           {portalError ? (
-            <p role="alert" className="text-base text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {portalError}
             </p>
           ) : null}

@@ -92,6 +92,9 @@ const EXPECTED_IDS = [
   "modal",
   "empty-state",
   "number",
+  "type-scale",
+  "radius",
+  "control-heights",
 ]
 
 const EXPECTED_TITLES = [
@@ -146,6 +149,9 @@ const EXPECTED_TITLES = [
   "Modal",
   "Empty state",
   "Number",
+  "Type scale",
+  "Radius",
+  "Control heights",
 ]
 
 describe("component guide registry", () => {

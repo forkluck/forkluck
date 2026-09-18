@@ -234,7 +234,7 @@ export function AddComponentsDialog({
                       <TableCell className="max-w-0 truncate text-md">
                         {target.name}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-md text-muted-foreground">
                         {targetDetail(target)}
                       </TableCell>
                       <TableCell>
@@ -298,13 +298,13 @@ export function AddComponentsDialog({
         </TableFrame>
 
         {tooMany ? (
-          <p className="text-xs text-destructive">
+          <p className="text-md text-destructive">
             At most {remaining} more can be added.
           </p>
         ) : null}
 
         <DialogFooter className="items-center sm:justify-between">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             {chosen.length} selected
           </span>
           <div className="flex gap-2">

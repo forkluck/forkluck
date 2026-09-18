@@ -25,7 +25,7 @@ import type { MeasurementSystem } from "@/lib/business-settings"
 /** Method and scope stay beneath the operational tables. */
 function ForecastBasis({ busyBasis }: { busyBasis: "history" | "spread" }) {
   return (
-    <details className="text-sm text-muted-foreground">
+    <details className="text-md text-muted-foreground">
       <summary className="w-fit cursor-pointer rounded-lg underline decoration-border underline-offset-4">
         How the forecast works
       </summary>
@@ -81,17 +81,15 @@ export function MenuForecast({
       actions={<ForecastActions forecast={forecast} />}
     >
       <header>
-        <h2 className="text-xl font-semibold tracking-tight">
-          Production forecast
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h2 className="text-md font-semibold">Production forecast</h2>
+        <p className="mt-1 text-md text-muted-foreground">
           Expected demand and the preparation it requires, before subtracting
           stock or food already prepared.
         </p>
       </header>
 
       {forecast.coverage.unresolvedMenuItems > 0 ? (
-        <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-sm text-muted-foreground">
+        <div className="rounded-xl border border-border bg-fill-soft px-4 py-3 text-md text-muted-foreground">
           {forecast.coverage.unresolvedMenuItems} Menu{" "}
           {forecast.coverage.unresolvedMenuItems === 1 ? "row is" : "rows are"}{" "}
           not linked and cannot be forecast.
@@ -107,11 +105,11 @@ export function MenuForecast({
           <h2 className="text-md font-semibold text-foreground">
             Unresolved demand paths
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-md text-muted-foreground">
             These quantities need a yield, conversion, purchase unit, or Product
             link before they can be completed.
           </p>
-          <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+          <ul className="mt-3 space-y-1.5 text-md text-muted-foreground">
             {forecast.unresolved.map((row, index) => (
               <li
                 key={`${row.code}:${row.path?.join(":") ?? row.menuItemId ?? index}`}
@@ -125,7 +123,7 @@ export function MenuForecast({
         </section>
       ) : null}
       <p
-        className="text-xs text-muted-foreground"
+        className="text-md text-muted-foreground"
         data-testid="forecast-money-caption"
       >
         {moneyCaption(forecast)}

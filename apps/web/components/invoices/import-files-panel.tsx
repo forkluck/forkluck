@@ -9,6 +9,7 @@ import { GoogleDrivePickerButton } from "@/components/invoices/google-drive-pick
 import type { QueueItem } from "@/components/invoices/receipt-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { linkClassName } from "@/components/ui/link"
 import type { GoogleDriveConfig, PickedDriveFile } from "@/lib/google-drive"
 import { cn } from "@/lib/utils"
 
@@ -95,7 +96,7 @@ export function ImportFilesPanel({
         <p className="text-md leading-5 font-medium text-foreground">
           Drop invoice PDFs or receipt photos here
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           PDF up to 5 MB, photo up to 8 MB
         </p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
@@ -125,15 +126,15 @@ export function ImportFilesPanel({
           </Button>
         </div>
         {config ? (
-          <p className="mt-1 text-xs leading-[1.55] text-faint">
+          <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             In Drive, open the month folder and select the PDFs inside it.
             Folders themselves can&apos;t be imported.
           </p>
         ) : null}
         {driveConnectHref ? (
-          <p className="mt-1 text-xs leading-[1.55] text-faint">
+          <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             Receipts in a Google Drive folder?{" "}
-            <Link href={driveConnectHref} className="underline">
+            <Link href={driveConnectHref} className={linkClassName}>
               Connect the folder
             </Link>{" "}
             once and every receipt dropped in it is read for you.
@@ -142,9 +143,9 @@ export function ImportFilesPanel({
       </div>
 
       {reconnectNeeded ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-xs text-warning-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md text-warning-foreground">
           Google Drive access expired mid-import.
-          <Button type="button" size="sm" onClick={onReconnect}>
+          <Button type="button" onClick={onReconnect}>
             Reconnect Google Drive
           </Button>
         </div>
@@ -152,7 +153,7 @@ export function ImportFilesPanel({
 
       {queue.length > 0 ? (
         <div className="rounded-xl border border-border">
-          <p className="border-b border-border px-3.5 py-2.5 text-xs font-medium text-muted-foreground">
+          <p className="border-b border-border px-3.5 py-2.5 text-md font-medium text-muted-foreground">
             {busyCount > 0
               ? `Reading ${busyCount} of ${queue.length} file${queue.length === 1 ? "" : "s"}…`
               : `${queue.length} file${queue.length === 1 ? "" : "s"}`}
@@ -163,18 +164,17 @@ export function ImportFilesPanel({
                 key={item.key}
                 className="flex items-center gap-2 border-b border-muted px-3.5 py-2 last:border-b-0"
               >
-                <span className="min-w-0 flex-1 truncate text-base">
+                <span className="min-w-0 flex-1 truncate text-md">
                   {item.fileName}
                 </span>
                 {item.status === "error" ? (
                   <>
-                    <span className="truncate text-xs text-destructive">
+                    <span className="truncate text-md text-destructive">
                       {item.error}
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
-                      size="xs"
                       onClick={() => onRetryQueued(item)}
                     >
                       <RotateCcw strokeWidth={1.8} aria-hidden="true" />
@@ -184,7 +184,6 @@ export function ImportFilesPanel({
                       <Button
                         type="button"
                         variant="ghost"
-                        size="xs"
                         onClick={() => onSkipQueued(item)}
                       >
                         Skip this file in future
@@ -194,7 +193,6 @@ export function ImportFilesPanel({
                 ) : (
                   <Badge
                     variant={item.status === "done" ? "success" : "default"}
-                    size="row"
                   >
                     {item.status === "done"
                       ? "Parsed"
@@ -210,11 +208,11 @@ export function ImportFilesPanel({
       ) : null}
 
       {inboxNotice ? (
-        <p className="text-xs text-muted-foreground">{inboxNotice}</p>
+        <p className="text-md text-muted-foreground">{inboxNotice}</p>
       ) : null}
 
       {error ? (
-        <p className="text-base text-destructive" role="alert">
+        <p className="text-md text-destructive" role="alert">
           {error}
         </p>
       ) : null}

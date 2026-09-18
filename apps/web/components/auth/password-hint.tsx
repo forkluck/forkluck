@@ -23,8 +23,8 @@ export function PasswordHint({
       data-slot="password-hint"
       data-met={met || undefined}
       className={cn(
-        "flex items-center gap-1 text-xs leading-none transition-colors",
-        met ? "text-success" : "text-faint",
+        "flex items-center gap-1 text-md leading-none transition-colors",
+        met ? "text-success" : "text-muted-foreground",
         className
       )}
     >

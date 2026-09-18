@@ -51,7 +51,7 @@ export function PrimoFeedback({
   return (
     <>
       <Button
-        size="icon-sm"
+        size="icon-compact"
         variant="ghost"
         aria-label="Good response"
         aria-pressed={rating === "up"}
@@ -62,7 +62,7 @@ export function PrimoFeedback({
         <ThumbsUp aria-hidden="true" />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon-compact"
         variant="ghost"
         aria-label="Bad response"
         aria-pressed={rating === "down"}
@@ -72,7 +72,7 @@ export function PrimoFeedback({
         <ThumbsDown aria-hidden="true" />
       </Button>
       {error && !open ? (
-        <span role="alert" className="text-xs text-destructive">
+        <span role="alert" className="text-md text-destructive">
           {error}
         </span>
       ) : null}
@@ -95,7 +95,7 @@ export function PrimoFeedback({
             onChange={(event) => setComment(event.target.value)}
           />
           {error ? (
-            <p role="alert" className="text-sm text-destructive">
+            <p role="alert" className="text-md text-destructive">
               {error}
             </p>
           ) : null}

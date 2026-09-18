@@ -63,7 +63,7 @@ const employeeHelper = dataTableColumns<EmployeeRow>()
 
 /** The 13.5px secondary cell every column but the name uses. */
 function Cell({ children }: { children: React.ReactNode }) {
-  return <span className="text-base text-muted-foreground">{children}</span>
+  return <span className="text-md text-muted-foreground">{children}</span>
 }
 
 function exportHours(
@@ -294,7 +294,7 @@ export function LaborWorkspace({
               {row.original.name}
             </Link>
             {row.original.excludedFromCost ? (
-              <span className="shrink-0 text-2xs text-muted-foreground">
+              <span className="shrink-0 text-md text-muted-foreground">
                 Not costed
               </span>
             ) : null}
@@ -318,11 +318,7 @@ export function LaborWorkspace({
               {weeks?.length ? (
                 <Tooltip>
                   <TooltipTrigger
-                    render={
-                      <Badge variant="warning" size="row">
-                        OT
-                      </Badge>
-                    }
+                    render={<Badge variant="warning">OT</Badge>}
                   />
                   <TooltipContent className="flex-col items-start gap-0.5">
                     {weeks.map((week) => (

@@ -33,7 +33,7 @@ export default function AuthLayout({
       </div>
 
       <div className="flex grow basis-0 flex-col justify-end">
-        <p className="px-6 py-8 text-center text-xs leading-5 text-faint">
+        <p className="px-6 py-8 text-center text-md leading-5 text-muted-foreground">
           By continuing, you agree to our{" "}
           <a href={`${MARKETING_ORIGIN}/terms`} className={legalLinkClassName}>
             Terms of Service

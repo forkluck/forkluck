@@ -179,7 +179,7 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
           {/* 54px field row over a light rule; the Esc chip names the exit. */}
           <div className="flex h-[54px] shrink-0 items-center gap-2.5 border-b border-muted px-[18px]">
             <Search
-              className="size-[17px] shrink-0 text-faint"
+              className="size-[17px] shrink-0 text-muted-foreground"
               strokeWidth={2}
               aria-hidden="true"
             />
@@ -224,9 +224,9 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
                   go(flat[Math.max(resolvedActiveIndex, 0)].href)
                 }
               }}
-              className="h-full min-w-0 flex-1 border-0 bg-transparent text-lg text-foreground outline-none placeholder:text-faint"
+              className="h-full min-w-0 flex-1 border-0 bg-transparent text-lg text-foreground outline-none placeholder:text-muted-foreground"
             />
-            <Kbd aria-hidden="true" className="shrink-0 text-faint">
+            <Kbd aria-hidden="true" className="shrink-0 text-muted-foreground">
               Esc
             </Kbd>
           </div>
@@ -238,13 +238,13 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
             className="min-h-0 flex-1 overflow-y-auto p-1.5"
           >
             {refreshing && groups.length === 0 ? (
-              <p className="px-3 py-4 text-base text-muted-foreground">
+              <p className="px-3 py-4 text-md text-muted-foreground">
                 Searching…
               </p>
             ) : groups.length > 0 ? (
               groups.map((group) => (
                 <div key={group.label}>
-                  <div className="px-3 pt-2 pb-1 text-2xs leading-none font-medium text-faint">
+                  <div className="px-3 pt-2 pb-1 text-xs leading-none font-medium text-muted-foreground">
                     {group.label}
                   </div>
                   {group.items.map((item) => {
@@ -266,7 +266,7 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
                           {item.label}
                         </span>
                         {item.meta ? (
-                          <span className="shrink-0 text-sm text-faint">
+                          <span className="shrink-0 text-md text-muted-foreground">
                             {item.meta}
                           </span>
                         ) : null}
@@ -276,7 +276,7 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
                 </div>
               ))
             ) : (
-              <p className="px-3 py-7 text-center text-base text-faint">
+              <p className="px-3 py-7 text-center text-md text-muted-foreground">
                 Nothing matches that yet.
               </p>
             )}

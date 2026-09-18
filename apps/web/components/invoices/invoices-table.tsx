@@ -32,7 +32,7 @@ const helper = dataTableColumns<InvoiceRow>()
 
 /** The connector that brought the invoice in, when it was not a file. */
 function SourceBadge() {
-  return <Badge size="row">Supplier import</Badge>
+  return <Badge>Supplier import</Badge>
 }
 
 function invoiceLabel(row: InvoiceRow): string {
@@ -140,7 +140,7 @@ export function InvoicesTable({
         // cleanly inside the proportional column.
         cell: (info) => (
           <span className="flex items-center gap-1.5">
-            <span className="tabular block max-w-[132px] truncate text-base text-muted-foreground">
+            <span className="tabular block max-w-[132px] truncate text-md text-muted-foreground">
               {invoiceLabel(info.row.original)}
             </span>
             {info.row.original.source === "connector" ? <SourceBadge /> : null}
@@ -152,7 +152,7 @@ export function InvoicesTable({
         header: "Date",
         meta: { className: "w-[12%]", align: "right" },
         cell: (info) => (
-          <span className="text-base whitespace-nowrap text-muted-foreground">
+          <span className="text-md whitespace-nowrap text-muted-foreground">
             {formatCalendarDayMonth(info.row.original.invoiceDate)}
           </span>
         ),
@@ -162,7 +162,7 @@ export function InvoicesTable({
         header: "Lines",
         meta: { className: "w-[9%]", align: "right" },
         cell: (info) => (
-          <span className="text-base text-muted-foreground">
+          <span className="text-md text-muted-foreground">
             {info.row.original.lineCount}
           </span>
         ),
@@ -174,7 +174,7 @@ export function InvoicesTable({
         cell: (info) => (
           <span
             className={cn(
-              "text-base whitespace-nowrap",
+              "text-md whitespace-nowrap",
               info.row.original.totalCents < 0
                 ? "text-destructive"
                 : "text-muted-foreground"
@@ -254,7 +254,7 @@ export function InvoicesTable({
               <p className="text-md leading-5 font-medium text-foreground">
                 Drop files to upload
               </p>
-              <p className="text-sm text-muted-foreground">{dropHint}</p>
+              <p className="text-md text-muted-foreground">{dropHint}</p>
             </div>
           ) : null
         }

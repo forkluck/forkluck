@@ -46,6 +46,7 @@ import { servingUnitOptions } from "@/lib/unit-registry"
 import { formatWeight } from "@/lib/units"
 import { cn } from "@/lib/utils"
 import { useDialogTarget } from "@/components/ui/dialog"
+import { linkClassName } from "@/components/ui/link"
 
 const SERVING_UNITS = servingUnitOptions()
 
@@ -154,9 +155,9 @@ function YieldCell({
             event.currentTarget.blur()
           }
         }}
-        className="h-7 w-16 pr-5 pl-2 text-sm tabular-nums md:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="h-7 w-16 pr-5 pl-2 text-md tabular-nums md:text-md [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
-      <InputAffix side="end" className="right-2 text-xs">
+      <InputAffix side="end" className="right-2 text-md">
         %
       </InputAffix>
     </InputGroup>
@@ -377,30 +378,30 @@ export function RecipeNutritionView({
   return (
     <div className="w-full max-w-[1180px] pb-16">
       {/* The printed page is the preview alone, so it names the recipe. */}
-      <h2 className="mb-4 hidden text-xl font-semibold print:block">
+      <h2 className="mb-4 hidden text-md font-semibold print:block">
         {recipeTitle}
       </h2>
       <div className="flex flex-col gap-2 print:hidden">
-        <p className="text-base leading-[1.55] text-muted-foreground">
+        <p className="text-md leading-[1.55] text-muted-foreground">
           This estimate is worked out from the nutrition data linked to each
           ingredient and the weight that survives cooking.
         </p>
-        <p className="text-base leading-[1.55] text-muted-foreground">
+        <p className="text-md leading-[1.55] text-muted-foreground">
           It is a preview, not a verified label. Accuracy on a package is the
           seller’s responsibility, so have the numbers verified before you print
           one.
         </p>
         {owner ? null : (
-          <p className="text-base leading-[1.55] text-muted-foreground">
+          <p className="text-md leading-[1.55] text-muted-foreground">
             Shared with you to read. The recipe owner links nutrition data.
           </p>
         )}
       </div>
 
       {owner ? (
-        <div className="mt-5 grid max-w-[720px] gap-4 text-sm sm:grid-cols-2 print:hidden">
+        <div className="mt-5 grid max-w-[720px] gap-4 text-md sm:grid-cols-2 print:hidden">
           <div className="flex flex-col gap-2">
-            <span className="flex h-5 items-center gap-2 text-sm leading-none font-medium text-foreground">
+            <span className="flex h-5 items-center gap-2 text-md leading-none font-medium text-foreground">
               Serving size
               {servingHint ? (
                 <Tooltip>
@@ -409,7 +410,7 @@ export function RecipeNutritionView({
                       <span
                         role="img"
                         aria-label={servingHint}
-                        className="flex size-5 items-center justify-center rounded-md text-warning"
+                        className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                       />
                     }
                   >
@@ -472,7 +473,7 @@ export function RecipeNutritionView({
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="flex h-5 items-center gap-2 text-sm leading-none font-medium text-foreground">
+            <span className="flex h-5 items-center gap-2 text-md leading-none font-medium text-foreground">
               Package size
               <Tooltip>
                 <TooltipTrigger
@@ -546,7 +547,7 @@ export function RecipeNutritionView({
       ) : null}
 
       {lines.length === 0 ? (
-        <p className="mt-6 text-base text-muted-foreground print:hidden">
+        <p className="mt-6 text-md text-muted-foreground print:hidden">
           Add ingredients on the Recipe tab and the preview builds from them
           here.
         </p>
@@ -639,7 +640,7 @@ export function RecipeNutritionView({
                                     <span
                                       role="img"
                                       aria-label={flag}
-                                      className="flex size-5 items-center justify-center rounded-md text-warning"
+                                      className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
                                     />
                                   }
                                 >
@@ -680,7 +681,7 @@ export function RecipeNutritionView({
                             ) : null}
                           </span>
                         </TableCell>
-                        <TableCell className="max-w-0 min-w-[180px] text-base">
+                        <TableCell className="max-w-0 min-w-[180px] text-md">
                           <SourceCell
                             line={line}
                             owner={owner}
@@ -688,7 +689,7 @@ export function RecipeNutritionView({
                             onAdd={() => setDialogFor(line.ingredientPublicId)}
                           />
                         </TableCell>
-                        <TableCell className="text-base tabular-nums">
+                        <TableCell className="text-md tabular-nums">
                           {canEdit ? (
                             <YieldCell
                               key={`${line.itemId}:${percentFor(line)}`}
@@ -705,7 +706,7 @@ export function RecipeNutritionView({
                             `${percentFor(line)}%`
                           )}
                         </TableCell>
-                        <TableCell className="text-right text-base whitespace-nowrap tabular-nums">
+                        <TableCell className="text-right text-md whitespace-nowrap tabular-nums">
                           {line.netGrams === null
                             ? "–"
                             : formatWeight(line.netGrams, measurementSystem)}
@@ -774,10 +775,7 @@ function SourceCell({
     if (line.status !== "subrecipeIncomplete")
       return <span className="text-muted-foreground">From its own recipe</span>
     return subrecipeHref ? (
-      <GuardedLink
-        href={subrecipeHref}
-        className="text-primary underline-offset-4 hover:underline"
-      >
+      <GuardedLink href={subrecipeHref} className={linkClassName}>
         Incomplete, open recipe
       </GuardedLink>
     ) : (
@@ -800,7 +798,7 @@ function SourceCell({
     if (!owner) {
       return (
         <span className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
+          <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-xs font-medium text-secondary-foreground">
             {nutritionSourceLabel(line.linkedSource ?? "usda_fdc")}
           </span>
           <span className="truncate">{line.linkedDescription}</span>
@@ -809,7 +807,7 @@ function SourceCell({
     }
     return (
       <span className="flex min-w-0 items-center gap-2">
-        <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-2xs font-medium text-secondary-foreground">
+        <span className="shrink-0 rounded-sm bg-secondary px-[7px] py-0.5 text-xs font-medium text-secondary-foreground">
           {nutritionSourceLabel(line.linkedSource ?? "usda_fdc")}
         </span>
         {/* The description is the edit affordance; tables carry no icons. */}
@@ -830,7 +828,7 @@ function SourceCell({
     <button
       type="button"
       onClick={onAdd}
-      className="whitespace-nowrap text-primary underline-offset-4 hover:underline"
+      className={cn("whitespace-nowrap", linkClassName)}
     >
       Add nutrition
     </button>

@@ -5,7 +5,7 @@ import * as React from "react"
 import { inputClassName } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-const labelClassName = "text-sm leading-none font-medium text-foreground"
+const labelClassName = "text-md leading-none font-medium text-foreground"
 
 /**
  * A label-above field: a 13px medium label on its own line, an 8px gap, then

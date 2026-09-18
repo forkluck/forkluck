@@ -158,7 +158,6 @@ function AmbiguityChoices({
           key={choice.ref}
           disabled={disabled}
           type="button"
-          size="sm"
           variant="secondary"
           onClick={() =>
             onChoose(`@${choice.label}`, [
@@ -229,9 +228,9 @@ function TurnStatus({
   })
   const loaded = tools.some(primoToolSucceeded)
   return status === "aborted" ? (
-    <p className="text-xs text-muted-foreground">Response stopped</p>
+    <p className="text-md text-muted-foreground">Response stopped</p>
   ) : status === "error" ? (
-    <p className="text-xs text-destructive">
+    <p className="text-md text-destructive">
       {loaded
         ? "Results loaded; response interrupted. Try again."
         : tools.some((part) => getToolName(part) === "draft_recipe")
@@ -447,7 +446,7 @@ export function PrimoConversation({
                       }}
                     >
                       <label
-                        className="block text-sm font-medium"
+                        className="block text-md font-medium"
                         htmlFor={`edit-${message.id}`}
                       >
                         Edit question
@@ -465,12 +464,12 @@ export function PrimoConversation({
                           })
                         }
                       />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-md text-muted-foreground">
                         Resending replaces this question and removes all later
                         messages. This question’s attached files are kept.
                       </p>
                       {activeEdit.error ? (
-                        <p role="alert" className="text-xs text-destructive">
+                        <p role="alert" className="text-md text-destructive">
                           {activeEdit.error}
                         </p>
                       ) : null}
@@ -603,7 +602,7 @@ export function PrimoConversation({
                       }
                       return (
                         <div key={part.toolCallId} className="space-y-2">
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-md text-muted-foreground">
                             {result.changes.join(" ")}
                           </p>
                           <PrimoRecipeDraftCard draft={result.draft} />
@@ -652,7 +651,7 @@ export function PrimoConversation({
                         onClick={() => {
                           if (isDesktop) setOpen(true)
                         }}
-                        className="inline-flex h-8 items-center gap-2 rounded-lg border border-border px-3 text-sm"
+                        className="inline-flex h-8 items-center gap-2 rounded-lg border border-border px-3 text-md"
                       >
                         <ArrowUpRight className="size-4" aria-hidden="true" />
                         {getToolName(part) === "show_recipe_batch"
@@ -684,7 +683,7 @@ export function PrimoConversation({
                   >
                     {message.createdAt || message.metadata?.createdAt ? (
                       <time
-                        className="mr-1 text-2xs"
+                        className="mr-1 text-md text-muted-foreground"
                         dateTime={new Date(
                           message.createdAt ?? message.metadata!.createdAt!
                         ).toISOString()}
@@ -701,7 +700,7 @@ export function PrimoConversation({
                       <>
                         <Button
                           type="button"
-                          size="icon-sm"
+                          size="icon-compact"
                           variant="ghost"
                           aria-label={
                             message.role === "user"
@@ -724,7 +723,7 @@ export function PrimoConversation({
                         {message.role === "user" ? (
                           <Button
                             type="button"
-                            size="icon-sm"
+                            size="icon-compact"
                             variant="ghost"
                             aria-label="Edit question"
                             disabled={Boolean(activeEdit)}
@@ -753,7 +752,7 @@ export function PrimoConversation({
                         message.id === lastMessage?.id ? (
                           <Button
                             type="button"
-                            size="icon-sm"
+                            size="icon-compact"
                             variant="ghost"
                             aria-label={
                               error ||
@@ -775,7 +774,6 @@ export function PrimoConversation({
                         {home && error && message.id === lastMessage?.id ? (
                           <Button
                             variant="ghost"
-                            size="xs"
                             render={<GuardedLink href="/analytics" />}
                           >
                             Open Analytics
@@ -796,11 +794,10 @@ export function PrimoConversation({
             <WorkingMarker />
           ) : null}
           {error && lastMessage?.role !== "assistant" ? (
-            <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive">
+            <div className="rounded-lg bg-destructive-fill px-3 py-2.5 text-md leading-5 text-destructive-strong">
               <p>Primo couldn’t finish this question. Retry to continue.</p>
               <Button
                 type="button"
-                size="xs"
                 variant="ghost"
                 disabled={Boolean(activeEdit)}
                 onClick={() => void regenerate()}
@@ -812,7 +809,6 @@ export function PrimoConversation({
               {home ? (
                 <Button
                   variant="ghost"
-                  size="xs"
                   className="mt-1"
                   render={<GuardedLink href="/analytics" />}
                 >
@@ -827,12 +823,12 @@ export function PrimoConversation({
         {announcement}
       </span>
       {suggestionError ? (
-        <p role="alert" className="px-4 text-xs text-destructive">
+        <p role="alert" className="px-4 text-md text-destructive">
           {suggestionError}
         </p>
       ) : null}
       {copyError ? (
-        <p role="alert" className="px-4 text-xs text-destructive">
+        <p role="alert" className="px-4 text-md text-destructive">
           {copyError}
         </p>
       ) : null}
@@ -851,7 +847,7 @@ export function PrimoConversation({
       />
       {empty && !conversationError ? (
         <div className="mt-6 px-3 pb-5 max-md:group-has-[textarea:focus]/primo:hidden">
-          <p className="mb-2 px-1 text-xs text-muted-foreground">
+          <p className="mb-2 px-1 text-md text-muted-foreground">
             Try one of these
           </p>
           <ul className="flex flex-col gap-1">
@@ -861,7 +857,7 @@ export function PrimoConversation({
                   type="button"
                   disabled={conversationLoading}
                   onClick={() => void sendSuggestion(question)}
-                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-base hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
+                  className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left text-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:text-muted-foreground disabled:hover:bg-transparent"
                 >
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">
                     <Icon

@@ -79,7 +79,7 @@ export default async function EmployeeLaborPage({
           </PageParents>
           <PageTitle>
             <span className="truncate">{employee.name}</span>
-            {employee.isActive ? null : <Badge size="row">Archived</Badge>}
+            {employee.isActive ? null : <Badge>Archived</Badge>}
           </PageTitle>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -137,7 +137,7 @@ export default async function EmployeeLaborPage({
 
       <div className="mb-4 flex items-baseline justify-between gap-4">
         <h2 className="text-md leading-5 font-semibold">Shift history</h2>
-        <p className="text-xs text-muted-foreground tabular-nums">
+        <p className="text-md text-muted-foreground tabular-nums">
           {pagination.total === 1
             ? "1 recorded shift"
             : `${pagination.total} recorded shifts`}

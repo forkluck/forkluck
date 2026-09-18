@@ -26,7 +26,7 @@ const span = (start: string, end: string) =>
   `${formatCalendarDayMonth(start)}–${formatCalendarDayMonth(end)}`
 
 /** A blank cell that still reads as a value, never as a missing render. */
-const blank = <span className="text-faint">–</span>
+const blank = <span className="text-muted-foreground">–</span>
 
 /** The level and the season as two plain sentences from the basis. */
 export function levelSentences(basis: MenuForecast["basis"]): string[] {
@@ -110,7 +110,7 @@ export function DemandByWeek({ forecast }: { forecast: MenuForecast }) {
           </TableBody>
         </Table>
       </TableFrame>
-      <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+      <div className="mt-3 space-y-1 text-md text-muted-foreground">
         {sentences.map((sentence) => (
           <p key={sentence}>{sentence}</p>
         ))}

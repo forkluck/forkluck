@@ -51,7 +51,7 @@ function ColorField({
     >
       <label
         htmlFor={inputId}
-        className="text-sm leading-none font-medium text-foreground"
+        className="text-md leading-none font-medium text-foreground"
       >
         {label}
       </label>

@@ -478,7 +478,7 @@ export function BusinessDefaultsDialog({
                   />
                 </div>
                 {payrollAverage !== null ? (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-md text-muted-foreground">
                     {`Payroll average: ${formatCents(payrollAverage, initialSettings.currencyCode)}/h`}{" "}
                     <button
                       type="button"

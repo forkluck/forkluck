@@ -65,7 +65,7 @@ export function SalesActivity({
         >
           Imports
         </h2>
-        <p className="mt-1 text-base text-muted-foreground">
+        <p className="mt-1 text-md text-muted-foreground">
           Source files are kept for duplicate protection and undo. Only tracked
           products appear in Forkluck reporting.
         </p>
@@ -80,21 +80,21 @@ export function SalesActivity({
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="truncate text-md">{item.fileName}</p>
                     {item.undoneAt ? (
-                      <Badge variant="outline">Undone</Badge>
+                      <Badge>Undone</Badge>
                     ) : (
                       <Badge>
                         {item.channel === "square" ? "Square" : "Shopify"}
                       </Badge>
                     )}
                     {item.source === "api" && !item.undoneAt ? (
-                      <Badge variant="outline">Synced</Badge>
+                      <Badge>Synced</Badge>
                     ) : null}
                   </div>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-md text-muted-foreground">
                     {formatDateTime(item.createdAt, timezone)} ·{" "}
                     {item.importedCount.toLocaleString()} source lines
                   </p>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-md text-muted-foreground">
                     {item.duplicateCount} duplicates · {item.skippedCount}{" "}
                     skipped · {item.ignoredCount} ignored{" "}
                     {item.ignoredCount === 1 ? "SKU" : "SKUs"}
@@ -104,7 +104,6 @@ export function SalesActivity({
                   <Button
                     type="button"
                     variant={armedId === item.id ? "destructive" : "outline"}
-                    size="sm"
                     disabled={pendingId !== null}
                     onClick={() => void undo(item.id)}
                   >
@@ -119,12 +118,12 @@ export function SalesActivity({
             ))}
           </div>
         ) : (
-          <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-base text-muted-foreground">
+          <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-md text-muted-foreground">
             No sales imports yet.
           </p>
         )}
         {error ? (
-          <p className="mt-2 text-base text-destructive" role="alert">
+          <p className="mt-2 text-md text-destructive" role="alert">
             {error}
           </p>
         ) : null}
@@ -137,7 +136,7 @@ export function SalesActivity({
         >
           Sync runs
         </h2>
-        <p className="mt-1 text-base text-muted-foreground">
+        <p className="mt-1 text-md text-muted-foreground">
           Each pass a channel made over its own products and sales.
         </p>
         {syncRuns.length ? (
@@ -155,16 +154,16 @@ export function SalesActivity({
                     <Badge
                       variant={
                         run.status === "failed"
-                          ? "destructive"
+                          ? "critical"
                           : run.status === "succeeded"
                             ? "success"
-                            : "outline"
+                            : "default"
                       }
                     >
                       {RUN_STATUS_LABELS[run.status]}
                     </Badge>
                   </div>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-md text-muted-foreground">
                     Queued {formatDateTime(new Date(run.queuedAt), timezone)}
                     {run.finishedAt
                       ? ` · finished ${formatDateTime(new Date(run.finishedAt), timezone)}`
@@ -175,7 +174,6 @@ export function SalesActivity({
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     disabled={retryingId !== null}
                     onClick={() => void retry(run.id)}
                   >
@@ -186,7 +184,7 @@ export function SalesActivity({
             ))}
           </div>
         ) : (
-          <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-base text-muted-foreground">
+          <p className="mt-2.5 rounded-xl border border-border px-4 py-8 text-center text-md text-muted-foreground">
             No sync runs yet.
           </p>
         )}

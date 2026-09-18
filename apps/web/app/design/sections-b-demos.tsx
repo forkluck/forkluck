@@ -579,7 +579,6 @@ export function TableDemo() {
               </TableCell>
               <TableCell>
                 <Badge
-                  size="row"
                   variant={row.status === "Costed" ? "success" : "warning"}
                 >
                   {row.status}
@@ -610,13 +609,13 @@ export function DividerDemo() {
     <Row>
       <Labeled label="Horizontal" className="w-64">
         <div className="flex w-full flex-col gap-3">
-          <p className="text-base">Yield 24 croissants</p>
+          <p className="text-md">Yield 24 croissants</p>
           <Separator />
-          <p className="text-base">Batch time 3 h 20 m</p>
+          <p className="text-md">Batch time 3 h 20 m</p>
         </div>
       </Labeled>
       <Labeled label="Vertical">
-        <div className="flex h-5 items-center gap-3 text-base">
+        <div className="flex h-5 items-center gap-3 text-md">
           <span>Bakery</span>
           <Separator orientation="vertical" />
           <span>Pastry</span>
@@ -652,12 +651,12 @@ export function BoxDemo() {
         </Card>
       </Labeled>
       <Labeled label="Soft panel" className="w-72">
-        <div className="w-full rounded-lg bg-fill-soft px-4 py-3 text-base">
+        <div className="w-full rounded-lg bg-fill-soft px-4 py-3 text-md">
           Yield 24 croissants at $1.14 each
         </div>
       </Labeled>
       <Labeled label="Grey panel" className="w-72">
-        <div className="w-full rounded-lg bg-secondary px-4 py-3 text-base">
+        <div className="w-full rounded-lg bg-secondary px-4 py-3 text-md">
           Yield 24 croissants at $1.14 each
         </div>
       </Labeled>
@@ -670,16 +669,16 @@ export function StackDemo() {
     <Row>
       <Labeled label="gap-2">
         <div className="flex flex-col gap-2">
-          <p className="text-base">Bread flour</p>
-          <p className="text-base">European butter</p>
-          <p className="text-base">Sea salt</p>
+          <p className="text-md">Bread flour</p>
+          <p className="text-md">European butter</p>
+          <p className="text-md">Sea salt</p>
         </div>
       </Labeled>
       <Labeled label="gap-4">
         <div className="flex flex-col gap-4">
-          <p className="text-base">Mix and rest</p>
-          <p className="text-base">Laminate</p>
-          <p className="text-base">Proof and bake</p>
+          <p className="text-md">Mix and rest</p>
+          <p className="text-md">Laminate</p>
+          <p className="text-md">Proof and bake</p>
         </div>
       </Labeled>
       <Labeled label="Action row">
@@ -735,7 +734,7 @@ export function ScrollBoxDemo() {
     <ScrollArea className="h-48 w-full max-w-80 rounded-md border border-border">
       <div className="flex flex-col gap-2 p-3">
         {SUPPLIERS.map((supplier) => (
-          <p key={supplier} className="text-base">
+          <p key={supplier} className="text-md">
             {supplier}
           </p>
         ))}
@@ -764,7 +763,9 @@ export function PopoverDemo() {
       <PopoverTrigger render={<Button variant="outline">Columns</Button>} />
       <PopoverContent className="w-56">
         <div className="flex flex-col gap-3">
-          <p className="text-2xs font-medium text-faint">Visible columns</p>
+          <p className="text-xs font-medium text-muted-foreground">
+            Visible columns
+          </p>
           <Field orientation="horizontal">
             <Checkbox id="guide-column-cost" defaultChecked />
             <FieldLabel htmlFor="guide-column-cost">Cost per unit</FieldLabel>
@@ -963,7 +964,7 @@ export function NumberDemo() {
       </div>
       <Row>
         <Labeled label="Hero numeral">
-          <p className="text-4xl leading-none font-semibold tracking-[-0.02em] tabular-nums">
+          <p className="text-2xl leading-none font-semibold tracking-[-0.02em] tabular-nums">
             $1.14
           </p>
         </Labeled>
@@ -975,7 +976,7 @@ export function NumberDemo() {
           </dl>
         </Labeled>
         <Labeled label="Aligned column">
-          <div className="flex w-56 flex-col gap-1 text-base tabular-nums">
+          <div className="flex w-56 flex-col gap-1 text-md tabular-nums">
             <div className="flex justify-between">
               <span>Bread flour</span>
               <span>$4.20</span>

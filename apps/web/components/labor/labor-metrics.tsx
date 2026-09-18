@@ -93,7 +93,7 @@ export function LaborMetrics({
           pointChange === null ? null : (
             <Badge
               aria-label={`Labor share vs ${against}`}
-              variant={pointChange <= 0 ? "success" : "destructive"}
+              variant={pointChange <= 0 ? "success" : "critical"}
               className="whitespace-nowrap"
             >
               {formatSignedPoints(pointChange)}

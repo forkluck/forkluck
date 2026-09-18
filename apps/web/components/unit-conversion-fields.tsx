@@ -62,7 +62,7 @@ export function UnitConversionFields({
         )}
       >
         {ROWS.map(([label, key]) => (
-          <span key={key} className="text-sm font-medium">
+          <span key={key} className="text-md font-medium">
             {label}
           </span>
         ))}
@@ -76,7 +76,7 @@ export function UnitConversionFields({
             <div key={key} className="relative min-w-0">
               <label
                 htmlFor={`${idPrefix}-${key}`}
-                className="mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+                className="mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
               >
                 {label}
               </label>

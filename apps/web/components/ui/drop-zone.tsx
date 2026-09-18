@@ -110,7 +110,7 @@ function DropZone({
       />
       <p className="text-md text-foreground">Drop files here</p>
       {children ? (
-        <p className="text-xs text-muted-foreground">{children}</p>
+        <p className="text-md text-muted-foreground">{children}</p>
       ) : null}
       <Button
         variant="outline"

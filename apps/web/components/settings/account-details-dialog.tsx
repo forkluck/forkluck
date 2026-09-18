@@ -101,7 +101,7 @@ export function AccountDetailsDialog({
                 id="account-email"
                 value={user.email}
                 readOnly
-                className="bg-fill-soft text-faint"
+                className="bg-fill-soft text-muted-foreground"
               />
               <FieldDescription>
                 Your email is how you sign in and cannot be changed here.

@@ -29,11 +29,11 @@ function NoticeBanner({
       {...props}
     >
       <TriangleAlert
-        className="size-4 shrink-0 text-warning"
+        className="size-4 shrink-0 text-warning-foreground"
         strokeWidth={1.8}
         aria-hidden="true"
       />
-      <span className="min-w-0 flex-1 truncate text-base text-warning-foreground">
+      <span className="min-w-0 flex-1 truncate text-md text-warning-foreground">
         {children}
       </span>
       {action}

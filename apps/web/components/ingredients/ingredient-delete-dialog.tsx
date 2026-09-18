@@ -101,7 +101,7 @@ export function DeleteWithUsageDialog({
 
         {blocked ? (
           <div className="mt-4">
-            <p className="text-base leading-[1.55] text-destructive">
+            <p className="text-md leading-[1.55] text-destructive">
               {blockedMessage}
             </p>
             <div className="mt-3 divide-y divide-muted border-y border-muted">
@@ -109,7 +109,7 @@ export function DeleteWithUsageDialog({
                 <GuardedLink
                   key={recipe.id}
                   href={`/recipes/${recipe.publicId}`}
-                  className="flex min-h-9 items-center gap-2.5 px-1 text-base font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
+                  className="flex min-h-9 items-center gap-2.5 px-1 text-md font-medium text-foreground outline-none hover:bg-fill-soft focus-visible:underline"
                 >
                   <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground">
                     <FileText
@@ -124,7 +124,7 @@ export function DeleteWithUsageDialog({
             </div>
           </div>
         ) : error ? (
-          <p className="mt-4 text-base text-destructive">{error}</p>
+          <p className="mt-4 text-md text-destructive">{error}</p>
         ) : null}
 
         <div className="mt-5 flex gap-2">

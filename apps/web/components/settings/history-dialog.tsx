@@ -88,7 +88,7 @@ function FilterColumn({
 }) {
   return (
     <div>
-      <p className="mb-1 text-2xs font-semibold text-muted-foreground">
+      <p className="mb-1 text-xs font-semibold text-muted-foreground">
         {title}
       </p>
       {options.map((option) => (
@@ -96,7 +96,7 @@ function FilterColumn({
           key={option.key}
           className="flex h-8 items-center justify-between gap-3"
         >
-          <span className="text-base text-foreground">{option.label}</span>
+          <span className="text-md text-foreground">{option.label}</span>
           <Switch
             size="sm"
             aria-label={option.label}
@@ -285,9 +285,7 @@ export function HistoryDialog({
         <DialogHeader className="flex-row items-center justify-between gap-3">
           <DialogTitle>History</DialogTitle>
           <Popover>
-            <PopoverTrigger
-              render={<Button type="button" variant="outline" size="sm" />}
-            >
+            <PopoverTrigger render={<Button type="button" variant="outline" />}>
               <Filter strokeWidth={1.8} aria-hidden="true" />
               Filter
             </PopoverTrigger>
@@ -318,7 +316,7 @@ export function HistoryDialog({
         {/* Six rows of the 56px rhythm before the list starts scrolling. */}
         <div className="-mt-0.5 max-h-[336px] overflow-y-auto border-t border-muted">
           {rows === null && !error ? (
-            <p className="flex h-14 items-center text-md text-faint">
+            <p className="flex h-14 items-center text-md text-muted-foreground">
               Loading history…
             </p>
           ) : null}
@@ -344,13 +342,12 @@ export function HistoryDialog({
                 timeZone={timezone}
                 trailing={
                   importRow?.undoneAt ? (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-md text-muted-foreground">
                       Undone
                     </span>
                   ) : importRow?.canUndo ? (
                     <Button
                       type="button"
-                      size="sm"
                       variant={
                         armedId === importRow.id ? "destructive" : "outline"
                       }
@@ -370,14 +367,14 @@ export function HistoryDialog({
           })}
           {rows?.length ? (
             <div ref={sentinel} className="py-2 text-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-md text-muted-foreground">
                 {current?.nextBefore ? "Loading more…" : "End of history"}
               </span>
             </div>
           ) : null}
         </div>
         {undoError ? (
-          <p className="mt-2 text-xs text-destructive" role="alert">
+          <p className="mt-2 text-md text-destructive" role="alert">
             {undoError}
           </p>
         ) : null}

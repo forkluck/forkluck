@@ -11,19 +11,19 @@ export function StatusDot({
 }) {
   const text = {
     on: "text-success",
-    off: "text-faint",
+    off: "text-muted-foreground",
     attention: "text-warning-foreground",
     error: "text-destructive",
   }[tone]
   const dot = {
     on: "bg-success",
     off: "bg-disabled-foreground",
-    attention: "bg-warning",
+    attention: "bg-warning-foreground",
     error: "bg-destructive",
   }[tone]
 
   return (
-    <span className={cn("flex items-center gap-[5px] text-xs", text)}>
+    <span className={cn("flex items-center gap-[5px] text-md", text)}>
       <span
         aria-hidden="true"
         className={cn("size-1.5 flex-none rounded-full", dot)}

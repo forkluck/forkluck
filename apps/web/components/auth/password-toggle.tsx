@@ -19,8 +19,8 @@ export function PasswordToggle({
   return (
     <Button
       type="button"
-      variant="quiet"
-      size="icon-sm"
+      variant="ghost"
+      size="icon-compact"
       onClick={onToggle}
       aria-label={visible ? "Hide password" : "Show password"}
       aria-pressed={visible}

@@ -12,10 +12,10 @@ export function GuestRecipeView({ recipe }: { recipe: GuestRecipe }) {
   return (
     <GuestPage>
       <div className="grid gap-2">
-        <h1 className="text-3xl leading-tight font-semibold tracking-[-0.01em]">
+        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.01em]">
           {recipe.title}
         </h1>
-        <p className="text-base text-muted-foreground">
+        <p className="text-md text-muted-foreground">
           Shared by {recipe.ownerName}
         </p>
         {recipe.description ? (

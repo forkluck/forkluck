@@ -59,7 +59,7 @@ const SupplierProductsDialog = dynamic(
 /** Secondary cell: 13.5px `--muted-foreground`, one step under the name. */
 function Cell({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-base whitespace-nowrap text-muted-foreground">
+    <span className="text-md whitespace-nowrap text-muted-foreground">
       {children}
     </span>
   )
@@ -241,7 +241,7 @@ export function IngredientsTable({
               {row.original.name}
             </GuardedLink>
             {row.original.status === "archived" ? (
-              <span className="shrink-0 text-2xs text-muted-foreground">
+              <span className="shrink-0 text-md text-muted-foreground">
                 Archived
               </span>
             ) : null}

@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 /** Native selects, wearing the input's chrome: 32px, radius 8, one hairline. */
 export const SELECT_CLASS =
-  "h-8 rounded-md border border-input bg-card px-2 text-sm text-foreground outline-none not-focus:hover:border-line-strong focus-visible:border-foreground"
+  "h-8 rounded-md border border-input bg-card px-2 text-md text-foreground outline-none not-focus:hover:border-line-strong focus-visible:border-foreground"
 
 const PACK_UNIT_GROUPS = packUnitGroups()
 
@@ -143,7 +143,7 @@ export function LineCostFields({
         className="tabular"
       />
       {countPack ? (
-        <p className="text-xs leading-[1.55] text-muted-foreground sm:col-span-3">
+        <p className="text-md leading-[1.55] text-muted-foreground sm:col-span-3">
           Recipes measured by weight will need the weight of one; set it on the
           ingredient’s Conversions.
         </p>

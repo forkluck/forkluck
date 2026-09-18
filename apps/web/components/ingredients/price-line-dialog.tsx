@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { Input } from "@/components/ui/input"
+import { linkClassName } from "@/components/ui/link"
 import {
   MISSING_PURCHASE_PRICE,
   parsePurchaseUnit,
@@ -102,7 +103,7 @@ function isPantry(entry: PriceListEntry): boolean {
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="flex-none rounded-sm bg-muted px-[7px] py-0.5 text-2xs font-medium text-muted-foreground">
+    <span className="flex-none rounded-sm bg-muted px-[7px] py-0.5 text-xs font-medium text-muted-foreground">
       {children}
     </span>
   )
@@ -125,7 +126,7 @@ function ChoiceButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="flex h-9 w-full items-center gap-2.5 rounded-md border border-input bg-card px-3 text-left text-base font-medium text-foreground outline-none focus-visible:border-foreground enabled:hover:border-line-strong disabled:cursor-not-allowed disabled:text-disabled-foreground"
+      className="flex h-9 w-full items-center gap-2.5 rounded-md border border-input bg-card px-3 text-left text-md font-medium text-foreground outline-none focus-visible:border-foreground enabled:hover:border-line-strong disabled:cursor-not-allowed disabled:text-disabled-foreground"
     >
       {icon}
       {children}
@@ -391,7 +392,7 @@ function PickerBody({
             autoFocus
           />
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-md text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -419,19 +420,19 @@ function PickerBody({
               <span className="truncate text-md">{selected.name}</span>
               <Tag>{entryTag(selected)}</Tag>
             </span>
-            <span className="flex-none text-base text-muted-foreground tabular-nums">
+            <span className="flex-none text-md text-muted-foreground tabular-nums">
               {entryPrice(selected, unitPriceUnit, currencyCode)}
             </span>
           </div>
-          <p className="mt-4 text-sm font-medium">
+          <p className="mt-4 text-md font-medium">
             Use this match across your account?
           </p>
-          <p className="mt-1 text-xs leading-[1.55] text-muted-foreground">
+          <p className="mt-1 text-md leading-[1.55] text-muted-foreground">
             Confirming teaches every recipe that “{lineName}” means “
             {selected.name}”. Nothing is linked until you confirm.
           </p>
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-md text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -470,7 +471,7 @@ function PickerBody({
         }}
       >
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <p className="text-xs leading-[1.55] text-muted-foreground">
+          <p className="text-md leading-[1.55] text-muted-foreground">
             Saving adds your price and remembers this line name for every recipe
             in your account.
           </p>
@@ -492,7 +493,7 @@ function PickerBody({
             />
           </div>
           {problem ? (
-            <p className="mt-3 text-xs text-destructive" role="alert">
+            <p className="mt-3 text-md text-destructive" role="alert">
               {problem}
             </p>
           ) : null}
@@ -515,7 +516,7 @@ function PickerBody({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="relative shrink-0">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-faint"
+          className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-muted-foreground"
           strokeWidth={2}
           aria-hidden="true"
         />
@@ -546,11 +547,11 @@ function PickerBody({
         {entries.length === 0 ? (
           <div className="flex items-center gap-2.5 rounded-lg border border-border bg-fill-soft px-3.5 py-3">
             <CircleAlert
-              className="size-4 shrink-0 text-faint"
+              className="size-4 shrink-0 text-muted-foreground"
               strokeWidth={1.8}
               aria-hidden="true"
             />
-            <span className="text-sm text-muted-foreground">
+            <span className="text-md text-muted-foreground">
               No match in your ingredients yet
             </span>
           </div>
@@ -567,7 +568,7 @@ function PickerBody({
                   <span className="truncate text-md">{entry.name}</span>
                   <Tag>{entryTag(entry)}</Tag>
                 </span>
-                <span className="flex-none text-base text-muted-foreground tabular-nums">
+                <span className="flex-none text-md text-muted-foreground tabular-nums">
                   {entryPrice(entry, unitPriceUnit, currencyCode)}
                 </span>
               </button>
@@ -577,7 +578,7 @@ function PickerBody({
       </div>
 
       {problem ? (
-        <p className="mt-3 text-xs text-destructive" role="alert">
+        <p className="mt-3 text-md text-destructive" role="alert">
           {problem}
         </p>
       ) : null}
@@ -653,12 +654,7 @@ export function PriceLineDialog({
         <DialogTrigger render={trigger} />
       ) : trigger === null ? null : (
         <DialogTrigger
-          render={
-            <button
-              type="button"
-              className="text-primary underline-offset-4 outline-none hover:underline"
-            />
-          }
+          render={<button type="button" className={linkClassName} />}
         >
           add price
         </DialogTrigger>

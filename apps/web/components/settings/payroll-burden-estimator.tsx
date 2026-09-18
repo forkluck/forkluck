@@ -117,7 +117,7 @@ export function PayrollBurdenEstimator({
 
   return (
     <div className="rounded-xl border border-border p-4">
-      <p className="text-base font-semibold text-foreground">
+      <p className="text-md font-semibold text-foreground">
         Estimate it for a US kitchen
       </p>
 
@@ -187,7 +187,7 @@ export function PayrollBurdenEstimator({
 
       {breakdown ? (
         <>
-          <dl className="mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-sm tabular-nums">
+          <dl className="mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-md tabular-nums">
             <dt className="text-muted-foreground">
               Social Security and Medicare
             </dt>
@@ -217,7 +217,6 @@ export function PayrollBurdenEstimator({
           <Button
             type="button"
             variant="outline"
-            size="sm"
             className="mt-3"
             onClick={() => onApply(breakdown.totalPercent)}
           >
@@ -225,7 +224,7 @@ export function PayrollBurdenEstimator({
           </Button>
         </>
       ) : (
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-4 text-md text-muted-foreground">
           Fill in the three figures above to see the estimate.
         </p>
       )}

@@ -85,7 +85,7 @@ export function InlineNameField({
         }}
       />
       {form.errors[NAME_FIELD] || form.failure ? (
-        <p role="alert" className="mt-1 text-xs text-destructive">
+        <p role="alert" className="mt-1 text-md text-destructive">
           {form.errors[NAME_FIELD] ?? form.failure?.message}
         </p>
       ) : null}

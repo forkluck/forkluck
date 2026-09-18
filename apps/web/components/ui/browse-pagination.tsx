@@ -20,7 +20,7 @@ export function BrowsePagination({
     <nav
       aria-label="Pagination"
       aria-busy={pending}
-      className="mt-4 flex min-h-8 flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm text-muted-foreground"
+      className="mt-4 flex min-h-8 flex-wrap items-center justify-between gap-x-3 gap-y-1 text-md text-muted-foreground"
     >
       <span className="tabular-nums">
         Page {pagination.page} of {Math.max(pagination.pages, 1)} ·{" "}

@@ -138,10 +138,10 @@ function ReceiptView({
   return (
     <div className="rounded-xl border border-border p-5">
       <Badge variant="success">Import complete</Badge>
-      <h3 className="mt-3 text-xl leading-none font-semibold tracking-[-0.01em]">
+      <h3 className="mt-3 text-md leading-none font-semibold">
         {receipt.invoices} invoice{receipt.invoices === 1 ? "" : "s"} saved
       </h3>
-      <p className="mt-2 text-base leading-[1.55] text-muted-foreground">
+      <p className="mt-2 text-md leading-[1.55] text-muted-foreground">
         {receipt.priceUpdated > 0
           ? "Price updates are in the ingredients Import history and can be undone there. "
           : ""}
@@ -157,10 +157,10 @@ function ReceiptView({
           ["Ignored", receipt.ignored],
         ].map(([label, value]) => (
           <div key={label}>
-            <dt className="text-xs font-medium text-muted-foreground">
+            <dt className="text-md font-medium text-muted-foreground">
               {label}
             </dt>
-            <dd className="tabular mt-1.5 text-xl leading-none font-semibold">
+            <dd className="tabular mt-1.5 text-lg leading-none font-semibold">
               {value}
             </dd>
           </div>
@@ -827,7 +827,7 @@ function ImportBody({
             : `Reading ${busyCount} of ${queue.length} file${queue.length === 1 ? "" : "s"}…`}
         </p>
         {!seeding ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-md text-muted-foreground">
             Scanned receipts can take a few minutes to read and check.
           </p>
         ) : null}
@@ -988,7 +988,7 @@ function ImportBody({
             <Notice>Skipped: an identical invoice already exists</Notice>
           ) : null}
           {error ? (
-            <p className="text-base text-destructive" role="alert">
+            <p className="text-md text-destructive" role="alert">
               {error}
             </p>
           ) : null}

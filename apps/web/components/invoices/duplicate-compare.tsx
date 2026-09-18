@@ -5,6 +5,7 @@ import Link from "next/link"
 
 import { useBusinessSettings } from "@/components/business-settings-provider"
 import { Button } from "@/components/ui/button"
+import { linkClassName } from "@/components/ui/link"
 import { formatCalendarDayMonth, formatDateTime } from "@/lib/datetime"
 import type { ExistingInvoiceRef } from "@/lib/invoice-import"
 import { formatCents } from "@/lib/money"
@@ -73,13 +74,13 @@ export function DuplicateCompare({
 
   return (
     <div className="rounded-xl border border-warning-border bg-warning-fill p-3.5">
-      <p className="text-xs leading-[1.55] text-warning-foreground">
+      <p className="text-md leading-[1.55] text-warning-foreground">
         An invoice like this one is already on file.
       </p>
-      <dl className="mt-3 grid grid-cols-[minmax(0,84px)_minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
+      <dl className="mt-3 grid grid-cols-[minmax(0,84px)_minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-md">
         <span />
-        <span className="text-2xs font-medium text-ink-soft">This receipt</span>
-        <span className="text-2xs font-medium text-ink-soft">
+        <span className="text-xs font-medium text-ink-soft">This receipt</span>
+        <span className="text-xs font-medium text-ink-soft">
           Already imported
         </span>
         {rows.map((row) => {
@@ -109,7 +110,7 @@ export function DuplicateCompare({
       </dl>
       <Link
         href={`/invoices/${existing.publicId}`}
-        className="mt-2.5 inline-block text-xs text-primary underline-offset-4 hover:underline"
+        className={cn("mt-2.5 inline-block", linkClassName)}
       >
         Open the imported invoice
       </Link>
@@ -131,7 +132,7 @@ export function DuplicateCompare({
           Replace
         </Button>
       </div>
-      <p className="mt-2 text-xs leading-[1.55] text-muted-foreground">
+      <p className="mt-2 text-md leading-[1.55] text-muted-foreground">
         To keep both, change the number, date or total above, then Import.
         Replace deletes the imported invoice and imports this one.
       </p>

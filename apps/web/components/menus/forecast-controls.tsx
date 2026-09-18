@@ -77,7 +77,7 @@ export function ForecastControls({
         />
         <ToolbarSpacer />
         <div className="flex flex-wrap items-center gap-2 md:contents">
-          <span className="text-sm text-muted-foreground">Plan for</span>
+          <span className="text-md text-muted-foreground">Plan for</span>
           <TabPills
             aria-label="Plan"
             className="w-fit"

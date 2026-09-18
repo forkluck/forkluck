@@ -203,7 +203,7 @@ function InvoiceItemSearch({
   }
 
   const messageClassName =
-    "flex h-9 items-center px-2.5 text-xs text-muted-foreground"
+    "flex h-9 items-center px-2.5 text-md text-muted-foreground"
 
   return (
     <div className="relative" ref={fieldRef}>
@@ -216,7 +216,7 @@ function InvoiceItemSearch({
         className="pr-9"
         trailing={
           <Search
-            className="pointer-events-none size-[15px] text-faint"
+            className="pointer-events-none size-[15px] text-muted-foreground"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -303,7 +303,7 @@ function InvoiceItemSearch({
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => pick(item)}
                 className={cn(
-                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent",
+                  "flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent",
                   index === highlighted && "bg-accent"
                 )}
               >
@@ -326,8 +326,6 @@ function InvoiceItemSearch({
                   </Tooltip>
                 ) : null}
                 <Badge
-                  variant="secondary"
-                  size="row"
                   // A long supplier name gives way to the description rather
                   // than truncating the one thing the cook is reading for.
                   className="max-w-[40%] shrink"
@@ -348,11 +346,11 @@ function InvoiceItemSearch({
 
 /** The three typed fields wear the same 32px box as every other short input. */
 const typedFieldClassName =
-  "h-9 w-full rounded-md border border-input bg-card px-3 text-md tabular-nums outline-none placeholder:text-faint hover:border-line-strong focus:border-foreground"
+  "h-9 w-full rounded-md border border-input bg-card px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground hover:border-line-strong focus:border-foreground"
 
 /** Each column repeats its heading on a narrow screen, where the row splits. */
 const columnLabelClassName =
-  "mb-2 block border-b border-line-strong pb-2 text-sm font-medium sm:sr-only"
+  "mb-2 block border-b border-line-strong pb-2 text-md font-medium sm:sr-only"
 
 /** Yield is a percent, so it needs less room than the other two. Named once so
  *  the heading row and the fields under it cannot drift apart. */
@@ -491,9 +489,9 @@ export function PurchaseUnitFields({
             columnsClassName
           )}
         >
-          <span className="text-sm font-medium">Cost ({currencyCode})</span>
-          <span className="text-sm font-medium">Size</span>
-          <span className="flex items-center gap-1.5 text-sm font-medium">
+          <span className="text-md font-medium">Cost ({currencyCode})</span>
+          <span className="text-md font-medium">Size</span>
+          <span className="flex items-center gap-1.5 text-md font-medium">
             Yield
             <Tooltip>
               <TooltipTrigger
@@ -562,7 +560,7 @@ export function PurchaseUnitFields({
                     onCommit?.(value)
                   }
                 }}
-                className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
               />
               <UnitCombobox
                 id={unitId}
@@ -595,7 +593,7 @@ export function PurchaseUnitFields({
               />
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground"
+                className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-md text-muted-foreground"
               >
                 %
               </span>
@@ -624,14 +622,12 @@ export function PurchaseUnitFields({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center gap-2">
-                        <span className="truncate text-base font-medium">
+                        <span className="truncate text-md font-medium">
                           {item.title}
                         </span>
-                        {used ? (
-                          <Badge size="row">Used for costing</Badge>
-                        ) : null}
+                        {used ? <Badge>Used for costing</Badge> : null}
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-faint">
+                      <p className="mt-0.5 truncate text-md text-muted-foreground">
                         {item.supplier} {item.externalId} ·{" "}
                         {item.rawSize ||
                           `${item.purchaseSize ?? "–"} ${unitShort(item.purchaseUnit)}`}{" "}
@@ -646,7 +642,6 @@ export function PurchaseUnitFields({
                       {!used ? (
                         <Button
                           type="button"
-                          size="sm"
                           variant="ghost"
                           disabled={
                             item.purchaseSize === null || !item.purchaseUnit
@@ -658,7 +653,6 @@ export function PurchaseUnitFields({
                       ) : null}
                       <Button
                         type="button"
-                        size="sm"
                         variant="ghost"
                         className="text-destructive"
                         onClick={() => disconnectItem(item.id)}
@@ -671,7 +665,7 @@ export function PurchaseUnitFields({
               })}
             </div>
           ) : (
-            <p className="px-3.5 py-3 text-xs text-muted-foreground">
+            <p className="px-3.5 py-3 text-md text-muted-foreground">
               No invoice prices connected yet.
             </p>
           )}
@@ -679,7 +673,7 @@ export function PurchaseUnitFields({
           {picked ? (
             <div className="border-t border-muted bg-fill-soft px-3.5 py-3">
               <div className="flex flex-wrap items-end gap-3">
-                <div className="min-w-[180px] flex-1 pb-1 text-xs text-muted-foreground">
+                <div className="min-w-[180px] flex-1 pb-1 text-md text-muted-foreground">
                   <span className="font-medium text-foreground">
                     {picked.description}
                   </span>
@@ -748,7 +742,7 @@ export function PurchaseUnitFields({
       ) : null}
 
       {value.disconnectInvoicePriceId ? (
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="mt-2 text-md text-muted-foreground">
           The cost above stays as it is. Saving only drops the link to the
           invoice item, and price history is kept.
         </p>

@@ -180,7 +180,7 @@ export function SupplierItemsTable({
       </Toolbar>
 
       {error ? (
-        <p role="alert" className="mb-3 text-base text-destructive">
+        <p role="alert" className="mb-3 text-md text-destructive">
           {error}
         </p>
       ) : null}
@@ -190,7 +190,7 @@ export function SupplierItemsTable({
         <div className="overflow-x-auto">
           <div
             className={cn(
-              "grid h-11 items-center border-b border-border px-3.5 text-2xs font-medium text-ink-soft",
+              "grid h-11 items-center border-b border-border px-3.5 text-xs font-medium text-ink-soft",
               grid
             )}
           >
@@ -208,7 +208,7 @@ export function SupplierItemsTable({
           </div>
 
           {rows.length === 0 ? (
-            <p className="px-3.5 py-6 text-center text-base text-muted-foreground">
+            <p className="px-3.5 py-6 text-center text-md text-muted-foreground">
               {view === "ignored"
                 ? "Nothing is being skipped."
                 : "No supplier items match that filter."}
@@ -226,25 +226,25 @@ export function SupplierItemsTable({
                   <span className="block truncate text-md text-foreground">
                     {itemCode(row)}
                   </span>
-                  <span className="block truncate text-xs text-muted-foreground">
+                  <span className="block truncate text-md text-muted-foreground">
                     {row.hasCode ? row.title : "No code"} · {row.supplierName}
                   </span>
                 </span>
                 {isMappingRow(row) ? (
                   <>
-                    <span className="truncate text-base text-muted-foreground tabular-nums">
+                    <span className="truncate text-md text-muted-foreground tabular-nums">
                       {packSize(row)}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {formatCents(row.packPriceCents, currencyCode)}
                     </span>
-                    <span className="truncate text-base text-foreground">
+                    <span className="truncate text-md text-foreground">
                       {row.ingredientName}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {row.timesSeen}
                     </span>
-                    <span className="text-right text-base text-muted-foreground tabular-nums">
+                    <span className="text-right text-md text-muted-foreground tabular-nums">
                       {formatCalendarDayMonth(row.lastInvoiceDate)}
                     </span>
                     <RowActionsMenu label={`Actions for ${itemCode(row)}`}>
@@ -267,7 +267,7 @@ export function SupplierItemsTable({
                   </>
                 ) : (
                   <>
-                    <span className="truncate text-base text-muted-foreground tabular-nums">
+                    <span className="truncate text-md text-muted-foreground tabular-nums">
                       {row.rawSize || "—"}
                     </span>
                     <RowActionsMenu label={`Actions for ${itemCode(row)}`}>

@@ -124,7 +124,7 @@ export function SyncStatus({
   )
 
   return (
-    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+    <div className="flex items-center gap-3 text-md text-muted-foreground">
       <span title={connection.title} className="flex items-center gap-[7px]">
         <span
           aria-hidden="true"
@@ -139,7 +139,6 @@ export function SyncStatus({
         <Button
           type="button"
           variant="outline"
-          size="sm"
           onClick={queueSync}
           aria-busy={syncing}
           disabled={syncing}

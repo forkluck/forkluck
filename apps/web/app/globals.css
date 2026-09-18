@@ -40,18 +40,21 @@
   --color-destructive-tint: var(--destructive-tint);
   --color-success: var(--success);
   --color-success-fill: var(--success-fill);
-  --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-fill: var(--warning-fill);
   --color-warning-fill-hover: var(--warning-fill-hover);
   --color-warning-border: var(--warning-border);
   --color-warning-strong: var(--warning-strong);
   --color-warning-hover: var(--warning-hover);
+  --color-caution: var(--caution);
+  --color-caution-foreground: var(--caution-foreground);
+  --color-caution-fill: var(--caution-fill);
+  --color-info: var(--info);
+  --color-info-fill: var(--info-fill);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-faint: var(--faint);
   --color-ink-soft: var(--ink-soft);
   --color-fill-soft: var(--fill-soft);
   --color-secondary-strong: var(--secondary-strong);
@@ -87,21 +90,16 @@
   --radius-xl: 14px;
   --radius-2xl: 18px;
 
-  /* Type scale: ten steps and nothing between them (AGENTS.md "Type scale").
-     Tailwind's own sizes are cleared so `text-sm` is 13px here, not 14, and
-     no step carries a line-height: `normal` stays the default and prose opts
-     in with `leading-*`. tests/type-scale-pins.test.ts refuses any other size. */
+  /* Type scale: four steps and nothing between them (AGENTS.md "Type scale").
+     Tailwind's own sizes are cleared so `text-sm`, `text-base` and `text-xl`
+     do not exist here, and no step carries a line-height: `normal` stays the
+     default and a paragraph opts in with `leading-[1.55]`.
+     tests/type-scale-pins.test.ts refuses any other size. */
   --text-*: initial;
-  --text-2xs: 11.5px;
-  --text-xs: 12.5px;
-  --text-sm: 13px;
-  --text-base: 13.5px;
+  --text-xs: 12px;
   --text-md: 14px;
   --text-lg: 16px;
-  --text-xl: 17px;
   --text-2xl: 24px;
-  --text-3xl: 26px;
-  --text-4xl: 42px;
   /* No elevation anywhere in this design: depth is one 1px --border hairline
      plus the modal scrim. Zeroing the scale means a stray shadow-* utility
      can't reintroduce a drop shadow. */
@@ -138,8 +136,10 @@
 }
 
 :root {
-  /* Neutrals are the handoff palette and nothing else — ten values, no other
-     greys. The app frame, cards, modals and popovers are all white; --canvas
+  /* Neutrals are the handoff palette and nothing else — nine values, no other
+     greys. There is one secondary text colour, --muted-foreground; the tertiary
+     "faint" grey was retired, so placeholders, sub-lines and unit suffixes sit
+     on it too. The app frame, cards, modals and popovers are all white; --canvas
      is the ground the frame sits on, so it is the only surface that is not
      white or a fill. */
   /* A literal hex declares a colour; `var(--other)` declares that this name is
@@ -168,13 +168,9 @@
   --secondary-foreground: var(--muted-foreground);
   --secondary-strong: #e4e4e7;
   --muted: var(--secondary);
-  /* Clears 4.5:1 on white and on --muted for normal-size text. */
+  /* Clears 4.5:1 on white and on --muted for normal-size text. Also the
+     placeholder, sub-line and unit-suffix colour. */
   --muted-foreground: #52525b;
-  /* Tertiary — placeholders, sub-lines, unit suffixes. It used to sit at
-     3.42:1 with a note saying not to use it for text that has to be read on
-     its own, which the affixes inside an input ($, %, / hour) do: they name
-     the unit the number is in. Now 4.83:1 on white, 4.67:1 on --fill-soft. */
-  --faint: #71717a;
   /* Table headers and the primary button's hover fill. */
   --ink-soft: #3f3f46;
   /* Table row hover and inset panel fill, a half step above --muted. */
@@ -187,12 +183,15 @@
      state reads differently from an action. The theory cost contrast: the
      cooler green failed AA on its own fill (3.55:1 against 11.5px text).
      One pair each now, and the red is the vivid one, which is the point of a
-     destructive action. --destructive-fill sits a shade lighter than the
-     #fef3f2 it replaced so a red chip's text clears 4.5:1 (4.60) against the
-     brighter ink; white on --destructive is 4.83:1, --success on its own fill
-     4.65:1. */
+     destructive action. --destructive is the ink on white and the fill of the
+     critical button (white on it is 4.83:1). --destructive-fill is the pale
+     ground for a red badge, the critical text button and a red menu row; the
+     ink on that ground is --destructive-strong, because --destructive itself
+     lands at 4.1:1 there. --success on its own fill is 4.65:1. */
   --destructive: #d92d20;
-  --destructive-fill: #fef8f7;
+  /* On this fill the ink is --destructive-strong (5.6:1); --destructive itself
+     is 4.1:1 here, under AA for 14px text. */
+  --destructive-fill: #ffe7e6;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */
@@ -205,13 +204,20 @@
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning: #c8880c;
-  --warning-foreground: #6b4708;
-  --warning-fill: #fdf8ec;
-  --warning-fill-hover: #f8eed6;
-  --warning-border: #f6e6bf;
-  --warning-strong: #e3cd97;
-  --warning-hover: #fbf1d8;
+  --warning-foreground: #7c2d12;
+  --warning-fill: #fed7aa;
+  --warning-fill-hover: #fdba74;
+  --warning-border: #fdba74;
+  --warning-strong: #fb923c;
+  --warning-hover: #ffedd5;
+  /* Caution: the yellow, a step under warning. Ink 8.1:1 on its fill. */
+  --caution: #ca8a04;
+  --caution-foreground: #713f12;
+  --caution-fill: #fef9c3;
+  /* Info: the blue as a label. --brand itself is 3.5:1 on --brand-fill, so
+     the info ink is the deeper blue, 5.2:1 there. */
+  --info: #1d4ed8;
+  --info-fill: var(--brand-fill);
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;
@@ -289,10 +295,10 @@
        shorthand, which resets line-height to the font's own metric — Inter's
        normal, ~1.21. Preflight's 1.5 inflates a two-line settings row by 10px
        and every stacked table cell with it, which is why the first pass drifted
-       screen to screen. `normal` is the app's default leading; prose opts back
-       in explicitly (leading-[1.55] help text, [1.6] dialog copy, [1.65] empty
-       states, [1.7] the recipe textarea). Auth sits outside this design and
-       restores 1.5 on its own root. */
+       screen to screen. `normal` is the app's default leading; a paragraph
+       opts back in with the one prose leading, leading-[1.55], at body size
+       and 500 (the recipe textarea keeps 1.7). Auth sits outside this design
+       and restores 1.5 on its own root. */
     line-height: normal;
   }
 

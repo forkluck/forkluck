@@ -45,7 +45,7 @@ export function GuestPage({ children }: { children: React.ReactNode }) {
         <div className="mx-auto grid w-full max-w-[44rem] gap-10">
           {children}
 
-          <footer className="text-sm text-muted-foreground">
+          <footer className="text-md text-muted-foreground">
             Shared with you on Forkluck
           </footer>
         </div>

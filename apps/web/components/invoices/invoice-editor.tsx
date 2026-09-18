@@ -68,7 +68,7 @@ const BUILT_IN_PAYMENT_METHODS: Array<{ value: string; label: string }> = [
 ]
 
 const cellInput =
-  "h-8 rounded-md border-transparent bg-transparent px-2 text-base md:text-base enabled:not-focus:hover:border-transparent"
+  "h-8 rounded-md border-transparent bg-transparent px-2 text-md md:text-md enabled:not-focus:hover:border-transparent"
 
 type LineState = {
   key: string
@@ -246,10 +246,10 @@ function TotalLine({
 }) {
   return (
     <div className="flex justify-between gap-6 py-1">
-      <span className={cn("text-base", strong && "font-medium")}>{label}</span>
+      <span className={cn("text-md", strong && "font-medium")}>{label}</span>
       <span
         className={cn(
-          "tabular text-base whitespace-nowrap",
+          "tabular text-md whitespace-nowrap",
           strong && "font-medium"
         )}
       >
@@ -606,16 +606,11 @@ export function InvoiceEditor({
     <div className="flex flex-col gap-5">
       {conflict ? (
         <SaveBanner text={conflict.message}>
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => window.location.reload()}
-          >
+          <Button type="button" onClick={() => window.location.reload()}>
             Reload
           </Button>
           <Button
             type="button"
-            size="sm"
             variant="outline"
             onClick={() => {
               discardDraft()
@@ -630,7 +625,6 @@ export function InvoiceEditor({
         <SaveBanner text="This device kept changes that never reached the server.">
           <Button
             type="button"
-            size="sm"
             onClick={() => {
               applyRecovery(restorable as InvoiceRecovery)
               dismissRestore()
@@ -638,19 +632,14 @@ export function InvoiceEditor({
           >
             Restore
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={discardDraft}
-          >
+          <Button type="button" variant="outline" onClick={discardDraft}>
             Discard
           </Button>
         </SaveBanner>
       ) : null}
       {initial && imported ? (
         <div className="flex items-center gap-3">
-          <Badge size="row">
+          <Badge>
             {initial.source === "connector"
               ? "Supplier import"
               : initial.driveFileId
@@ -662,7 +651,7 @@ export function InvoiceEditor({
               href={initial.driveWebViewLink}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center gap-1 text-md text-muted-foreground hover:text-foreground"
             >
               Open in Drive
               <ExternalLink
@@ -785,7 +774,7 @@ export function InvoiceEditor({
                 <TableRow className="h-11 hover:!bg-transparent">
                   <TableCell
                     colSpan={columnCount}
-                    className="pl-3 text-base text-muted-foreground"
+                    className="pl-3 text-md text-muted-foreground"
                   >
                     No lines yet.
                   </TableCell>
@@ -899,14 +888,13 @@ export function InvoiceEditor({
                             {line.needsReview ? (
                               <>
                                 <TriangleAlert
-                                  className="size-[13px] shrink-0 text-warning"
+                                  className="size-[13px] shrink-0 text-warning-foreground"
                                   strokeWidth={1.9}
                                   aria-hidden="true"
                                 />
                                 <Button
                                   type="button"
                                   variant="outline"
-                                  size="sm"
                                   disabled={dirty}
                                   title={
                                     dirty
@@ -1111,7 +1099,7 @@ export function InvoiceEditor({
           {mismatch ? (
             <p
               role="status"
-              className="mt-1 text-xs leading-[1.55] text-muted-foreground"
+              className="mt-1 text-md leading-[1.55] text-muted-foreground"
             >
               {`Lines add up to ${formatCents(
                 lineSumCents + taxCents,

@@ -122,7 +122,7 @@ export function LoginForm({
           />
           <Link
             href="/forgot-password"
-            className="self-start rounded-sm text-sm leading-5 text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
+            className="self-start rounded-sm text-md leading-5 text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
           >
             Forgot your password?
           </Link>
@@ -135,7 +135,7 @@ export function LoginForm({
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" pending={pending} className="mt-6">
+      <Button type="submit" pending={pending} className="mt-6">
         Sign in
       </Button>
 
@@ -144,7 +144,7 @@ export function LoginForm({
           <AuthMethodsSeparator />
           <GoogleButton next={next} />
           {lastMethod === "google" ? (
-            <p className="mt-3 text-center text-xs text-muted-foreground">
+            <p className="mt-3 text-center text-md text-muted-foreground">
               You signed in with Google last time
             </p>
           ) : null}
