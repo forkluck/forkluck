@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils"
  *   3 tertiary    → `secondary`  filled grey (the Actions button).
  *   4 quaternary  → `ghost`      no chrome until hover — icon buttons live here.
  * `destructive` sits outside the scale, for dangerous actions; `filter` is the
- * toolbar pill (quiet label, ink value); `link` is the link-shaped action, ink
- * on a hairline underline that firms on hover.
+ * toolbar pill (quiet label, ink value). There is no link variant: an action
+ * that reads as a link is a `<button>` wearing `linkClassName` from ui/link.
  *
  * Every button, text or icon-only, is `rounded-lg`, so a toolbar of mixed
  * sizes shares one corner. Text buttons are 32px tall, `0 12px`, 500 13px,
@@ -80,7 +80,6 @@ const buttonVariants = cva(
         // A link-shaped action is ink, never blue — blue is data and
         // selection. The hairline underline firms to ink on hover, the way
         // the outline button's border does.
-        link: "font-normal text-primary underline-offset-4 hover:underline",
       },
       size: {
         default:

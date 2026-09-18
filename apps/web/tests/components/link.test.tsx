@@ -20,6 +20,18 @@ describe("TextLink", () => {
     expect(link.getAttribute("href")).toBe("/ingredients")
     expect(link.className).toContain("text-primary")
     expect(link.className).toContain("hover:underline")
+    expect(link.className).toContain("text-md")
     expect(linkClassName).not.toMatch(/(^|\s)underline(\s|$)/)
+  })
+
+  it("has a critical tone in the red, and no third one", () => {
+    render(
+      <TextLink href="/recipes/1" tone="critical">
+        Delete
+      </TextLink>
+    )
+    expect(screen.getByRole("link", { name: "Delete" }).className).toContain(
+      "text-destructive"
+    )
   })
 })

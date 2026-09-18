@@ -13,7 +13,6 @@ import { BatchSizeSelect } from "@/components/recipes/batch-size-select"
 import { CustomBatchDialog } from "@/components/recipes/custom-batch-dialog"
 import { RecipeCostingPanel } from "@/components/recipes/recipe-panels"
 import { WarningLine } from "@/components/recipes/warning-line"
-import { Button } from "@/components/ui/button"
 import { Input, InputAffix, InputGroup } from "@/components/ui/input"
 import { MeasureField } from "@/components/ui/measure-field"
 import { useToast } from "@/components/ui/toast"
@@ -696,15 +695,15 @@ export function RecipeCostView({
             Suggested at {targetPercent}% food cost
           </span>
           {suggestedPriceCents !== null && canEditCosting ? (
-            <Button
+            <button
               type="button"
-              variant="link"
-              className="h-auto w-40 justify-start p-0"
-              pending={suggestedPricePending}
+              className={cn("w-40 text-left", linkClassName)}
+              disabled={suggestedPricePending}
+              aria-busy={suggestedPricePending || undefined}
               onClick={() => void applySuggestedPrice()}
             >
               Use {formatCents(suggestedPriceCents)}
-            </Button>
+            </button>
           ) : (
             <span className={readOnlyValueClass}>
               {suggestedPriceCents === null

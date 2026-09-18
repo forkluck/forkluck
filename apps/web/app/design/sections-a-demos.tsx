@@ -251,23 +251,13 @@ export function ParagraphDemo() {
 export function LinkDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
-      <Labeled label="Link">
-        <TextLink href="#link">Ingredients</TextLink>
+      <Labeled label="Default link">
+        <TextLink href="#link">Last Baldor invoice</TextLink>
       </Labeled>
-      <Labeled label="In a sentence" className="max-w-[46ch]">
-        <p className="text-md leading-[1.55] text-foreground">
-          Butter is priced from the{" "}
-          <TextLink href="#link">last Baldor invoice</TextLink>, matched on
-          delivery.
-        </p>
-      </Labeled>
-      <Labeled label="Parent link">
-        <PageParent href="#link">Ingredients</PageParent>
-      </Labeled>
-      <Labeled label="Link button">
-        <Button variant="link" nativeButton={false} render={<a href="#link" />}>
-          View the invoice
-        </Button>
+      <Labeled label="Critical link">
+        <TextLink href="#link" tone="critical">
+          Delete this recipe
+        </TextLink>
       </Labeled>
     </div>
   )
@@ -303,7 +293,6 @@ const BUTTON_VARIANTS = [
   "quiet",
   "filter",
   "destructive",
-  "link",
 ] as const
 
 const BUTTON_SIZES = ["xs", "sm", "default", "lg"] as const
@@ -316,7 +305,6 @@ const BUTTON_LABELS: Record<(typeof BUTTON_VARIANTS)[number], string> = {
   quiet: "Reset",
   filter: "Status",
   destructive: "Delete",
-  link: "Open invoice",
 }
 
 const ICON_BUTTON_SIZES = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const
@@ -476,7 +464,6 @@ const BADGE_VARIANTS = [
   "destructive",
   "outline",
   "ghost",
-  "link",
 ] as const
 
 const BADGE_LABELS: Record<(typeof BADGE_VARIANTS)[number], string> = {
@@ -487,7 +474,6 @@ const BADGE_LABELS: Record<(typeof BADGE_VARIANTS)[number], string> = {
   destructive: "No price",
   outline: "Sub recipe",
   ghost: "Archived",
-  link: "Baldor",
 }
 
 /** 13. Badge */
@@ -511,7 +497,7 @@ export function BadgeDemo() {
           </Badge>
         </Labeled>
         <Labeled label="Trailing icon">
-          <Badge variant="link" render={<a href="#badge" />}>
+          <Badge variant="outline">
             Baldor
             <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
           </Badge>
