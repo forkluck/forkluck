@@ -5,31 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * One height — 20px, the bottom rung of the control ladder — and two shapes,
- * 500 weight, tabular so a column of deltas lines up:
+ * One badge: 20px, the bottom rung of the control ladder, `rounded-md`, 500
+ * 12px, tabular so a column of deltas lines up. It labels a row or a metric
+ * and never acts, so it carries no shadow, no ring and no accent; focus turns
+ * the border ink like every other control. An icon may lead the label, never
+ * trail it.
  *
- *   size="default"  the metric badge — `rounded-full`, 12.5px
- *   size="row"      a chip inside a table row — `rounded-md`, 11.5px
- *
- * Both sizes take the same semantic colors. There used to be a second, cooler
- * green for the row chip; it failed AA on its own fill, so one green and one
- * red now serve every badge in the app.
- *
- * The Recipes food-cost chip is the row size at 12px
- * (`size="row" className="text-xs"`); the small grey row tag (`Package`)
- * is `size="row" className="rounded-sm px-[7px] text-xs"`.
- *
- * Badges label, they never act, so they carry no shadow, no ring, and no
- * accent — focus turns the border ink like every other control.
+ * The semantic colors are the app's one green, one red and one amber, each
+ * as ink on its pale fill. There used to be a second, cooler green for the
+ * row chip; it failed AA on its own fill, so one of each serves every badge.
  */
 const badgeVariants = cva(
-  "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden border border-transparent px-2 font-medium whitespace-nowrap tabular-nums focus-visible:border-foreground has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border border-transparent px-2 text-xs font-medium whitespace-nowrap tabular-nums focus-visible:border-foreground has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
-      size: {
-        default: "h-5 rounded-full text-xs",
-        row: "h-5 rounded-md text-xs",
-      },
       variant: {
         // Badges are grey by default — they label things, they don't act, so
         // they stay out of the accent (data, selection) and the ink of a
@@ -51,7 +40,6 @@ const badgeVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
     },
   }
 )
@@ -59,7 +47,6 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant = "default",
-  size = "default",
   render,
   ...props
 }: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
@@ -67,7 +54,7 @@ function Badge({
     defaultTagName: "span",
     props: mergeProps<"span">(
       {
-        className: cn(badgeVariants({ variant, size }), className),
+        className: cn(badgeVariants({ variant }), className),
       },
       props
     ),

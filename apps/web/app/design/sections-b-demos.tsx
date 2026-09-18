@@ -579,7 +579,6 @@ export function TableDemo() {
               </TableCell>
               <TableCell>
                 <Badge
-                  size="row"
                   variant={row.status === "Costed" ? "success" : "warning"}
                 >
                   {row.status}

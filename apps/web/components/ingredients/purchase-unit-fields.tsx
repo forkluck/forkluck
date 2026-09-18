@@ -327,7 +327,6 @@ function InvoiceItemSearch({
                 ) : null}
                 <Badge
                   variant="secondary"
-                  size="row"
                   // A long supplier name gives way to the description rather
                   // than truncating the one thing the cook is reading for.
                   className="max-w-[40%] shrink"
@@ -627,9 +626,7 @@ export function PurchaseUnitFields({
                         <span className="truncate text-md font-medium">
                           {item.title}
                         </span>
-                        {used ? (
-                          <Badge size="row">Used for costing</Badge>
-                        ) : null}
+                        {used ? <Badge>Used for costing</Badge> : null}
                       </div>
                       <p className="mt-0.5 truncate text-md text-muted-foreground">
                         {item.supplier} {item.externalId} ·{" "}

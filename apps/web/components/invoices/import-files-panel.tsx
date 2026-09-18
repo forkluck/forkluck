@@ -193,7 +193,6 @@ export function ImportFilesPanel({
                 ) : (
                   <Badge
                     variant={item.status === "done" ? "success" : "default"}
-                    size="row"
                   >
                     {item.status === "done"
                       ? "Parsed"

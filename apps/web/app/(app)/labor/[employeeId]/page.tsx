@@ -79,7 +79,7 @@ export default async function EmployeeLaborPage({
           </PageParents>
           <PageTitle>
             <span className="truncate">{employee.name}</span>
-            {employee.isActive ? null : <Badge size="row">Archived</Badge>}
+            {employee.isActive ? null : <Badge>Archived</Badge>}
           </PageTitle>
         </div>
         <div className="flex flex-wrap items-center gap-2">

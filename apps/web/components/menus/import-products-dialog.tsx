@@ -206,9 +206,7 @@ export function ImportProductsDialog({
                       <span className="flex items-center gap-2">
                         <span className="truncate">{row.name}</span>
                         {onMenu ? (
-                          <Badge size="row" variant="secondary">
-                            On menu
-                          </Badge>
+                          <Badge variant="secondary">On menu</Badge>
                         ) : null}
                       </span>
                       <span className="mt-0.5 block text-md text-muted-foreground tabular-nums sm:hidden">

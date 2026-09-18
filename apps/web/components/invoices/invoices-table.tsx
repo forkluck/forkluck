@@ -32,7 +32,7 @@ const helper = dataTableColumns<InvoiceRow>()
 
 /** The connector that brought the invoice in, when it was not a file. */
 function SourceBadge() {
-  return <Badge size="row">Supplier import</Badge>
+  return <Badge>Supplier import</Badge>
 }
 
 function invoiceLabel(row: InvoiceRow): string {

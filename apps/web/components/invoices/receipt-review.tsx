@@ -74,16 +74,12 @@ export function ReceiptReview({
   return (
     <div className="flex min-h-0 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge size="row">{DOCUMENT_LABELS[invoice.result.documentType]}</Badge>
+        <Badge>{DOCUMENT_LABELS[invoice.result.documentType]}</Badge>
         {invoice.result.duplicate ? (
-          <Badge variant="warning" size="row">
-            Already imported
-          </Badge>
+          <Badge variant="warning">Already imported</Badge>
         ) : null}
         {reviewCount > 0 ? (
-          <Badge variant="warning" size="row">
-            {reviewCount} to review
-          </Badge>
+          <Badge variant="warning">{reviewCount} to review</Badge>
         ) : null}
         <ReceiptFeedback
           key={invoice.key}
@@ -227,9 +223,7 @@ export function ReceiptReview({
                 </span>
                 <span className="flex flex-col items-start gap-1">
                   <span className={LINE_LABEL}>Status</span>
-                  <Badge variant={badge.variant} size="row">
-                    {badge.label}
-                  </Badge>
+                  <Badge variant={badge.variant}>{badge.label}</Badge>
                   {line.mode === "review" &&
                   !lineIsExpense(line, categories) ? (
                     <span className="flex gap-1">

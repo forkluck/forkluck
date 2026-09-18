@@ -280,9 +280,7 @@ export function RecipeSheet({ recipe }: { recipe: GuestRecipe }) {
                     {makes}
                   </p>
                 ) : null}
-                <Badge size="row" className="rounded-sm px-[7px] text-xs">
-                  Sub-recipe
-                </Badge>
+                <Badge>Sub-recipe</Badge>
               </div>
               <IngredientTable
                 items={child.items}

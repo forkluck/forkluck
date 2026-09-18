@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-  ArrowUpRight,
   Building2,
   Check,
   Clock,
@@ -450,37 +449,19 @@ const BADGE_LABELS: Record<(typeof BADGE_VARIANTS)[number], string> = {
 /** 13. Badge */
 export function BadgeDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Matrix
-        columns={BADGE_VARIANTS}
-        rows={["default", "row"] as const}
-        cell={(variant, size) => (
-          <Badge variant={variant} size={size}>
-            {BADGE_LABELS[variant]}
-          </Badge>
-        )}
-      />
-      <Row>
-        <Labeled label="Leading icon">
-          <Badge variant="success">
-            <TrendingUp data-icon="inline-start" aria-hidden="true" />
-            4.2%
-          </Badge>
+    <Row>
+      {BADGE_VARIANTS.map((variant) => (
+        <Labeled key={variant} label={variant}>
+          <Badge variant={variant}>{BADGE_LABELS[variant]}</Badge>
         </Labeled>
-        <Labeled label="Trailing icon">
-          <Badge variant="outline">
-            Baldor
-            <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
-          </Badge>
-        </Labeled>
-        <Labeled label="Row size, leading icon">
-          <Badge size="row" variant="warning">
-            <TriangleAlert data-icon="inline-start" aria-hidden="true" />
-            Over target
-          </Badge>
-        </Labeled>
-      </Row>
-    </div>
+      ))}
+      <Labeled label="Leading icon">
+        <Badge variant="success">
+          <TrendingUp data-icon="inline-start" aria-hidden="true" />
+          4.2%
+        </Badge>
+      </Labeled>
+    </Row>
   )
 }
 
@@ -516,12 +497,10 @@ export function ChipDemo() {
           <Chip pressed>Milk</Chip>
         </Labeled>
         <Labeled label="Badge, row size">
-          <Badge size="row">Case</Badge>
+          <Badge>Case</Badge>
         </Labeled>
         <Labeled label="Badge, row outline">
-          <Badge size="row" variant="outline">
-            Sub recipe
-          </Badge>
+          <Badge variant="outline">Sub recipe</Badge>
         </Labeled>
       </Row>
       <div className="max-w-[220px]">

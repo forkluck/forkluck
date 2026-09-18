@@ -308,9 +308,7 @@ export function RecipesTable({
               {row.original.title}
             </GuardedLink>
             {row.original.status === "archived" ? (
-              <Badge size="row" className="rounded-sm px-[7px] text-xs">
-                Archived
-              </Badge>
+              <Badge>Archived</Badge>
             ) : null}
           </span>
         ),

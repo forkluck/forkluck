@@ -639,7 +639,7 @@ export function InvoiceEditor({
       ) : null}
       {initial && imported ? (
         <div className="flex items-center gap-3">
-          <Badge size="row">
+          <Badge>
             {initial.source === "connector"
               ? "Supplier import"
               : initial.driveFileId

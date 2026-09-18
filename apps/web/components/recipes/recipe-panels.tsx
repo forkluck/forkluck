@@ -324,9 +324,7 @@ export function RecipeCostingPanel({
                         {line.ingredientName}
                       </span>
                       {lineKinds[index] === "subrecipe" ? (
-                        <Badge variant="secondary" size="row">
-                          Recipe
-                        </Badge>
+                        <Badge variant="secondary">Recipe</Badge>
                       ) : null}
                     </span>
                   </TableCell>

@@ -318,11 +318,7 @@ export function LaborWorkspace({
               {weeks?.length ? (
                 <Tooltip>
                   <TooltipTrigger
-                    render={
-                      <Badge variant="warning" size="row">
-                        OT
-                      </Badge>
-                    }
+                    render={<Badge variant="warning">OT</Badge>}
                   />
                   <TooltipContent className="flex-col items-start gap-0.5">
                     {weeks.map((week) => (

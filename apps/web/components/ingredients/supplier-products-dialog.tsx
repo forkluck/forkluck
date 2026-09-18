@@ -86,11 +86,7 @@ export function SupplierProductsDialog({
               <div className="min-w-0 flex-1">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-md">{item.title}</span>
-                  {isPreferred(item) ? (
-                    <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
-                      Preferred
-                    </Badge>
-                  ) : null}
+                  {isPreferred(item) ? <Badge>Preferred</Badge> : null}
                 </div>
                 <p className="mt-0.5 truncate text-md text-muted-foreground">
                   {sourceLabel(item.supplier)} {item.externalId} ·{" "}

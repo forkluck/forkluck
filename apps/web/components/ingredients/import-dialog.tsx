@@ -144,9 +144,7 @@ function ImportSummary({
         <span className="truncate text-md">
           {preview.source?.label ?? "Purchase report"}
         </span>
-        {preview.source ? (
-          <Badge className="rounded-sm px-[7px] py-0.5 text-xs">Detected</Badge>
-        ) : null}
+        {preview.source ? <Badge>Detected</Badge> : null}
       </div>
       <p className="mt-0.5 text-md text-muted-foreground">
         {periodLabel(preview)}
@@ -205,7 +203,7 @@ function ReadyTable({
                   <span className="text-md text-muted-foreground">
                     {entry.externalId}
                   </span>
-                  <Badge className="ml-2 rounded-sm px-[7px] py-0.5 text-xs">
+                  <Badge className="ml-2">
                     {entry.status === "new" ? "New" : "Update"}
                   </Badge>
                 </td>
@@ -282,9 +280,7 @@ function ReviewQueue({
           aria-hidden="true"
         />
         Supplier rows that need review
-        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
-          {unresolved.length}
-        </Badge>
+        <Badge>{unresolved.length}</Badge>
         <span className="ml-auto text-md text-muted-foreground group-open:hidden">
           Show
         </span>
@@ -335,9 +331,7 @@ function ReviewQueue({
                   <div className="flex shrink-0 items-center gap-1.5">
                     {row.mode === "ignored" ? (
                       <>
-                        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
-                          Ignored
-                        </Badge>
+                        <Badge>Ignored</Badge>
                         <Button
                           variant="ghost"
                           className="text-foreground"
@@ -350,9 +344,7 @@ function ReviewQueue({
                       </>
                     ) : row.mode === "resolved" ? (
                       <>
-                        <Badge className="rounded-sm px-[7px] py-0.5 text-xs">
-                          Resolved
-                        </Badge>
+                        <Badge>Resolved</Badge>
                         <Button
                           variant="ghost"
                           className="text-foreground"
