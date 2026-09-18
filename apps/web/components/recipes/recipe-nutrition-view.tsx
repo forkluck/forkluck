@@ -381,17 +381,17 @@ export function RecipeNutritionView({
         {recipeTitle}
       </h2>
       <div className="flex flex-col gap-2 print:hidden">
-        <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+        <p className="text-base leading-[1.55] text-muted-foreground">
           This estimate is worked out from the nutrition data linked to each
           ingredient and the weight that survives cooking.
         </p>
-        <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+        <p className="text-base leading-[1.55] text-muted-foreground">
           It is a preview, not a verified label. Accuracy on a package is the
           seller’s responsibility, so have the numbers verified before you print
           one.
         </p>
         {owner ? null : (
-          <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+          <p className="text-base leading-[1.55] text-muted-foreground">
             Shared with you to read. The recipe owner links nutrition data.
           </p>
         )}

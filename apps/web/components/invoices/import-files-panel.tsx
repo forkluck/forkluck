@@ -125,13 +125,13 @@ export function ImportFilesPanel({
           </Button>
         </div>
         {config ? (
-          <p className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground">
+          <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
             In Drive, open the month folder and select the PDFs inside it.
             Folders themselves can&apos;t be imported.
           </p>
         ) : null}
         {driveConnectHref ? (
-          <p className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground">
+          <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
             Receipts in a Google Drive folder?{" "}
             <Link href={driveConnectHref} className="underline">
               Connect the folder

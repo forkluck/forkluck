@@ -13,7 +13,7 @@ export function WarningLine({ children }: { children: React.ReactNode }) {
         strokeWidth={1.8}
         aria-hidden="true"
       />
-      <span className="text-base leading-[1.55] font-medium text-warning-foreground">
+      <span className="text-base leading-[1.55] text-warning-foreground">
         {children}
       </span>
     </div>

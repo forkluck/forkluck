@@ -46,7 +46,7 @@ export function NetSalesCard({
         <p className="mt-2 text-4xl leading-none font-semibold tracking-[-0.03em] text-disabled-foreground tabular-nums">
           {formatWholeCents(0, currencyCode)}
         </p>
-        <CardNote className="mt-[26px] leading-[1.55] font-medium">
+        <CardNote className="mt-[26px] leading-[1.55]">
           No sales are tracked yet. Connect a register or import sales to fill
           this chart.
         </CardNote>

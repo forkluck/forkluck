@@ -548,7 +548,7 @@ export function MenuItemDialog({
                   <span className="mt-3 block text-md font-semibold text-foreground">
                     {option.label}
                   </span>
-                  <span className="mt-1 block text-base leading-[1.55] font-medium text-muted-foreground">
+                  <span className="mt-1 block text-base leading-[1.55] text-muted-foreground">
                     {option.help}
                   </span>
                 </button>

@@ -139,7 +139,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
       className={cn(
         // Help text: 400 12.5px/1.55 --muted-foreground, sitting 8px under the
         // control it explains.
-        "text-left text-base leading-[1.55] font-medium text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
+        "text-left text-base leading-[1.55] font-normal text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
         "last:mt-0 nth-last-2:-mt-1",
         "[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-foreground",
         className
@@ -223,7 +223,7 @@ function FieldError({
       role="alert"
       data-slot="field-error"
       className={cn(
-        "text-base leading-[1.55] font-medium text-destructive",
+        "text-base leading-[1.55] font-normal text-destructive",
         className
       )}
       {...props}

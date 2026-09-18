@@ -153,7 +153,7 @@ export function ColumnLabel({
 /** What a list card says instead of rows when it has nothing to list. */
 export function ListCardEmpty({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-5 pb-6 text-base leading-[1.55] font-medium text-muted-foreground">
+    <p className="px-5 pb-6 text-base leading-[1.55] text-muted-foreground">
       {children}
     </p>
   )

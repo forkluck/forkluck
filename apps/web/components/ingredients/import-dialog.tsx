@@ -294,7 +294,7 @@ function ReviewQueue({
       <div className="border-t border-muted">
         {unresolved.length > 0 ? (
           <div className="flex flex-col items-start gap-2 border-b border-muted px-3.5 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-            <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+            <p className="text-base leading-[1.55] text-muted-foreground">
               Resolve the products you care about, or ignore rows you never want
               to see again.
             </p>
@@ -489,7 +489,7 @@ function ReviewQueue({
                       </LabeledShell>
                     </div>
 
-                    <p className="mt-3 text-base leading-[1.55] font-medium text-muted-foreground">
+                    <p className="mt-3 text-base leading-[1.55] text-muted-foreground">
                       Enter the pack in the unit it was bought by. A pack
                       counted in pieces needs the weight of one before recipes
                       that weigh it can cost; set that on the ingredient’s

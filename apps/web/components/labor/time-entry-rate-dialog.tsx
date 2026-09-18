@@ -88,13 +88,13 @@ export function TimeEntryRateDialog({
             onChange={(event) => setRate(event.target.value)}
             className="tabular-nums"
           />
-          <p className="mt-2 text-base leading-[1.55] font-medium text-muted-foreground">
+          <p className="mt-2 text-base leading-[1.55] text-muted-foreground">
             Only this shift changes. Other past and future shifts keep their
             recorded rates.
           </p>
           {form.errors[RATE_FIELD] || form.failure ? (
             <p
-              className="mt-2 text-base leading-[1.55] font-medium text-destructive"
+              className="mt-2 text-base leading-[1.55] text-destructive"
               role="alert"
             >
               {form.errors[RATE_FIELD] ?? form.failure?.message}

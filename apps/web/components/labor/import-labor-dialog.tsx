@@ -132,7 +132,7 @@ function ImportReceiptView({
     <>
       <div className="rounded-lg border border-border bg-fill-soft p-4">
         <p className="text-md font-semibold">Hours imported</p>
-        <p className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground">
+        <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
           The original rows and the rate used for every cost are kept, so this
           import can be undone from the import history.
         </p>
@@ -484,7 +484,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-muted px-4 py-3">
               <div>
                 <p className="text-md font-semibold">Employees to include</p>
-                <p className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground">
+                <p className="mt-1 text-base leading-[1.55] text-muted-foreground">
                   Uncheck anyone whose shifts should not count. Rates can be set
                   now or later.
                 </p>
@@ -655,10 +655,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
         ) : null}
 
         {error ? (
-          <p
-            className="text-base leading-[1.55] font-medium text-destructive"
-            role="alert"
-          >
+          <p className="text-base leading-[1.55] text-destructive" role="alert">
             {error}
           </p>
         ) : null}
@@ -700,7 +697,7 @@ export function ImportHoursDialog({
       <DialogContent size="lg" className="p-7">
         <DialogHeader>
           <DialogTitle>Import hours</DialogTitle>
-          <DialogDescription className="text-base leading-[1.55] font-medium">
+          <DialogDescription className="text-base leading-[1.55]">
             Upload the timesheet your clock exports. Confirm the columns and the
             hourly rates before anything is saved.
           </DialogDescription>

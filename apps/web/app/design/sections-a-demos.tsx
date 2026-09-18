@@ -202,27 +202,21 @@ export function TextDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular text">
-        <span className="text-base font-medium text-foreground">
-          12 cases of butter
-        </span>
+        <span className="text-base text-foreground">12 cases of butter</span>
       </Labeled>
       <Labeled label="Subdued text">
-        <span className="text-base font-medium text-muted-foreground">
+        <span className="text-base text-muted-foreground">
           Priced from the invoice
         </span>
       </Labeled>
       <Labeled label="Success tone">
-        <span className="text-base font-medium text-success">
-          Cost fell 3.1%
-        </span>
+        <span className="text-base text-success">Cost fell 3.1%</span>
       </Labeled>
       <Labeled label="Critical tone">
-        <span className="text-base font-medium text-destructive">
-          Two have no price
-        </span>
+        <span className="text-base text-destructive">Two have no price</span>
       </Labeled>
       <Labeled label="Warning tone">
-        <span className="text-base font-medium text-warning-foreground">
+        <span className="text-base text-warning-foreground">
           Four lines unmatched
         </span>
       </Labeled>
@@ -235,7 +229,7 @@ export function ParagraphDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular paragraph" className="max-w-[46ch]">
-        <p className="text-base leading-[1.55] font-medium text-foreground">
+        <p className="text-base leading-[1.55] text-foreground">
           A recipe holds its components, its yield and the method the kitchen
           follows. Costing reads the last price paid for each ingredient, so a
           delivery that moved the price of butter moves the plate cost of every
@@ -243,7 +237,7 @@ export function ParagraphDemo() {
         </p>
       </Labeled>
       <Labeled label="Subdued paragraph" className="max-w-[46ch]">
-        <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+        <p className="text-base leading-[1.55] text-muted-foreground">
           Prices come from the most recent invoice line matched to the
           ingredient.
         </p>

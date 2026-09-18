@@ -42,7 +42,7 @@ export function LaborImportHistoryDialog({
 
         <div>
           {imports.length === 0 ? (
-            <p className="text-base leading-[1.55] font-medium text-muted-foreground">
+            <p className="text-base leading-[1.55] text-muted-foreground">
               No hours have been imported yet.
             </p>
           ) : (
@@ -83,7 +83,7 @@ export function LaborImportHistoryDialog({
           )}
           {error ? (
             <p
-              className="mt-3 text-base leading-[1.55] font-medium text-destructive"
+              className="mt-3 text-base leading-[1.55] text-destructive"
               role="alert"
             >
               {error}
