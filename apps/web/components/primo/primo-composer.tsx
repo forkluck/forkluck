@@ -543,7 +543,7 @@ export function PrimoComposer({
           {sendError}
         </p>
       ) : null}
-      <p className="mt-1.5 px-1 text-2xs leading-4 text-faint">
+      <p className="mt-1.5 px-1 text-2xs leading-4 text-muted-foreground">
         Primo can make mistakes. Review important details.
       </p>
     </div>

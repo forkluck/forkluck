@@ -5,7 +5,6 @@ const TOKENS: { token: string; value: string }[] = [
   { token: "--background", value: "#ffffff" },
   { token: "--foreground", value: "#18181b" },
   { token: "--muted-foreground", value: "#52525b" },
-  { token: "--faint", value: "#71717a" },
   { token: "--ink-soft", value: "#3f3f46" },
   { token: "--border", value: "#e4e4e7" },
   { token: "--line-strong", value: "#c9c9cf" },

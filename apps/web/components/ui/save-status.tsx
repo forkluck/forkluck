@@ -27,7 +27,7 @@ export function SaveStatus({
       // and it is wide enough for the longest label, "Changed elsewhere".
       className={cn(
         "w-32 shrink-0 text-xs",
-        failed ? "text-destructive" : "text-faint"
+        failed ? "text-destructive" : "text-muted-foreground"
       )}
     >
       {state === "saving"

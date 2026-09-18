@@ -56,7 +56,7 @@ export function Stat({
 }) {
   return (
     <div>
-      <dt className="text-xs text-faint">{label}</dt>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
       <dd className="mt-0.5 text-md font-medium tabular-nums">{value}</dd>
     </div>
   )

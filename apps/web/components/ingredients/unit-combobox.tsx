@@ -95,12 +95,12 @@ export function UnitCombobox({
       aria-invalid={invalid || undefined}
       disabled={disabled}
       className={cn(
-        "disabled:cursor-not-allowed disabled:text-faint aria-invalid:text-destructive data-popup-open:bg-fill-soft",
+        "disabled:cursor-not-allowed disabled:text-muted-foreground aria-invalid:text-destructive data-popup-open:bg-fill-soft",
         chip
           ? cn(inlineChipClassName, "w-auto min-w-0 justify-center self-center")
           : cn(
               "flex h-12 w-full items-center justify-between gap-1.5 px-3.5 text-left text-md outline-none focus-visible:bg-fill-soft",
-              value ? "text-foreground" : "text-faint"
+              value ? "text-foreground" : "text-muted-foreground"
             ),
         !chip && className
       )}
@@ -140,7 +140,7 @@ export function UnitCombobox({
           the amount, outside the button so it never takes the hover fill. */}
       {chip ? (
         <span className={cn("flex items-center self-center", className)}>
-          <span aria-hidden="true" className="pr-1 text-sm text-faint">
+          <span aria-hidden="true" className="pr-1 text-sm text-muted-foreground">
             /
           </span>
           {trigger}
@@ -190,7 +190,7 @@ export function UnitCombobox({
             </button>
           ) : null}
           {matches.length === 0 ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               No results
             </span>
           ) : null}
@@ -198,7 +198,7 @@ export function UnitCombobox({
             <React.Fragment key={option.slug}>
               {option.heading &&
               option.heading !== matches[index - 1]?.heading ? (
-                <span className="shrink-0 px-2.5 pt-2 pb-1 text-2xs leading-none font-medium text-faint">
+                <span className="shrink-0 px-2.5 pt-2 pb-1 text-2xs leading-none font-medium text-muted-foreground">
                   {option.heading}
                 </span>
               ) : null}

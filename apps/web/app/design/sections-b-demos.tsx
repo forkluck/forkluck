@@ -764,7 +764,7 @@ export function PopoverDemo() {
       <PopoverTrigger render={<Button variant="outline">Columns</Button>} />
       <PopoverContent className="w-56">
         <div className="flex flex-col gap-3">
-          <p className="text-2xs font-medium text-faint">Visible columns</p>
+          <p className="text-2xs font-medium text-muted-foreground">Visible columns</p>
           <Field orientation="horizontal">
             <Checkbox id="guide-column-cost" defaultChecked />
             <FieldLabel htmlFor="guide-column-cost">Cost per unit</FieldLabel>

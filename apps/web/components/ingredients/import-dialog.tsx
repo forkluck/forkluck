@@ -150,7 +150,7 @@ function ImportSummary({
           </Badge>
         ) : null}
       </div>
-      <p className="mt-0.5 text-xs text-faint">{periodLabel(preview)}</p>
+      <p className="mt-0.5 text-xs text-muted-foreground">{periodLabel(preview)}</p>
       <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-muted pt-3 sm:grid-cols-4">
         <Stat label="Ready" value={ready.length} />
         <Stat label="New / update" value={`${newCount} / ${updateCount}`} />
@@ -285,7 +285,7 @@ function ReviewQueue({
         <Badge className="rounded-sm px-[7px] py-0.5 text-2xs">
           {unresolved.length}
         </Badge>
-        <span className="ml-auto text-xs text-faint group-open:hidden">
+        <span className="ml-auto text-xs text-muted-foreground group-open:hidden">
           Show
         </span>
       </summary>
@@ -327,7 +327,7 @@ function ReviewQueue({
                       {row.externalId ? `${row.externalId} · ` : ""}
                       {row.name}
                     </p>
-                    <p className="mt-0.5 truncate text-xs text-faint">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                       {row.rawSize ? `${row.rawSize} · ` : ""}
                       {row.reason}
                     </p>
@@ -532,7 +532,7 @@ function ImportReceiptView({
           {receipt.imported} supplier product
           {receipt.imported === 1 ? "" : "s"} saved
         </p>
-        <p className="mt-0.5 text-xs text-faint">
+        <p className="mt-0.5 text-xs text-muted-foreground">
           The receipt is in Import history and can be undone while it is the
           latest active import.
         </p>

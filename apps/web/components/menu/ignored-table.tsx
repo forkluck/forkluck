@@ -354,7 +354,7 @@ export function IgnoredTable({
           )}
 
           {capped ? (
-            <p className="mt-3 text-xs text-faint">
+            <p className="mt-3 text-xs text-muted-foreground">
               Showing the first {shown}. Restore some to see the rest.
             </p>
           ) : null}

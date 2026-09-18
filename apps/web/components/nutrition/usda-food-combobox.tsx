@@ -110,7 +110,7 @@ export function UsdaFoodCombobox({
         disabled={disabled}
         className={cn(
           "flex h-9 w-full items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 text-left text-md outline-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground data-popup-open:bg-accent",
-          !value && "text-faint"
+          !value && "text-muted-foreground"
         )}
       >
         <span className="flex min-w-0 items-center gap-2">
@@ -180,11 +180,11 @@ export function UsdaFoodCombobox({
             </button>
           ) : null}
           {searching ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               Searching
             </span>
           ) : message ? (
-            <span className="flex min-h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex min-h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               {message}
             </span>
           ) : null}

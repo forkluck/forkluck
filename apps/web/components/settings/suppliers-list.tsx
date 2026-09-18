@@ -123,7 +123,7 @@ export function SuppliersList() {
 
       <div className="mt-2.5 border-t border-muted">
         {rows === null && !error ? (
-          <p className="flex h-12 items-center text-md text-faint">
+          <p className="flex h-12 items-center text-md text-muted-foreground">
             Loading suppliers…
           </p>
         ) : null}

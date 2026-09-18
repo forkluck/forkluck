@@ -56,4 +56,4 @@ export function useSortableRows(
 
 /** The grip's classes: hidden until its row is hovered, shown while dragged. */
 export const dragHandleClassName =
-  "flex h-8 w-4 cursor-grab items-center text-disabled-foreground opacity-0 group-hover/row:opacity-100 hover:text-faint [.draggable-source--is-dragging_&]:opacity-100 [.draggable-mirror_&]:opacity-100"
+  "flex h-8 w-4 cursor-grab items-center text-disabled-foreground opacity-0 group-hover/row:opacity-100 hover:text-muted-foreground [.draggable-source--is-dragging_&]:opacity-100 [.draggable-mirror_&]:opacity-100"

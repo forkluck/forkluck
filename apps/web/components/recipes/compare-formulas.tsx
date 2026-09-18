@@ -584,7 +584,7 @@ function AddRecipePopover({
         </div>
         <div className="flex max-h-64 flex-col overflow-y-auto p-1.5 pt-0">
           {matches.length === 0 ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               No recipes match
             </span>
           ) : null}
@@ -602,7 +602,7 @@ function AddRecipePopover({
                   {option.title}
                 </span>
                 {option.category ? (
-                  <span className="max-w-20 truncate text-xs text-faint">
+                  <span className="max-w-20 truncate text-xs text-muted-foreground">
                     {option.category}
                   </span>
                 ) : null}
@@ -749,7 +749,7 @@ function FormulaValue({
           onCommit={(grams) => onSetGrams(formula.key, overrideId, grams)}
         />
         {value.line.written ? (
-          <span className="text-2xs text-faint">
+          <span className="text-2xs text-muted-foreground">
             Recipe says {value.line.written}
           </span>
         ) : null}
@@ -757,12 +757,12 @@ function FormulaValue({
     )
   }
   if (value.percent === null) {
-    return <span className={cn("text-faint", className)}>—</span>
+    return <span className={cn("text-muted-foreground", className)}>—</span>
   }
   if (baseline !== null) {
     if (isBaseline) {
       return (
-        <span className={cn("text-faint tabular-nums", className)}>
+        <span className={cn("text-muted-foreground tabular-nums", className)}>
           {formatComparePercent(value.percent)}
         </span>
       )
@@ -770,7 +770,7 @@ function FormulaValue({
     return (
       <span className={cn("tabular-nums", className)}>
         {formatCompareDeltaPoints(value.percent - baseline)}
-        <span className="block text-2xs font-normal text-faint">
+        <span className="block text-2xs font-normal text-muted-foreground">
           {formatComparePercent(value.percent)}
         </span>
       </span>
@@ -780,12 +780,12 @@ function FormulaValue({
     <span className={cn("tabular-nums", className)}>
       {formatComparePercent(value.percent)}
       {showGrams && value.grams !== null ? (
-        <span className="block text-2xs font-normal text-faint">
+        <span className="block text-2xs font-normal text-muted-foreground">
           {formatCompareGrams(value.grams)}
         </span>
       ) : null}
       {value.line?.note === "discarded" ? (
-        <span className="block text-2xs font-normal text-faint">discarded</span>
+        <span className="block text-2xs font-normal text-muted-foreground">discarded</span>
       ) : null}
     </span>
   )
@@ -932,7 +932,7 @@ function FormulaView({
                     <span
                       key={tick}
                       className={cn(
-                        "absolute top-1/2 -translate-y-1/2 text-2xs text-faint",
+                        "absolute top-1/2 -translate-y-1/2 text-2xs text-muted-foreground",
                         index === 0
                           ? "left-0"
                           : index === 1
@@ -1009,7 +1009,7 @@ function FormulaView({
           </TableBody>
         </Table>
       </TableFrame>
-      <div className="mt-3.5 flex flex-col gap-2 text-sm text-faint md:flex-row md:items-center">
+      <div className="mt-3.5 flex flex-col gap-2 text-sm text-muted-foreground md:flex-row md:items-center">
         <p className="flex-1">
           {baseId
             ? `Differences in points against ${
@@ -1085,12 +1085,12 @@ function FormulaPlotRow({
                 {row.label}
               </span>
               {note ? (
-                <span className="block text-xs text-faint">Hydration</span>
+                <span className="block text-xs text-muted-foreground">Hydration</span>
               ) : null}
             </span>
             <ChevronDown
               className={cn(
-                "size-3 shrink-0 text-faint",
+                "size-3 shrink-0 text-muted-foreground",
                 expanded && "rotate-180"
               )}
               strokeWidth={2}
@@ -1116,11 +1116,11 @@ function FormulaPlotRow({
                 {row.label}
               </span>
               {row.kind === "group" && note ? (
-                <span className="block text-xs text-faint">Hydration</span>
+                <span className="block text-xs text-muted-foreground">Hydration</span>
               ) : null}
               {unmappedIn.length > 0 &&
               (row.kind === "ingredient" || row.group.rows.length === 1) ? (
-                <span className="flex items-center gap-1.5 text-xs text-faint">
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   No profile
                   {unmappedPasted && canLink ? (
                     <button
@@ -1352,7 +1352,7 @@ function SpecSheetView({
                     <X strokeWidth={2} aria-hidden="true" />
                   </Button>
                 </div>
-                <p className="mt-1 flex items-center gap-2 text-sm text-faint">
+                <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                   <span className="min-w-0 truncate">
                     {formula.source === "pasted"
                       ? "Pasted recipe"
@@ -1373,7 +1373,7 @@ function SpecSheetView({
                   </Button>
                 </p>
                 {basisNote(formula) ? (
-                  <p className="mt-1 text-sm text-faint">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {basisNote(formula)}
                   </p>
                 ) : null}
@@ -1415,7 +1415,7 @@ function SpecSheetView({
                     <h3 className="text-xs font-medium text-muted-foreground">
                       {specFigureLabel(figure.key, mode)}
                       {figure.key === "solids" ? (
-                        <span className="font-normal text-faint">
+                        <span className="font-normal text-muted-foreground">
                           {" "}
                           · of covered weight
                         </span>
@@ -1424,10 +1424,10 @@ function SpecSheetView({
                     <div className="mt-1 flex items-baseline gap-2">
                       {value === null ? (
                         <>
-                          <span className="text-2xl font-semibold text-faint">
+                          <span className="text-2xl font-semibold text-muted-foreground">
                             —
                           </span>
-                          <span className="text-xs text-faint">
+                          <span className="text-xs text-muted-foreground">
                             Nothing weighed
                           </span>
                         </>

@@ -301,7 +301,7 @@ export function AppSidebar({
               onClick={() => onOpenChange(false)}
               aria-label={item.action.label}
               title={item.action.label}
-              className="absolute top-1/2 right-1.5 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-md border border-transparent text-faint hover:bg-sidebar-hover hover:text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:size-6"
+              className="absolute top-1/2 right-1.5 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-md border border-transparent text-muted-foreground hover:bg-sidebar-hover hover:text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:size-6"
             >
               <Plus className="size-4" strokeWidth={1.8} aria-hidden="true" />
             </GuardedLink>
@@ -410,7 +410,7 @@ export function AppSidebar({
               {section.label ? (
                 <div
                   id={`nav-zone-${index}`}
-                  className="px-2.5 pb-1 text-xs leading-none font-medium text-faint"
+                  className="px-2.5 pb-1 text-xs leading-none font-medium text-muted-foreground"
                 >
                   {section.label}
                 </div>

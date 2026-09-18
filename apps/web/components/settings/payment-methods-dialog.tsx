@@ -141,7 +141,7 @@ export function PaymentMethodsDialog({
               <span className="min-w-0 flex-1 truncate text-md text-muted-foreground">
                 {name}
               </span>
-              <span className="text-sm whitespace-nowrap text-faint">
+              <span className="text-sm whitespace-nowrap text-muted-foreground">
                 Built in
               </span>
             </div>

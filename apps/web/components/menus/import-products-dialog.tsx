@@ -211,7 +211,7 @@ export function ImportProductsDialog({
                           </Badge>
                         ) : null}
                       </span>
-                      <span className="mt-0.5 block text-xs text-faint tabular-nums sm:hidden">
+                      <span className="mt-0.5 block text-xs text-muted-foreground tabular-nums sm:hidden">
                         {quantityFormat.format(row.sales.totalQuantity)} units ·{" "}
                         {row.sales.sharedToMembers
                           ? "Shared"

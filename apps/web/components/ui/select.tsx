@@ -56,7 +56,7 @@ function SelectTrigger({
         // 36px like every other input, `rounded-md`, one hairline. No focus ring:
         // the border goes ink. The grey fill is reserved for "list is open".
         // `padding:0 12px` with a 13px chevron, per the handoff's picker.
-        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 py-0 text-md whitespace-nowrap outline-none select-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground disabled:opacity-100 aria-invalid:border-destructive data-placeholder:text-faint data-popup-open:bg-accent data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]",
+        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 py-0 text-md whitespace-nowrap outline-none select-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground disabled:opacity-100 aria-invalid:border-destructive data-placeholder:text-muted-foreground data-popup-open:bg-accent data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]",
         className
       )}
       {...props}
@@ -126,7 +126,7 @@ function SelectLabel({
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
       className={cn(
-        "px-3 pt-2 pb-1 text-2xs leading-none font-medium text-faint",
+        "px-3 pt-2 pb-1 text-2xs leading-none font-medium text-muted-foreground",
         className
       )}
       {...props}

@@ -314,7 +314,7 @@ function VariantsCard({ product }: { product: ProductDetail }) {
         >
           Variants
         </h2>
-        <span className="text-xs text-faint">{variants.length}</span>
+        <span className="text-xs text-muted-foreground">{variants.length}</span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[560px] table-fixed">
@@ -605,7 +605,7 @@ export function ProductEditor({
               <Field>
                 <FieldTitle>
                   Description{" "}
-                  <span className="font-normal text-faint">(Optional)</span>
+                  <span className="font-normal text-muted-foreground">(Optional)</span>
                 </FieldTitle>
                 <textarea
                   value={draft.description}
@@ -613,7 +613,7 @@ export function ProductEditor({
                   onChange={(event) =>
                     setField("description", event.target.value)
                   }
-                  className="min-h-20 w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-md text-foreground outline-none placeholder:text-faint focus-visible:border-foreground"
+                  className="min-h-20 w-full resize-y rounded-md border border-input bg-card px-3 py-2 text-md text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-foreground"
                   placeholder="A short note for your team"
                 />
               </Field>
@@ -710,7 +710,7 @@ export function ProductEditor({
                       }))
                   }}
                   aria-invalid={Boolean(form.errors[PRICE_FIELD]) || undefined}
-                  className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                  className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
                 />
                 <UnitCombobox
                   label="Sold by"
@@ -755,12 +755,12 @@ export function ProductEditor({
                       onChange={(event) =>
                         setSku(row.key, { sku: event.target.value })
                       }
-                      className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                      className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
                     />
                     <span className="mr-1 flex items-center self-center">
                       <span
                         aria-hidden="true"
-                        className="pr-1 text-sm text-faint"
+                        className="pr-1 text-sm text-muted-foreground"
                       >
                         /
                       </span>

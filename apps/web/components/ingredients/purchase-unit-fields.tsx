@@ -216,7 +216,7 @@ function InvoiceItemSearch({
         className="pr-9"
         trailing={
           <Search
-            className="pointer-events-none size-[15px] text-faint"
+            className="pointer-events-none size-[15px] text-muted-foreground"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -348,7 +348,7 @@ function InvoiceItemSearch({
 
 /** The three typed fields wear the same 32px box as every other short input. */
 const typedFieldClassName =
-  "h-9 w-full rounded-md border border-input bg-card px-3 text-md tabular-nums outline-none placeholder:text-faint hover:border-line-strong focus:border-foreground"
+  "h-9 w-full rounded-md border border-input bg-card px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground hover:border-line-strong focus:border-foreground"
 
 /** Each column repeats its heading on a narrow screen, where the row splits. */
 const columnLabelClassName =
@@ -562,7 +562,7 @@ export function PurchaseUnitFields({
                     onCommit?.(value)
                   }
                 }}
-                className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint"
+                className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground"
               />
               <UnitCombobox
                 id={unitId}
@@ -631,7 +631,7 @@ export function PurchaseUnitFields({
                           <Badge size="row">Used for costing</Badge>
                         ) : null}
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-faint">
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
                         {item.supplier} {item.externalId} ·{" "}
                         {item.rawSize ||
                           `${item.purchaseSize ?? "–"} ${unitShort(item.purchaseUnit)}`}{" "}

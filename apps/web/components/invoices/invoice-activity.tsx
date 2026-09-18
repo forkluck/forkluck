@@ -81,7 +81,7 @@ export function InvoiceActivity({ resourceId }: { resourceId: string }) {
       </h2>
       <div className="mt-2.5 border-t border-muted">
         {rows === null && !error ? (
-          <p className="flex h-14 items-center text-md text-faint">
+          <p className="flex h-14 items-center text-md text-muted-foreground">
             Loading activity…
           </p>
         ) : null}

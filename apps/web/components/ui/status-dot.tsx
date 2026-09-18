@@ -11,7 +11,7 @@ export function StatusDot({
 }) {
   const text = {
     on: "text-success",
-    off: "text-faint",
+    off: "text-muted-foreground",
     attention: "text-warning-foreground",
     error: "text-destructive",
   }[tone]

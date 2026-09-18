@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils"
  */
 // text-lg below md keeps iOS from zooming the page on focus.
 const inputClassName =
-  "h-9 w-full min-w-0 rounded-md border border-input bg-card px-3 text-lg leading-6 text-foreground outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-md file:leading-5 file:font-medium file:text-foreground placeholder:text-faint autofill:shadow-[inset_0_0_0_1000px_var(--card)] autofill:[-webkit-text-fill-color:var(--foreground)] focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:bg-fill-soft disabled:text-faint aria-invalid:border-destructive md:text-md"
+  "h-9 w-full min-w-0 rounded-md border border-input bg-card px-3 text-lg leading-6 text-foreground outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-md file:leading-5 file:font-medium file:text-foreground placeholder:text-muted-foreground autofill:shadow-[inset_0_0_0_1000px_var(--card)] autofill:[-webkit-text-fill-color:var(--foreground)] focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:bg-fill-soft disabled:text-muted-foreground aria-invalid:border-destructive md:text-md"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -52,7 +52,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 /**
- * A `$` / `%` / `/ hour` sitting on the input's own padding: 12px in, faint,
+ * A `$` / `%` / `/ hour` sitting on the input's own padding: 12px in, muted,
  * and never a click target — the field behind it stays the whole hit area.
  * Centered on the field rather than pinned to a hard offset, so it lands right
  * on both the 36px input and the 32px search pill.
@@ -67,7 +67,7 @@ function InputAffix({
       data-slot="input-affix"
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute top-1/2 -translate-y-1/2 text-md leading-none text-faint select-none",
+        "pointer-events-none absolute top-1/2 -translate-y-1/2 text-md leading-none text-muted-foreground select-none",
         side === "start" ? "left-3" : "right-3",
         className
       )}
@@ -94,7 +94,7 @@ function SearchInput({
   return (
     <InputGroup className={cn("w-full max-w-[196px] flex-none", className)}>
       <SearchIcon
-        className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-faint"
+        className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-muted-foreground"
         strokeWidth={2}
         aria-hidden="true"
       />

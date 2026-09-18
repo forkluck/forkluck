@@ -377,7 +377,7 @@ export function ProductComponentsCard({
         >
           {label}
         </h3>
-        <span className="text-xs text-faint">{sectionRows.length}</span>
+        <span className="text-xs text-muted-foreground">{sectionRows.length}</span>
       </div>
       <TableFrame className="overflow-x-auto">
         <Table className="min-w-[420px] table-fixed">

@@ -475,11 +475,11 @@ export function MenuReview({
                       money
                     )}
                   </span>
-                  <span className="flex-none text-xs text-faint">
+                  <span className="flex-none text-xs text-muted-foreground">
                     {channelLabel(group.channel)}
                   </span>
                   {hidden > 0 ? (
-                    <span className="flex-none text-xs text-faint tabular-nums">
+                    <span className="flex-none text-xs text-muted-foreground tabular-nums">
                       showing {group.items.length}
                     </span>
                   ) : null}
@@ -628,7 +628,7 @@ export function MenuReview({
                             {item.itemName}
                           </span>
                           {item.externalVariantTitle ? (
-                            <span className="mt-0.5 block truncate text-xs text-faint">
+                            <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                               {item.externalVariantTitle}
                             </span>
                           ) : null}
@@ -655,7 +655,7 @@ export function MenuReview({
                             ? money(item.netSalesCents, item.currencyCode)
                             : "—"}
                         </span>
-                        <span className="text-right text-base text-faint tabular-nums">
+                        <span className="text-right text-base text-muted-foreground tabular-nums">
                           {item.lastSoldAt
                             ? formatFullDate(item.lastSoldAt, timezone)
                             : "—"}
@@ -699,7 +699,7 @@ export function MenuReview({
       )}
 
       {visibleTotal > visibleItems.length ? (
-        <p className="mt-3 text-xs text-faint">
+        <p className="mt-3 text-xs text-muted-foreground">
           {query
             ? `Showing ${visibleItems.length} of ${visibleTotal} matches.`
             : `Showing the ${visibleItems.length} biggest by net sales. Clear some to see the rest.`}

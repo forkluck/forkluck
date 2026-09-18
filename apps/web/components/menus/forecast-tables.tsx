@@ -66,7 +66,7 @@ function historyLabel(weeksObserved: number) {
 }
 
 /** A blank cell that still reads as a value, never as a missing render. */
-const blank = <span className="text-faint">–</span>
+const blank = <span className="text-muted-foreground">–</span>
 
 /** Rows arrive A–Z from the backend and stay that way until a header is clicked. */
 export function ProductForecastTable({
@@ -356,7 +356,7 @@ function Buy({ row }: { row: MaterialRow }) {
   const packs = packsToBuy(row.packs)
   if (packs === null) {
     return (
-      <span className="text-faint">
+      <span className="text-muted-foreground">
         {row.purchaseSize === null || !row.purchaseUnit ? "Set pack size" : "–"}
       </span>
     )
@@ -448,7 +448,7 @@ export function MaterialsTable({
                         </Badge>
                       ) : null}
                       {note ? (
-                        <div className="mt-0.5 text-xs text-faint">{note}</div>
+                        <div className="mt-0.5 text-xs text-muted-foreground">{note}</div>
                       ) : null}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
@@ -460,7 +460,7 @@ export function MaterialsTable({
                     <TableCell className="text-right text-muted-foreground tabular-nums">
                       {packLabel(row) ?? blank}
                       {row.supplierPack ? (
-                        <span className="text-faint">
+                        <span className="text-muted-foreground">
                           {" "}
                           · {row.supplierPack.supplier}
                         </span>
@@ -470,7 +470,7 @@ export function MaterialsTable({
                       {row.costCents !== null ? (
                         formatWholeCents(row.costCents, currencyCode)
                       ) : row.packs !== null ? (
-                        <span className="text-faint">No price</span>
+                        <span className="text-muted-foreground">No price</span>
                       ) : (
                         blank
                       )}

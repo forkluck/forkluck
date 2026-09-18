@@ -59,7 +59,7 @@ export function ProductCategoryCombobox({
         aria-label="Category"
         className={cn(
           "flex h-9 w-full items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 text-left text-md outline-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong data-popup-open:bg-accent",
-          !value && "text-faint"
+          !value && "text-muted-foreground"
         )}
       >
         <span className="truncate">{value || "Uncategorized"}</span>
@@ -107,7 +107,7 @@ export function ProductCategoryCombobox({
           {/* Only a search that found nothing says so; an empty list is
                   not a failed search. */}
           {needle && matches.length === 0 && !canAdd ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               No results
             </span>
           ) : null}

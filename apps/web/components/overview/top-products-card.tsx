@@ -50,7 +50,7 @@ export function TopProductsCard({
                 <span className="truncate text-md leading-5">
                   {product.name}
                 </span>
-                <span className="text-right text-base text-faint tabular-nums">
+                <span className="text-right text-base text-muted-foreground tabular-nums">
                   {quantityFormat.format(product.quantity)}
                 </span>
                 <span

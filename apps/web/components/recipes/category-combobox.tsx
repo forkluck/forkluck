@@ -65,7 +65,7 @@ export function CategoryCombobox({
         className={cn(
           labeledControlClassName,
           "flex h-9 items-center justify-between gap-1.5 border border-input bg-card text-left text-md outline-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground data-popup-open:bg-accent",
-          !value && "text-faint"
+          !value && "text-muted-foreground"
         )}
       >
         <span className="truncate">{value || "Uncategorized"}</span>
@@ -113,7 +113,7 @@ export function CategoryCombobox({
           {/* Only a search that found nothing says so; an empty list is
                   not a failed search. */}
           {needle && matches.length === 0 && !canAdd ? (
-            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+            <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
               No results
             </span>
           ) : null}

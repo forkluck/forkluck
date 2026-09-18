@@ -436,7 +436,7 @@ export function IgnoreRuleDialog({
                 />
               ) : null}
               {truncated ? (
-                <p className="text-xs text-faint">
+                <p className="text-xs text-muted-foreground">
                   Showing the first matches only — narrow the rule to see them
                   all.
                 </p>

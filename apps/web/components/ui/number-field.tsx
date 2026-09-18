@@ -81,7 +81,7 @@ function NumberField({
           aria-valuenow={value ?? undefined}
           aria-valuemin={min}
           aria-valuemax={max}
-          className="h-full min-w-0 flex-1 bg-transparent text-center text-lg leading-6 text-foreground outline-none placeholder:text-faint disabled:cursor-not-allowed disabled:text-faint md:text-md"
+          className="h-full min-w-0 flex-1 bg-transparent text-center text-lg leading-6 text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:text-muted-foreground md:text-md"
         />
         <NumberFieldPrimitive.Increment
           render={

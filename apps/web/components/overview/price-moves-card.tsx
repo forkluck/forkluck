@@ -52,7 +52,7 @@ export function PriceMovesCard({
                   {move.name}
                 </span>
                 <span className="flex flex-none items-baseline gap-3">
-                  <span className="text-sm text-faint tabular-nums">
+                  <span className="text-sm text-muted-foreground tabular-nums">
                     {formatCents(move.unitPriceCents, currencyCode)} /{" "}
                     {unitShort(move.unit)}
                   </span>

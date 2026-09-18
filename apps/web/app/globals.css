@@ -51,7 +51,6 @@
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-faint: var(--faint);
   --color-ink-soft: var(--ink-soft);
   --color-fill-soft: var(--fill-soft);
   --color-secondary-strong: var(--secondary-strong);
@@ -138,8 +137,10 @@
 }
 
 :root {
-  /* Neutrals are the handoff palette and nothing else — ten values, no other
-     greys. The app frame, cards, modals and popovers are all white; --canvas
+  /* Neutrals are the handoff palette and nothing else — nine values, no other
+     greys. There is one secondary text colour, --muted-foreground; the tertiary
+     "faint" grey was retired, so placeholders, sub-lines and unit suffixes sit
+     on it too. The app frame, cards, modals and popovers are all white; --canvas
      is the ground the frame sits on, so it is the only surface that is not
      white or a fill. */
   /* A literal hex declares a colour; `var(--other)` declares that this name is
@@ -168,13 +169,9 @@
   --secondary-foreground: var(--muted-foreground);
   --secondary-strong: #e4e4e7;
   --muted: var(--secondary);
-  /* Clears 4.5:1 on white and on --muted for normal-size text. */
+  /* Clears 4.5:1 on white and on --muted for normal-size text. Also the
+     placeholder, sub-line and unit-suffix colour. */
   --muted-foreground: #52525b;
-  /* Tertiary — placeholders, sub-lines, unit suffixes. It used to sit at
-     3.42:1 with a note saying not to use it for text that has to be read on
-     its own, which the affixes inside an input ($, %, / hour) do: they name
-     the unit the number is in. Now 4.83:1 on white, 4.67:1 on --fill-soft. */
-  --faint: #71717a;
   /* Table headers and the primary button's hover fill. */
   --ink-soft: #3f3f46;
   /* Table row hover and inset panel fill, a half step above --muted. */

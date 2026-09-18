@@ -69,7 +69,7 @@ export function IntegrationRow({
           </span>
         ) : null}
         {note ? (
-          <span className="mt-1 block text-xs leading-[1.55] text-faint">
+          <span className="mt-1 block text-xs leading-[1.55] text-muted-foreground">
             {note}
           </span>
         ) : null}

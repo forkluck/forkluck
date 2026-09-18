@@ -351,7 +351,7 @@ export function SkuCell({ entries }: { entries: SkuEntry[] }) {
                   {entry.sku}
                 </span>
               </span>
-              <span className="mt-0.5 text-xs text-faint">
+              <span className="mt-0.5 text-xs text-muted-foreground">
                 {entry.detail}
                 {entry.multiplier === 1 ? "" : ` · ×${entry.multiplier}`}
               </span>

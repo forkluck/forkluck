@@ -318,7 +318,7 @@ export function HistoryDialog({
         {/* Six rows of the 56px rhythm before the list starts scrolling. */}
         <div className="-mt-0.5 max-h-[336px] overflow-y-auto border-t border-muted">
           {rows === null && !error ? (
-            <p className="flex h-14 items-center text-md text-faint">
+            <p className="flex h-14 items-center text-md text-muted-foreground">
               Loading history…
             </p>
           ) : null}

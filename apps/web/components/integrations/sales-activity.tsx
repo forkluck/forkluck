@@ -90,11 +90,11 @@ export function SalesActivity({
                       <Badge variant="outline">Synced</Badge>
                     ) : null}
                   </div>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {formatDateTime(item.createdAt, timezone)} ·{" "}
                     {item.importedCount.toLocaleString()} source lines
                   </p>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {item.duplicateCount} duplicates · {item.skippedCount}{" "}
                     skipped · {item.ignoredCount} ignored{" "}
                     {item.ignoredCount === 1 ? "SKU" : "SKUs"}
@@ -164,7 +164,7 @@ export function SalesActivity({
                       {RUN_STATUS_LABELS[run.status]}
                     </Badge>
                   </div>
-                  <p className="mt-0.5 text-xs text-faint">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     Queued {formatDateTime(new Date(run.queuedAt), timezone)}
                     {run.finishedAt
                       ? ` · finished ${formatDateTime(new Date(run.finishedAt), timezone)}`

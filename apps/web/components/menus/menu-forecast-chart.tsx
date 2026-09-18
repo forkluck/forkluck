@@ -113,7 +113,7 @@ export function MenuForecastChart({
             tickCount={3}
             tickLine={false}
             axisLine={false}
-            tick={{ className: "fill-faint text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-2xs" }}
             tickFormatter={units}
             allowDecimals={false}
           />
@@ -124,7 +124,7 @@ export function MenuForecastChart({
             tickMargin={10}
             interval="preserveStartEnd"
             minTickGap={28}
-            tick={{ className: "fill-faint text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-2xs" }}
           />
           <ChartTooltip
             cursor={{ stroke: "var(--border)" }}

@@ -70,7 +70,7 @@ export function MeasureField({
         onChange={(event) => onAmountChange(event.target.value)}
         onKeyDown={onAmountKeyDown}
         onBlur={onBlur}
-        className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-faint disabled:cursor-not-allowed disabled:text-faint [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="min-w-0 bg-transparent px-3 text-md tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:text-muted-foreground [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       <UnitCombobox
         label={unitLabel ?? label}

@@ -24,7 +24,7 @@ export function PasswordHint({
       data-met={met || undefined}
       className={cn(
         "flex items-center gap-1 text-xs leading-none transition-colors",
-        met ? "text-success" : "text-faint",
+        met ? "text-success" : "text-muted-foreground",
         className
       )}
     >

@@ -55,7 +55,7 @@ function Thumbnail({
         <ImageOff
           role="img"
           aria-label={alt}
-          className={cn("text-faint", thumbnailIcons[size])}
+          className={cn("text-muted-foreground", thumbnailIcons[size])}
         />
       )}
     </div>

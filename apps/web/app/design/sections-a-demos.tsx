@@ -209,9 +209,6 @@ export function TextDemo() {
           Priced from the invoice
         </span>
       </Labeled>
-      <Labeled label="Faint">
-        <span className="text-base text-faint">No photo on file</span>
-      </Labeled>
       <Labeled label="Success">
         <span className="text-base text-success">Cost fell 3.1%</span>
       </Labeled>
@@ -224,7 +221,7 @@ export function TextDemo() {
         </span>
       </Labeled>
       <Labeled label="2xs meta">
-        <span className="text-2xs text-faint">Updated by the kitchen</span>
+        <span className="text-2xs text-muted-foreground">Updated by the kitchen</span>
       </Labeled>
     </div>
   )
@@ -625,7 +622,7 @@ export function ClickableChipDemo() {
             </Chip>
           ))}
           {tags.length === 0 ? (
-            <span className="text-xs text-faint">Every tag removed</span>
+            <span className="text-xs text-muted-foreground">Every tag removed</span>
           ) : null}
         </div>
       </Labeled>

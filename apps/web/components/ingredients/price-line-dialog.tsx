@@ -515,7 +515,7 @@ function PickerBody({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="relative shrink-0">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-faint"
+          className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-muted-foreground"
           strokeWidth={2}
           aria-hidden="true"
         />
@@ -546,7 +546,7 @@ function PickerBody({
         {entries.length === 0 ? (
           <div className="flex items-center gap-2.5 rounded-lg border border-border bg-fill-soft px-3.5 py-3">
             <CircleAlert
-              className="size-4 shrink-0 text-faint"
+              className="size-4 shrink-0 text-muted-foreground"
               strokeWidth={1.8}
               aria-hidden="true"
             />

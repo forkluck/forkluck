@@ -172,7 +172,7 @@ export function IngredientCombobox({
           aria-label={label}
           className={cn(
             "flex h-9 w-full items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 text-left text-md outline-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong data-popup-open:bg-accent",
-            !selected && !createLabel && "text-faint"
+            !selected && !createLabel && "text-muted-foreground"
           )}
         >
           <span className="truncate">
@@ -229,7 +229,7 @@ export function IngredientCombobox({
               </button>
             ) : null}
             {matches.length === 0 && catalogRows.length === 0 ? (
-              <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-faint">
+              <span className="flex h-9 shrink-0 items-center px-2.5 text-base text-muted-foreground">
                 No results
               </span>
             ) : null}

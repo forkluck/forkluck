@@ -348,7 +348,7 @@ export function DriveFileLists({
                 <span className="min-w-0 flex-1 truncate text-base text-muted-foreground">
                   {file.name}
                 </span>
-                <span className="truncate text-xs text-faint">
+                <span className="truncate text-xs text-muted-foreground">
                   {file.reason}
                 </span>
                 <Button

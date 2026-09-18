@@ -92,7 +92,7 @@ export function SupplierProductsDialog({
                     </Badge>
                   ) : null}
                 </div>
-                <p className="mt-0.5 truncate text-xs text-faint">
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {sourceLabel(item.supplier)} {item.externalId} ·{" "}
                   {item.rawSize} ·{" "}
                   {formatCents(item.packPriceCents, currencyCode)} ·{" "}
@@ -106,13 +106,13 @@ export function SupplierProductsDialog({
                   / {unitPriceUnit}
                 </p>
                 {item.periodEnd ? (
-                  <p className="mt-0.5 truncate text-xs text-faint">
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
                     Price through {formatCalendarDate(item.periodEnd)}
                   </p>
                 ) : null}
               </div>
               {isPreferred(item) ? (
-                <span className="shrink-0 text-xs text-faint">
+                <span className="shrink-0 text-xs text-muted-foreground">
                   Used for costing
                 </span>
               ) : (

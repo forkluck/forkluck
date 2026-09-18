@@ -482,7 +482,7 @@ export function MenuItemDialog({
             "mt-4 min-w-0 rounded-xl border border-border px-4 py-3.5",
             // A box links to the product it creates, so the card reads as
             // inert rather than disappearing under the pointer.
-            isBundle && "bg-fill-soft text-faint opacity-70"
+            isBundle && "bg-fill-soft text-muted-foreground opacity-70"
           )}
         >
           <p
@@ -750,7 +750,7 @@ export function MenuItemDialog({
                     current.filter((_, rowIndex) => rowIndex !== index)
                   )
                 }
-                className="flex size-9 items-center justify-center rounded-lg text-faint hover:bg-destructive-fill hover:text-destructive"
+                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive-fill hover:text-destructive"
               >
                 <Trash2 className="size-4" />
               </button>

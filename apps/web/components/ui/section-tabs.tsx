@@ -64,7 +64,7 @@ function SectionTab({
       <span
         role="link"
         aria-disabled="true"
-        className={cn(tabClassName, "cursor-not-allowed text-faint")}
+        className={cn(tabClassName, "cursor-not-allowed text-muted-foreground")}
       >
         {children}
       </span>

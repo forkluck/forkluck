@@ -428,7 +428,7 @@ export function RecipeLinesTable({
                       same x whether the unit reads "g" or "tbsp". */}
                   <span className="inline-block w-9">{displayUnit(line)}</span>
                   {showWeightNote ? (
-                    <span className="text-2xs text-faint">
+                    <span className="text-2xs text-muted-foreground">
                       {canOverrideMeasure ? (
                         <button
                           type="button"
@@ -453,7 +453,7 @@ export function RecipeLinesTable({
                       aria-label={`Remove ${line.ingredientName}`}
                       title="Remove ingredient"
                       onClick={() => onDeleteLine(line.lineNumber)}
-                      className="rounded-md p-1 align-middle text-faint opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
+                      className="rounded-md p-1 align-middle text-muted-foreground opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
                     >
                       <X
                         aria-hidden="true"
@@ -504,7 +504,7 @@ export function RecipeLinesTable({
                       aria-label={`Remove ${line.rawLine}`}
                       title="Remove line"
                       onClick={() => onDeleteLine(line.lineNumber)}
-                      className="rounded-md p-1 align-middle text-faint opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
+                      className="rounded-md p-1 align-middle text-muted-foreground opacity-0 group-hover/row:opacity-100 hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none"
                     >
                       <X
                         aria-hidden="true"
@@ -574,7 +574,7 @@ export function RecipeLinesTable({
                     spellCheck={false}
                     aria-label="Add ingredient line"
                     aria-invalid={draftRejected || undefined}
-                    className="w-full bg-transparent text-md outline-none placeholder:text-faint"
+                    className="w-full bg-transparent text-md outline-none placeholder:text-muted-foreground"
                   />
                 </div>
               </TableCell>

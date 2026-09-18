@@ -271,7 +271,7 @@ export function PreparationDialog({
                   value={name}
                   placeholder="Diced"
                   onChange={(event) => setName(event.target.value)}
-                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-md outline-none placeholder:text-faint hover:border-line-strong focus:border-foreground"
+                  className="h-9 w-full rounded-md border border-input bg-card px-3 text-md outline-none placeholder:text-muted-foreground hover:border-line-strong focus:border-foreground"
                 />
                 {form.errors[NAME_FIELD] ? (
                   <p role="alert" className="mt-1 text-xs text-destructive">
@@ -298,7 +298,7 @@ export function PreparationDialog({
                     placeholder="–"
                     aria-label="Yield percent"
                     onChange={(event) => setYieldPercent(event.target.value)}
-                    className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-faint [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-muted-foreground [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                   <span className="mr-2 self-center text-2xs font-semibold text-muted-foreground">
                     %
@@ -331,7 +331,7 @@ export function PreparationDialog({
                         aria-label={`${label} amount`}
                         onChange={(event) => setAmount(event.target.value)}
                         disabled={usesStandardConversion}
-                        className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-faint disabled:cursor-not-allowed disabled:text-faint [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        className="min-w-0 bg-transparent px-2.5 text-md tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:text-muted-foreground [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       />
                       <UnitCombobox
                         label={label}

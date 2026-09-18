@@ -154,7 +154,7 @@ export function ProductAssociationPicker({
         <div className="relative border-b border-muted p-2">
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-[19px] size-[15px] -translate-y-1/2 text-faint"
+            className="pointer-events-none absolute top-1/2 left-[19px] size-[15px] -translate-y-1/2 text-muted-foreground"
             strokeWidth={2}
           />
           <input
@@ -174,7 +174,7 @@ export function ProductAssociationPicker({
             }}
             placeholder="Search product title or SKU"
             aria-label="Search product title or SKU"
-            className="h-9 w-full bg-transparent pr-8 pl-8 text-base text-foreground outline-none placeholder:text-faint"
+            className="h-9 w-full bg-transparent pr-8 pl-8 text-base text-foreground outline-none placeholder:text-muted-foreground"
           />
           {query ? (
             <button
@@ -191,7 +191,7 @@ export function ProductAssociationPicker({
 
         <div className="flex max-h-[300px] flex-col overflow-y-auto p-1.5">
           {matches.length === 0 ? (
-            <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-base text-faint">
+            <span className="flex min-h-14 items-center justify-center px-2.5 text-center text-base text-muted-foreground">
               No products match that title or SKU.
             </span>
           ) : (
@@ -225,7 +225,7 @@ function ProductOption({
       disabled={choice.kind === "mixed"}
       onClick={onClick}
       className={cn(
-        "group/option flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent disabled:cursor-default disabled:text-faint",
+        "group/option flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent disabled:cursor-default disabled:text-muted-foreground",
         selected && "bg-accent"
       )}
     >
@@ -249,12 +249,12 @@ function ProductOption({
           {choice.label}
         </span>
         {choice.kind === "current" ? (
-          <span className="mt-0.5 block truncate text-2xs text-faint">
+          <span className="mt-0.5 block truncate text-2xs text-muted-foreground">
             Still counted here — no longer a product you can pick
           </span>
         ) : null}
         {choice.skus.length ? (
-          <span className="mt-0.5 block truncate text-2xs text-faint">
+          <span className="mt-0.5 block truncate text-2xs text-muted-foreground">
             {choice.skus.length === 1 ? "SKU" : "SKUs"} {choice.skus.join(", ")}
           </span>
         ) : null}

@@ -86,7 +86,7 @@ export function NetSalesCard({
             tickCount={3}
             tickLine={false}
             axisLine={false}
-            tick={{ className: "fill-faint text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-2xs" }}
             tickFormatter={(value: number) =>
               formatAxisCents(value, currencyCode)
             }
@@ -97,7 +97,7 @@ export function NetSalesCard({
             axisLine={false}
             tickMargin={10}
             interval={0}
-            tick={{ className: "fill-faint text-2xs" }}
+            tick={{ className: "fill-muted-foreground text-2xs" }}
             tickFormatter={(value: string, index: number) =>
               bars[index]?.showLabel ? value : ""
             }

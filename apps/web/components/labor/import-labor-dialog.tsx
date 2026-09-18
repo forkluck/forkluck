@@ -529,7 +529,7 @@ function ImportBody({ onDone }: { onDone: () => void }) {
                         <span
                           className={cn(
                             "block truncate text-md",
-                            !isIncluded && "text-faint line-through"
+                            !isIncluded && "text-muted-foreground line-through"
                           )}
                         >
                           {person.name}

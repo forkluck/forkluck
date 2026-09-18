@@ -200,13 +200,13 @@ export function ReceiptReview({
                 <span className="min-w-0">
                   <span className="line-clamp-2 text-md break-words text-foreground">
                     {line.entry.sku ? (
-                      <span className="mr-1.5 text-sm text-faint">
+                      <span className="mr-1.5 text-sm text-muted-foreground">
                         {line.entry.sku.toUpperCase()}
                       </span>
                     ) : null}
                     {line.entry.description}
                   </span>
-                  <span className="mt-0.5 line-clamp-2 text-xs break-words text-faint">
+                  <span className="mt-0.5 line-clamp-2 text-xs break-words text-muted-foreground">
                     {[
                       line.entry.packSize,
                       line.entry.match.kind === "update"
