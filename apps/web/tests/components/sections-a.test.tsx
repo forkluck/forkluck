@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { cleanup, render, screen, within } from "@testing-library/react"
+import { cleanup, render, screen } from "@testing-library/react"
 
 import { SECTIONS_A } from "@/app/design/sections-a"
 
