@@ -145,7 +145,7 @@ export function ImportFilesPanel({
       {reconnectNeeded ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-md text-warning-foreground">
           Google Drive access expired mid-import.
-          <Button type="button" size="sm" onClick={onReconnect}>
+          <Button type="button" onClick={onReconnect}>
             Reconnect Google Drive
           </Button>
         </div>
@@ -175,7 +175,6 @@ export function ImportFilesPanel({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="xs"
                       onClick={() => onRetryQueued(item)}
                     >
                       <RotateCcw strokeWidth={1.8} aria-hidden="true" />
@@ -185,7 +184,6 @@ export function ImportFilesPanel({
                       <Button
                         type="button"
                         variant="ghost"
-                        size="xs"
                         onClick={() => onSkipQueued(item)}
                       >
                         Skip this file in future

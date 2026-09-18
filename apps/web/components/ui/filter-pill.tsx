@@ -35,8 +35,11 @@ function FilterPillTrigger({
 }) {
   return (
     <Button
-      variant="filter"
-      className={cn("shrink-0 gap-1.5", className)}
+      variant="outline"
+      className={cn(
+        "shrink-0 gap-1.5 font-normal text-muted-foreground",
+        className
+      )}
       {...props}
     >
       {label}

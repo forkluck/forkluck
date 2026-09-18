@@ -126,7 +126,6 @@ export function ProductForecastBasis({
       </p>
       <Button
         variant="ghost"
-        size="xs"
         aria-expanded={historyOpen}
         onClick={() => setHistoryOpen(!historyOpen)}
       >

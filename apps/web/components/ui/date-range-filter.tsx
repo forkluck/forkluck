@@ -190,8 +190,11 @@ export function DateRangeFilter({
       <Popover.Trigger
         render={
           <Button
-            variant="filter"
-            className={cn("shrink-0 gap-1.5", className)}
+            variant="outline"
+            className={cn(
+              "shrink-0 gap-1.5 font-normal text-muted-foreground",
+              className
+            )}
             pending={pending}
             aria-label={`Date: ${
               selectedStartDate && selectedEndDate
@@ -212,7 +215,7 @@ export function DateRangeFilter({
               <div className="flex flex-col gap-1 border-b border-popover-border pb-3 sm:border-r sm:border-b-0 sm:pr-3 sm:pb-0">
                 {onClear ? (
                   <Button
-                    variant="quiet"
+                    variant="ghost"
                     className={cn(
                       "justify-start",
                       activeLabel === "All time" && "bg-muted text-foreground"
@@ -242,7 +245,7 @@ export function DateRangeFilter({
                     {group.map((preset) => (
                       <Button
                         key={preset.label}
-                        variant="quiet"
+                        variant="ghost"
                         className={cn(
                           "justify-start",
                           activeLabel === preset.label &&
@@ -258,7 +261,7 @@ export function DateRangeFilter({
                 ))}
                 <div className="mt-1 border-t border-popover-border pt-2">
                   <Button
-                    variant="quiet"
+                    variant="ghost"
                     className={cn(
                       "w-full justify-start",
                       activeLabel === "Custom range" &&
@@ -290,8 +293,8 @@ export function DateRangeFilter({
                       <div className="flex items-center justify-between gap-3">
                         {isLeadingMonth ? (
                           <Button
-                            variant="quiet"
-                            size="icon-sm"
+                            variant="ghost"
+                            size="icon-compact"
                             aria-label="Previous month"
                             onClick={() =>
                               setCalendarMonth((current) =>
@@ -311,8 +314,8 @@ export function DateRangeFilter({
                           <>
                             <span className="hidden size-7 md:block" />
                             <Button
-                              variant="quiet"
-                              size="icon-sm"
+                              variant="ghost"
+                              size="icon-compact"
                               aria-label="Next month"
                               className="md:hidden"
                               disabled={leadingAtLatestMonth}
@@ -323,8 +326,8 @@ export function DateRangeFilter({
                           </>
                         ) : (
                           <Button
-                            variant="quiet"
-                            size="icon-sm"
+                            variant="ghost"
+                            size="icon-compact"
                             aria-label="Next month"
                             disabled={atLatestMonth}
                             onClick={() => setCalendarMonth(nextMonth)}

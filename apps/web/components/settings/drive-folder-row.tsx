@@ -170,7 +170,6 @@ export function DriveFolderRow({
                 <Button
                   type="button"
                   variant="ghost"
-                  size="xs"
                   className="ml-1.5 align-middle"
                   onClick={() => void copyEmail()}
                 >
@@ -354,7 +353,6 @@ export function DriveFileLists({
                 <Button
                   type="button"
                   variant="ghost"
-                  size="xs"
                   pending={busy === `${file.driveFileId}:retry`}
                   disabled={busy === `${file.driveFileId}:skip`}
                   onClick={() => void retry(file.driveFileId)}
@@ -364,7 +362,6 @@ export function DriveFileLists({
                 <Button
                   type="button"
                   variant="ghost"
-                  size="xs"
                   pending={busy === `${file.driveFileId}:skip`}
                   disabled={busy === `${file.driveFileId}:retry`}
                   onClick={() => void skipFailed(file)}
@@ -393,7 +390,6 @@ export function DriveFileLists({
                 <Button
                   type="button"
                   variant="ghost"
-                  size="xs"
                   pending={busy === `${file.driveFileId}:unskip`}
                   onClick={() => void unskip(file.driveFileId)}
                 >

@@ -239,7 +239,6 @@ export function ReceiptReview({
                             <Button
                               type="button"
                               variant="outline"
-                              size="xs"
                               onClick={() =>
                                 onChangeLine(invoice.key, line.key, {
                                   mode: "resolving",
@@ -252,7 +251,6 @@ export function ReceiptReview({
                           <Button
                             type="button"
                             variant="ghost"
-                            size="xs"
                             onClick={() =>
                               onChangeLine(invoice.key, line.key, {
                                 mode: "ignored",
@@ -266,7 +264,6 @@ export function ReceiptReview({
                         <Button
                           type="button"
                           variant="outline"
-                          size="xs"
                           onClick={() =>
                             onChangeLine(invoice.key, line.key, {
                               mode: "resolved",
@@ -281,7 +278,6 @@ export function ReceiptReview({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="xs"
                       onClick={() =>
                         onChangeLine(invoice.key, line.key, {
                           mode:
@@ -370,7 +366,6 @@ export function ReceiptReview({
                   <Button
                     type="button"
                     variant="outline"
-                    size="xs"
                     onClick={() =>
                       onChangeLine(invoice.key, line.key, {
                         // An incomplete suggestion still needs a pack and a
@@ -390,7 +385,6 @@ export function ReceiptReview({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="xs"
                     onClick={() =>
                       onChangeLine(invoice.key, line.key, { mode: "resolving" })
                     }

@@ -191,7 +191,7 @@ function ManualSalesForm({
           <p role="alert" className="text-md text-destructive">
             {error}
           </p>
-          <Button type="submit" size="lg" pending={pending}>
+          <Button type="submit" pending={pending}>
             Record sale
           </Button>
         </div>
@@ -267,7 +267,6 @@ function ManualSalesTable({ product }: { product: ProductDetail }) {
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
                     pending={pendingId === row.id}
                     onClick={() => void remove(row)}
                     aria-label={`Remove manual sale ${row.soldOn}`}

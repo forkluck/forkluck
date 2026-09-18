@@ -267,7 +267,7 @@ export function PrimoComposer({
               </div>
               {file.status === "error" && file.file ? (
                 <Button
-                  size="icon-xs"
+                  size="icon-compact"
                   variant="ghost"
                   aria-label={`Retry ${file.name}`}
                   onClick={() => void attachments.retry(file.id)}
@@ -276,7 +276,7 @@ export function PrimoComposer({
                 </Button>
               ) : null}
               <Button
-                size="icon-xs"
+                size="icon-compact"
                 variant="ghost"
                 disabled={disabled}
                 pending={file.status === "removing"}
@@ -477,7 +477,7 @@ export function PrimoComposer({
               render={
                 <Button
                   type="button"
-                  size="icon-sm"
+                  size="icon-compact"
                   variant="ghost"
                   disabled={disabled}
                   aria-label="Add to message"
@@ -505,7 +505,7 @@ export function PrimoComposer({
           {busy ? (
             <Button
               type="button"
-              size="icon-sm"
+              size="icon-compact"
               variant="ghost"
               onClick={onStop}
               aria-label="Stop Primo"
@@ -516,7 +516,7 @@ export function PrimoComposer({
           ) : (
             <Button
               type="button"
-              size="icon-sm"
+              size="icon-compact"
               onClick={submit}
               disabled={
                 disabled ||

@@ -628,7 +628,7 @@ export function MenuItemDialog({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon-compact"
                       aria-label={`Remove ${member.name}`}
                       onClick={() =>
                         setMembers((current) =>

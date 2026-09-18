@@ -167,8 +167,11 @@ export function ForecastDateFilter({
       <PopoverTrigger
         render={
           <Button
-            variant="filter"
-            className={cn("shrink-0 gap-1.5", className)}
+            variant="outline"
+            className={cn(
+              "shrink-0 gap-1.5 font-normal text-muted-foreground",
+              className
+            )}
             pending={pending}
             aria-label={`Dates: ${formatDateRange(selectedStartDate, selectedEndDate)}`}
           />
@@ -190,7 +193,7 @@ export function ForecastDateFilter({
             {presets.map((preset) => (
               <Button
                 key={preset.id}
-                variant="quiet"
+                variant="ghost"
                 className={cn(
                   "justify-start",
                   activePreset?.id === preset.id &&
@@ -225,8 +228,8 @@ export function ForecastDateFilter({
                   <div className="flex items-center justify-between gap-3">
                     {isLeadingMonth ? (
                       <Button
-                        variant="quiet"
-                        size="icon-sm"
+                        variant="ghost"
+                        size="icon-compact"
                         aria-label="Previous month"
                         disabled={atEarliestMonth}
                         onClick={() =>
@@ -245,8 +248,8 @@ export function ForecastDateFilter({
                       <>
                         <span className="hidden size-7 md:block" />
                         <Button
-                          variant="quiet"
-                          size="icon-sm"
+                          variant="ghost"
+                          size="icon-compact"
                           aria-label="Next month"
                           className="md:hidden"
                           onClick={() => setCalendarMonth(nextMonth)}
@@ -256,8 +259,8 @@ export function ForecastDateFilter({
                       </>
                     ) : (
                       <Button
-                        variant="quiet"
-                        size="icon-sm"
+                        variant="ghost"
+                        size="icon-compact"
                         aria-label="Next month"
                         onClick={() => setCalendarMonth(nextMonth)}
                       >

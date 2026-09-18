@@ -452,16 +452,11 @@ export function MenuEditor({
     >
       {conflict ? (
         <SaveBanner text={conflict.message}>
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => window.location.reload()}
-          >
+          <Button type="button" onClick={() => window.location.reload()}>
             Reload
           </Button>
           <Button
             type="button"
-            size="sm"
             variant="outline"
             onClick={() => {
               discardDraft()
@@ -476,7 +471,6 @@ export function MenuEditor({
         <SaveBanner text="This device kept changes that never reached the server.">
           <Button
             type="button"
-            size="sm"
             onClick={() => {
               applyRecovery(restorable as MenuRecovery)
               dismissRestore()
@@ -484,12 +478,7 @@ export function MenuEditor({
           >
             Restore
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={discardDraft}
-          >
+          <Button type="button" variant="outline" onClick={discardDraft}>
             Discard
           </Button>
         </SaveBanner>
@@ -528,7 +517,6 @@ export function MenuEditor({
               <Button
                 type="button"
                 variant="ghost"
-                size="sm"
                 className="text-primary hover:bg-brand/10 hover:text-primary"
                 onClick={() => setRebaselineOpen(true)}
               >

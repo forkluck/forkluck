@@ -112,7 +112,7 @@ export function SubscribeCard({
         </p>
       ) : null}
 
-      <Button size="lg" pending={pending} onClick={checkout} className="mt-6">
+      <Button pending={pending} onClick={checkout} className="mt-6">
         {copy.button}
       </Button>
 

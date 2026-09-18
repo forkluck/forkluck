@@ -71,7 +71,7 @@ function NumberField({
       >
         <NumberFieldPrimitive.Decrement
           render={
-            <Button variant="ghost" size="icon-xs" aria-label="Decrease" />
+            <Button variant="ghost" size="icon-compact" aria-label="Decrease" />
           }
         >
           <Minus className="size-3.5" aria-hidden="true" />
@@ -85,7 +85,7 @@ function NumberField({
         />
         <NumberFieldPrimitive.Increment
           render={
-            <Button variant="ghost" size="icon-xs" aria-label="Increase" />
+            <Button variant="ghost" size="icon-compact" aria-label="Increase" />
           }
         >
           <Plus className="size-3.5" aria-hidden="true" />

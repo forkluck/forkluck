@@ -104,7 +104,6 @@ export function SalesActivity({
                   <Button
                     type="button"
                     variant={armedId === item.id ? "destructive" : "outline"}
-                    size="sm"
                     disabled={pendingId !== null}
                     onClick={() => void undo(item.id)}
                   >
@@ -175,7 +174,6 @@ export function SalesActivity({
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     disabled={retryingId !== null}
                     onClick={() => void retry(run.id)}
                   >

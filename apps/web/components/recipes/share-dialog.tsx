@@ -172,7 +172,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label={`Remove ${share.recipientName}`}
                     pending={busyId === share.id}
                     onClick={() =>
@@ -200,7 +200,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label={`Revoke ${link.email}`}
                     pending={busyId === link.id}
                     onClick={() =>
@@ -230,7 +230,7 @@ export function ShareDialog({
                 {canEdit ? (
                   <Button
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     // Named apart from the guest-link button: the same address
                     // can hold both, and this one revokes every recipe in it.
                     aria-label={`Revoke the book sent to ${book.email}`}

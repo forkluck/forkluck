@@ -112,7 +112,7 @@ export function VerifyCodeForm({
           A new code is on its way.
         </p>
       ) : null}
-      <Button type="submit" size="lg" pending={pending} className="mt-6">
+      <Button type="submit" pending={pending} className="mt-6">
         Verify
       </Button>
       <button

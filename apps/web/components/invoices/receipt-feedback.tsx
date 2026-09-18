@@ -96,7 +96,7 @@ export function ReceiptFeedback({
       <Button
         type="button"
         variant="ghost"
-        size="icon-sm"
+        size="icon-compact"
         aria-label="Receipt read correctly"
         title="Receipt read correctly"
         aria-pressed={invoice.feedback?.rating === "up"}
@@ -107,7 +107,7 @@ export function ReceiptFeedback({
       <Button
         type="button"
         variant="ghost"
-        size="icon-sm"
+        size="icon-compact"
         aria-label="Report a receipt problem"
         title="Report a receipt problem"
         aria-pressed={invoice.feedback?.rating === "down"}

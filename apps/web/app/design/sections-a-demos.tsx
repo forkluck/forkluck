@@ -5,6 +5,8 @@ import {
   ArrowUpRight,
   Check,
   Clock,
+  Ellipsis,
+  Plus,
   SquarePen,
   TrendingUp,
   TriangleAlert,
@@ -285,83 +287,51 @@ export function OrderedListDemo() {
   )
 }
 
-const BUTTON_VARIANTS = [
-  "default",
-  "outline",
-  "secondary",
-  "ghost",
-  "quiet",
-  "filter",
-  "destructive",
-] as const
-
-const BUTTON_SIZES = ["xs", "sm", "default", "lg"] as const
-
-const BUTTON_LABELS: Record<(typeof BUTTON_VARIANTS)[number], string> = {
-  default: "Save recipe",
-  outline: "Duplicate",
-  secondary: "Actions",
-  ghost: "Cancel",
-  quiet: "Reset",
-  filter: "Status",
-  destructive: "Delete",
-}
-
-const ICON_BUTTON_SIZES = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const
-
 /** 9. Button */
 export function ButtonDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Matrix
-        columns={BUTTON_VARIANTS}
-        rows={BUTTON_SIZES}
-        cell={(variant, size) => (
-          <Button variant={variant} size={size}>
-            {BUTTON_LABELS[variant]}
-            {variant === "filter" ? (
-              <span className="font-medium text-foreground">Active</span>
-            ) : null}
-          </Button>
-        )}
-      />
-      <Matrix
-        columns={ICON_BUTTON_SIZES}
-        rows={["ghost", "outline", "secondary", "default"] as const}
-        cell={(size, variant) => (
-          <Button
-            variant={variant}
-            size={size}
-            aria-label={`Edit the recipe, ${variant} ${size}`}
-          >
-            <SquarePen aria-hidden="true" />
-          </Button>
-        )}
-      />
-      <Row>
-        <Labeled label="Pending">
-          <Button pending>Saving</Button>
-        </Labeled>
-        <Labeled label="Pending, outline">
-          <Button variant="outline" pending>
-            Recosting
-          </Button>
-        </Labeled>
-        <Labeled label="Disabled">
-          <Button disabled>Save recipe</Button>
-        </Labeled>
-        <Labeled label="Disabled, outline">
-          <Button variant="outline" disabled>
-            Duplicate
-          </Button>
-        </Labeled>
-        <Labeled label="Disabled, ghost">
-          <Button variant="ghost" disabled>
-            Cancel
-          </Button>
-        </Labeled>
-      </Row>
-    </div>
+    <Row>
+      <Labeled label="Primary">
+        <Button>Save recipe</Button>
+      </Labeled>
+      <Labeled label="Secondary">
+        <Button variant="outline">Duplicate</Button>
+      </Labeled>
+      <Labeled label="Tertiary">
+        <Button variant="secondary">Actions</Button>
+      </Labeled>
+      <Labeled label="Ghost">
+        <Button variant="ghost">Cancel</Button>
+      </Labeled>
+      <Labeled label="Critical">
+        <Button variant="destructive">Delete</Button>
+      </Labeled>
+      <Labeled label="Critical text">
+        <Button variant="critical">Delete</Button>
+      </Labeled>
+      <Labeled label="Disabled">
+        <Button disabled>Save recipe</Button>
+      </Labeled>
+      <Labeled label="With icon">
+        <Button variant="outline">
+          <Plus data-icon="inline-start" aria-hidden="true" />
+          Add ingredient
+        </Button>
+      </Labeled>
+      <Labeled label="Icon button">
+        <Button variant="outline" size="icon" aria-label="Edit">
+          <SquarePen aria-hidden="true" />
+        </Button>
+      </Labeled>
+      <Labeled label="Compact icon button">
+        <Button variant="ghost" size="icon-compact" aria-label="More actions">
+          <Ellipsis aria-hidden="true" />
+        </Button>
+      </Labeled>
+      <Labeled label="Spinner">
+        <Button pending>Saving</Button>
+      </Labeled>
+    </Row>
   )
 }
 

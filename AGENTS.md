@@ -170,17 +170,17 @@ an `Intl.DateTimeFormat` or a locale method anywhere else.
 
 ## Control heights
 
-Five rungs, and a control sits on one of them: **20px** (badges and chips),
-**24px** (`xs`), **28px** (`sm`), **32px** (`default`), **36px** (`lg`). The
-icon sizes are the square counterparts at the same heights, so an icon button
-and the text button beside it line up without either being special.
+Four rungs, and a control sits on one of them: **20px** (badges and chips),
+**24px** (the compact icon-only button, a ghost in a table row or beside a
+field), **32px** (every text button and the standard icon button, the search
+field, the tab-pill track, menu triggers), **36px** (inputs and selects).
+Buttons have one size; a smaller or larger button is not a size, it is a
+different control. Every menu hangs 6px under its trigger.
 
-32px is the hinge the toolbar is built on — buttons, the search field and the
-tab-pill track all resolve to it, and every menu hangs 6px under its trigger.
-Before this was enforced the app drew fifteen control heights, and the 2px
-gaps between them bought nothing: a 30px icon button next to a 32px button
-needed its own popover offset to look right, which is a rule that exists only
-because the heights disagreed.
+Before this was enforced the app drew fifteen control heights, then seven,
+and the 2px gaps between them bought nothing: a 30px icon button next to a
+32px button needed its own popover offset to look right, which is a rule that
+exists only because the heights disagreed.
 
 Layout heights are not on this ladder and keep their own values: table rows
 and header rows (44/48px), sidebar nav items (44px), the floating field

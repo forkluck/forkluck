@@ -778,7 +778,7 @@ export function ProductEditor({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label="Remove SKU"
                     onClick={() =>
                       setField(

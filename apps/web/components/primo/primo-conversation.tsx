@@ -158,7 +158,6 @@ function AmbiguityChoices({
           key={choice.ref}
           disabled={disabled}
           type="button"
-          size="sm"
           variant="secondary"
           onClick={() =>
             onChoose(`@${choice.label}`, [
@@ -701,7 +700,7 @@ export function PrimoConversation({
                       <>
                         <Button
                           type="button"
-                          size="icon-sm"
+                          size="icon-compact"
                           variant="ghost"
                           aria-label={
                             message.role === "user"
@@ -724,7 +723,7 @@ export function PrimoConversation({
                         {message.role === "user" ? (
                           <Button
                             type="button"
-                            size="icon-sm"
+                            size="icon-compact"
                             variant="ghost"
                             aria-label="Edit question"
                             disabled={Boolean(activeEdit)}
@@ -753,7 +752,7 @@ export function PrimoConversation({
                         message.id === lastMessage?.id ? (
                           <Button
                             type="button"
-                            size="icon-sm"
+                            size="icon-compact"
                             variant="ghost"
                             aria-label={
                               error ||
@@ -775,7 +774,6 @@ export function PrimoConversation({
                         {home && error && message.id === lastMessage?.id ? (
                           <Button
                             variant="ghost"
-                            size="xs"
                             render={<GuardedLink href="/analytics" />}
                           >
                             Open Analytics
@@ -800,7 +798,6 @@ export function PrimoConversation({
               <p>Primo couldn’t finish this question. Retry to continue.</p>
               <Button
                 type="button"
-                size="xs"
                 variant="ghost"
                 disabled={Boolean(activeEdit)}
                 onClick={() => void regenerate()}
@@ -812,7 +809,6 @@ export function PrimoConversation({
               {home ? (
                 <Button
                   variant="ghost"
-                  size="xs"
                   className="mt-1"
                   render={<GuardedLink href="/analytics" />}
                 >

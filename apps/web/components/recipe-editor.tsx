@@ -1457,16 +1457,11 @@ export function RecipeEditor({
       <div className="grid min-w-0 gap-8">
         {conflict ? (
           <SaveBanner text={conflict.message}>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => window.location.reload()}
-            >
+            <Button type="button" onClick={() => window.location.reload()}>
               Reload
             </Button>
             <Button
               type="button"
-              size="sm"
               variant="outline"
               onClick={() => {
                 discardDraft()
@@ -1481,7 +1476,6 @@ export function RecipeEditor({
           <SaveBanner text="This device kept changes that never reached the server.">
             <Button
               type="button"
-              size="sm"
               onClick={() => {
                 applyRecovery(restorable as RecipeRecovery)
                 dismissRestore()
@@ -1489,12 +1483,7 @@ export function RecipeEditor({
             >
               Restore
             </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              onClick={discardDraft}
-            >
+            <Button type="button" variant="outline" onClick={discardDraft}>
               Discard
             </Button>
           </SaveBanner>
@@ -1879,7 +1868,7 @@ export function RecipeEditor({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon-compact"
                       aria-label={`Time for step ${index + 1}`}
                       title={stepTimeLabel(step)}
                       onClick={() => openLabor(step)}

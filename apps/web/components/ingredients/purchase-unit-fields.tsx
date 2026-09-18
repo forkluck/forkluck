@@ -646,7 +646,6 @@ export function PurchaseUnitFields({
                       {!used ? (
                         <Button
                           type="button"
-                          size="sm"
                           variant="ghost"
                           disabled={
                             item.purchaseSize === null || !item.purchaseUnit
@@ -658,7 +657,6 @@ export function PurchaseUnitFields({
                       ) : null}
                       <Button
                         type="button"
-                        size="sm"
                         variant="ghost"
                         className="text-destructive"
                         onClick={() => disconnectItem(item.id)}

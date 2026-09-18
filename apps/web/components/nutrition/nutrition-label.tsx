@@ -389,7 +389,6 @@ export function NutritionLabelCard({
             <Button
               type="button"
               variant="outline"
-              size="sm"
               className="w-fit print:hidden"
               onClick={() => window.print()}
             >

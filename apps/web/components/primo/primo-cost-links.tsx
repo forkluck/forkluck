@@ -31,7 +31,6 @@ export function PrimoCostLinks({
     <div className="flex flex-wrap gap-2">
       {previous ? (
         <Button
-          size="sm"
           variant="secondary"
           onClick={() =>
             onSuggestion(
@@ -46,7 +45,6 @@ export function PrimoCostLinks({
         render={
           <GuardedLink href={`/recipes/${result.recipe.publicId}/cost`} />
         }
-        size="sm"
         variant="ghost"
       >
         Open Cost tab
@@ -56,7 +54,6 @@ export function PrimoCostLinks({
         <Button
           key={ref}
           render={<GuardedLink href={`/ingredients/${ref}`} />}
-          size="sm"
           variant="ghost"
         >
           {name}

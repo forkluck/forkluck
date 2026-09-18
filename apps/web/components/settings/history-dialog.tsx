@@ -285,9 +285,7 @@ export function HistoryDialog({
         <DialogHeader className="flex-row items-center justify-between gap-3">
           <DialogTitle>History</DialogTitle>
           <Popover>
-            <PopoverTrigger
-              render={<Button type="button" variant="outline" size="sm" />}
-            >
+            <PopoverTrigger render={<Button type="button" variant="outline" />}>
               <Filter strokeWidth={1.8} aria-hidden="true" />
               Filter
             </PopoverTrigger>
@@ -350,7 +348,6 @@ export function HistoryDialog({
                   ) : importRow?.canUndo ? (
                     <Button
                       type="button"
-                      size="sm"
                       variant={
                         armedId === importRow.id ? "destructive" : "outline"
                       }

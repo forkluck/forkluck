@@ -86,8 +86,11 @@ export function InvoiceMonthFilter({
       <PopoverTrigger
         render={
           <Button
-            variant="filter"
-            className={cn("shrink-0 gap-1.5", className)}
+            variant="outline"
+            className={cn(
+              "shrink-0 gap-1.5 font-normal text-muted-foreground",
+              className
+            )}
             pending={pending}
             aria-label={`Month: ${formatMonthYear(monthDate(month))}`}
           />
@@ -102,8 +105,8 @@ export function InvoiceMonthFilter({
         <PopoverTitle className="sr-only">Choose a month</PopoverTitle>
         <div className="flex items-center justify-between gap-3">
           <Button
-            variant="quiet"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-compact"
             aria-label="Previous year"
             disabled={
               !earliestMonth || Number(earliestMonth.slice(0, 4)) >= year
@@ -114,8 +117,8 @@ export function InvoiceMonthFilter({
           </Button>
           <p className="text-md font-semibold">{year}</p>
           <Button
-            variant="quiet"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-compact"
             aria-label="Next year"
             disabled={!newestMonth || Number(newestMonth.slice(0, 4)) <= year}
             onClick={() => setYear((current) => current + 1)}
@@ -150,7 +153,7 @@ export function InvoiceMonthFilter({
         </div>
         <div className="mt-2 border-t border-popover-border pt-2">
           <Button
-            variant="quiet"
+            variant="ghost"
             className={cn(
               "w-full justify-start",
               atNewest && "bg-muted text-foreground"

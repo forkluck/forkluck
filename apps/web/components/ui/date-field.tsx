@@ -60,8 +60,8 @@ export function DateField({
             render={
               <Button
                 type="button"
-                variant="quiet"
-                size="icon-sm"
+                variant="ghost"
+                size="icon-compact"
                 aria-label={`Choose ${label.toLowerCase()}`}
               />
             }
@@ -74,8 +74,8 @@ export function DateField({
                 <Popover.Title className="sr-only">Choose a date</Popover.Title>
                 <div className="flex items-center justify-between gap-3">
                   <Button
-                    variant="quiet"
-                    size="icon-sm"
+                    variant="ghost"
+                    size="icon-compact"
                     aria-label="Previous month"
                     onClick={() =>
                       setMonth((current) => addMonths(current, -1))
@@ -87,8 +87,8 @@ export function DateField({
                     {formatMonthYear(month)}
                   </p>
                   <Button
-                    variant="quiet"
-                    size="icon-sm"
+                    variant="ghost"
+                    size="icon-compact"
                     aria-label="Next month"
                     onClick={() => setMonth((current) => addMonths(current, 1))}
                   >

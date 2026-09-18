@@ -87,10 +87,7 @@ export function ForgotPasswordForm() {
           Your password has been changed. You can now sign in with your new
           password.
         </p>
-        <Link
-          href="/login"
-          className={cn(buttonVariants({ size: "lg" }), "mt-6")}
-        >
+        <Link href="/login" className={cn(buttonVariants(), "mt-6")}>
           Sign in
         </Link>
       </div>
@@ -122,7 +119,7 @@ export function ForgotPasswordForm() {
           </p>
         ) : null}
 
-        <Button type="submit" size="lg" pending={pending} className="mt-6">
+        <Button type="submit" pending={pending} className="mt-6">
           Send reset code
         </Button>
 
@@ -193,7 +190,7 @@ export function ForgotPasswordForm() {
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" pending={pending} className="mt-6">
+      <Button type="submit" pending={pending} className="mt-6">
         Reset password
       </Button>
 

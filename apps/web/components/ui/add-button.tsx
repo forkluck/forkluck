@@ -20,7 +20,6 @@ export function AddButton({
     <Button
       type="button"
       variant={variant}
-      size="sm"
       disabled={disabled}
       onClick={onClick}
       // The ghost form reads in the accent and tints on hover; the outline

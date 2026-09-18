@@ -79,7 +79,6 @@ export function ConfirmSubscription({ sessionId }: { sessionId?: string }) {
             {error}
           </p>
           <Button
-            size="lg"
             pending={pending}
             onClick={() => {
               void confirm()

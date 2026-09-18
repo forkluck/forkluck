@@ -1615,7 +1615,7 @@ export function RecipeItemsTable({
                                       <Button
                                         type="button"
                                         variant="ghost"
-                                        size="icon-xs"
+                                        size="icon-compact"
                                         aria-label={
                                           open
                                             ? "Hide sub-recipe"
@@ -1811,7 +1811,7 @@ export function RecipeItemsTable({
             <Button
               type="button"
               variant="ghost"
-              size="icon-xs"
+              size="icon-compact"
               aria-label="Add line"
               className="absolute top-1 right-1"
               onMouseDown={(event) => event.preventDefault()}

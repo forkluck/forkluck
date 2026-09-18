@@ -197,11 +197,7 @@ export function IngredientForm({
     >
       {form.failure?.kind === "conflict" ? (
         <SaveBanner text={form.failure.message}>
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => window.location.reload()}
-          >
+          <Button type="button" onClick={() => window.location.reload()}>
             Reload
           </Button>
         </SaveBanner>

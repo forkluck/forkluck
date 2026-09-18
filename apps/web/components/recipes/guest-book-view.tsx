@@ -42,7 +42,6 @@ export function GuestBookView({ book }: { book: GuestBook }) {
         {/* A closed entry does not print, so paper needs one press first. */}
         <Button
           variant="outline"
-          size="sm"
           className="w-fit print:hidden"
           onClick={() =>
             setOpen(

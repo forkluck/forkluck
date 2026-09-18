@@ -234,7 +234,7 @@ function RoleMenu({
         render={
           <Button
             variant="ghost"
-            size="icon-xs"
+            size="icon-compact"
             aria-label={`Group for ${label}`}
           />
         }
@@ -692,7 +692,7 @@ function ColumnHeader({
         <Button
           type="button"
           variant="ghost"
-          size="icon-xs"
+          size="icon-compact"
           aria-label={`Edit ${formula.title}`}
           onClick={() => onEdit(formula)}
           className="shrink-0"
@@ -703,7 +703,7 @@ function ColumnHeader({
       <Button
         type="button"
         variant="ghost"
-        size="icon-xs"
+        size="icon-compact"
         aria-label={`Remove ${formula.title}`}
         pending={pending && busy === `remove:${formula.key}`}
         onClick={() => onRemove(formula)}
@@ -1339,7 +1339,7 @@ function SpecSheetView({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-xs"
+                      size="icon-compact"
                       aria-label={`Edit ${formula.title}`}
                       onClick={() => onEdit(formula)}
                       className="ml-auto shrink-0"
@@ -1350,7 +1350,7 @@ function SpecSheetView({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon-xs"
+                    size="icon-compact"
                     aria-label={`Remove ${formula.title}`}
                     pending={pending && busy === `remove:${formula.key}`}
                     onClick={() => onRemove(formula)}
@@ -1371,7 +1371,6 @@ function SpecSheetView({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="xs"
                     aria-pressed={isBaseline}
                     onClick={() => onToggleBase(formula)}
                     className={cn(

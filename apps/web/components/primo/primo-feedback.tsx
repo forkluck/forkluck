@@ -51,7 +51,7 @@ export function PrimoFeedback({
   return (
     <>
       <Button
-        size="icon-sm"
+        size="icon-compact"
         variant="ghost"
         aria-label="Good response"
         aria-pressed={rating === "up"}
@@ -62,7 +62,7 @@ export function PrimoFeedback({
         <ThumbsUp aria-hidden="true" />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon-compact"
         variant="ghost"
         aria-label="Bad response"
         aria-pressed={rating === "down"}

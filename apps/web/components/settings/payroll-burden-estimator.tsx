@@ -217,7 +217,6 @@ export function PayrollBurdenEstimator({
           <Button
             type="button"
             variant="outline"
-            size="sm"
             className="mt-3"
             onClick={() => onApply(breakdown.totalPercent)}
           >

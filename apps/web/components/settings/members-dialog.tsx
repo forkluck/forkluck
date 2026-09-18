@@ -192,7 +192,7 @@ export function MembersDialog({
                 />
                 <Button
                   variant="ghost"
-                  size="icon-xs"
+                  size="icon-compact"
                   aria-label={`Remove ${member.name}`}
                   pending={busyId === member.id}
                   onClick={() =>
@@ -218,7 +218,7 @@ export function MembersDialog({
                 </span>
                 <Button
                   variant="ghost"
-                  size="icon-xs"
+                  size="icon-compact"
                   aria-label={`Revoke ${pending.email}`}
                   pending={busyId === pending.id}
                   onClick={() =>

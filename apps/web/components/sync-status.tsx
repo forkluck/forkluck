@@ -139,7 +139,6 @@ export function SyncStatus({
         <Button
           type="button"
           variant="outline"
-          size="sm"
           onClick={queueSync}
           aria-busy={syncing}
           disabled={syncing}

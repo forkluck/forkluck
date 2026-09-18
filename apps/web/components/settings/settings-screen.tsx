@@ -415,7 +415,6 @@ export function SettingsScreen({
               trailing={
                 <Button
                   variant="destructive"
-                  size="sm"
                   onClick={() => setDeleteOpen(true)}
                 >
                   Delete
@@ -431,7 +430,6 @@ export function SettingsScreen({
               trailing={
                 <Button
                   variant="destructive"
-                  size="sm"
                   onClick={() => setLinksOpen(true)}
                 >
                   Reset

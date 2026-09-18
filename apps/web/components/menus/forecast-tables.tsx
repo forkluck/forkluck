@@ -168,7 +168,6 @@ export function ProductForecastTable({
                         <span>{historyLabel(product.weeksObserved)}</span>
                         <Button
                           variant="ghost"
-                          size="xs"
                           className="print:hidden"
                           title="Why this quantity?"
                           aria-label={`Why this quantity for ${product.productName}`}

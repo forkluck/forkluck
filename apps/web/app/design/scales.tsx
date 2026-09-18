@@ -130,14 +130,17 @@ function RadiusDemo() {
 
 const HEIGHTS: { px: number; name: string; jobs: string }[] = [
   { px: 20, name: "badge", jobs: "Badges and chips" },
-  { px: 24, name: "xs", jobs: "Tightest inline actions" },
-  { px: 28, name: "sm", jobs: "Inside table rows, step cards, banners" },
+  {
+    px: 24,
+    name: "compact",
+    jobs: "The compact icon button, in rows and beside fields",
+  },
   {
     px: 32,
-    name: "default",
-    jobs: "Toolbars, page headers, dialogs, search, tab pills",
+    name: "button",
+    jobs: "Every button, the search field, the tab pills, menu triggers",
   },
-  { px: 36, name: "lg", jobs: "Inputs, selects, full-width submits" },
+  { px: 36, name: "field", jobs: "Inputs and selects" },
 ]
 
 function ControlHeightsDemo() {

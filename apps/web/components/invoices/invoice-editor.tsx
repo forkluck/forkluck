@@ -606,16 +606,11 @@ export function InvoiceEditor({
     <div className="flex flex-col gap-5">
       {conflict ? (
         <SaveBanner text={conflict.message}>
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => window.location.reload()}
-          >
+          <Button type="button" onClick={() => window.location.reload()}>
             Reload
           </Button>
           <Button
             type="button"
-            size="sm"
             variant="outline"
             onClick={() => {
               discardDraft()
@@ -630,7 +625,6 @@ export function InvoiceEditor({
         <SaveBanner text="This device kept changes that never reached the server.">
           <Button
             type="button"
-            size="sm"
             onClick={() => {
               applyRecovery(restorable as InvoiceRecovery)
               dismissRestore()
@@ -638,12 +632,7 @@ export function InvoiceEditor({
           >
             Restore
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={discardDraft}
-          >
+          <Button type="button" variant="outline" onClick={discardDraft}>
             Discard
           </Button>
         </SaveBanner>
@@ -906,7 +895,6 @@ export function InvoiceEditor({
                                 <Button
                                   type="button"
                                   variant="outline"
-                                  size="sm"
                                   disabled={dirty}
                                   title={
                                     dirty

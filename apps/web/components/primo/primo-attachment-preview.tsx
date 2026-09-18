@@ -42,7 +42,6 @@ export function PrimoAttachmentPreview({
     <>
       <Button
         type="button"
-        size="sm"
         variant="ghost"
         className="max-w-full min-w-0"
         pending={pending}

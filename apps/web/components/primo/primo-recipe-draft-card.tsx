@@ -140,7 +140,6 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
                   className="mt-2"
                 />
               }
-              size="sm"
               variant="outline"
             >
               Open recipe
@@ -156,7 +155,6 @@ export function PrimoRecipeDraftCard({ draft }: { draft: RecipeDraft }) {
             ) : null}
             <Button
               type="button"
-              size="sm"
               pending={form.pending}
               onClick={() => void form.submit()}
             >

@@ -188,7 +188,7 @@ export function SignupForm({
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" pending={pending} className="mt-6">
+      <Button type="submit" pending={pending} className="mt-6">
         Create account
       </Button>
 

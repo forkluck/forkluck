@@ -165,7 +165,7 @@ function RecentList({ close }: { close: () => void }) {
       {error ? (
         <div role="alert" className="pb-2 text-md text-destructive">
           {error}
-          <Button variant="ghost" size="xs" onClick={reload}>
+          <Button variant="ghost" onClick={reload}>
             Retry
           </Button>
         </div>
@@ -207,7 +207,7 @@ function RecentList({ close }: { close: () => void }) {
                           className="h-8 flex-1 px-2"
                         />
                         <Button
-                          size="icon-sm"
+                          size="icon-compact"
                           variant="ghost"
                           aria-label="Save title"
                           pending={pending === row.id}
