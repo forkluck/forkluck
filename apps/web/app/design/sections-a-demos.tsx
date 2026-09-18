@@ -200,7 +200,7 @@ export function HeadingDemo() {
 /** 4. Text */
 export function TextDemo() {
   return (
-    <Row>
+    <div className="flex flex-col items-start gap-6">
       <Labeled label="Foreground">
         <span className="text-base text-foreground">12 cases of butter</span>
       </Labeled>
@@ -226,7 +226,7 @@ export function TextDemo() {
       <Labeled label="2xs meta">
         <span className="text-2xs text-faint">Updated by the kitchen</span>
       </Labeled>
-    </Row>
+    </div>
   )
 }
 
