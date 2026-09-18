@@ -231,7 +231,7 @@ function QuantityCell({
         cellInput,
         "tabular-nums",
         weighAlert &&
-          "border-warning-border pr-6 focus-visible:border-warning enabled:not-focus:hover:border-warning-border"
+          "border-warning-border pr-6 focus-visible:border-warning-foreground enabled:not-focus:hover:border-warning-border"
       )}
       type="text"
       inputMode="decimal"
@@ -1030,7 +1030,7 @@ function TargetPicker({
         className={cn(
           cellInput,
           flagged &&
-            "border-warning-border pr-8 focus-visible:border-warning enabled:not-focus:hover:border-warning-border"
+            "border-warning-border pr-8 focus-visible:border-warning-foreground enabled:not-focus:hover:border-warning-border"
         )}
         value={value}
         disabled={!canEdit}

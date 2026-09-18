@@ -18,7 +18,7 @@ export function StatusDot({
   const dot = {
     on: "bg-success",
     off: "bg-disabled-foreground",
-    attention: "bg-warning",
+    attention: "bg-warning-foreground",
     error: "bg-destructive",
   }[tone]
 

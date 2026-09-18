@@ -48,7 +48,7 @@ export function connectionState(
   const failing = connections.find((row) => row.lastError)
   if (failing) {
     return {
-      dot: "bg-warning",
+      dot: "bg-warning-foreground",
       label: "Sync incomplete",
       title: failing.lastError,
     }
@@ -68,7 +68,7 @@ export function connectionState(
   })
   if (unsynced) {
     return {
-      dot: "bg-warning",
+      dot: "bg-warning-foreground",
       label: "Never synced",
       title: `${providerName[unsynced.provider]} has not completed a sync`,
     }

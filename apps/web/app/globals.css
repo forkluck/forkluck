@@ -40,7 +40,6 @@
   --color-destructive-tint: var(--destructive-tint);
   --color-success: var(--success);
   --color-success-fill: var(--success-fill);
-  --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-fill: var(--warning-fill);
   --color-warning-fill-hover: var(--warning-fill-hover);
@@ -205,7 +204,6 @@
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning: #ea580c;
   --warning-foreground: #7c2d12;
   --warning-fill: #fed7aa;
   --warning-fill-hover: #fdba74;

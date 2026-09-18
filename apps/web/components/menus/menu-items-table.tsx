@@ -270,7 +270,7 @@ function ItemNameCell({
         autoFocus={autoFocus}
         className={cn(
           cellInput,
-          "-ml-2 border-warning-border pr-8 focus-visible:border-warning enabled:not-focus:hover:border-warning-border"
+          "-ml-2 border-warning-border pr-8 focus-visible:border-warning-foreground enabled:not-focus:hover:border-warning-border"
         )}
         value={value}
         placeholder="Search recipes and products"

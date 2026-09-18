@@ -21,7 +21,6 @@ const TOKENS: { token: string; value: string }[] = [
   { token: "--destructive-strong", value: "#b42318" },
   { token: "--success", value: "#2f7a4f" },
   { token: "--success-fill", value: "#eaf4ee" },
-  { token: "--warning", value: "#ea580c" },
   { token: "--warning-foreground", value: "#7c2d12" },
   { token: "--warning-fill", value: "#fed7aa" },
   { token: "--warning-border", value: "#fdba74" },

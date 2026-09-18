@@ -56,7 +56,7 @@ describe("header connection freshness", () => {
   it("represents never-synced and disconnected accounts explicitly", () => {
     expect(
       connectionState([connection({ lastSyncedAt: null })], now, "UTC")
-    ).toMatchObject({ label: "Never synced", dot: "bg-warning" })
+    ).toMatchObject({ label: "Never synced", dot: "bg-warning-foreground" })
     expect(connectionState([], now, "UTC")).toMatchObject({
       label: "No channels connected",
       dot: "bg-line-strong",

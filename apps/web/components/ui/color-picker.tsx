@@ -32,7 +32,6 @@ const DEFAULT_SWATCHES = [
   "#c9c9cf", // --line-strong
   "#2f7a4f", // --success
   "#eaf4ee", // --success-fill
-  "#ea580c", // --warning
   "#fed7aa", // --warning-fill
   "#d92d20", // --destructive
   "#ffe7e6", // --destructive-fill
