@@ -233,22 +233,22 @@ export function TextDemo() {
 /** 5. Paragraph */
 export function ParagraphDemo() {
   return (
-    <Row className="items-start">
-      <Labeled label="Body, 13.5px over 1.65" className="max-w-[46ch]">
-        <p className="text-base leading-[1.65] text-muted-foreground">
+    <div className="flex flex-col items-start gap-6">
+      <Labeled label="Regular paragraph" className="max-w-[46ch]">
+        <p className="text-base leading-[1.55] font-medium text-foreground">
           A recipe holds its components, its yield and the method the kitchen
           follows. Costing reads the last price paid for each ingredient, so a
           delivery that moved the price of butter moves the plate cost of every
           recipe that uses it.
         </p>
       </Labeled>
-      <Labeled label="Help, 12.5px over 1.55" className="max-w-[46ch]">
-        <p className="text-xs leading-[1.55] text-muted-foreground">
+      <Labeled label="Subdued paragraph" className="max-w-[46ch]">
+        <p className="text-base leading-[1.55] font-medium text-muted-foreground">
           Prices come from the most recent invoice line matched to the
           ingredient.
         </p>
       </Labeled>
-    </Row>
+    </div>
   )
 }
 

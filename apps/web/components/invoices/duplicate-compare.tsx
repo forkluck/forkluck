@@ -73,7 +73,7 @@ export function DuplicateCompare({
 
   return (
     <div className="rounded-xl border border-warning-border bg-warning-fill p-3.5">
-      <p className="text-xs leading-[1.55] text-warning-foreground">
+      <p className="text-base leading-[1.55] font-medium text-warning-foreground">
         An invoice like this one is already on file.
       </p>
       <dl className="mt-3 grid grid-cols-[minmax(0,84px)_minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
@@ -131,7 +131,7 @@ export function DuplicateCompare({
           Replace
         </Button>
       </div>
-      <p className="mt-2 text-xs leading-[1.55] text-muted-foreground">
+      <p className="mt-2 text-base leading-[1.55] font-medium text-muted-foreground">
         To keep both, change the number, date or total above, then Import.
         Replace deletes the imported invoice and imports this one.
       </p>

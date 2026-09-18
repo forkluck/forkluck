@@ -1111,7 +1111,7 @@ export function InvoiceEditor({
           {mismatch ? (
             <p
               role="status"
-              className="mt-1 text-xs leading-[1.55] text-muted-foreground"
+              className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground"
             >
               {`Lines add up to ${formatCents(
                 lineSumCents + taxCents,

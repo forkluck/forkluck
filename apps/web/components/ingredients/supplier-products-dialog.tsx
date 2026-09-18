@@ -73,7 +73,7 @@ export function SupplierProductsDialog({
         </DialogHeader>
 
         {cheaper ? (
-          <div className="rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-base leading-[1.55] text-warning-foreground">
+          <div className="rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-base leading-[1.55] font-medium text-warning-foreground">
             {sourceLabel(cheaper.item.supplier)} {cheaper.item.externalId} is
             about {Math.round(cheaper.savingsPercent)}% less per {unitPriceUnit}
             .

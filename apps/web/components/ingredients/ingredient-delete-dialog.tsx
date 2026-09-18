@@ -101,7 +101,7 @@ export function DeleteWithUsageDialog({
 
         {blocked ? (
           <div className="mt-4">
-            <p className="text-base leading-[1.55] text-destructive">
+            <p className="text-base leading-[1.55] font-medium text-destructive">
               {blockedMessage}
             </p>
             <div className="mt-3 divide-y divide-muted border-y border-muted">

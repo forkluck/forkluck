@@ -286,10 +286,10 @@
        shorthand, which resets line-height to the font's own metric — Inter's
        normal, ~1.21. Preflight's 1.5 inflates a two-line settings row by 10px
        and every stacked table cell with it, which is why the first pass drifted
-       screen to screen. `normal` is the app's default leading; prose opts back
-       in explicitly (leading-[1.55] help text, [1.6] dialog copy, [1.65] empty
-       states, [1.7] the recipe textarea). Auth sits outside this design and
-       restores 1.5 on its own root. */
+       screen to screen. `normal` is the app's default leading; a paragraph
+       opts back in with the one prose leading, leading-[1.55], at body size
+       and 500 (the recipe textarea keeps 1.7). Auth sits outside this design
+       and restores 1.5 on its own root. */
     line-height: normal;
   }
 

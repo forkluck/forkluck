@@ -62,7 +62,7 @@ export const DOCUMENT_LABELS = {
 /** The one inline notice shape in this dialog: the handoff's yellow banner. */
 export function Notice({ children }: { children: React.ReactNode }) {
   return (
-    <p className="flex items-start gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-xs leading-[1.55] text-warning-foreground">
+    <p className="flex items-start gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-2.5 text-base leading-[1.55] font-medium text-warning-foreground">
       <TriangleAlert
         className="mt-px size-4 shrink-0 text-warning"
         strokeWidth={1.8}

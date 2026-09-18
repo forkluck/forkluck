@@ -426,7 +426,7 @@ function PickerBody({
           <p className="mt-4 text-sm font-medium">
             Use this match across your account?
           </p>
-          <p className="mt-1 text-xs leading-[1.55] text-muted-foreground">
+          <p className="mt-1 text-base leading-[1.55] font-medium text-muted-foreground">
             Confirming teaches every recipe that “{lineName}” means “
             {selected.name}”. Nothing is linked until you confirm.
           </p>
@@ -470,7 +470,7 @@ function PickerBody({
         }}
       >
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <p className="text-xs leading-[1.55] text-muted-foreground">
+          <p className="text-base leading-[1.55] font-medium text-muted-foreground">
             Saving adds your price and remembers this line name for every recipe
             in your account.
           </p>

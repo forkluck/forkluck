@@ -143,7 +143,7 @@ export function LineCostFields({
         className="tabular"
       />
       {countPack ? (
-        <p className="text-xs leading-[1.55] text-muted-foreground sm:col-span-3">
+        <p className="text-base leading-[1.55] font-medium text-muted-foreground sm:col-span-3">
           Recipes measured by weight will need the weight of one; set it on the
           ingredient’s Conversions.
         </p>

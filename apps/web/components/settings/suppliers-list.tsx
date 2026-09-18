@@ -128,7 +128,7 @@ export function SuppliersList() {
           </p>
         ) : null}
         {rows?.length === 0 ? (
-          <p className="py-4 text-base leading-[1.6] text-muted-foreground">
+          <p className="py-4 text-base leading-[1.55] font-medium text-muted-foreground">
             No suppliers yet. Add one, or import an invoice or a supplier price
             list.
           </p>

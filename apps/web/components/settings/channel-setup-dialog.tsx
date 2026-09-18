@@ -59,7 +59,7 @@ function SetupNotes({
         />
         {summary}
       </summary>
-      <div className="mt-2 text-xs leading-[1.55] text-muted-foreground">
+      <div className="mt-2 text-base leading-[1.55] font-medium text-muted-foreground">
         {children}
       </div>
     </details>

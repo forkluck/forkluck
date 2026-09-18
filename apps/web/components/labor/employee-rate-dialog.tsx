@@ -108,14 +108,14 @@ export function EmployeeRateDialog({
             onChange={(event) => setRate(event.target.value)}
             className="tabular-nums"
           />
-          <p className="mt-2 text-xs leading-[1.55] text-muted-foreground">
+          <p className="mt-2 text-base leading-[1.55] font-medium text-muted-foreground">
             {isFirstRate
               ? "Applies to every shift on record. Later changes only affect shifts from the day they are made."
               : "Applies to shifts from today onward. Past labor costs keep the rate they were recorded at."}
           </p>
           {form.errors[RATE_FIELD] || form.failure ? (
             <p
-              className="mt-2 text-xs leading-[1.55] text-destructive"
+              className="mt-2 text-base leading-[1.55] font-medium text-destructive"
               role="alert"
             >
               {form.errors[RATE_FIELD] ?? form.failure?.message}
