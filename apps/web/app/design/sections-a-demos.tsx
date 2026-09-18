@@ -202,21 +202,27 @@ export function TextDemo() {
   return (
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular text">
-        <span className="text-base text-foreground">12 cases of butter</span>
+        <span className="text-base font-medium text-foreground">
+          12 cases of butter
+        </span>
       </Labeled>
       <Labeled label="Subdued text">
-        <span className="text-base text-muted-foreground">
+        <span className="text-base font-medium text-muted-foreground">
           Priced from the invoice
         </span>
       </Labeled>
       <Labeled label="Success tone">
-        <span className="text-base text-success">Cost fell 3.1%</span>
+        <span className="text-base font-medium text-success">
+          Cost fell 3.1%
+        </span>
       </Labeled>
       <Labeled label="Critical tone">
-        <span className="text-base text-destructive">Two have no price</span>
+        <span className="text-base font-medium text-destructive">
+          Two have no price
+        </span>
       </Labeled>
       <Labeled label="Warning tone">
-        <span className="text-base text-warning-foreground">
+        <span className="text-base font-medium text-warning-foreground">
           Four lines unmatched
         </span>
       </Labeled>
@@ -619,7 +625,9 @@ export function ClickableChipDemo() {
             </Chip>
           ))}
           {tags.length === 0 ? (
-            <span className="text-xs text-muted-foreground">Every tag removed</span>
+            <span className="text-xs text-muted-foreground">
+              Every tag removed
+            </span>
           ) : null}
         </div>
       </Labeled>
