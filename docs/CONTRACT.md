@@ -1490,8 +1490,15 @@ Rename trims a 1–200 character title. Archive/unarchive changes
 the archive fields without changing `updatedAt` or `lastMessageAt`, preserving
 the conversation's list position. Delete cascades through its messages.
 
-**Recipes / normalized content and bench costing (29)**
-`save-recipe`, `delete-recipe`, `update-recipe-statuses` (with
+**Recipes / normalized content and bench costing (30)**
+`save-recipe`, `duplicate-recipe` (with `{id}`, owner only: a second recipe
+from the first under its own id, public id and code, active, titled
+`<title> (copy)` and then `(copy 2)` rather than stacking; it carries every
+other profile field, the lines with their base and cost-exclusion flags, the
+steps with their timings and media, batch sizes, equivalency, tags and media,
+and leaves shares, guest links, book links, comments and external refs
+behind; answers `{id, publicId, code, editVersion, ownerId}` like
+`save-recipe`), `delete-recipe`, `update-recipe-statuses` (with
 `{recipeIds, status}`, 1 to 200 ids, owner only, in one transaction: refused
 whole when any id is not the owner's, a recipe already in that status left
 alone without a line; answers `{ok, changed}`),

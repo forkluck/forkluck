@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { ClipboardPaste, Copy, Trash2 } from "lucide-react"
+import { ClipboardPaste, Copy, CopyPlus, Trash2 } from "lucide-react"
 
-import { deleteRecipe } from "@/app/(app)/recipes/actions"
+import { deleteRecipe, duplicateRecipe } from "@/app/(app)/recipes/actions"
 import { ShareButton } from "@/components/recipes/share-button"
 import { ShareDialog } from "@/components/recipes/share-dialog"
 import { ActionsMenu } from "@/components/ui/actions-menu"
@@ -144,6 +144,7 @@ export function RecipeChrome({
   const [shareOpen, setShareOpen] = React.useState(false)
   const [confirmDelete, setConfirmDelete] = React.useState(false)
   const [deletePending, setDeletePending] = React.useState(false)
+  const [duplicatePending, setDuplicatePending] = React.useState(false)
   const [canSave, setCanSave] = React.useState(false)
   const registerSave = React.useCallback(
     (next: (() => Promise<unknown>) | null) => {
@@ -174,6 +175,23 @@ export function RecipeChrome({
   const showDelete = canDelete || creating
 
   const openShare = React.useCallback(() => setShareOpen(true), [])
+
+  // The copy opens on its own page, where it can be renamed right away.
+  const duplicate = async () => {
+    if (!recipeId) return
+    setDuplicatePending(true)
+    try {
+      const result = await duplicateRecipe(recipeId)
+      if ("error" in result) {
+        toast.add({ title: result.error, type: "error" })
+        return
+      }
+      void go(`/recipes/${result.publicId}/recipe`)
+      toast.add({ title: `Duplicated ${shownTitle}` })
+    } finally {
+      setDuplicatePending(false)
+    }
+  }
 
   // The lines at the batch on screen, for pasting into a message or a doc.
   // Only the Recipe tab has lines to give; the other tabs say so.
@@ -263,6 +281,15 @@ export function RecipeChrome({
               <Copy strokeWidth={1.8} aria-hidden="true" />
               Copy ingredients as markdown
             </MenuItem>
+            {showDelete ? (
+              <MenuItem
+                disabled={!recipeId || duplicatePending}
+                onClick={() => void duplicate()}
+              >
+                <CopyPlus strokeWidth={1.8} aria-hidden="true" />
+                Duplicate
+              </MenuItem>
+            ) : null}
             {showDelete ? (
               <MenuItem
                 disabled={!recipeId}
