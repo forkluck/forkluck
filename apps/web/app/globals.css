@@ -101,11 +101,14 @@
   --text-lg: 16px;
   --text-2xl: 24px;
   /* No elevation anywhere in this design: depth is one 1px --border hairline
-     plus the modal scrim. Zeroing the scale means a stray shadow-* utility
-     can't reintroduce a drop shadow. */
+     plus the modal scrim, and one soft drop under the tooltip (--shadow-sm).
+     Zeroing the rest of the scale means a stray shadow-* utility can't
+     reintroduce a drop shadow. */
   --shadow-2xs: 0 0 #0000;
   --shadow-xs: 0 0 #0000;
-  --shadow-sm: 0 0 #0000;
+  /* The one real shadow: a soft drop under a floating tooltip. The rest
+     stay zero on purpose. */
+  --shadow-sm: 0 2px 8px rgb(24 24 27 / 0.08);
   --shadow: 0 0 #0000;
   --shadow-md: 0 0 #0000;
   --shadow-lg: 0 0 #0000;
