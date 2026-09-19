@@ -42,9 +42,9 @@ function NoticeBanner({
 }
 
 /**
- * The banner's own button: the ordinary outline button (grey line, white
- * fill), the same shell as the toolbar pills beside it. The banner's yellow
- * is the message's, not the button's.
+ * The banner's own button: the ghost, so the strip stays one calm fill with
+ * the action reading as text until it is hovered. Trying this on the
+ * owner's ask; the outline it replaced is one word away.
  */
 function NoticeBannerAction({
   className,
@@ -52,7 +52,7 @@ function NoticeBannerAction({
 }: React.ComponentProps<typeof Button>) {
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       className={cn("ml-auto shrink-0", className)}
       {...props}
     />
