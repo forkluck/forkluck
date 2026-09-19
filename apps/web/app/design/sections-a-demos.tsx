@@ -501,7 +501,7 @@ export function ChipDemo() {
   const [amount, setAmount] = React.useState("250")
   const [unit, setUnit] = React.useState<string | null>("gram")
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       <Row>
         <Labeled label="Chip">
           <Chip>Allergen free</Chip>
@@ -510,19 +510,6 @@ export function ChipDemo() {
           <Chip pressed>Milk</Chip>
         </Labeled>
       </Row>
-      <div className="max-w-[220px]">
-        <MeasureField
-          label="Butter"
-          amount={amount}
-          unit={unit}
-          options={[
-            { slug: "gram", label: "Grams (g)" },
-            { slug: "kilogram", label: "Kilograms (kg)" },
-          ]}
-          onAmountChange={setAmount}
-          onUnitChange={setUnit}
-        />
-      </div>
     </div>
   )
 }
@@ -859,6 +846,19 @@ export function NumberFieldDemo() {
       </Labeled>
       <Labeled label="Disabled" className="w-[200px]">
         <NumberField label="Yield" value={48} disabled min={1} step={1} />
+      </Labeled>
+      <Labeled label="With a unit" className="w-[220px]">
+        <MeasureField
+          label="Butter"
+          amount={amount}
+          unit={unit}
+          options={[
+            { slug: "gram", label: "Grams (g)" },
+            { slug: "kilogram", label: "Kilograms (kg)" },
+          ]}
+          onAmountChange={setAmount}
+          onUnitChange={setUnit}
+        />
       </Labeled>
     </Row>
   )
