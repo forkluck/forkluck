@@ -599,7 +599,9 @@ export function TooltipDemo() {
       </Labeled>
       <Labeled label="On a text button">
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline">Recost</Button>} />
+          <TooltipTrigger
+            render={<Button variant="secondary">Recost</Button>}
+          />
           <TooltipContent>
             Reprice every recipe from the last invoice
           </TooltipContent>
