@@ -1677,7 +1677,7 @@ export function RecipeEditor({
               {autoYieldHint ? (
                 <p className="flex items-center gap-2 text-md text-warning-foreground">
                   <TriangleAlert
-                    className="size-3.5 shrink-0 text-warning-foreground"
+                    className="size-3.5 shrink-0 text-warning-mark"
                     strokeWidth={1.9}
                     aria-hidden="true"
                   />
@@ -1726,12 +1726,12 @@ export function RecipeEditor({
                         <span
                           role="img"
                           aria-label={`Excluded from batch weight: ${batchWeight.missing.join(", ")}.`}
-                          className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                          className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                         />
                       }
                     >
                       <TriangleAlert
-                        className="size-[13px]"
+                        className="size-3.5"
                         strokeWidth={2}
                         aria-hidden="true"
                       />
@@ -2047,7 +2047,7 @@ export function RecipeEditor({
                       <TooltipTrigger
                         render={
                           <Info
-                            className="size-[14px] shrink-0 text-muted-foreground"
+                            className="size-3.5 shrink-0 text-muted-foreground"
                             strokeWidth={1.8}
                             role="img"
                             aria-label="What the batch UOM means"

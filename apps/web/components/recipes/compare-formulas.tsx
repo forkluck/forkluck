@@ -624,7 +624,7 @@ function AddRecipePopover({
             className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent"
           >
             <ClipboardPaste
-              className="size-[17px]"
+              className="size-4"
               strokeWidth={1.8}
               aria-hidden="true"
             />

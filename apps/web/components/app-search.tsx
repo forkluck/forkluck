@@ -155,11 +155,7 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
             />
           }
         >
-          <Search
-            className="size-[17px]"
-            strokeWidth={1.8}
-            aria-hidden="true"
-          />
+          <Search className="size-4" strokeWidth={1.8} aria-hidden="true" />
         </TooltipTrigger>
         <TooltipContent>
           Search <Kbd>{shortcut}</Kbd>
@@ -179,7 +175,7 @@ export function AppSearch({ places = [] }: { places?: SearchItem[] }) {
           {/* 54px field row over a light rule; the Esc chip names the exit. */}
           <div className="flex h-[54px] shrink-0 items-center gap-2.5 border-b border-muted px-[18px]">
             <Search
-              className="size-[17px] shrink-0 text-muted-foreground"
+              className="size-4 shrink-0 text-muted-foreground"
               strokeWidth={2}
               aria-hidden="true"
             />

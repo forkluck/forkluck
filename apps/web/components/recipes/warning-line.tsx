@@ -9,7 +9,7 @@ export function WarningLine({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex gap-2">
       <TriangleAlert
-        className="mt-px size-[15px] shrink-0 text-warning-foreground"
+        className="mt-px size-3.5 shrink-0 text-warning-mark"
         strokeWidth={1.8}
         aria-hidden="true"
       />

@@ -63,7 +63,7 @@ export function SupplierCombobox({
         >
           <span className="truncate">{value || "Unnamed supplier"}</span>
           <ChevronDown
-            className="size-[13px] shrink-0 text-muted-foreground"
+            className="size-3.5 shrink-0 text-muted-foreground"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -99,10 +99,7 @@ export function SupplierCombobox({
                 onClick={() => choose(typed)}
                 className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong"
               >
-                <CirclePlus
-                  className="size-[15px] shrink-0"
-                  aria-hidden="true"
-                />
+                <CirclePlus className="size-3.5 shrink-0" aria-hidden="true" />
                 <span className="truncate">Add “{typed}”</span>
               </button>
             ) : null}

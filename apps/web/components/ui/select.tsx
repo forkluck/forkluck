@@ -56,7 +56,7 @@ function SelectTrigger({
         // 36px like every other input, `rounded-md`, one hairline. No focus ring:
         // the border goes ink. The grey fill is reserved for "list is open".
         // `padding:0 12px` with a 13px chevron, per the handoff's picker.
-        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 py-0 text-md whitespace-nowrap outline-none select-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground disabled:opacity-100 aria-invalid:border-destructive data-placeholder:text-muted-foreground data-popup-open:bg-accent data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]",
+        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-card px-3 py-0 text-md whitespace-nowrap outline-none select-none focus-visible:border-foreground enabled:not-focus:hover:border-line-strong disabled:cursor-not-allowed disabled:border-border disabled:text-disabled-foreground disabled:opacity-100 aria-invalid:border-destructive data-placeholder:text-muted-foreground data-popup-open:bg-accent data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -66,7 +66,7 @@ function SelectTrigger({
         render={
           <ChevronDownIcon
             strokeWidth={2}
-            className="pointer-events-none size-[13px] text-muted-foreground"
+            className="pointer-events-none size-3.5 text-muted-foreground"
           />
         }
       />
@@ -143,7 +143,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "group relative flex min-h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-hidden select-none data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]",
+        "group relative flex min-h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-hidden select-none data-highlighted:bg-accent data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -153,18 +153,18 @@ function SelectItem({
           every other row a blank spacer so nothing shifts. */}
       <span
         aria-hidden="true"
-        className="relative flex size-[15px] shrink-0 items-center justify-center"
+        className="relative flex size-3.5 shrink-0 items-center justify-center"
       >
         <CheckIcon
           strokeWidth={2}
-          className="size-[15px] text-disabled-foreground opacity-0 group-data-highlighted:opacity-100 group-data-selected:hidden"
+          className="size-3.5 text-disabled-foreground opacity-0 group-data-highlighted:opacity-100 group-data-selected:hidden"
         />
         <SelectPrimitive.ItemIndicator
           render={
             <span className="absolute inset-0 flex items-center justify-center" />
           }
         >
-          <CheckIcon strokeWidth={2} className="size-[15px] text-foreground" />
+          <CheckIcon strokeWidth={2} className="size-3.5 text-foreground" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">

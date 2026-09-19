@@ -73,7 +73,7 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8 [&_svg:not([class*='size-'])]:size-[18px]",
+        icon: "size-8 [&_svg:not([class*='size-'])]:size-4",
         // The compact icon-only button: a ghost in a table row or beside a
         // field, 24px so it reads as smaller than the button next to it.
         "icon-compact": "size-6 [&_svg:not([class*='size-'])]:size-3.5",

@@ -55,7 +55,7 @@ export function RowActionsMenu({
         }
       >
         <Ellipsis
-          className="size-[18px] fill-current"
+          className="size-4 fill-current"
           strokeWidth={1.2}
           aria-hidden="true"
         />

@@ -46,6 +46,8 @@
   --color-warning-border: var(--warning-border);
   --color-warning-strong: var(--warning-strong);
   --color-warning-hover: var(--warning-hover);
+  --color-success-mark: var(--success-mark);
+  --color-warning-mark: var(--warning-mark);
   --color-caution: var(--caution);
   --color-caution-foreground: var(--caution-foreground);
   --color-caution-fill: var(--caution-fill);
@@ -203,6 +205,9 @@
   --destructive-tint: #f97066;
   --success: #1f4a2b;
   --success-fill: #ccf1b1;
+  /* The mark: a green for an icon standing on white, where the deep ink
+     reads black. Text on white and anything on the fill stay on --success. */
+  --success-mark: #2f8f57;
   /* Needs-attention yellow: icon, text, banner fill, banner border, and the
      border the ghost button inside a banner uses. The two hover values are
      the fills the handoff gives a yellow control: --warning-hover for the
@@ -214,6 +219,8 @@
   --warning-border: #f3c98a;
   --warning-strong: #e9b96a;
   --warning-hover: #fbe8c8;
+  /* The mark: the warning icon on white, where the deep ink reads black. */
+  --warning-mark: #d97706;
   /* Caution: the yellow, a step under warning. Ink 6.2:1 on its fill. */
   --caution: #ca8a04;
   --caution-foreground: #533d08;

@@ -64,7 +64,7 @@ export function BatchSizeSelect({
       >
         <span className="truncate">{value.label || `${value.scale}x`}</span>
         <ChevronDown
-          className="size-[13px] shrink-0 text-muted-foreground"
+          className="size-3.5 shrink-0 text-muted-foreground"
           strokeWidth={2}
           aria-hidden="true"
         />
@@ -100,7 +100,7 @@ export function BatchSizeSelect({
                 }}
                 className="ml-auto flex size-5 shrink-0 items-center justify-center rounded text-muted-foreground hover:text-destructive"
               >
-                <X className="size-[13px]" strokeWidth={2} aria-hidden="true" />
+                <X className="size-3.5" strokeWidth={2} aria-hidden="true" />
               </span>
             ) : null}
           </MenuCheckItem>

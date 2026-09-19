@@ -92,7 +92,7 @@ export function BulkDeleteMenu({
           {/* Filled dots, not rings: r=1 plus a 1.2 stroke lands on the 1.6
               radius the design draws. */}
           <Ellipsis
-            className="size-[18px] fill-current"
+            className="size-4 fill-current"
             strokeWidth={1.2}
             aria-hidden="true"
           />

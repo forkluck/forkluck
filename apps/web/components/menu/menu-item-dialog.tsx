@@ -544,7 +544,7 @@ export function MenuItemDialog({
                       : "border-border bg-card hover:border-line-strong focus-visible:border-foreground"
                   )}
                 >
-                  <Icon className="size-[17px] text-brand" aria-hidden="true" />
+                  <Icon className="size-4 text-brand" aria-hidden="true" />
                   <span className="mt-3 block text-md font-semibold text-foreground">
                     {option.label}
                   </span>

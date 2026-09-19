@@ -92,7 +92,10 @@ green (`--success` / `--success-fill`), orange for warning
 (`--warning-foreground` / `--warning-fill`, `--warning` for the icon and the
 edge), yellow for caution (`--caution-foreground` / `--caution-fill`), and
 blue for info (`--info` on `--info-fill`, the brand fill). Every pair clears
-4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. Do
+4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. An
+icon standing on white takes the tone's mark (`--success-mark`,
+`--warning-mark`, `--destructive`, `--brand`), a mid colour, because the deep
+inks read black at 16px; an icon on a tone fill keeps the ink. Do
 not add a second shade for a state that "reads softer" than an action — the
 app carried a second red and a second green on that theory and the cooler
 green failed AA against 11.5px text on its own fill. A new semantic color
@@ -104,16 +107,25 @@ buttons are ink, never blue.
 
 ## Menus
 
-A row that runs a command carries a 17px icon; a row that picks a value is a
-`MenuCheckItem` and carries the 15px check slot instead. Every row has one or
+A row that runs a command carries a 16px icon; a row that picks a value is a
+`MenuCheckItem` and carries the 14px check slot instead. Every row has one or
 the other, and never neither.
 
-The icon is structural, not decorative. Icon plus gap is a 27px lane, so a row
-without one starts its label 27px further left, and two menus opened from
+The icon is structural, not decorative. Icon plus gap is a 26px lane, so a row
+without one starts its label 26px further left, and two menus opened from
 neighbouring controls disagree about where their text begins. Mark the icon
 `aria-hidden` — the label already names the action. Reuse the verb's existing
 icon rather than picking a new one: `SquarePen` edits, `Trash2` deletes,
 `Download` imports, `Upload` exports, `Clock` is history.
+
+## Icons
+
+Two sizes. **14px** for an icon that sits with text or inside a control: in a
+button, a badge, a chip, a chevron on a trigger, a check in a menu or a
+checkbox. **16px** for an icon that owns a lane of its own: a menu row, a
+sidebar item, a clickable row, a banner, the icon button, the dialog close.
+Larger marks (the avatar tile, the empty state, the drop zone) are pictures,
+not icons, and keep their own sizes. The app once drew icons at nine sizes.
 
 ## Feedback
 

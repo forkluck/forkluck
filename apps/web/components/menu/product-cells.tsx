@@ -188,7 +188,7 @@ export function AlertFlag({
         {labels.map((line) => (
           <span key={line} className="flex items-center gap-2.5">
             <TriangleAlert
-              className="size-[17px] flex-none text-warning-foreground"
+              className="size-4 flex-none text-warning-mark"
               strokeWidth={1.8}
               aria-hidden="true"
             />

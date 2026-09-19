@@ -458,7 +458,7 @@ export function RecipeLinesTable({
                       <X
                         aria-hidden="true"
                         strokeWidth={1.8}
-                        className="size-[15px]"
+                        className="size-3.5"
                       />
                     </button>
                   )}
@@ -509,7 +509,7 @@ export function RecipeLinesTable({
                       <X
                         aria-hidden="true"
                         strokeWidth={1.8}
-                        className="size-[15px]"
+                        className="size-3.5"
                       />
                     </button>
                   )}
@@ -526,7 +526,7 @@ export function RecipeLinesTable({
                   <Plus
                     aria-hidden="true"
                     strokeWidth={1.8}
-                    className="size-[15px] shrink-0 text-muted-foreground"
+                    className="size-3.5 shrink-0 text-muted-foreground"
                   />
                   <input
                     ref={draftInputRef}

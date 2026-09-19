@@ -4,8 +4,10 @@ import * as React from "react"
 import {
   Building2,
   Check,
+  CircleAlert,
   Clock,
   Ellipsis,
+  Info,
   KeyRound,
   Plus,
   SquarePen,
@@ -674,46 +676,34 @@ export function IconDemo() {
   return (
     <div className="flex flex-col gap-8">
       <Row>
-        <Labeled label="14px, in a button">
+        <Labeled label="14px, with text or in a control">
           <SquarePen className="size-3.5 text-foreground" aria-hidden="true" />
         </Labeled>
-        <Labeled label="15px, check slot">
-          <Check className="size-[15px] text-foreground" aria-hidden="true" />
-        </Labeled>
-        <Labeled label="17px, menu row">
-          <Clock className="size-[17px] text-foreground" aria-hidden="true" />
+        <Labeled label="16px, in a lane of its own">
+          <Clock className="size-4 text-foreground" aria-hidden="true" />
         </Labeled>
       </Row>
       <Row>
         <Labeled label="Foreground">
-          <SquarePen
-            className="size-[17px] text-foreground"
-            aria-hidden="true"
-          />
+          <SquarePen className="size-4 text-foreground" aria-hidden="true" />
         </Labeled>
         <Labeled label="Muted">
-          <SquarePen
-            className="size-[17px] text-muted-foreground"
-            aria-hidden="true"
-          />
+          <Clock className="size-4 text-muted-foreground" aria-hidden="true" />
         </Labeled>
         <Labeled label="Success">
-          <Check className="size-[17px] text-success" aria-hidden="true" />
-        </Labeled>
-        <Labeled label="Destructive">
-          <TriangleAlert
-            className="size-[17px] text-destructive"
-            aria-hidden="true"
-          />
+          <Check className="size-4 text-success-mark" aria-hidden="true" />
         </Labeled>
         <Labeled label="Warning">
           <TriangleAlert
-            className="size-[17px] text-warning-foreground"
+            className="size-4 text-warning-mark"
             aria-hidden="true"
           />
         </Labeled>
-        <Labeled label="Brand">
-          <TrendingUp className="size-[17px] text-primary" aria-hidden="true" />
+        <Labeled label="Critical">
+          <CircleAlert className="size-4 text-destructive" aria-hidden="true" />
+        </Labeled>
+        <Labeled label="Info">
+          <Info className="size-4 text-brand" aria-hidden="true" />
         </Labeled>
       </Row>
     </div>

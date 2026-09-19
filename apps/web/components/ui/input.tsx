@@ -94,7 +94,7 @@ function SearchInput({
   return (
     <InputGroup className={cn("w-full max-w-[196px] flex-none", className)}>
       <SearchIcon
-        className="pointer-events-none absolute top-1/2 left-3 size-[15px] -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
         strokeWidth={2}
         aria-hidden="true"
       />

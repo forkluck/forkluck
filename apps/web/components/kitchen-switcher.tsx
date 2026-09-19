@@ -61,7 +61,7 @@ export function KitchenSwitcher({
             glyph on the nav icon column — so the two read as one foot. */}
         <MenuTrigger className="group/kitchen flex h-9 min-w-0 flex-1 items-center gap-[9px] rounded-lg border border-transparent px-2 text-left outline-none hover:bg-sidebar-hover focus-visible:border-foreground data-popup-open:bg-sidebar-hover">
           <ChefHat
-            className="size-[17px] shrink-0"
+            className="size-4 shrink-0"
             strokeWidth={1.8}
             aria-hidden="true"
           />
@@ -69,12 +69,12 @@ export function KitchenSwitcher({
             {kitchenLabel(active)}
           </span>
           <ChevronDown
-            className="size-[15px] shrink-0 group-data-popup-open/kitchen:hidden"
+            className="size-3.5 shrink-0 group-data-popup-open/kitchen:hidden"
             strokeWidth={2}
             aria-hidden="true"
           />
           <ChevronUp
-            className="hidden size-[15px] shrink-0 group-data-popup-open/kitchen:block"
+            className="hidden size-3.5 shrink-0 group-data-popup-open/kitchen:block"
             strokeWidth={2}
             aria-hidden="true"
           />

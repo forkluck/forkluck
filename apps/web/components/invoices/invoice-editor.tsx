@@ -908,7 +908,7 @@ export function InvoiceEditor({
                             {line.needsReview ? (
                               <>
                                 <TriangleAlert
-                                  className="size-[13px] shrink-0 text-warning-foreground"
+                                  className="size-3.5 shrink-0 text-warning-mark"
                                   strokeWidth={1.9}
                                   aria-hidden="true"
                                 />

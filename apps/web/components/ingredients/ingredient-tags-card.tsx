@@ -97,7 +97,7 @@ export function IngredientTagsCard({
       >
         <span
           className={cn(
-            "flex size-[15px] shrink-0 items-center justify-center rounded-sm border",
+            "flex size-3.5 shrink-0 items-center justify-center rounded-sm border",
             checked
               ? "border-foreground bg-foreground text-background"
               : "border-muted-foreground bg-card"
@@ -129,7 +129,7 @@ export function IngredientTagsCard({
               className="flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground"
             >
               <CirclePlus
-                className="size-[17px]"
+                className="size-4"
                 strokeWidth={2}
                 aria-hidden="true"
               />
@@ -170,7 +170,7 @@ export function IngredientTagsCard({
               className="flex h-7 items-center gap-1.5 rounded-md bg-secondary px-2 text-xs font-medium text-muted-foreground outline-none hover:bg-secondary-strong hover:text-foreground focus-visible:text-foreground"
             >
               <CirclePlus
-                className="size-[14px]"
+                className="size-3.5"
                 strokeWidth={2}
                 aria-hidden="true"
               />
@@ -229,7 +229,7 @@ export function IngredientTagsCard({
                       className="flex min-h-9 w-full items-center gap-2.5 rounded-md bg-accent px-2.5 py-1.5 text-left text-md font-medium outline-none hover:bg-secondary-strong"
                     >
                       <CirclePlus
-                        className="size-[15px] shrink-0"
+                        className="size-3.5 shrink-0"
                         aria-hidden="true"
                       />
                       <span className="truncate">Add “{trimmed}”</span>

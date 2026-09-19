@@ -38,7 +38,7 @@ export function ClickableRowBody({
   return (
     <>
       <span className="flex w-[17px] flex-none items-center justify-center text-muted-foreground">
-        <Icon className="size-[17px]" strokeWidth={1.8} aria-hidden="true" />
+        <Icon className="size-4" strokeWidth={1.8} aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-md text-foreground">{title}</span>
@@ -48,7 +48,7 @@ export function ClickableRowBody({
       </span>
       {trailing ?? (
         <ChevronRight
-          className="size-[15px] flex-none text-disabled-foreground"
+          className="size-3.5 flex-none text-disabled-foreground"
           strokeWidth={2}
           aria-hidden="true"
         />

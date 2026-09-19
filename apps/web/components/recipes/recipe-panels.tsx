@@ -338,12 +338,12 @@ export function RecipeCostingPanel({
                             <span
                               role="img"
                               aria-label={alertLabel}
-                              className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                              className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                             />
                           }
                         >
                           <TriangleAlert
-                            className="size-[13px]"
+                            className="size-3.5"
                             strokeWidth={2}
                             aria-hidden="true"
                           />
@@ -518,12 +518,12 @@ export function RecipeCostingPanel({
                           <span
                             role="img"
                             aria-label="Total yield needed for cost per yield"
-                            className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                            className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                           />
                         }
                       >
                         <TriangleAlert
-                          className="size-[13px]"
+                          className="size-3.5"
                           strokeWidth={2}
                           aria-hidden="true"
                         />
