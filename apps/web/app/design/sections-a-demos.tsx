@@ -216,6 +216,9 @@ export function TextDemo() {
       <Labeled label="Regular text">
         <span className="text-md text-foreground">12 cases of butter</span>
       </Labeled>
+      <Labeled label="Small text">
+        <span className="text-sm text-foreground">Priced from the invoice</span>
+      </Labeled>
       <Labeled label="Subdued text">
         <span className="text-md text-muted-foreground">
           Priced from the invoice

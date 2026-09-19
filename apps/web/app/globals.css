@@ -90,7 +90,7 @@
   --radius-xl: 14px;
   --radius-2xl: 18px;
 
-  /* Type scale: four steps and nothing between them (AGENTS.md "Type scale").
+  /* Type scale: five steps and nothing between them (AGENTS.md "Type scale").
      Tailwind's own sizes are cleared so `text-sm`, `text-base` and `text-xl`
      do not exist here, and no step carries a line-height: `normal` stays the
      default and a paragraph opts in with `leading-[1.55]`.

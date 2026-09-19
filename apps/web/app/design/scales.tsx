@@ -23,7 +23,7 @@ const TYPE_STEPS: {
   {
     step: "sm",
     px: "13",
-    jobs: "The tooltip (on trial)",
+    jobs: "Small text: the tooltip, and a line that must sit under body without becoming a label",
     className: "text-sm",
   },
   {

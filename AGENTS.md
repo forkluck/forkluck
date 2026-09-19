@@ -195,9 +195,9 @@ stand next to each other in a toolbar, a form, or a table row.
 
 ## Type scale
 
-Four sizes exist and nothing between them, declared as `--text-*` in
-`apps/web/app/globals.css`: `text-xs` (12px), `text-md` (14px), `text-lg`
-(16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
+Five sizes exist and nothing between them, declared as `--text-*` in
+`apps/web/app/globals.css`: `text-xs` (12px), `text-sm` (13px), `text-md`
+(14px), `text-lg` (16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
 `text-base` and `text-xl` do not exist here, and no step carries a
 line-height: `normal` stays the default and a paragraph opts in with
 `leading-[1.55]`, as the body rule in `globals.css` explains.
@@ -205,11 +205,13 @@ line-height: `normal` stays the default and a paragraph opts in with
 An arbitrary size — `text-[13px]`, `text-[14.5px]`, any of them — is never
 correct, including when it matches a step. The app once drew twenty-six sizes
 from a ten-step scale; the scale was cut to four on 2026-09-18 because the
-steps between were doing nothing a reader could see. Pick the step; if none of
-the four fits, the change is to the scale, not to the call site.
+steps between were doing nothing a reader could see, and `sm` came back the
+next day for the tooltip. Pick the step; if none of the five fits, the change
+is to the scale, not to the call site.
 
 Each step has a job: `xs` badges, chips, menu group labels, tooltips and chart
-ticks, never running text; `md` everything read or pressed — body, table
+ticks, never running text; `sm` small text, the tooltip and a line that
+must sit under body without becoming a label; `md` everything read or pressed — body, table
 cells, dialog copy, help text, sub-lines, buttons, labels, tabs, field text,
 and every heading below the page title (at 600); `lg` the 16px floor that
 keeps iOS from zooming a focused field, the wordmark, and inline figures;
