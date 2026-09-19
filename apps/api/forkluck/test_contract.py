@@ -141,6 +141,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "delete-comparison": "action_delete_comparison",
     "delete-menu": "action_delete_menu",
     "delete-recipe": "action_delete_recipe",
+    "duplicate-recipe": "action_duplicate_recipe",
     "delete-recipe-category": "action_delete_recipe_category",
     "delete-recipe-external-ref": "action_delete_recipe_external_ref",
     "delete-sales-ignore-rule": "action_delete_sales_ignore_rule",

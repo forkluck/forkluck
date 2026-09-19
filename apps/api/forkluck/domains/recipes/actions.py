@@ -3,6 +3,7 @@
 import hashlib
 import json
 import logging
+import re
 import secrets
 from collections import Counter
 from collections.abc import Callable
@@ -50,6 +51,7 @@ from ...models import (
     RecipePaste,
     RecipePasteItem,
     RecipeLineMatch,
+    RecipeMedia,
     RecipeShare,
     RecipeStep,
     RecipeTag,
@@ -59,6 +61,7 @@ from ...models import (
     SavedComparison,
     SavedComparisonColumn,
     User,
+    generate_recipe_public_id,
 )
 from ...integrations.emails import (
     EmailNotConfigured,
@@ -1288,6 +1291,95 @@ def action_delete_recipe_comment(user: User, body: JsonObject) -> JsonObject:
     return {"ok": True}
 
 
+def _copy_of(row: Any, **overrides: Any) -> Any:
+    """The same row again under a fresh id, with the columns named replaced."""
+    values = {
+        field.attname: getattr(row, field.attname)
+        for field in row._meta.concrete_fields
+        if field.attname not in {"id", "created_at", "updated_at"}
+    }
+    values.update(overrides)
+    return type(row)(**values)
+
+
+_COPY_TITLE = re.compile(r"^(?P<stem>.*) \(copy(?: (?P<number>\d+))?\)$")
+
+
+def _copy_title(title: str) -> str:
+    """Pasta becomes "Pasta (copy)", then "Pasta (copy 2)": it counts, never stacks."""
+    match = _COPY_TITLE.match(title)
+    if match:
+        stem, number = match.group("stem"), int(match.group("number") or 1)
+        return f"{stem} (copy {number + 1})"[:200]
+    return f"{title} (copy)"[:200]
+
+
+def action_duplicate_recipe(user: User, body: JsonObject) -> JsonObject:
+    """A second recipe from the first, the same in everything but its name.
+
+    Owner only. The copy has its own identity (id, public id, code, edit
+    version), is active, and carries every other profile field, its lines with
+    their base and cost-exclusion flags, its steps with their timings and
+    photos, its batch sizes, equivalency, tags and photos. What ties the
+    original to other people and systems stays behind: shares, guest links,
+    comments, external refs and the activity log.
+    """
+    source = _owned_recipe(user, body.get("id"))
+    with transaction.atomic():
+        copy = _copy_of(
+            source,
+            public_id=generate_recipe_public_id(),
+            code=next_recipe_code(user),
+            edit_version=0,
+            title=_copy_title(source.title),
+            # An archived original is usually duplicated to bring back a new
+            # version, and an archived copy would be invisible in the list.
+            status=Recipe.STATUS_ACTIVE,
+        )
+        copy.save()
+        RecipeItem.objects.bulk_create(
+            _copy_of(item, recipe_id=copy.id) for item in source.items.all()
+        )
+        for step in source.steps.prefetch_related("timings", "media"):
+            step_copy = _copy_of(step, recipe_id=copy.id)
+            step_copy.save()
+            RecipeTiming.objects.bulk_create(
+                _copy_of(timing, step_id=step_copy.id) for timing in step.timings.all()
+            )
+            RecipeMedia.objects.bulk_create(
+                _copy_of(media, step_id=step_copy.id) for media in step.media.all()
+            )
+        RecipeBatchSize.objects.bulk_create(
+            _copy_of(batch, recipe_id=copy.id) for batch in source.batch_sizes.all()
+        )
+        equivalency = getattr(source, "equivalency", None)
+        if equivalency is not None:
+            _copy_of(equivalency, recipe_id=copy.id).save()
+        RecipeTagMembership.objects.bulk_create(
+            RecipeTagMembership(recipe=copy, tag_id=membership.tag_id)
+            for membership in source.tag_memberships.all()
+        )
+        RecipeMedia.objects.bulk_create(
+            _copy_of(media, recipe_id=copy.id) for media in source.media.all()
+        )
+    record_event(
+        user,
+        user,
+        "recipe",
+        "added",
+        resource_id=copy.id,
+        name=copy.title,
+        publicId=copy.public_id,
+    )
+    return {
+        "id": str(copy.id),
+        "publicId": copy.public_id,
+        "code": copy.code,
+        "editVersion": copy.edit_version,
+        "ownerId": str(copy.user_id),
+    }
+
+
 def action_delete_recipe(user: User, body: JsonObject) -> JsonObject:
     row = Recipe.objects.filter(user=user, id=uuid_value(body.get("id"))).first()
     if row is None:
@@ -2506,6 +2598,7 @@ def action_delete_menu(user: User, body: JsonObject) -> JsonObject:
 # forkluck/http/dispatch.py.
 ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "save-recipe": action_save_recipe,
+    "duplicate-recipe": action_duplicate_recipe,
     "delete-recipe": action_delete_recipe,
     "update-recipe-statuses": action_update_recipe_statuses,
     "update-recipe-costing": action_update_recipe_costing,

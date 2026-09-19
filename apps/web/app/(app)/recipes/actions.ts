@@ -3,10 +3,9 @@
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-import { requireUser } from "@/lib/auth-session"
 import { actionErrorMessage } from "@/lib/backend/action-error"
 import { BackendRequestError, djangoAction } from "@/lib/backend/client"
-import { getPricingEntries, getRecipe } from "@/lib/backend/queries"
+import { getPricingEntries } from "@/lib/backend/queries"
 import type { RecipeDetail } from "@/lib/backend/types"
 import { normalizeIngredientName } from "@/lib/pricing"
 import { recipeDraftSchema } from "@/lib/recipe/draft"
@@ -196,14 +195,6 @@ const recipeEquivalencySchema = z.object({
   countAmount: z.number().positive().nullable(),
   countUnit: z.string().max(32),
   standard: z.boolean(),
-})
-
-const duplicateRecipeSchema = saveRecipeSchema.extend({
-  items: z.array(recipeItemSchema).max(1000),
-  steps: z.array(recipeStepSchema).max(1000),
-  batchSizes: z.array(recipeBatchSchema).max(100),
-  equivalency: recipeEquivalencySchema.nullable(),
-  tagIds: z.array(z.string().min(1)).max(100),
 })
 
 const recipeAggregateSchema = saveRecipeSchema.extend({
@@ -475,86 +466,17 @@ export async function deleteRecipes(
   }
 }
 
+/** A second recipe from this one, the same in everything but its name; the
+ * backend copies every row so nothing a recipe holds is left behind. */
 export async function duplicateRecipe(
   id: string
-): Promise<SavedRecipe | { error: string; code?: string }> {
-  await requireUser()
+): Promise<SavedRecipe | { error: string }> {
   const parsed = z.string().min(1).safeParse(id)
   if (!parsed.success) return { error: "Recipe id is required." }
   try {
-    const recipe = await getRecipe(parsed.data)
-    if (!recipe) return { error: "Recipe not found." }
-    if (recipe.permission !== "owner") {
-      return { error: "Only the recipe owner can duplicate it." }
-    }
-    const copy = duplicateRecipeSchema.safeParse({
-      id: null,
-      title: `${recipe.title} (copy)`.slice(0, 200),
-      kind: "recipe",
-      status: "active",
-      body: "",
-      method: "",
-      yieldAmount: recipe.yieldAmount,
-      yieldUnit: recipe.yieldUnit ?? undefined,
-      menuPriceCents: recipe.menuPriceCents,
-      category: recipe.category,
-      description: recipe.description,
-      servingAmount: recipe.servingAmount,
-      servingUnit: recipe.servingUnit,
-      nutritionServingAmount: recipe.nutritionServingAmount,
-      nutritionServingUnit: recipe.nutritionServingUnit,
-      nutritionPackageAmount: recipe.nutritionPackageAmount,
-      nutritionPackageUnit: recipe.nutritionPackageUnit,
-      shelfLifeAmount: recipe.shelfLifeAmount,
-      shelfLifeUnit: recipe.shelfLifeUnit,
-      prepTimeAmount: recipe.prepTimeAmount,
-      prepTimeUnit: recipe.prepTimeUnit,
-      autoSumYieldEnabled: recipe.autoSumYieldEnabled,
-      autoPrepTimeEnabled: recipe.autoPrepTimeEnabled,
-      percentageMode: recipe.percentageMode,
-      percentIngredientEnabled: recipe.percentIngredientEnabled,
-      percentIngredientType: recipe.percentIngredientType,
-      items: recipe.items.map((item) => ({
-        kind: item.kind,
-        displayName: item.displayName,
-        quantity: item.quantity,
-        unit: item.unit,
-        preparationNote: item.preparationNote,
-        efficiency: item.efficiency,
-        efficiencyAfterCooking: item.efficiencyAfterCooking,
-        ingredientId: item.ingredientId,
-        subrecipeId: item.subrecipeId,
-      })),
-      steps: recipe.steps.map((step) => ({
-        kind: step.kind === "note" ? "note" : "instruction",
-        title: step.title,
-        body: step.body,
-        laborKind: step.laborKind,
-        timings: step.timings.map(({ seconds, yieldCount }) => ({
-          seconds,
-          yieldCount,
-        })),
-      })),
-      batchSizes: recipe.batchSizes.map(({ label, scale, isOriginal }) => ({
-        label,
-        scale,
-        isOriginal,
-      })),
-      equivalency: recipe.equivalency
-        ? {
-            massAmount: recipe.equivalency.massAmount,
-            massUnit: recipe.equivalency.massUnit,
-            volumeAmount: recipe.equivalency.volumeAmount,
-            volumeUnit: recipe.equivalency.volumeUnit,
-            countAmount: recipe.equivalency.countAmount,
-            countUnit: recipe.equivalency.countUnit,
-            standard: recipe.equivalency.standard,
-          }
-        : null,
-      tagIds: recipe.tags.map((tag) => tag.id),
+    const result = await djangoAction<SavedRecipe>("duplicate-recipe", {
+      id: parsed.data,
     })
-    if (!copy.success) return { error: "Couldn’t duplicate the recipe." }
-    const result = await djangoAction<SavedRecipe>("save-recipe", copy.data)
     revalidateRecipeReads()
     return result
   } catch (cause) {
