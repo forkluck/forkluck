@@ -151,13 +151,13 @@ function AllergenHintRow({
         {keys.map((key) => (
           <span
             key={key}
-            className="inline-flex h-5 items-center rounded-full border border-dashed border-line-strong bg-card"
+            className="inline-flex h-5 items-center rounded-md border border-dashed border-line-strong bg-card"
           >
             <button
               type="button"
               aria-label={`Confirm ${allergenLabel(key)}`}
               onClick={() => onConfirm(key)}
-              className="inline-flex h-5 items-center gap-1 rounded-full pr-1 pl-2 text-xs font-medium whitespace-nowrap text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
+              className="inline-flex h-5 items-center gap-1 rounded-md pr-1 pl-2 text-xs font-medium whitespace-nowrap text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground"
             >
               {allergenLabel(key)}
               <Check className="size-3" aria-hidden />
