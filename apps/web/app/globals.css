@@ -191,14 +191,14 @@
   --destructive: #d92d20;
   /* On this fill the ink is --destructive-strong (6.3:1); --destructive itself
      falls under AA here. */
-  --destructive-fill: #f8d9d4;
+  --destructive-fill: #f5cfc8;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */
   --destructive-strong: #8f2a1f;
   --destructive-tint: #f97066;
   --success: #2f5a3a;
-  --success-fill: #dcebd6;
+  --success-fill: #d2e5c9;
   /* Needs-attention yellow: icon, text, banner fill, banner border, and the
      border the ghost button inside a banner uses. The two hover values are
      the fills the handoff gives a yellow control: --warning-hover for the
@@ -213,11 +213,11 @@
   /* Caution: the yellow, a step under warning. Ink 6.2:1 on its fill. */
   --caution: #ca8a04;
   --caution-foreground: #6b5210;
-  --caution-fill: #f6ecb8;
+  --caution-fill: #f3e59f;
   /* Info: the blue as a label, on its own soft fill (the brand fill stays
      the selection and chart fill). Ink 6.9:1. */
   --info: #2b4c86;
-  --info-fill: #dfe8f5;
+  --info-fill: #d3e0f3;
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;
