@@ -189,35 +189,35 @@
      ink on that ground is --destructive-strong, because --destructive itself
      lands at 4.1:1 there. --success on its own fill is 4.65:1. */
   --destructive: #d92d20;
-  /* On this fill the ink is --destructive-strong (5.6:1); --destructive itself
-     is 4.1:1 here, under AA for 14px text. */
-  --destructive-fill: #ffe7e6;
+  /* On this fill the ink is --destructive-strong (6.3:1); --destructive itself
+     falls under AA here. */
+  --destructive-fill: #f8d9d4;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */
-  --destructive-strong: #7f1d1d;
+  --destructive-strong: #8f2a1f;
   --destructive-tint: #f97066;
-  --success: #14532d;
-  --success-fill: #eaf4ee;
+  --success: #2f5a3a;
+  --success-fill: #dcebd6;
   /* Needs-attention yellow: icon, text, banner fill, banner border, and the
      border the ghost button inside a banner uses. The two hover values are
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning-foreground: #431407;
-  --warning-fill: #fed7aa;
-  --warning-fill-hover: #fdba74;
-  --warning-border: #fdba74;
-  --warning-strong: #fb923c;
-  --warning-hover: #ffedd5;
-  /* Caution: the yellow, a step under warning. Ink 8.1:1 on its fill. */
+  --warning-foreground: #7a3d0b;
+  --warning-fill: #f9dca4;
+  --warning-fill-hover: #f3cf92;
+  --warning-border: #f3c98a;
+  --warning-strong: #e9b96a;
+  --warning-hover: #fbe8c8;
+  /* Caution: the yellow, a step under warning. Ink 6.2:1 on its fill. */
   --caution: #ca8a04;
-  --caution-foreground: #422006;
-  --caution-fill: #fef9c3;
-  /* Info: the blue as a label. --brand itself is 3.5:1 on --brand-fill, so
-     the info ink is the deeper blue, 5.2:1 there. */
-  --info: #1e3a8a;
-  --info-fill: var(--brand-fill);
+  --caution-foreground: #6b5210;
+  --caution-fill: #f6ecb8;
+  /* Info: the blue as a label, on its own soft fill (the brand fill stays
+     the selection and chart fill). Ink 6.9:1. */
+  --info: #2b4c86;
+  --info-fill: #dfe8f5;
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;
