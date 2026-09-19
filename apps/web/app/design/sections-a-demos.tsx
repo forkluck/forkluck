@@ -476,25 +476,21 @@ export function BannerDemo() {
       <NoticeBanner tone="success">
         All 48 invoice lines are matched to an ingredient.
       </NoticeBanner>
-      <NoticeBanner action={<NoticeBannerAction>Review</NoticeBannerAction>}>
-        Four invoice lines are not matched to an ingredient.
+      <NoticeBanner
+        action={
+          <NoticeBannerActions>
+            <NoticeBannerAction>Reload</NoticeBannerAction>
+            <NoticeBannerAction>Discard my changes</NoticeBannerAction>
+          </NoticeBannerActions>
+        }
+      >
+        This recipe changed on another device since you opened it.
       </NoticeBanner>
       <NoticeBanner
         tone="critical"
         action={<NoticeBannerAction>Retry</NoticeBannerAction>}
       >
         The Baldor import failed before any line was read.
-      </NoticeBanner>
-      <NoticeBanner
-        tone="info"
-        action={
-          <NoticeBannerActions>
-            <NoticeBannerAction>Keep kilograms</NoticeBannerAction>
-            <NoticeBannerAction>Use cases</NoticeBannerAction>
-          </NoticeBannerActions>
-        }
-      >
-        Butter is priced in two units. Which one should costing use?
       </NoticeBanner>
     </div>
   )
