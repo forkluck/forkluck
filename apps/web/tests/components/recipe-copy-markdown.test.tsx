@@ -84,7 +84,7 @@ async function copyFromMenu() {
   fireEvent.click(screen.getByRole("button", { name: "Actions" }))
   fireEvent.click(
     await screen.findByRole("menuitem", {
-      name: "Copy ingredients as markdown",
+      name: "Copy as MD",
     })
   )
 }
@@ -95,26 +95,31 @@ function BatchOnly() {
   return <output>{batch.label}</output>
 }
 
-describe("copying the ingredients as markdown", () => {
-  it("writes the lines to the clipboard the way the importer reads them", async () => {
+describe("copying the recipe as markdown", () => {
+  it("writes the recipe to the clipboard, title first, as the importer reads it", async () => {
     recipeWith(
       ["# Dough", "500 g bread flour", "1 1/2 cup water, lukewarm"].join("\n")
     )
     await screen.findByDisplayValue("water")
+    fireEvent.change(screen.getByLabelText("Name (required)"), {
+      target: { value: "Focaccia" },
+    })
 
     await copyFromMenu()
 
     await vi.waitFor(() =>
       expect(writeText).toHaveBeenCalledWith(
-        ["# Dough", "- 500 g bread flour", "- 1 1/2 cup water, lukewarm"].join(
-          "\n"
-        )
+        [
+          "# Focaccia",
+          "",
+          "## Dough",
+          "- 500 g bread flour",
+          "- 1 1/2 cup water, lukewarm",
+        ].join("\n")
       )
     )
     await vi.waitFor(() =>
-      expect(toastAdd).toHaveBeenCalledWith({
-        title: "Ingredients copied as markdown",
-      })
+      expect(toastAdd).toHaveBeenCalledWith({ title: "Copied as markdown" })
     )
   })
 
@@ -164,7 +169,7 @@ describe("copying the ingredients as markdown", () => {
 
     await vi.waitFor(() =>
       expect(toastAdd).toHaveBeenCalledWith({
-        title: "Open the Recipe tab to copy its ingredients",
+        title: "Open the Recipe tab to copy it",
       })
     )
     expect(writeText).not.toHaveBeenCalled()

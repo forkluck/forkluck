@@ -67,6 +67,7 @@ import {
   type ParsedRecipeLine,
 } from "@/lib/recipe"
 import { roundDisplayAmount } from "@/lib/display-amount"
+import { subrecipeBatchFactor } from "@/lib/recipe/lines-for-tools"
 import { precisionFor } from "@/lib/precise-ingredients"
 import { resolveLine, withPreparationNote } from "@/lib/recipe/resolve-line"
 import { splitRecipeDocument } from "@/lib/recipe/split-document"
@@ -74,7 +75,6 @@ import { fuzzyMatches } from "@/lib/fuzzy"
 import {
   KNOWN_UNITS,
   convertAmount,
-  countedAsEach,
   displayUnitShort,
 } from "@/lib/unit-registry"
 import { UnitOptions } from "@/components/recipes/unit-options"
@@ -771,31 +771,6 @@ function IngredientSuggestions({
   )
 }
 
-/**
- * How many of the child's batches this line asks for: the line's amount in
- * the child's yield unit, over the child's yield. Null when the two units do
- * not relate, or the child has no yield to divide by: the panel then says so
- * and shows the recipe as written.
- */
-function batchFactor(
-  amount: string,
-  unit: string,
-  child: Subrecipe
-): number | null {
-  const quantity = Number(amount)
-  if (!Number.isFinite(quantity) || quantity <= 0) return null
-  if (!child.yieldAmount) return null
-  // A yield counted in pieces or slices is asked for in "each": the same
-  // count either way, so 1 slice of an 8 slice tart is an eighth of a batch.
-  const inYieldUnit = convertAmount(
-    quantity,
-    countedAsEach(unit) ?? unit,
-    countedAsEach(child.yieldUnit)
-  )
-  if (inYieldUnit === null) return null
-  return inYieldUnit / child.yieldAmount
-}
-
 /** A multiplier reads as a number: "1x", "0.5x", never "1/2x". */
 function formatFactor(factor: number): string {
   const shown = new Intl.NumberFormat("en-US", {
@@ -837,7 +812,9 @@ function SubrecipePanel({
   unit: string
   columns: number
 }) {
-  const factor = batchFactor(amount, unit, child)
+  // Null when the units do not relate or the child has no yield: the panel
+  // then says so and shows the recipe as written.
+  const factor = subrecipeBatchFactor(Number(amount), unit, child)
   const shownFactor = factor ?? 1
   const childYield =
     child.yieldAmount === null

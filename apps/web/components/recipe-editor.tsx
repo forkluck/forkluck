@@ -105,7 +105,7 @@ import {
   formatKitchenAmount,
   formatScaledWeight,
   parseRecipeText,
-  recipeLinesMarkdown,
+  recipeMarkdown,
   weighRecipeLines,
   yieldFamily,
 } from "@/lib/recipe"
@@ -1043,30 +1043,34 @@ export function RecipeEditor({
       importRef.current = null
     }
   }, [canEdit, registerSave, importRef])
-  // The Actions menu copies the lines as markdown at whatever batch it is
-  // handed, so the same list pastes back in through the importer.
+  // The Actions menu copies the recipe as markdown at whatever batch it is
+  // handed: the title, the lines, and each sub-recipe spelled out.
   React.useEffect(() => {
     copyRef.current = (scale) =>
-      recipeLinesMarkdown(
-        items.map((item) => {
-          const quantity = Number(item.quantity)
-          return {
-            kind: item.kind,
-            displayName: item.displayName,
-            quantity:
-              item.quantity.trim() && Number.isFinite(quantity)
-                ? quantity
-                : null,
-            unit: item.unit,
-            preparationNote: item.preparationNote,
-          }
-        }),
+      recipeMarkdown(
+        {
+          title,
+          items: items.map((item) => {
+            const quantity = Number(item.quantity)
+            return {
+              kind: item.kind,
+              displayName: item.displayName,
+              quantity:
+                item.quantity.trim() && Number.isFinite(quantity)
+                  ? quantity
+                  : null,
+              unit: item.unit,
+              preparationNote: item.preparationNote,
+              subrecipe: item.subrecipe ?? null,
+            }
+          }),
+        },
         scale
       )
     return () => {
       copyRef.current = null
     }
-  }, [copyRef, items])
+  }, [copyRef, items, title])
   // Any batch is a lens: what is typed at 2x is stored at 1x.
   const scaled = batch.scale !== 1
 
