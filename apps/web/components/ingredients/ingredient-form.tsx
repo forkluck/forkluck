@@ -201,7 +201,7 @@ export function IngredientForm({
     >
       {form.failure?.kind === "conflict" ? (
         <NoticeBanner
-          tone="critical"
+          tone="warning"
           action={
             <NoticeBannerActions>
               <NoticeBannerAction
