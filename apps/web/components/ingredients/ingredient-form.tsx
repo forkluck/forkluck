@@ -1,12 +1,15 @@
 "use client"
 
 import * as React from "react"
+import {
+  NoticeBanner,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 
 import { saveIngredient } from "@/app/(app)/ingredients/actions"
 import { Button } from "@/components/ui/button"
 import { FieldError } from "@/components/ui/field"
 import { LabeledInput, LabeledShell } from "@/components/ui/labeled-field"
-import { SaveBanner } from "@/components/ui/save-banner"
 import type { SaveStatusState } from "@/components/ui/save-status"
 import type { PurchaseUnit } from "@/components/ingredients/purchase-unit-dialog"
 import { IngredientCategoryCombobox } from "@/components/ingredients/ingredient-category-combobox"
@@ -196,11 +199,18 @@ export function IngredientForm({
       }}
     >
       {form.failure?.kind === "conflict" ? (
-        <SaveBanner text={form.failure.message}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Reload
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="neutral"
+          action={
+            <NoticeBannerActions>
+              <Button type="button" onClick={() => window.location.reload()}>
+                Reload
+              </Button>
+            </NoticeBannerActions>
+          }
+        >
+          {form.failure.message}
+        </NoticeBanner>
       ) : null}
       {shows("ingredient") ? (
         profileLayout ? (

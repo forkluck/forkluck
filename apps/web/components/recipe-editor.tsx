@@ -2,6 +2,10 @@
 
 import * as React from "react"
 import {
+  NoticeBanner,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
+import {
   GripVertical,
   Info,
   Timer,
@@ -49,7 +53,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -1486,37 +1489,51 @@ export function RecipeEditor({
     >
       <div className="grid min-w-0 gap-8">
         {conflict ? (
-          <SaveBanner text={conflict.message}>
-            <Button type="button" onClick={() => window.location.reload()}>
-              Reload
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                discardDraft()
-                window.location.reload()
-              }}
-            >
-              Discard my changes
-            </Button>
-          </SaveBanner>
+          <NoticeBanner
+            tone="neutral"
+            action={
+              <NoticeBannerActions>
+                <Button type="button" onClick={() => window.location.reload()}>
+                  Reload
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    discardDraft()
+                    window.location.reload()
+                  }}
+                >
+                  Discard my changes
+                </Button>
+              </NoticeBannerActions>
+            }
+          >
+            {conflict.message}
+          </NoticeBanner>
         ) : null}
         {restorable ? (
-          <SaveBanner text="This device kept changes that never reached the server.">
-            <Button
-              type="button"
-              onClick={() => {
-                applyRecovery(restorable as RecipeRecovery)
-                dismissRestore()
-              }}
-            >
-              Restore
-            </Button>
-            <Button type="button" variant="outline" onClick={discardDraft}>
-              Discard
-            </Button>
-          </SaveBanner>
+          <NoticeBanner
+            tone="neutral"
+            action={
+              <NoticeBannerActions>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    applyRecovery(restorable as RecipeRecovery)
+                    dismissRestore()
+                  }}
+                >
+                  Restore
+                </Button>
+                <Button type="button" variant="outline" onClick={discardDraft}>
+                  Discard
+                </Button>
+              </NoticeBannerActions>
+            }
+          >
+            This device kept changes that never reached the server.
+          </NoticeBanner>
         ) : null}
         <Section>
           <div className="grid gap-3">

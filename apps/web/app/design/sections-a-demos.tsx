@@ -49,7 +49,11 @@ import { LabeledInput } from "@/components/ui/labeled-field"
 import { LoadingRegion } from "@/components/ui/loading-region"
 import { MeasureField } from "@/components/ui/measure-field"
 import { MetricCard } from "@/components/ui/metric-card"
-import { NoticeBanner, NoticeBannerAction } from "@/components/ui/notice-banner"
+import {
+  NoticeBanner,
+  NoticeBannerAction,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { NumberField } from "@/components/ui/number-field"
 import {
   Page,
@@ -60,7 +64,6 @@ import {
   Toolbar,
   ToolbarSpacer,
 } from "@/components/ui/page"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Spinner } from "@/components/ui/spinner"
 import { TableBusy } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
@@ -482,10 +485,17 @@ export function BannerDemo() {
       >
         The Baldor import failed before any line was read.
       </NoticeBanner>
-      <SaveBanner text="Butter is priced in two units. Which one should costing use?">
-        <Button variant="outline">Keep kilograms</Button>
-        <Button>Use cases</Button>
-      </SaveBanner>
+      <NoticeBanner
+        tone="neutral"
+        action={
+          <NoticeBannerActions>
+            <Button variant="outline">Keep kilograms</Button>
+            <Button>Use cases</Button>
+          </NoticeBannerActions>
+        }
+      >
+        Butter is priced in two units. Which one should costing use?
+      </NoticeBanner>
     </div>
   )
 }

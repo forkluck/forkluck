@@ -1,6 +1,10 @@
 "use client"
 
 import * as React from "react"
+import {
+  NoticeBanner,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { ExternalLink, Trash2, TriangleAlert } from "lucide-react"
 
 import { reviewInvoiceLine, saveInvoice } from "@/app/(app)/invoices/actions"
@@ -41,7 +45,6 @@ import {
   TableHeaderRow,
   TableRow,
 } from "@/components/ui/table"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/toast"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
@@ -605,37 +608,51 @@ export function InvoiceEditor({
   return (
     <div className="flex flex-col gap-5">
       {conflict ? (
-        <SaveBanner text={conflict.message}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Reload
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              discardDraft()
-              window.location.reload()
-            }}
-          >
-            Discard my changes
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="neutral"
+          action={
+            <NoticeBannerActions>
+              <Button type="button" onClick={() => window.location.reload()}>
+                Reload
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  discardDraft()
+                  window.location.reload()
+                }}
+              >
+                Discard my changes
+              </Button>
+            </NoticeBannerActions>
+          }
+        >
+          {conflict.message}
+        </NoticeBanner>
       ) : null}
       {restorable ? (
-        <SaveBanner text="This device kept changes that never reached the server.">
-          <Button
-            type="button"
-            onClick={() => {
-              applyRecovery(restorable as InvoiceRecovery)
-              dismissRestore()
-            }}
-          >
-            Restore
-          </Button>
-          <Button type="button" variant="outline" onClick={discardDraft}>
-            Discard
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="neutral"
+          action={
+            <NoticeBannerActions>
+              <Button
+                type="button"
+                onClick={() => {
+                  applyRecovery(restorable as InvoiceRecovery)
+                  dismissRestore()
+                }}
+              >
+                Restore
+              </Button>
+              <Button type="button" variant="outline" onClick={discardDraft}>
+                Discard
+              </Button>
+            </NoticeBannerActions>
+          }
+        >
+          This device kept changes that never reached the server.
+        </NoticeBanner>
       ) : null}
       {initial && imported ? (
         <div className="flex items-center gap-3">

@@ -1,6 +1,10 @@
 "use client"
 
 import * as React from "react"
+import {
+  NoticeBanner,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { useRouter } from "next/navigation"
 import {
   ChevronDown,
@@ -31,7 +35,6 @@ import {
 } from "@/components/ui/dialog"
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
-import { SaveBanner } from "@/components/ui/save-banner"
 import {
   Menu,
   MenuCheckItem,
@@ -1893,36 +1896,50 @@ export function CompareFormulas({
   return (
     <>
       {conflict ? (
-        <SaveBanner text={conflict.message}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Reload
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              discardDraft()
-              window.location.reload()
-            }}
-          >
-            Discard my changes
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="neutral"
+          action={
+            <NoticeBannerActions>
+              <Button type="button" onClick={() => window.location.reload()}>
+                Reload
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  discardDraft()
+                  window.location.reload()
+                }}
+              >
+                Discard my changes
+              </Button>
+            </NoticeBannerActions>
+          }
+        >
+          {conflict.message}
+        </NoticeBanner>
       ) : restorable ? (
-        <SaveBanner text="This device kept changes that never reached the server.">
-          <Button
-            type="button"
-            onClick={() => {
-              applyRecovery(restorable as ComparisonRecovery)
-              dismissRestore()
-            }}
-          >
-            Restore
-          </Button>
-          <Button type="button" variant="outline" onClick={discardDraft}>
-            Discard
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="neutral"
+          action={
+            <NoticeBannerActions>
+              <Button
+                type="button"
+                onClick={() => {
+                  applyRecovery(restorable as ComparisonRecovery)
+                  dismissRestore()
+                }}
+              >
+                Restore
+              </Button>
+              <Button type="button" variant="outline" onClick={discardDraft}>
+                Discard
+              </Button>
+            </NoticeBannerActions>
+          }
+        >
+          This device kept changes that never reached the server.
+        </NoticeBanner>
       ) : null}
       {/* The name comes first and is always there: it is what the header's
           Save asks for, columns or no columns. */}

@@ -7,14 +7,21 @@ import { cn } from "@/lib/utils"
 /**
  * The banner: a 48px strip between a screen's toolbar and its content
  * (`DataTable`'s `notice` slot puts it there), `rounded-lg`, an icon, one line
- * of copy and a ghost action pinned right. Four tones, each the tone's fill
- * with its ink for the icon and the text: info, success, warning (the
- * default, and the one the screens use today) and critical.
+ * of copy and a ghost action pinned right. Five tones: neutral (no icon, for
+ * a question with its answers beside it), and info, success, warning (the
+ * default) and critical, each the tone's fill with its ink for the icon and
+ * the text. Copy may wrap and the actions drop under it on a phone.
  *
  * Products, Invoices and Ingredients each drew their own in the first pass and
  * ended up with three different heights.
  */
 const TONES = {
+  // The decision strip: a question or a conflict with two answers beside it.
+  // No icon; the neutral soft fill and the regular ink.
+  neutral: {
+    icon: null,
+    className: "border-border bg-fill-soft text-foreground",
+  },
   info: {
     icon: Info,
     className: "border-info/15 bg-info-fill text-info",
@@ -50,16 +57,22 @@ function NoticeBanner({
       data-slot="notice-banner"
       data-tone={tone}
       className={cn(
-        "mb-3 flex h-12 items-center gap-2.5 rounded-lg border px-3.5",
+        "mb-3 flex min-h-12 flex-wrap items-center gap-x-2.5 gap-y-2 rounded-lg border px-3.5 py-2",
         toneClassName,
         className
       )}
       {...props}
     >
-      <Icon className="size-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
+      {Icon ? (
+        <Icon
+          className="size-4 shrink-0"
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
+      ) : null}
       {/* A shade under the tone ink, so the copy reads a little darker than
           the badge that shares its colour without a second token. */}
-      <span className="min-w-0 flex-1 truncate text-md text-[color-mix(in_oklab,currentColor_85%,black)]">
+      <span className="min-w-0 flex-1 text-md text-[color-mix(in_oklab,currentColor_85%,black)]">
         {children}
       </span>
       {action}
@@ -85,4 +98,18 @@ function NoticeBannerAction({
   )
 }
 
-export { NoticeBanner, NoticeBannerAction }
+/** Two or more answers, pinned right like the single action. */
+function NoticeBannerActions({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="notice-banner-actions"
+      className={cn("ml-auto flex shrink-0 gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+export { NoticeBanner, NoticeBannerAction, NoticeBannerActions }
