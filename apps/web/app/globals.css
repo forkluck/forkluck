@@ -97,6 +97,7 @@
      tests/type-scale-pins.test.ts refuses any other size. */
   --text-*: initial;
   --text-xs: 12px;
+  --text-sm: 13px;
   --text-md: 14px;
   --text-lg: 16px;
   --text-2xl: 24px;

@@ -37,7 +37,7 @@ const TOKENS: { token: string; value: string }[] = [
   },
   { token: "--shadow-sm", value: "0 2px 8px rgb(24 24 27 / 0.08)" },
   { token: "--shadow-*", value: "0 0 #0000, every other step" },
-  { token: "--text-xs / md / lg / 2xl", value: "12, 14, 16, 24px" },
+  { token: "--text-xs / sm / md / lg / 2xl", value: "12, 13, 14, 16, 24px" },
   { token: "Control heights", value: "20, 24, 28, 32, 36px" },
   { token: "--font-body", value: "Inter" },
 ]
