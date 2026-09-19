@@ -1,5 +1,9 @@
 import { precisionFor } from "../precise-ingredients"
-import { displayUnitShort } from "../unit-registry"
+import {
+  convertAmount,
+  countedAsEach,
+  displayUnitShort,
+} from "../unit-registry"
 import { clampRecipeQuantity, formatMeasuredAmount, tidyVolume } from "./scale"
 
 /** A recipe line as a source of measurement, whatever record it came from:
@@ -28,6 +32,30 @@ export function shownMeasure(
     amount: Number(clampRecipeQuantity(tidy.amount)),
     unit: tidy.unit,
   }
+}
+
+/**
+ * How many of a sub-recipe's batches a line asks for: the line's amount in
+ * the child's yield unit, over the child's yield. Null when the two units do
+ * not relate, or the child has no yield to divide by; the caller then shows
+ * the child as written.
+ */
+export function subrecipeBatchFactor(
+  amount: number,
+  unit: string,
+  child: { yieldAmount: number | null; yieldUnit: string | null }
+): number | null {
+  if (!Number.isFinite(amount) || amount <= 0) return null
+  if (!child.yieldAmount) return null
+  // A yield counted in pieces or slices is asked for in "each": the same
+  // count either way, so 1 slice of an 8 slice tart is an eighth of a batch.
+  const inYieldUnit = convertAmount(
+    amount,
+    countedAsEach(unit) ?? unit,
+    countedAsEach(child.yieldUnit)
+  )
+  if (inYieldUnit === null) return null
+  return inYieldUnit / child.yieldAmount
 }
 
 /** The quantity column as the sheet prints it: the scaled amount at the
