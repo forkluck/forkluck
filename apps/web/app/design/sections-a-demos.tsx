@@ -498,8 +498,6 @@ export function BannerDemo() {
 
 /** 15. Chip */
 export function ChipDemo() {
-  const [amount, setAmount] = React.useState("250")
-  const [unit, setUnit] = React.useState<string | null>("gram")
   return (
     <div>
       <Row>
@@ -820,6 +818,9 @@ export function TextAreaDemo() {
 
 /** 25. Number field */
 export function NumberFieldDemo() {
+  const [amount, setAmount] = React.useState("250")
+  const [unit, setUnit] = React.useState<string | null>("gram")
+
   const [batches, setBatches] = React.useState<number | null>(2)
   const [days, setDays] = React.useState<number | null>(1)
   return (
