@@ -57,7 +57,11 @@ function NoticeBanner({
       {...props}
     >
       <Icon className="size-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
-      <span className="min-w-0 flex-1 truncate text-md">{children}</span>
+      {/* A shade under the tone ink, so the copy reads a little darker than
+          the badge that shares its colour without a second token. */}
+      <span className="min-w-0 flex-1 truncate text-md text-[color-mix(in_oklab,currentColor_85%,black)]">
+        {children}
+      </span>
       {action}
     </div>
   )
