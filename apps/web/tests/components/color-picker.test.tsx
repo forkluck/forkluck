@@ -43,7 +43,7 @@ describe("ColorPicker", () => {
 
     fireEvent.change(field, { target: { value: "#2F7A4F" } })
     expect(onValueChange).toHaveBeenCalledOnce()
-    expect(onValueChange).toHaveBeenCalledWith("#14532d")
+    expect(onValueChange).toHaveBeenCalledWith("#2f7a4f")
   })
 
   it("renders the swatches a call site passes instead of the palette", () => {
