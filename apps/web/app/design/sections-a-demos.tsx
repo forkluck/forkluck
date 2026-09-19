@@ -509,12 +509,6 @@ export function ChipDemo() {
         <Labeled label="Chip, pressed">
           <Chip pressed>Milk</Chip>
         </Labeled>
-        <Labeled label="Badge, row size">
-          <Badge>Case</Badge>
-        </Labeled>
-        <Labeled label="Badge, row outline">
-          <Badge>Sub recipe</Badge>
-        </Labeled>
       </Row>
       <div className="max-w-[220px]">
         <MeasureField
