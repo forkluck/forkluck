@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   NoticeBanner,
+  NoticeBannerAction,
   NoticeBannerActions,
 } from "@/components/ui/notice-banner"
 
@@ -200,12 +201,15 @@ export function IngredientForm({
     >
       {form.failure?.kind === "conflict" ? (
         <NoticeBanner
-          tone="neutral"
+          tone="critical"
           action={
             <NoticeBannerActions>
-              <Button type="button" onClick={() => window.location.reload()}>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => window.location.reload()}
+              >
                 Reload
-              </Button>
+              </NoticeBannerAction>
             </NoticeBannerActions>
           }
         >

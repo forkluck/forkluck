@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   NoticeBanner,
+  NoticeBannerAction,
   NoticeBannerActions,
 } from "@/components/ui/notice-banner"
 import {
@@ -1490,22 +1491,24 @@ export function RecipeEditor({
       <div className="grid min-w-0 gap-8">
         {conflict ? (
           <NoticeBanner
-            tone="neutral"
+            tone="warning"
             action={
               <NoticeBannerActions>
-                <Button type="button" onClick={() => window.location.reload()}>
-                  Reload
-                </Button>
-                <Button
+                <NoticeBannerAction
                   type="button"
-                  variant="outline"
+                  onClick={() => window.location.reload()}
+                >
+                  Reload
+                </NoticeBannerAction>
+                <NoticeBannerAction
+                  type="button"
                   onClick={() => {
                     discardDraft()
                     window.location.reload()
                   }}
                 >
                   Discard my changes
-                </Button>
+                </NoticeBannerAction>
               </NoticeBannerActions>
             }
           >
@@ -1514,10 +1517,10 @@ export function RecipeEditor({
         ) : null}
         {restorable ? (
           <NoticeBanner
-            tone="neutral"
+            tone="info"
             action={
               <NoticeBannerActions>
-                <Button
+                <NoticeBannerAction
                   type="button"
                   onClick={() => {
                     applyRecovery(restorable as RecipeRecovery)
@@ -1525,10 +1528,10 @@ export function RecipeEditor({
                   }}
                 >
                   Restore
-                </Button>
-                <Button type="button" variant="outline" onClick={discardDraft}>
+                </NoticeBannerAction>
+                <NoticeBannerAction type="button" onClick={discardDraft}>
                   Discard
-                </Button>
+                </NoticeBannerAction>
               </NoticeBannerActions>
             }
           >

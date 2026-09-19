@@ -486,11 +486,11 @@ export function BannerDemo() {
         The Baldor import failed before any line was read.
       </NoticeBanner>
       <NoticeBanner
-        tone="neutral"
+        tone="info"
         action={
           <NoticeBannerActions>
-            <Button variant="outline">Keep kilograms</Button>
-            <Button>Use cases</Button>
+            <NoticeBannerAction>Keep kilograms</NoticeBannerAction>
+            <NoticeBannerAction>Use cases</NoticeBannerAction>
           </NoticeBannerActions>
         }
       >

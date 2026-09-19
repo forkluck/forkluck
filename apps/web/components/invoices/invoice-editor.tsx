@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   NoticeBanner,
+  NoticeBannerAction,
   NoticeBannerActions,
 } from "@/components/ui/notice-banner"
 import { ExternalLink, Trash2, TriangleAlert } from "lucide-react"
@@ -609,22 +610,24 @@ export function InvoiceEditor({
     <div className="flex flex-col gap-5">
       {conflict ? (
         <NoticeBanner
-          tone="neutral"
+          tone="warning"
           action={
             <NoticeBannerActions>
-              <Button type="button" onClick={() => window.location.reload()}>
-                Reload
-              </Button>
-              <Button
+              <NoticeBannerAction
                 type="button"
-                variant="outline"
+                onClick={() => window.location.reload()}
+              >
+                Reload
+              </NoticeBannerAction>
+              <NoticeBannerAction
+                type="button"
                 onClick={() => {
                   discardDraft()
                   window.location.reload()
                 }}
               >
                 Discard my changes
-              </Button>
+              </NoticeBannerAction>
             </NoticeBannerActions>
           }
         >
@@ -633,10 +636,10 @@ export function InvoiceEditor({
       ) : null}
       {restorable ? (
         <NoticeBanner
-          tone="neutral"
+          tone="info"
           action={
             <NoticeBannerActions>
-              <Button
+              <NoticeBannerAction
                 type="button"
                 onClick={() => {
                   applyRecovery(restorable as InvoiceRecovery)
@@ -644,10 +647,10 @@ export function InvoiceEditor({
                 }}
               >
                 Restore
-              </Button>
-              <Button type="button" variant="outline" onClick={discardDraft}>
+              </NoticeBannerAction>
+              <NoticeBannerAction type="button" onClick={discardDraft}>
                 Discard
-              </Button>
+              </NoticeBannerAction>
             </NoticeBannerActions>
           }
         >

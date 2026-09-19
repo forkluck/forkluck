@@ -7,21 +7,16 @@ import { cn } from "@/lib/utils"
 /**
  * The banner: a 48px strip between a screen's toolbar and its content
  * (`DataTable`'s `notice` slot puts it there), `rounded-lg`, an icon, one line
- * of copy and a ghost action pinned right. Five tones: neutral (no icon, for
- * a question with its answers beside it), and info, success, warning (the
- * default) and critical, each the tone's fill with its ink for the icon and
- * the text. Copy may wrap and the actions drop under it on a phone.
+ * of copy and ghost actions pinned right; a question with two answers is a
+ * banner too, its answers both ghosts, never a filled button. Four tones,
+ * each the tone's fill with its ink for the icon and the text: info, success,
+ * warning (the default) and critical. Copy may wrap and the actions drop
+ * under it on a phone.
  *
  * Products, Invoices and Ingredients each drew their own in the first pass and
  * ended up with three different heights.
  */
 const TONES = {
-  // The decision strip: a question or a conflict with two answers beside it.
-  // No icon; the neutral soft fill and the regular ink.
-  neutral: {
-    icon: null,
-    className: "border-border bg-fill-soft text-foreground",
-  },
   info: {
     icon: Info,
     className: "border-info/15 bg-info-fill text-info",
