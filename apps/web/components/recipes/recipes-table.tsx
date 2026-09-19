@@ -5,7 +5,7 @@ import { undoableToast, useToast } from "@/components/ui/toast"
 import {
   Archive,
   ArchiveRestore,
-  Copy,
+  CopyPlus,
   SquarePen,
   Trash2,
   Upload,
@@ -152,7 +152,7 @@ export function RecipesTable({
   // shows the wait, and a toast says what came of it.
   const [busyId, setBusyId] = React.useState<string | null>(null)
 
-  // The action revalidates the list, so its answer carries the new row. The
+  // The copy opens on its own page, where it can be renamed right away. The
   // busy mark is set before the transition: React holds updates made inside
   // an async transition until the action has finished.
   const duplicate = React.useCallback(
@@ -166,6 +166,7 @@ export function RecipesTable({
             return
           }
           startStatus(() => {
+            void go(`/recipes/${result.publicId}/recipe`)
             toast.add({ title: `Duplicated ${recipe.title}` })
           })
         } catch (cause) {
@@ -175,7 +176,7 @@ export function RecipesTable({
         }
       })
     },
-    [toast]
+    [go, toast]
   )
 
   // One row shows the wait on itself; a selection shows it on the menu that
@@ -263,7 +264,7 @@ export function RecipesTable({
           {recipe.permission && recipe.permission !== "owner" ? null : (
             <>
               <MenuItem onClick={() => void duplicate(recipe)}>
-                <Copy strokeWidth={1.8} aria-hidden="true" />
+                <CopyPlus strokeWidth={1.8} aria-hidden="true" />
                 Duplicate
               </MenuItem>
               {recipe.status === "archived" ? (
