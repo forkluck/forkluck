@@ -46,7 +46,6 @@ import {
   SearchInput,
 } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
-import { LoadingRegion } from "@/components/ui/loading-region"
 import { MeasureField } from "@/components/ui/measure-field"
 import { MetricCard } from "@/components/ui/metric-card"
 import {
@@ -65,7 +64,7 @@ import {
   ToolbarSpacer,
 } from "@/components/ui/page"
 import { Spinner } from "@/components/ui/spinner"
-import { TableBusy } from "@/components/ui/table"
+
 import { Textarea } from "@/components/ui/textarea"
 import { Thumbnail } from "@/components/ui/thumbnail"
 import { Toggle } from "@/components/ui/toggle"
@@ -565,34 +564,20 @@ export function ClickableChipDemo() {
 /** 17. Spinner */
 export function SpinnerDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Row>
-        <Labeled label="sm, 16px">
-          <Spinner size="sm" />
-        </Labeled>
-        <Labeled label="md, 32px">
-          <Spinner size="md" />
-        </Labeled>
-        <Labeled label="lg, 80px">
-          <Spinner size="lg" />
-        </Labeled>
-        <Labeled label="On the control pressed">
-          <Button pending>Saving</Button>
-        </Labeled>
-      </Row>
-      <LoadingRegion pending label="Loading recipes" className="min-h-40">
-        <p className="text-md text-muted-foreground">
-          48 recipes, costed on Monday. The numbers stay legible while the
-          screen waits.
-        </p>
-      </LoadingRegion>
-      <div className="relative h-32 rounded-xl border border-border bg-card">
-        <p className="p-4 text-md text-muted-foreground">
-          Butter croissant, Pain au chocolat, Kouign amann
-        </p>
-        <TableBusy />
-      </div>
-    </div>
+    <Row>
+      <Labeled label="sm, 16px">
+        <Spinner size="sm" />
+      </Labeled>
+      <Labeled label="md, 32px">
+        <Spinner size="md" />
+      </Labeled>
+      <Labeled label="lg, 80px">
+        <Spinner size="lg" />
+      </Labeled>
+      <Labeled label="On the control pressed">
+        <Button pending>Saving</Button>
+      </Labeled>
+    </Row>
   )
 }
 
