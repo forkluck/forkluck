@@ -37,11 +37,7 @@ export function ActionsMenu({
         render={<Button variant="secondary" className="shrink-0" />}
       >
         {label}
-        <ChevronDown
-          className="size-[13px]"
-          strokeWidth={2}
-          aria-hidden="true"
-        />
+        <ChevronDown className="size-3.5" strokeWidth={2} aria-hidden="true" />
       </MenuTrigger>
       <MenuContent align={align} className={cn("w-46", className)}>
         {children}

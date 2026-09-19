@@ -621,7 +621,7 @@ export function DataTable<TData extends RowData>({
                   >
                     {selectedRows.length} selected
                     <ChevronDown
-                      className="size-[13px]"
+                      className="size-3.5"
                       strokeWidth={2}
                       aria-hidden="true"
                     />

@@ -10,14 +10,14 @@ import { describe, expect, it } from "vitest"
  * renders at the browser default and an arbitrary pixel value reopens the
  * drift this pins shut. Both are caught here instead.
  */
-const STEPS = ["xs", "md", "lg", "2xl"]
+const STEPS = ["xs", "sm", "md", "lg", "2xl"]
 
 /** The Nutrition Facts label imitates a regulated format on its own sizes. */
 const EXEMPT = new Set(["components/nutrition/nutrition-label.tsx"])
 
 const ARBITRARY = /(?<![\w-])text-\[[0-9.]+(px|rem|em)\]/
 const UNKNOWN_STEP =
-  /(?<![\w-])text-(2xs|sm|base|xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)(?![\w-])/
+  /(?<![\w-])text-(2xs|base|xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)(?![\w-])/
 
 function tsxFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true, recursive: true })

@@ -124,7 +124,7 @@ export function UsdaFoodCombobox({
           </span>
         </span>
         <ChevronDown
-          className="size-[13px] shrink-0 text-muted-foreground"
+          className="size-3.5 shrink-0 text-muted-foreground"
           strokeWidth={2}
           aria-hidden="true"
         />
@@ -175,7 +175,7 @@ export function UsdaFoodCombobox({
               }}
               className="flex min-h-9 w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-md text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:bg-accent"
             >
-              <X className="size-[15px] shrink-0" aria-hidden="true" />
+              <X className="size-3.5 shrink-0" aria-hidden="true" />
               Clear
             </button>
           ) : null}

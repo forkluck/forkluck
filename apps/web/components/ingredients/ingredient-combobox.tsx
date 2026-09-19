@@ -179,7 +179,7 @@ export function IngredientCombobox({
             {selected?.name ?? createLabel ?? "No ingredient"}
           </span>
           <ChevronDown
-            className="size-[13px] shrink-0 text-muted-foreground"
+            className="size-3.5 shrink-0 text-muted-foreground"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -221,10 +221,7 @@ export function IngredientCombobox({
                   !value && "bg-accent"
                 )}
               >
-                <CirclePlus
-                  className="size-[15px] shrink-0"
-                  aria-hidden="true"
-                />
+                <CirclePlus className="size-3.5 shrink-0" aria-hidden="true" />
                 <span className="truncate">{createLabel}</span>
               </button>
             ) : null}

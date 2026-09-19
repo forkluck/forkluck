@@ -474,7 +474,7 @@ export function SettingsScreen({
                 className="justify-start"
                 onClick={() => openBillingPortal(choice.id)}
               >
-                <CreditCard className="size-[17px]" aria-hidden="true" />
+                <CreditCard className="size-4" aria-hidden="true" />
                 {choice.label}
               </Button>
             ))}

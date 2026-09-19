@@ -44,7 +44,7 @@ export function ProductMatchingRow({ initial }: { initial: boolean }) {
         <div className="flex w-full items-center gap-3 px-4 py-3.5">
           <span className="flex w-[17px] flex-none items-center justify-center text-muted-foreground">
             <Waypoints
-              className="size-[17px]"
+              className="size-4"
               strokeWidth={1.8}
               aria-hidden="true"
             />

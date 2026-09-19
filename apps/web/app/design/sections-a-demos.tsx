@@ -4,8 +4,10 @@ import * as React from "react"
 import {
   Building2,
   Check,
+  CircleAlert,
   Clock,
   Ellipsis,
+  Info,
   KeyRound,
   Plus,
   SquarePen,
@@ -46,10 +48,13 @@ import {
   SearchInput,
 } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
-import { LoadingRegion } from "@/components/ui/loading-region"
 import { MeasureField } from "@/components/ui/measure-field"
 import { MetricCard } from "@/components/ui/metric-card"
-import { NoticeBanner, NoticeBannerAction } from "@/components/ui/notice-banner"
+import {
+  NoticeBanner,
+  NoticeBannerAction,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { NumberField } from "@/components/ui/number-field"
 import {
   Page,
@@ -60,9 +65,8 @@ import {
   Toolbar,
   ToolbarSpacer,
 } from "@/components/ui/page"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Spinner } from "@/components/ui/spinner"
-import { TableBusy } from "@/components/ui/table"
+
 import { Textarea } from "@/components/ui/textarea"
 import { Thumbnail } from "@/components/ui/thumbnail"
 import { Toggle } from "@/components/ui/toggle"
@@ -213,6 +217,9 @@ export function TextDemo() {
     <div className="flex flex-col items-start gap-6">
       <Labeled label="Regular text">
         <span className="text-md text-foreground">12 cases of butter</span>
+      </Labeled>
+      <Labeled label="Small text">
+        <span className="text-sm text-foreground">Priced from the invoice</span>
       </Labeled>
       <Labeled label="Subdued text">
         <span className="text-md text-muted-foreground">
@@ -466,27 +473,37 @@ export function BadgeDemo() {
 /** 14. Banner */
 export function BannerDemo() {
   return (
-    <div className="flex flex-col gap-4">
-      <NoticeBanner
-        className="mb-0"
-        action={<NoticeBannerAction>Review</NoticeBannerAction>}
-      >
-        Four invoice lines are not matched to an ingredient.
+    <div className="flex flex-col">
+      <NoticeBanner tone="info">
+        Prices on this sheet were last refreshed on Monday.
       </NoticeBanner>
-      <SaveBanner text="Butter is priced in two units. Which one should costing use?">
-        <Button variant="outline">Keep kilograms</Button>
-        <Button>Use cases</Button>
-      </SaveBanner>
+      <NoticeBanner tone="success">
+        All 48 invoice lines are matched to an ingredient.
+      </NoticeBanner>
+      <NoticeBanner
+        action={
+          <NoticeBannerActions>
+            <NoticeBannerAction>Reload</NoticeBannerAction>
+            <NoticeBannerAction>Discard my changes</NoticeBannerAction>
+          </NoticeBannerActions>
+        }
+      >
+        This recipe changed on another device since you opened it.
+      </NoticeBanner>
+      <NoticeBanner
+        tone="critical"
+        action={<NoticeBannerAction>Retry</NoticeBannerAction>}
+      >
+        The Baldor import failed before any line was read.
+      </NoticeBanner>
     </div>
   )
 }
 
 /** 15. Chip */
 export function ChipDemo() {
-  const [amount, setAmount] = React.useState("250")
-  const [unit, setUnit] = React.useState<string | null>("gram")
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       <Row>
         <Labeled label="Chip">
           <Chip>Allergen free</Chip>
@@ -494,26 +511,7 @@ export function ChipDemo() {
         <Labeled label="Chip, pressed">
           <Chip pressed>Milk</Chip>
         </Labeled>
-        <Labeled label="Badge, row size">
-          <Badge>Case</Badge>
-        </Labeled>
-        <Labeled label="Badge, row outline">
-          <Badge>Sub recipe</Badge>
-        </Labeled>
       </Row>
-      <div className="max-w-[220px]">
-        <MeasureField
-          label="Butter"
-          amount={amount}
-          unit={unit}
-          options={[
-            { slug: "gram", label: "Grams (g)" },
-            { slug: "kilogram", label: "Kilograms (kg)" },
-          ]}
-          onAmountChange={setAmount}
-          onUnitChange={setUnit}
-        />
-      </div>
     </div>
   )
 }
@@ -571,34 +569,20 @@ export function ClickableChipDemo() {
 /** 17. Spinner */
 export function SpinnerDemo() {
   return (
-    <div className="flex flex-col gap-8">
-      <Row>
-        <Labeled label="sm, 16px">
-          <Spinner size="sm" />
-        </Labeled>
-        <Labeled label="md, 32px">
-          <Spinner size="md" />
-        </Labeled>
-        <Labeled label="lg, 80px">
-          <Spinner size="lg" />
-        </Labeled>
-        <Labeled label="On the control pressed">
-          <Button pending>Saving</Button>
-        </Labeled>
-      </Row>
-      <LoadingRegion pending label="Loading recipes" className="min-h-40">
-        <p className="text-md text-muted-foreground">
-          48 recipes, costed on Monday. The numbers stay legible while the
-          screen waits.
-        </p>
-      </LoadingRegion>
-      <div className="relative h-32 rounded-xl border border-border bg-card">
-        <p className="p-4 text-md text-muted-foreground">
-          Butter croissant, Pain au chocolat, Kouign amann
-        </p>
-        <TableBusy />
-      </div>
-    </div>
+    <Row>
+      <Labeled label="sm, 16px">
+        <Spinner size="sm" />
+      </Labeled>
+      <Labeled label="md, 32px">
+        <Spinner size="md" />
+      </Labeled>
+      <Labeled label="lg, 80px">
+        <Spinner size="lg" />
+      </Labeled>
+      <Labeled label="On the control pressed">
+        <Button pending>Saving</Button>
+      </Labeled>
+    </Row>
   )
 }
 
@@ -620,7 +604,9 @@ export function TooltipDemo() {
       </Labeled>
       <Labeled label="On a text button">
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline">Recost</Button>} />
+          <TooltipTrigger
+            render={<Button variant="secondary">Recost</Button>}
+          />
           <TooltipContent>
             Reprice every recipe from the last invoice
           </TooltipContent>
@@ -690,46 +676,34 @@ export function IconDemo() {
   return (
     <div className="flex flex-col gap-8">
       <Row>
-        <Labeled label="14px, in a button">
+        <Labeled label="14px, with text or in a control">
           <SquarePen className="size-3.5 text-foreground" aria-hidden="true" />
         </Labeled>
-        <Labeled label="15px, check slot">
-          <Check className="size-[15px] text-foreground" aria-hidden="true" />
-        </Labeled>
-        <Labeled label="17px, menu row">
-          <Clock className="size-[17px] text-foreground" aria-hidden="true" />
+        <Labeled label="16px, in a lane of its own">
+          <Clock className="size-4 text-foreground" aria-hidden="true" />
         </Labeled>
       </Row>
       <Row>
         <Labeled label="Foreground">
-          <SquarePen
-            className="size-[17px] text-foreground"
-            aria-hidden="true"
-          />
+          <SquarePen className="size-4 text-foreground" aria-hidden="true" />
         </Labeled>
         <Labeled label="Muted">
-          <SquarePen
-            className="size-[17px] text-muted-foreground"
-            aria-hidden="true"
-          />
+          <Clock className="size-4 text-muted-foreground" aria-hidden="true" />
         </Labeled>
         <Labeled label="Success">
-          <Check className="size-[17px] text-success" aria-hidden="true" />
-        </Labeled>
-        <Labeled label="Destructive">
-          <TriangleAlert
-            className="size-[17px] text-destructive"
-            aria-hidden="true"
-          />
+          <Check className="size-4 text-success-mark" aria-hidden="true" />
         </Labeled>
         <Labeled label="Warning">
           <TriangleAlert
-            className="size-[17px] text-warning-foreground"
+            className="size-4 text-warning-mark"
             aria-hidden="true"
           />
         </Labeled>
-        <Labeled label="Brand">
-          <TrendingUp className="size-[17px] text-primary" aria-hidden="true" />
+        <Labeled label="Critical">
+          <CircleAlert className="size-4 text-destructive" aria-hidden="true" />
+        </Labeled>
+        <Labeled label="Info">
+          <Info className="size-4 text-brand" aria-hidden="true" />
         </Labeled>
       </Row>
     </div>
@@ -824,6 +798,9 @@ export function TextAreaDemo() {
 
 /** 25. Number field */
 export function NumberFieldDemo() {
+  const [amount, setAmount] = React.useState("250")
+  const [unit, setUnit] = React.useState<string | null>("gram")
+
   const [batches, setBatches] = React.useState<number | null>(2)
   const [days, setDays] = React.useState<number | null>(1)
   return (
@@ -850,6 +827,19 @@ export function NumberFieldDemo() {
       </Labeled>
       <Labeled label="Disabled" className="w-[200px]">
         <NumberField label="Yield" value={48} disabled min={1} step={1} />
+      </Labeled>
+      <Labeled label="With a unit" className="w-[220px]">
+        <MeasureField
+          label="Butter"
+          amount={amount}
+          unit={unit}
+          options={[
+            { slug: "gram", label: "Grams (g)" },
+            { slug: "kilogram", label: "Kilograms (kg)" },
+          ]}
+          onAmountChange={setAmount}
+          onUnitChange={setUnit}
+        />
       </Labeled>
     </Row>
   )

@@ -52,7 +52,7 @@ export function IntegrationRow({
         />
       ) : (
         <span className="flex size-10 flex-none items-center justify-center rounded-md bg-secondary text-muted-foreground">
-          <Icon className="size-[18px]" strokeWidth={1.8} aria-hidden="true" />
+          <Icon className="size-4" strokeWidth={1.8} aria-hidden="true" />
         </span>
       )}
       <span className="min-w-0 flex-1">

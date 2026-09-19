@@ -62,12 +62,12 @@ function MenuContent({
 
 /**
  * Popover item: 36px tall, `rounded-md`, `0 10px` padding, 400 14px ink, 10px gap
- * to a 17px icon that inherits the row's color. Hover is the grey fill;
+ * to a 16px icon that inherits the row's color. Hover is the grey fill;
  * destructive rows (the ones call sites mark with `text-destructive`) swap it
  * for the pale red.
  *
  * **A command row always carries an icon**, and it is not decoration: the icon
- * plus the gap is a 27px lane, so a row without one starts its label 27px to
+ * plus the gap is a 26px lane, so a row without one starts its label 26px to
  * the left. Skip it on one menu and that menu's labels no longer line up with
  * the next menu's, which is the only reason the popovers in this app ever
  * looked like they belonged to different products. Mark it `aria-hidden` — the
@@ -78,7 +78,7 @@ function MenuContent({
  * menu and a command menu still agree about where text begins.
  */
 const itemClassName =
-  "flex h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-none select-none data-disabled:cursor-not-allowed data-disabled:text-disabled-foreground data-highlighted:bg-accent [&.text-destructive]:data-highlighted:bg-destructive-fill [&.text-destructive]:data-highlighted:text-destructive-strong [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[17px]"
+  "flex h-9 w-full cursor-default items-center gap-2.5 rounded-md px-2.5 text-md leading-none font-normal text-popover-foreground outline-none select-none data-disabled:cursor-not-allowed data-disabled:text-disabled-foreground data-highlighted:bg-accent [&.text-destructive]:data-highlighted:bg-destructive-fill [&.text-destructive]:data-highlighted:text-destructive-strong [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 
 function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
   return (
@@ -116,7 +116,7 @@ function MenuCheckItem({
         aria-hidden="true"
         strokeWidth={2}
         className={cn(
-          "size-[15px]",
+          "size-3.5",
           checked
             ? "text-foreground"
             : "text-disabled-foreground opacity-0 [[data-highlighted]_&]:opacity-100"

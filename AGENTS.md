@@ -92,7 +92,10 @@ green (`--success` / `--success-fill`), orange for warning
 (`--warning-foreground` / `--warning-fill`, `--warning` for the icon and the
 edge), yellow for caution (`--caution-foreground` / `--caution-fill`), and
 blue for info (`--info` on `--info-fill`, the brand fill). Every pair clears
-4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. Do
+4.5:1 on its own fill; the figures sit beside the tokens in `globals.css`. An
+icon standing on white takes the tone's mark (`--success-mark`,
+`--warning-mark`, `--destructive`, `--brand`), a mid colour, because the deep
+inks read black at 16px; an icon on a tone fill keeps the ink. Do
 not add a second shade for a state that "reads softer" than an action — the
 app carried a second red and a second green on that theory and the cooler
 green failed AA against 11.5px text on its own fill. A new semantic color
@@ -104,16 +107,25 @@ buttons are ink, never blue.
 
 ## Menus
 
-A row that runs a command carries a 17px icon; a row that picks a value is a
-`MenuCheckItem` and carries the 15px check slot instead. Every row has one or
+A row that runs a command carries a 16px icon; a row that picks a value is a
+`MenuCheckItem` and carries the 14px check slot instead. Every row has one or
 the other, and never neither.
 
-The icon is structural, not decorative. Icon plus gap is a 27px lane, so a row
-without one starts its label 27px further left, and two menus opened from
+The icon is structural, not decorative. Icon plus gap is a 26px lane, so a row
+without one starts its label 26px further left, and two menus opened from
 neighbouring controls disagree about where their text begins. Mark the icon
 `aria-hidden` — the label already names the action. Reuse the verb's existing
 icon rather than picking a new one: `SquarePen` edits, `Trash2` deletes,
 `Download` imports, `Upload` exports, `Clock` is history.
+
+## Icons
+
+Two sizes. **14px** for an icon that sits with text or inside a control: in a
+button, a badge, a chip, a chevron on a trigger, a check in a menu or a
+checkbox. **16px** for an icon that owns a lane of its own: a menu row, a
+sidebar item, a clickable row, a banner, the icon button, the dialog close.
+Larger marks (the avatar tile, the empty state, the drop zone) are pictures,
+not icons, and keep their own sizes. The app once drew icons at nine sizes.
 
 ## Feedback
 
@@ -195,9 +207,9 @@ stand next to each other in a toolbar, a form, or a table row.
 
 ## Type scale
 
-Four sizes exist and nothing between them, declared as `--text-*` in
-`apps/web/app/globals.css`: `text-xs` (12px), `text-md` (14px), `text-lg`
-(16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
+Five sizes exist and nothing between them, declared as `--text-*` in
+`apps/web/app/globals.css`: `text-xs` (12px), `text-sm` (13px), `text-md`
+(14px), `text-lg` (16px), `text-2xl` (24px). Tailwind's defaults are cleared, so `text-sm`,
 `text-base` and `text-xl` do not exist here, and no step carries a
 line-height: `normal` stays the default and a paragraph opts in with
 `leading-[1.55]`, as the body rule in `globals.css` explains.
@@ -205,11 +217,13 @@ line-height: `normal` stays the default and a paragraph opts in with
 An arbitrary size — `text-[13px]`, `text-[14.5px]`, any of them — is never
 correct, including when it matches a step. The app once drew twenty-six sizes
 from a ten-step scale; the scale was cut to four on 2026-09-18 because the
-steps between were doing nothing a reader could see. Pick the step; if none of
-the four fits, the change is to the scale, not to the call site.
+steps between were doing nothing a reader could see, and `sm` came back the
+next day for the tooltip. Pick the step; if none of the five fits, the change
+is to the scale, not to the call site.
 
 Each step has a job: `xs` badges, chips, menu group labels, tooltips and chart
-ticks, never running text; `md` everything read or pressed — body, table
+ticks, never running text; `sm` small text, the tooltip and a line that
+must sit under body without becoming a label; `md` everything read or pressed — body, table
 cells, dialog copy, help text, sub-lines, buttons, labels, tabs, field text,
 and every heading below the page title (at 600); `lg` the 16px floor that
 keeps iOS from zooming a focused field, the wordmark, and inline figures;

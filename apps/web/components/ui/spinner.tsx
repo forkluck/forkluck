@@ -4,6 +4,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
+ * The ring is the brand blue on the light brand fill: a spinner is progress,
+ * and progress is one of the things blue is for. A pending button draws its
+ * own spinner in its label colour instead (see ui/button.tsx).
+ *
  * The single activity mark for the app: one ring, spun, whose stroke tracks
  * its diameter — the handoff draws the full-page loader at 80px / 6px, so the
  * smaller sizes step the border down with the size rather than shrinking one
@@ -14,7 +18,7 @@ import { cn } from "@/lib/utils"
  *   lg   80px / 6   the whole-viewport navigation spinner (`app/(app)/loading`)
  */
 const spinnerVariants = cva(
-  "animate-spin rounded-full border-muted border-t-foreground motion-reduce:animate-none",
+  "animate-spin rounded-full border-brand-fill border-t-brand motion-reduce:animate-none",
   {
     variants: {
       size: {

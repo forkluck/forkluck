@@ -1,6 +1,11 @@
 "use client"
 
 import * as React from "react"
+import {
+  NoticeBanner,
+  NoticeBannerAction,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { useRouter } from "next/navigation"
 import {
   ChevronDown,
@@ -31,7 +36,6 @@ import {
 } from "@/components/ui/dialog"
 import { SearchInput, inputClassName } from "@/components/ui/input"
 import { LabeledInput } from "@/components/ui/labeled-field"
-import { SaveBanner } from "@/components/ui/save-banner"
 import {
   Menu,
   MenuCheckItem,
@@ -620,7 +624,7 @@ function AddRecipePopover({
             className="mt-1 flex min-h-9 w-full items-center gap-2.5 rounded-md border-t border-border px-2.5 py-1.5 text-left text-md outline-none hover:bg-accent focus-visible:bg-accent"
           >
             <ClipboardPaste
-              className="size-[17px]"
+              className="size-4"
               strokeWidth={1.8}
               aria-hidden="true"
             />
@@ -1893,36 +1897,52 @@ export function CompareFormulas({
   return (
     <>
       {conflict ? (
-        <SaveBanner text={conflict.message}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Reload
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              discardDraft()
-              window.location.reload()
-            }}
-          >
-            Discard my changes
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="warning"
+          action={
+            <NoticeBannerActions>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => window.location.reload()}
+              >
+                Reload
+              </NoticeBannerAction>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => {
+                  discardDraft()
+                  window.location.reload()
+                }}
+              >
+                Discard my changes
+              </NoticeBannerAction>
+            </NoticeBannerActions>
+          }
+        >
+          {conflict.message}
+        </NoticeBanner>
       ) : restorable ? (
-        <SaveBanner text="This device kept changes that never reached the server.">
-          <Button
-            type="button"
-            onClick={() => {
-              applyRecovery(restorable as ComparisonRecovery)
-              dismissRestore()
-            }}
-          >
-            Restore
-          </Button>
-          <Button type="button" variant="outline" onClick={discardDraft}>
-            Discard
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="info"
+          action={
+            <NoticeBannerActions>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => {
+                  applyRecovery(restorable as ComparisonRecovery)
+                  dismissRestore()
+                }}
+              >
+                Restore
+              </NoticeBannerAction>
+              <NoticeBannerAction type="button" onClick={discardDraft}>
+                Discard
+              </NoticeBannerAction>
+            </NoticeBannerActions>
+          }
+        >
+          This device kept changes that never reached the server.
+        </NoticeBanner>
       ) : null}
       {/* The name comes first and is always there: it is what the header's
           Save asks for, columns or no columns. */}

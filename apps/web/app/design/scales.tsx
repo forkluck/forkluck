@@ -21,6 +21,12 @@ const TYPE_STEPS: {
     className: "text-xs",
   },
   {
+    step: "sm",
+    px: "13",
+    jobs: "Small text: the tooltip, and a line that must sit under body without becoming a label",
+    className: "text-sm",
+  },
+  {
     step: "md",
     px: "14",
     jobs: "Body, controls, fields, help text, every heading below the page title",

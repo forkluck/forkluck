@@ -30,11 +30,11 @@ const DEFAULT_SWATCHES = [
   "#18181b", // --foreground
   "#52525b", // --muted-foreground
   "#c9c9cf", // --line-strong
-  "#2f7a4f", // --success
-  "#eaf4ee", // --success-fill
-  "#fed7aa", // --warning-fill
+  "#1f4a2b", // --success
+  "#ccf1b1", // --success-fill
+  "#f9dca4", // --warning-fill
   "#d92d20", // --destructive
-  "#ffe7e6", // --destructive-fill
+  "#ffc1b8", // --destructive-fill
   // --chart-2 is the same #d8e4f7 as --brand-fill above, so it is not drawn
   // twice: two identical swatches would carry the same accessible name and
   // both read as selected.

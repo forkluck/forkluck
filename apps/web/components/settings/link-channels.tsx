@@ -425,7 +425,7 @@ export function LinkChannels({
       {integrationError ? (
         <div className="mb-4 flex max-w-[760px] items-center gap-2.5 rounded-lg border border-warning-border bg-warning-fill px-3.5 py-3 text-md text-warning-foreground">
           <TriangleAlert
-            className="size-4 flex-none text-warning-foreground"
+            className="size-4 flex-none text-warning-mark"
             strokeWidth={1.8}
             aria-hidden="true"
           />

@@ -129,7 +129,7 @@ function DialogContent({
             // whatever that padding is.
             className="absolute top-(--dialog-py) right-(--dialog-px) flex size-9 flex-none items-center justify-center rounded-lg border border-transparent text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:border-foreground"
           >
-            <XIcon className="size-[19px]" strokeWidth={2} />
+            <XIcon className="size-4" strokeWidth={2} />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}

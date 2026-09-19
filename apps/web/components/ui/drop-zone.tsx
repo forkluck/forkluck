@@ -104,7 +104,7 @@ function DropZone({
       {...props}
     >
       <Upload
-        className="size-[17px] text-muted-foreground"
+        className="size-4 text-muted-foreground"
         strokeWidth={2}
         aria-hidden="true"
       />

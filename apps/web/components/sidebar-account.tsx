@@ -77,12 +77,12 @@ export function SidebarAccount({
         {/* The chevron points at where the popover will go, so it flips when
             the popover is open rather than spinning. */}
         <ChevronDown
-          className="size-[15px] shrink-0 group-data-popup-open/account:hidden"
+          className="size-3.5 shrink-0 group-data-popup-open/account:hidden"
           strokeWidth={2}
           aria-hidden="true"
         />
         <ChevronUp
-          className="hidden size-[15px] shrink-0 group-data-popup-open/account:block"
+          className="hidden size-3.5 shrink-0 group-data-popup-open/account:block"
           strokeWidth={2}
           aria-hidden="true"
         />

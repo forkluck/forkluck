@@ -40,11 +40,7 @@ export function MainHeader({
           aria-expanded={navOpen}
           className="-ml-1 inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-transparent text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:border-foreground focus-visible:outline-none md:hidden"
         >
-          <MenuIcon
-            className="size-[17px]"
-            strokeWidth={1.8}
-            aria-hidden="true"
-          />
+          <MenuIcon className="size-4" strokeWidth={1.8} aria-hidden="true" />
         </button>
 
         {sidebarCollapsed ? (
@@ -56,7 +52,7 @@ export function MainHeader({
             className="-ml-1.5 hidden size-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-foreground hover:bg-muted focus-visible:border-foreground focus-visible:outline-none md:inline-flex"
           >
             <PanelLeft
-              className="size-[17px]"
+              className="size-4"
               strokeWidth={1.8}
               aria-hidden="true"
             />

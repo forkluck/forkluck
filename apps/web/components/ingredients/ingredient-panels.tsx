@@ -215,7 +215,7 @@ function UnitConversionSection({
             <TooltipTrigger
               render={
                 <Info
-                  className="size-[14px] shrink-0 text-muted-foreground"
+                  className="size-3.5 shrink-0 text-muted-foreground"
                   strokeWidth={1.8}
                   role="img"
                   aria-label="What the standard UOM means"

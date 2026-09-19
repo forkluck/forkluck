@@ -1,6 +1,11 @@
 "use client"
 
 import * as React from "react"
+import {
+  NoticeBanner,
+  NoticeBannerAction,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
 import { Download, RotateCcw } from "lucide-react"
 
 import { loadMenuProducts, saveMenu } from "@/app/(app)/menu/actions"
@@ -21,7 +26,6 @@ import { DateRangeFilter } from "@/components/ui/date-range-filter"
 import { addDays, localDateKey } from "@/lib/date-presets"
 import { LabeledInput } from "@/components/ui/labeled-field"
 import { Toolbar, ToolbarSpacer } from "@/components/ui/page"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/toast"
 import { useDocumentSave, type SaveEcho } from "@/hooks/use-document-save"
@@ -451,37 +455,53 @@ export function MenuEditor({
       aria-label="Menu"
     >
       {conflict ? (
-        <SaveBanner text={conflict.message}>
-          <Button type="button" onClick={() => window.location.reload()}>
-            Reload
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              discardDraft()
-              window.location.reload()
-            }}
-          >
-            Discard my changes
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="warning"
+          action={
+            <NoticeBannerActions>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => window.location.reload()}
+              >
+                Reload
+              </NoticeBannerAction>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => {
+                  discardDraft()
+                  window.location.reload()
+                }}
+              >
+                Discard my changes
+              </NoticeBannerAction>
+            </NoticeBannerActions>
+          }
+        >
+          {conflict.message}
+        </NoticeBanner>
       ) : null}
       {restorable ? (
-        <SaveBanner text="This device kept changes that never reached the server.">
-          <Button
-            type="button"
-            onClick={() => {
-              applyRecovery(restorable as MenuRecovery)
-              dismissRestore()
-            }}
-          >
-            Restore
-          </Button>
-          <Button type="button" variant="outline" onClick={discardDraft}>
-            Discard
-          </Button>
-        </SaveBanner>
+        <NoticeBanner
+          tone="info"
+          action={
+            <NoticeBannerActions>
+              <NoticeBannerAction
+                type="button"
+                onClick={() => {
+                  applyRecovery(restorable as MenuRecovery)
+                  dismissRestore()
+                }}
+              >
+                Restore
+              </NoticeBannerAction>
+              <NoticeBannerAction type="button" onClick={discardDraft}>
+                Discard
+              </NoticeBannerAction>
+            </NoticeBannerActions>
+          }
+        >
+          This device kept changes that never reached the server.
+        </NoticeBanner>
       ) : null}
       <LabeledInput
         ref={nameRef}

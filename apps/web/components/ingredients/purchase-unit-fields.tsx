@@ -216,7 +216,7 @@ function InvoiceItemSearch({
         className="pr-9"
         trailing={
           <Search
-            className="pointer-events-none size-[15px] text-muted-foreground"
+            className="pointer-events-none size-3.5 text-muted-foreground"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -315,7 +315,7 @@ function InvoiceItemSearch({
                     <TooltipTrigger
                       render={
                         <Link2
-                          className="size-[13px] shrink-0 text-muted-foreground"
+                          className="size-3.5 shrink-0 text-muted-foreground"
                           strokeWidth={1.9}
                           role="img"
                           aria-label={`Used by ${linkedNames}`}
@@ -497,7 +497,7 @@ export function PurchaseUnitFields({
               <TooltipTrigger
                 render={
                   <Info
-                    className="size-[17px] text-muted-foreground"
+                    className="size-4 text-muted-foreground"
                     strokeWidth={1.8}
                     role="img"
                     aria-label="What Yield means"

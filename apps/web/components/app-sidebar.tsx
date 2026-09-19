@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils"
 const ROW_CLASS =
   "flex h-11 w-full items-center gap-[9px] rounded-lg border border-transparent px-2.5 text-md leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-9"
 
-const ICON_CLASS = "size-[17px] shrink-0"
+const ICON_CLASS = "size-4 shrink-0"
 
 const SUB_ROW_CLASS =
   "flex h-9 w-full items-center rounded-lg border border-transparent px-2.5 text-md leading-none font-medium text-sidebar-foreground focus-visible:border-foreground focus-visible:outline-none md:h-[30px]"

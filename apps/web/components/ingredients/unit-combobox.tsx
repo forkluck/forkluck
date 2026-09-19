@@ -118,9 +118,7 @@ export function UnitCombobox({
       <ChevronDown
         className={cn(
           "shrink-0",
-          chip
-            ? "size-3.5 text-foreground"
-            : "size-[13px] text-muted-foreground"
+          chip ? "size-3.5 text-foreground" : "size-3.5 text-muted-foreground"
         )}
         strokeWidth={2}
         aria-hidden="true"

@@ -2,6 +2,11 @@
 
 import * as React from "react"
 import {
+  NoticeBanner,
+  NoticeBannerAction,
+  NoticeBannerActions,
+} from "@/components/ui/notice-banner"
+import {
   GripVertical,
   Info,
   Timer,
@@ -49,7 +54,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { MenuItem } from "@/components/ui/menu"
 import { RowActionsMenu } from "@/components/ui/row-actions"
-import { SaveBanner } from "@/components/ui/save-banner"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -1486,37 +1490,53 @@ export function RecipeEditor({
     >
       <div className="grid min-w-0 gap-8">
         {conflict ? (
-          <SaveBanner text={conflict.message}>
-            <Button type="button" onClick={() => window.location.reload()}>
-              Reload
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                discardDraft()
-                window.location.reload()
-              }}
-            >
-              Discard my changes
-            </Button>
-          </SaveBanner>
+          <NoticeBanner
+            tone="warning"
+            action={
+              <NoticeBannerActions>
+                <NoticeBannerAction
+                  type="button"
+                  onClick={() => window.location.reload()}
+                >
+                  Reload
+                </NoticeBannerAction>
+                <NoticeBannerAction
+                  type="button"
+                  onClick={() => {
+                    discardDraft()
+                    window.location.reload()
+                  }}
+                >
+                  Discard my changes
+                </NoticeBannerAction>
+              </NoticeBannerActions>
+            }
+          >
+            {conflict.message}
+          </NoticeBanner>
         ) : null}
         {restorable ? (
-          <SaveBanner text="This device kept changes that never reached the server.">
-            <Button
-              type="button"
-              onClick={() => {
-                applyRecovery(restorable as RecipeRecovery)
-                dismissRestore()
-              }}
-            >
-              Restore
-            </Button>
-            <Button type="button" variant="outline" onClick={discardDraft}>
-              Discard
-            </Button>
-          </SaveBanner>
+          <NoticeBanner
+            tone="info"
+            action={
+              <NoticeBannerActions>
+                <NoticeBannerAction
+                  type="button"
+                  onClick={() => {
+                    applyRecovery(restorable as RecipeRecovery)
+                    dismissRestore()
+                  }}
+                >
+                  Restore
+                </NoticeBannerAction>
+                <NoticeBannerAction type="button" onClick={discardDraft}>
+                  Discard
+                </NoticeBannerAction>
+              </NoticeBannerActions>
+            }
+          >
+            This device kept changes that never reached the server.
+          </NoticeBanner>
         ) : null}
         <Section>
           <div className="grid gap-3">
@@ -1657,7 +1677,7 @@ export function RecipeEditor({
               {autoYieldHint ? (
                 <p className="flex items-center gap-2 text-md text-warning-foreground">
                   <TriangleAlert
-                    className="size-3.5 shrink-0 text-warning-foreground"
+                    className="size-3.5 shrink-0 text-warning-mark"
                     strokeWidth={1.9}
                     aria-hidden="true"
                   />
@@ -1706,12 +1726,12 @@ export function RecipeEditor({
                         <span
                           role="img"
                           aria-label={`Excluded from batch weight: ${batchWeight.missing.join(", ")}.`}
-                          className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                          className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                         />
                       }
                     >
                       <TriangleAlert
-                        className="size-[13px]"
+                        className="size-3.5"
                         strokeWidth={2}
                         aria-hidden="true"
                       />
@@ -2027,7 +2047,7 @@ export function RecipeEditor({
                       <TooltipTrigger
                         render={
                           <Info
-                            className="size-[14px] shrink-0 text-muted-foreground"
+                            className="size-3.5 shrink-0 text-muted-foreground"
                             strokeWidth={1.8}
                             role="img"
                             aria-label="What the batch UOM means"

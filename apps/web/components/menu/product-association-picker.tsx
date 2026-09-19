@@ -140,7 +140,7 @@ export function ProductAssociationPicker({
         <span className="truncate">{selected.label}</span>
         <ChevronDown
           aria-hidden="true"
-          className="size-[13px] shrink-0 text-muted-foreground"
+          className="size-3.5 shrink-0 text-muted-foreground"
           strokeWidth={2}
         />
       </PopoverTrigger>
@@ -154,7 +154,7 @@ export function ProductAssociationPicker({
         <div className="relative border-b border-muted p-2">
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-[19px] size-[15px] -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute top-1/2 left-[19px] size-3.5 -translate-y-1/2 text-muted-foreground"
             strokeWidth={2}
           />
           <input
@@ -233,7 +233,7 @@ function ProductOption({
         aria-hidden="true"
         strokeWidth={2}
         className={cn(
-          "size-[15px] shrink-0",
+          "size-3.5 shrink-0",
           selected
             ? "text-foreground"
             : "text-disabled-foreground opacity-0 group-hover/option:opacity-100"

@@ -46,6 +46,8 @@
   --color-warning-border: var(--warning-border);
   --color-warning-strong: var(--warning-strong);
   --color-warning-hover: var(--warning-hover);
+  --color-success-mark: var(--success-mark);
+  --color-warning-mark: var(--warning-mark);
   --color-caution: var(--caution);
   --color-caution-foreground: var(--caution-foreground);
   --color-caution-fill: var(--caution-fill);
@@ -90,22 +92,26 @@
   --radius-xl: 14px;
   --radius-2xl: 18px;
 
-  /* Type scale: four steps and nothing between them (AGENTS.md "Type scale").
+  /* Type scale: five steps and nothing between them (AGENTS.md "Type scale").
      Tailwind's own sizes are cleared so `text-sm`, `text-base` and `text-xl`
      do not exist here, and no step carries a line-height: `normal` stays the
      default and a paragraph opts in with `leading-[1.55]`.
      tests/type-scale-pins.test.ts refuses any other size. */
   --text-*: initial;
   --text-xs: 12px;
+  --text-sm: 13px;
   --text-md: 14px;
   --text-lg: 16px;
   --text-2xl: 24px;
   /* No elevation anywhere in this design: depth is one 1px --border hairline
-     plus the modal scrim. Zeroing the scale means a stray shadow-* utility
-     can't reintroduce a drop shadow. */
+     plus the modal scrim, and one soft drop under the tooltip (--shadow-sm).
+     Zeroing the rest of the scale means a stray shadow-* utility can't
+     reintroduce a drop shadow. */
   --shadow-2xs: 0 0 #0000;
   --shadow-xs: 0 0 #0000;
-  --shadow-sm: 0 0 #0000;
+  /* The one real shadow: a soft drop under a floating tooltip. The rest
+     stay zero on purpose. */
+  --shadow-sm: 0 2px 8px rgb(24 24 27 / 0.08);
   --shadow: 0 0 #0000;
   --shadow-md: 0 0 #0000;
   --shadow-lg: 0 0 #0000;
@@ -189,35 +195,40 @@
      ink on that ground is --destructive-strong, because --destructive itself
      lands at 4.1:1 there. --success on its own fill is 4.65:1. */
   --destructive: #d92d20;
-  /* On this fill the ink is --destructive-strong (5.6:1); --destructive itself
-     is 4.1:1 here, under AA for 14px text. */
-  --destructive-fill: #ffe7e6;
+  /* On this fill the ink is --destructive-strong (6.3:1); --destructive itself
+     falls under AA here. */
+  --destructive-fill: #ffc1b8;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */
-  --destructive-strong: #b42318;
+  --destructive-strong: #7a1f16;
   --destructive-tint: #f97066;
-  --success: #2f7a4f;
-  --success-fill: #eaf4ee;
+  --success: #1f4a2b;
+  --success-fill: #ccf1b1;
+  /* The mark: a green for an icon standing on white, where the deep ink
+     reads black. Text on white and anything on the fill stay on --success. */
+  --success-mark: #2f8f57;
   /* Needs-attention yellow: icon, text, banner fill, banner border, and the
      border the ghost button inside a banner uses. The two hover values are
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning-foreground: #7c2d12;
-  --warning-fill: #fed7aa;
-  --warning-fill-hover: #fdba74;
-  --warning-border: #fdba74;
-  --warning-strong: #fb923c;
-  --warning-hover: #ffedd5;
-  /* Caution: the yellow, a step under warning. Ink 8.1:1 on its fill. */
+  --warning-foreground: #612e06;
+  --warning-fill: #f9dca4;
+  --warning-fill-hover: #f3cf92;
+  --warning-border: #f3c98a;
+  --warning-strong: #e9b96a;
+  --warning-hover: #fbe8c8;
+  /* The mark: the warning icon on white, where the deep ink reads black. */
+  --warning-mark: #d97706;
+  /* Caution: the yellow, a step under warning. Ink 6.2:1 on its fill. */
   --caution: #ca8a04;
-  --caution-foreground: #713f12;
-  --caution-fill: #fef9c3;
-  /* Info: the blue as a label. --brand itself is 3.5:1 on --brand-fill, so
-     the info ink is the deeper blue, 5.2:1 there. */
-  --info: #1d4ed8;
-  --info-fill: var(--brand-fill);
+  --caution-foreground: #533d08;
+  --caution-fill: #f7e06e;
+  /* Info: the blue as a label, on its own soft fill (the brand fill stays
+     the selection and chart fill). Ink 6.9:1. */
+  --info: #1f3a6b;
+  --info-fill: #c2daff;
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;

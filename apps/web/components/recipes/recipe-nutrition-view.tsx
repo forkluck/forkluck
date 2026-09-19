@@ -410,12 +410,12 @@ export function RecipeNutritionView({
                       <span
                         role="img"
                         aria-label={servingHint}
-                        className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                        className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                       />
                     }
                   >
                     <TriangleAlert
-                      className="size-[13px]"
+                      className="size-3.5"
                       strokeWidth={2}
                       aria-hidden="true"
                     />
@@ -486,7 +486,7 @@ export function RecipeNutritionView({
                   }
                 >
                   <Info
-                    className="size-[13px]"
+                    className="size-3.5"
                     strokeWidth={2}
                     aria-hidden="true"
                   />
@@ -640,12 +640,12 @@ export function RecipeNutritionView({
                                     <span
                                       role="img"
                                       aria-label={flag}
-                                      className="flex size-5 items-center justify-center rounded-md text-warning-foreground"
+                                      className="flex size-5 items-center justify-center rounded-md text-warning-mark"
                                     />
                                   }
                                 >
                                   <TriangleAlert
-                                    className="size-[13px]"
+                                    className="size-3.5"
                                     strokeWidth={2}
                                     aria-hidden="true"
                                   />
@@ -669,7 +669,7 @@ export function RecipeNutritionView({
                                   }
                                 >
                                   <Tag
-                                    className="size-[13px]"
+                                    className="size-3.5"
                                     strokeWidth={2}
                                     aria-hidden="true"
                                   />
