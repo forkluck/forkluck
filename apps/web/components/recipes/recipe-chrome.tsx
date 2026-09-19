@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { ClipboardPaste, Copy, Trash2 } from "lucide-react"
+import { ClipboardPaste, Copy, CopyPlus, Trash2 } from "lucide-react"
 
 import { deleteRecipe, duplicateRecipe } from "@/app/(app)/recipes/actions"
 import { ShareButton } from "@/components/recipes/share-button"
@@ -53,6 +53,9 @@ type RecipeEditValue = {
   openShare: () => void
   /** The screen puts its import dialog opener here; the Actions menu calls it. */
   importRef: React.RefObject<(() => void) | null>
+  /** The screen puts its lines here, written as markdown at a given batch;
+   *  the Actions menu copies what comes back. */
+  copyRef: React.RefObject<((scale: number) => string) | null>
   /** The batch the recipe is being looked at in: 1 is the original. */
   batch: BatchSize
   setBatch: (batch: BatchSize) => void
@@ -151,6 +154,7 @@ export function RecipeChrome({
     [saveRef]
   )
   const importRef = React.useRef<(() => void) | null>(null)
+  const copyRef = React.useRef<((scale: number) => string) | null>(null)
   const [batch, setBatch] = React.useState<BatchSize>(ORIGINAL)
   const [saved, setSaved] = React.useState<{
     id: string
@@ -189,10 +193,36 @@ export function RecipeChrome({
     }
   }
 
+  // The lines at the batch on screen, for pasting into a message or a doc.
+  // Only the Recipe tab has lines to give; the other tabs say so.
+  const copyLines = async () => {
+    if (!copyRef.current) {
+      toast.add({ title: "Open the Recipe tab to copy its ingredients" })
+      return
+    }
+    const text = copyRef.current(batch.scale)
+    if (!text) {
+      toast.add({ title: "Nothing to copy yet" })
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      toast.add({
+        title: "Couldn’t copy",
+        description: "Select the ingredient lines and copy them instead.",
+        type: "error",
+      })
+      return
+    }
+    toast.add({ title: "Ingredients copied as markdown" })
+  }
+
   const value = React.useMemo(
     () => ({
       registerSave,
       importRef,
+      copyRef,
       batch,
       setBatch,
       dirty,
@@ -247,12 +277,16 @@ export function RecipeChrome({
                 Import recipe…
               </MenuItem>
             ) : null}
+            <MenuItem onClick={() => void copyLines()}>
+              <Copy strokeWidth={1.8} aria-hidden="true" />
+              Copy ingredients as markdown
+            </MenuItem>
             {showDelete ? (
               <MenuItem
                 disabled={!recipeId || duplicatePending}
                 onClick={() => void duplicate()}
               >
-                <Copy strokeWidth={1.8} aria-hidden="true" />
+                <CopyPlus strokeWidth={1.8} aria-hidden="true" />
                 Duplicate
               </MenuItem>
             ) : null}

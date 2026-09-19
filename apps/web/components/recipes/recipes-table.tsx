@@ -5,7 +5,7 @@ import { undoableToast, useToast } from "@/components/ui/toast"
 import {
   Archive,
   ArchiveRestore,
-  Copy,
+  CopyPlus,
   SquarePen,
   Trash2,
   Upload,
@@ -264,7 +264,7 @@ export function RecipesTable({
           {recipe.permission && recipe.permission !== "owner" ? null : (
             <>
               <MenuItem onClick={() => void duplicate(recipe)}>
-                <Copy strokeWidth={1.8} aria-hidden="true" />
+                <CopyPlus strokeWidth={1.8} aria-hidden="true" />
                 Duplicate
               </MenuItem>
               {recipe.status === "archived" ? (
