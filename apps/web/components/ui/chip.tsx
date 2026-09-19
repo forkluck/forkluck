@@ -82,9 +82,9 @@ function Chip({
           aria-label={removeLabel}
           disabled={disabled}
           onClick={onRemove}
-          className="inline-flex size-3 items-center justify-center rounded-full outline-none focus-visible:text-foreground disabled:cursor-not-allowed"
+          className="inline-flex size-3.5 items-center justify-center rounded-full outline-none focus-visible:text-foreground disabled:cursor-not-allowed"
         >
-          <X className="size-3" aria-hidden />
+          <X className="size-3.5" strokeWidth={2.5} aria-hidden />
         </button>
       ) : null}
     </span>
