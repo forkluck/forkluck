@@ -4,11 +4,12 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const chipClassName =
-  "inline-flex h-5 w-fit shrink-0 items-center gap-1 rounded-full border px-2 text-xs font-medium whitespace-nowrap"
+  "inline-flex h-5 w-fit shrink-0 items-center gap-1 rounded-full border px-2 text-xs font-[550] whitespace-nowrap"
 
 /**
  * The 20px tag: `rounded-full`, 11.5px 500, on the bottom rung of the control
- * ladder beside the badge. At rest it is a hairline on the card fill; pressed
+ * ladder beside the badge, and at rest it wears the default badge's grey fill
+ * and subdued ink so the two read as one family; pressed
  * it fills with ink, never blue, because a chosen tag is a selection and not
  * data. This is the shape the allergen tags draw.
  *
@@ -40,7 +41,7 @@ function Chip({
 }) {
   const tone = pressed
     ? "border-foreground bg-foreground text-background"
-    : "border-border bg-card text-muted-foreground"
+    : "border-transparent bg-secondary-strong text-secondary-foreground"
 
   if (onPressedChange && !onRemove) {
     return (
