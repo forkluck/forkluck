@@ -55,9 +55,11 @@ const buttonVariants = cva(
         // 32px ink primary beside it.
         secondary:
           "border-secondary bg-secondary text-foreground hover:border-secondary-strong hover:bg-secondary-strong disabled:border-border disabled:bg-background aria-expanded:border-secondary-strong aria-expanded:bg-secondary-strong",
-        // Also the icon button: --muted-foreground at rest, ink on hover.
+        // Also the icon button: --muted-foreground at rest, ink on hover. The
+        // hover fill is the ink at 6%, not a grey, so it sits right on white,
+        // on a banner and on a red row alike.
         ghost:
-          "text-muted-foreground hover:border-muted hover:bg-muted hover:text-foreground aria-expanded:border-muted aria-expanded:bg-muted aria-expanded:text-foreground",
+          "text-muted-foreground hover:border-transparent hover:bg-foreground/6 hover:text-foreground aria-expanded:border-transparent aria-expanded:bg-foreground/6 aria-expanded:text-foreground",
         destructive:
           "border-destructive bg-destructive text-white hover:border-destructive-strong hover:bg-destructive-strong focus-visible:border-foreground disabled:border-border disabled:bg-background",
         // The critical action that is not the main one on its screen: the
