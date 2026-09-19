@@ -30,7 +30,7 @@ const DEFAULT_SWATCHES = [
   "#18181b", // --foreground
   "#52525b", // --muted-foreground
   "#c9c9cf", // --line-strong
-  "#2f7a4f", // --success
+  "#14532d", // --success
   "#eaf4ee", // --success-fill
   "#fed7aa", // --warning-fill
   "#d92d20", // --destructive

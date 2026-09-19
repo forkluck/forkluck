@@ -21,7 +21,7 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-secondary text-secondary-foreground",
+        default: "bg-secondary text-foreground",
         info: "bg-info-fill text-info",
         success: "bg-success-fill text-success",
         warning: "bg-warning-fill text-warning-foreground",

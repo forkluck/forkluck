@@ -12,10 +12,10 @@ describe("ColorPicker", () => {
     const onValueChange = vi.fn()
     render(<ColorPicker value="#3273dc" onValueChange={onValueChange} />)
 
-    fireEvent.click(screen.getByRole("button", { name: "Color #2f7a4f" }))
+    fireEvent.click(screen.getByRole("button", { name: "Color #14532d" }))
 
     expect(onValueChange).toHaveBeenCalledOnce()
-    expect(onValueChange).toHaveBeenCalledWith("#2f7a4f")
+    expect(onValueChange).toHaveBeenCalledWith("#14532d")
   })
 
   it("marks the selected swatch and leaves the others alone", () => {
@@ -43,7 +43,7 @@ describe("ColorPicker", () => {
 
     fireEvent.change(field, { target: { value: "#2F7A4F" } })
     expect(onValueChange).toHaveBeenCalledOnce()
-    expect(onValueChange).toHaveBeenCalledWith("#2f7a4f")
+    expect(onValueChange).toHaveBeenCalledWith("#14532d")
   })
 
   it("renders the swatches a call site passes instead of the palette", () => {
