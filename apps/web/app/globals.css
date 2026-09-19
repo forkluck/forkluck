@@ -191,20 +191,20 @@
   --destructive: #d92d20;
   /* On this fill the ink is --destructive-strong (6.3:1); --destructive itself
      falls under AA here. */
-  --destructive-fill: #f6c4bd;
+  --destructive-fill: #f7b8ae;
   /* The two derived steps off --destructive, on its hue and saturation so a
      hover reads as one step darker rather than a different red. Both were hex
      literals at call sites before they were named. */
-  --destructive-strong: #8f2a1f;
+  --destructive-strong: #7a1f16;
   --destructive-tint: #f97066;
-  --success: #2f5a3a;
-  --success-fill: #cbe2b4;
+  --success: #1f4a2b;
+  --success-fill: #bfe0a3;
   /* Needs-attention yellow: icon, text, banner fill, banner border, and the
      border the ghost button inside a banner uses. The two hover values are
      the fills the handoff gives a yellow control: --warning-hover for the
      row's alert-triangle button, --warning-fill-hover for a ghost button
      sitting on a --warning-fill banner. */
-  --warning-foreground: #7a3d0b;
+  --warning-foreground: #612e06;
   --warning-fill: #f9dca4;
   --warning-fill-hover: #f3cf92;
   --warning-border: #f3c98a;
@@ -212,12 +212,12 @@
   --warning-hover: #fbe8c8;
   /* Caution: the yellow, a step under warning. Ink 6.2:1 on its fill. */
   --caution: #ca8a04;
-  --caution-foreground: #6b5210;
-  --caution-fill: #f6e58a;
+  --caution-foreground: #533d08;
+  --caution-fill: #f7e06e;
   /* Info: the blue as a label, on its own soft fill (the brand fill stays
      the selection and chart fill). Ink 6.9:1. */
-  --info: #2b4c86;
-  --info-fill: #c7d9f3;
+  --info: #1f3a6b;
+  --info-fill: #b9d1f4;
   /* The single hairline in the app. Every edge resolves here — card, table,
      input and popover borders — so they can't drift apart. */
   --border: #e4e4e7;
