@@ -52,7 +52,7 @@ function TooltipContent({
           className={cn(
             // The popover surface, small: white, one hairline, `rounded-lg`, body
             // text and the one soft shadow in the design. No arrow, no animation.
-            "z-50 inline-flex w-fit max-w-xs origin-(--transform-origin) items-center gap-1.5 rounded-lg border border-popover-border bg-popover px-3 py-1.5 text-sm font-medium text-popover-foreground shadow-sm has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm",
+            "z-50 inline-flex w-fit max-w-xs origin-(--transform-origin) items-center gap-1.5 rounded-lg border border-popover-border bg-popover px-2.5 py-1.5 text-sm font-medium text-popover-foreground shadow-sm has-data-[slot=kbd]:pr-1.5 **:data-[slot=kbd]:rounded-sm",
             className
           )}
           {...props}
