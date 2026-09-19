@@ -466,12 +466,21 @@ export function BadgeDemo() {
 /** 14. Banner */
 export function BannerDemo() {
   return (
-    <div className="flex flex-col gap-4">
-      <NoticeBanner
-        className="mb-0"
-        action={<NoticeBannerAction>Review</NoticeBannerAction>}
-      >
+    <div className="flex flex-col">
+      <NoticeBanner tone="info">
+        Prices on this sheet were last refreshed on Monday.
+      </NoticeBanner>
+      <NoticeBanner tone="success">
+        All 48 invoice lines are matched to an ingredient.
+      </NoticeBanner>
+      <NoticeBanner action={<NoticeBannerAction>Review</NoticeBannerAction>}>
         Four invoice lines are not matched to an ingredient.
+      </NoticeBanner>
+      <NoticeBanner
+        tone="critical"
+        action={<NoticeBannerAction>Retry</NoticeBannerAction>}
+      >
+        The Baldor import failed before any line was read.
       </NoticeBanner>
       <SaveBanner text="Butter is priced in two units. Which one should costing use?">
         <Button variant="outline">Keep kilograms</Button>
