@@ -22,7 +22,7 @@ from django.db import transaction
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
-from .domains.accounts import google
+from .domains.accounts import devices, google
 from .domains.accounts import views as account_views
 from .domains.ingredients import actions as ingredient_actions
 from .domains.ingredients import views as ingredient_views
@@ -45,7 +45,9 @@ from .domains.sales.pos_sync import sync_run_json, sync_runs_payload
 from .domains.shared.activity import record_event
 from .domains.search import views as search_views
 from .domains.workspace import views as workspace_views
+from .http.auth import device_token_digest
 from .models import (
+    DeviceToken,
     ConnectorConnection,
     ConnectorSyncRun,
     CatalogIngredient,
@@ -212,6 +214,7 @@ SCHEMA_PAYLOADS = {
     "newsletterStatusSchema": lambda case: internal_payload(
         account_views.internal_newsletter, case.user
     ),
+    "devicesPayloadSchema": lambda case: case.devices(),
     # Name order, not the page default: the pin reads the first row only, and
     # the fixture's richest ingredient is the one that leads alphabetically.
     "ingredientsPayloadSchema": lambda case: internal_payload(
@@ -1300,6 +1303,17 @@ class EnvelopeContractTests(ShapeAssertions, TestCase):
             self.user,
             query={"start": "2026-02-01", "end": "2026-02-28"},
         )
+
+    def devices(self) -> dict:
+        """One signed-in phone, so the row shape is emitted, with a last use."""
+        DeviceToken.objects.create(
+            token_digest=device_token_digest("fdt_" + secrets.token_urlsafe(32)),
+            user=self.user,
+            credential_hash=self.user.get_session_auth_hash(),
+            name="Envelope phone",
+            last_used_at=timezone.now(),
+        )
+        return internal_payload(devices.device_list, self.user)
 
     def test_typescript_schemas_match_the_python_payloads(self):
         """apps/web/lib/backend/schemas.ts describes the same keys Python emits.

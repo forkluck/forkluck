@@ -1,0 +1,511 @@
+{
+  "lines": [
+    {
+      "quantity": 100,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 1,
+      "expect": {
+        "quantity": "100",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 100,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 2,
+      "expect": {
+        "quantity": "200",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 1200,
+      "unit": "g",
+      "displayName": "Chicken stock",
+      "scale": 2,
+      "expect": {
+        "quantity": "2,400",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 333,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 0.5,
+      "expect": {
+        "quantity": "167",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 5,
+      "unit": "g",
+      "displayName": "Fine sea salt",
+      "scale": 2.06,
+      "expect": {
+        "quantity": "10.3",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 5,
+      "unit": "g",
+      "displayName": "Fine sea salt",
+      "scale": 1,
+      "expect": {
+        "quantity": "5",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "g",
+      "displayName": "Ground cinnamon",
+      "scale": 2.56,
+      "expect": {
+        "quantity": "2.6",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "g",
+      "displayName": "Instant yeast",
+      "scale": 0.5,
+      "expect": {
+        "quantity": "1",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 5,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 0.05,
+      "expect": {
+        "quantity": "0.25",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 5,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 0.00008,
+      "expect": {
+        "quantity": "0.0004",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 0.4,
+      "unit": "g",
+      "displayName": "Bread flour",
+      "scale": 1,
+      "expect": {
+        "quantity": "0.4",
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "kg",
+      "displayName": "Bread flour",
+      "scale": 1.5,
+      "expect": {
+        "quantity": "1.5",
+        "unit": "kg"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "kg",
+      "displayName": "Bread flour",
+      "scale": 0.3333,
+      "expect": {
+        "quantity": "0.33",
+        "unit": "kg"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "lb",
+      "displayName": "Butter",
+      "scale": 0.5,
+      "expect": {
+        "quantity": "0.5",
+        "unit": "lb"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "lb",
+      "displayName": "Butter",
+      "scale": 2,
+      "expect": {
+        "quantity": "2",
+        "unit": "lb"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "oz",
+      "displayName": "Butter",
+      "scale": 0.333,
+      "expect": {
+        "quantity": "0.33",
+        "unit": "oz"
+      }
+    },
+    {
+      "quantity": 8,
+      "unit": "oz",
+      "displayName": "Butter",
+      "scale": 1.25,
+      "expect": {
+        "quantity": "10",
+        "unit": "oz"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "tsp",
+      "displayName": "Vanilla extract",
+      "scale": 1,
+      "expect": {
+        "quantity": "1",
+        "unit": "tsp"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "tsp",
+      "displayName": "Vanilla extract",
+      "scale": 1.5,
+      "expect": {
+        "quantity": "1 1/2",
+        "unit": "tsp"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "tsp",
+      "displayName": "Vanilla extract",
+      "scale": 3,
+      "expect": {
+        "quantity": "1",
+        "unit": "tbsp"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "tsp",
+      "displayName": "Vanilla extract",
+      "scale": 4,
+      "expect": {
+        "quantity": "4",
+        "unit": "tsp"
+      }
+    },
+    {
+      "quantity": 7,
+      "unit": "tsp",
+      "displayName": "Vanilla extract",
+      "scale": 1,
+      "expect": {
+        "quantity": "7",
+        "unit": "tsp"
+      }
+    },
+    {
+      "quantity": 24,
+      "unit": "tsp",
+      "displayName": "Milk",
+      "scale": 2,
+      "expect": {
+        "quantity": "1",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "tbsp",
+      "displayName": "Butter",
+      "scale": 8,
+      "expect": {
+        "quantity": "1",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "tbsp",
+      "displayName": "Butter",
+      "scale": 4,
+      "expect": {
+        "quantity": "8",
+        "unit": "tbsp"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "tbsp",
+      "displayName": "Butter",
+      "scale": 0.25,
+      "expect": {
+        "quantity": "1/2",
+        "unit": "tbsp"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 0.333,
+      "expect": {
+        "quantity": "1/3",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 0.125,
+      "expect": {
+        "quantity": "1/8",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 2.75,
+      "expect": {
+        "quantity": "2 3/4",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 0.333333,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 1,
+      "expect": {
+        "quantity": "1/3",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 0.666667,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 1,
+      "expect": {
+        "quantity": "2/3",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 12,
+      "unit": "cup",
+      "displayName": "Milk",
+      "scale": 1.5,
+      "expect": {
+        "quantity": "18",
+        "unit": "cup"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "ml",
+      "displayName": "Vanilla extract",
+      "scale": 0.4,
+      "expect": {
+        "quantity": "0.4",
+        "unit": "ml"
+      }
+    },
+    {
+      "quantity": 250,
+      "unit": "ml",
+      "displayName": "Milk",
+      "scale": 1.3,
+      "expect": {
+        "quantity": "325",
+        "unit": "ml"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "l",
+      "displayName": "Water",
+      "scale": 0.001,
+      "expect": {
+        "quantity": "0.001",
+        "unit": "l"
+      }
+    },
+    {
+      "quantity": 3,
+      "unit": "each",
+      "displayName": "Eggs",
+      "scale": 1.5,
+      "expect": {
+        "quantity": "4 1/2",
+        "unit": "each"
+      }
+    },
+    {
+      "quantity": 3,
+      "unit": "each",
+      "displayName": "Eggs",
+      "scale": 1,
+      "expect": {
+        "quantity": "3",
+        "unit": "each"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "each",
+      "displayName": "Lemon",
+      "scale": 0.5,
+      "expect": {
+        "quantity": "1/2",
+        "unit": "each"
+      }
+    },
+    {
+      "quantity": 12,
+      "unit": "each",
+      "displayName": "Eggs",
+      "scale": 0.1,
+      "expect": {
+        "quantity": "1",
+        "unit": "each"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "can",
+      "displayName": "Tomatoes",
+      "scale": 3,
+      "expect": {
+        "quantity": "6",
+        "unit": "can"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "pinch",
+      "displayName": "Nutmeg",
+      "scale": 2,
+      "expect": {
+        "quantity": "2",
+        "unit": "pinch"
+      }
+    },
+    {
+      "quantity": null,
+      "unit": "",
+      "displayName": "Salt to taste",
+      "scale": 2,
+      "expect": {
+        "quantity": null,
+        "unit": ""
+      }
+    },
+    {
+      "quantity": null,
+      "unit": "g",
+      "displayName": "Flour for dusting",
+      "scale": 1,
+      "expect": {
+        "quantity": null,
+        "unit": "g"
+      }
+    },
+    {
+      "quantity": 2,
+      "unit": "sprig",
+      "displayName": "Thyme",
+      "scale": 1.5,
+      "expect": {
+        "quantity": "3",
+        "unit": "sprig"
+      }
+    },
+    {
+      "quantity": 1,
+      "unit": "",
+      "displayName": "Bay leaf",
+      "scale": 3,
+      "expect": {
+        "quantity": "3",
+        "unit": ""
+      }
+    }
+  ],
+  "yields": [
+    {
+      "amount": 12,
+      "unit": "pcs",
+      "expect": "12 ea"
+    },
+    {
+      "amount": 18,
+      "unit": "pcs",
+      "expect": "18 ea"
+    },
+    {
+      "amount": 4.5,
+      "unit": "pcs",
+      "expect": "4 1/2 ea"
+    },
+    {
+      "amount": 8,
+      "unit": "slice",
+      "expect": "8 slice"
+    },
+    {
+      "amount": 1200,
+      "unit": "g",
+      "expect": "1,200 g"
+    },
+    {
+      "amount": 2400,
+      "unit": "g",
+      "expect": "2,400 g"
+    },
+    {
+      "amount": 1.5,
+      "unit": "kg",
+      "expect": "1.5 kg"
+    },
+    {
+      "amount": 0.75,
+      "unit": "kg",
+      "expect": "0.75 kg"
+    },
+    {
+      "amount": 2,
+      "unit": "lb",
+      "expect": "2 lb"
+    },
+    {
+      "amount": 12.5,
+      "unit": "oz",
+      "expect": "12.5 oz"
+    },
+    {
+      "amount": 6,
+      "unit": null,
+      "expect": "6"
+    }
+  ]
+}

@@ -54,7 +54,9 @@ first two replace temporary upstream failures with a static maintenance page and
 `503 Service Unavailable` response. The design template has no service of its
 own: it proxies the guide's paths to the same Next process as the application,
 and it uses the static-asset map and log format that `forkluck.conf` defines at
-http level, so the two must be installed together. Install all four files, validate the
+http level, so the two must be installed together. `forkluck.conf` also
+publishes `/api/mobile/` to Django for the native iOS app, beside the other
+`/api/` prefixes Django owns. Install all four files, validate the
 configuration, and reload nginx when any template changes:
 
 ```bash

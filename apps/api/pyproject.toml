@@ -16,7 +16,7 @@ root_package = "forkluck"
 name = "Request flow runs one way"
 type = "layers"
 layers = [
-    "forkluck.internal_urls | forkluck.public_urls",
+    "forkluck.internal_urls | forkluck.public_urls | forkluck.mobile_urls",
     "forkluck.http.dispatch",
     "forkluck.domains",
     "forkluck.integrations",

@@ -24,6 +24,7 @@ import type {
   SavedComparisonDetail,
   SavedComparisonsPayload,
   NewsletterStatus,
+  DeviceRow,
   PosConnectionRow,
   PosSyncRun,
   ProductDetail,
@@ -86,6 +87,7 @@ import {
   salesOverviewSchema,
   searchIndexPayloadSchema,
   newsletterStatusSchema,
+  devicesPayloadSchema,
   sessionPayloadSchema,
   type SessionPayload,
   type RecipeFacets,
@@ -145,6 +147,15 @@ export async function getSessionPayload(): Promise<SessionPayload | null> {
 /** The signed-in user's product-updates subscription, as Ghost holds it. */
 export async function getNewsletterStatus(): Promise<NewsletterStatus> {
   return djangoGetParsed("/internal/v1/newsletter/", newsletterStatusSchema)
+}
+
+/** The phones signed in to this account through the mobile API. */
+export async function getDevices(): Promise<DeviceRow[]> {
+  const payload = await djangoGetParsed(
+    "/internal/v1/devices/",
+    devicesPayloadSchema
+  )
+  return payload.items
 }
 
 /**

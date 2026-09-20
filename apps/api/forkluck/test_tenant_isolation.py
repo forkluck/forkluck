@@ -18,11 +18,13 @@ from datetime import date
 from django.conf import settings
 from django.test import Client
 
-from . import internal_urls
+from . import internal_urls, mobile_urls
 from .domains.recipes.guest_links import hash_guest_token
 from .domains.shared.activity import record_event
 from .http import dispatch
+from .http.auth import device_token_digest
 from .models import (
+    DeviceToken,
     BenchCostRecipe,
     Employee,
     Ingredient,
@@ -282,6 +284,104 @@ class SystemRouteTests(InternalApiTestCase):
                 self.assertNotEqual(
                     response.json(), {"error": "Authentication required"}
                 )
+
+
+class MobileRouteGuardTests(InternalApiTestCase):
+    """The device-token guard wraps every mobile route but the two code steps,
+    and no mobile route ever hands out a session cookie."""
+
+    ANONYMOUS_ROUTES = [
+        "/api/mobile/v1/auth/request-code/",
+        "/api/mobile/v1/auth/verify-code/",
+    ]
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.owner = User.objects.create_user(
+            email="mobile-owner@example.com",
+            password="a-long-test-passphrase-2468",
+            name="Mobile Owner",
+        )
+        cls.stranger = User.objects.create_user(
+            email="mobile-stranger@example.com",
+            password="a-long-test-passphrase-1357",
+            name="Mobile Stranger",
+        )
+        cls.recipe = Recipe.objects.create(
+            user=cls.owner, title="Phone loaf", code="M1", body="100 g Butter"
+        )
+        cls.stranger_token = "fdt_" + secrets.token_urlsafe(32)
+        DeviceToken.objects.create(
+            token_digest=device_token_digest(cls.stranger_token),
+            user=cls.stranger,
+            credential_hash=cls.stranger.get_session_auth_hash(),
+            name="Stranger's phone",
+        )
+
+    @staticmethod
+    def mobile_routes() -> list[tuple[str, str, bool]]:
+        found = []
+        for entry in mobile_urls.urlpatterns:
+            path = "/api/mobile/v1/" + re.sub(r"<[^>]+>", ANY_UUID, str(entry.pattern))
+            method = "POST" if getattr(entry.callback, "post_only", False) else "GET"
+            anonymous = getattr(entry.callback, "anonymous_capability", False)
+            found.append((path, method, anonymous))
+        return found
+
+    def test_the_anonymous_routes_are_exactly_the_listed_ones(self):
+        flagged = {path for path, _, anonymous in self.mobile_routes() if anonymous}
+        self.assertEqual(flagged, set(self.ANONYMOUS_ROUTES))
+
+    def test_every_guarded_route_requires_a_device_token(self):
+        for path, method, anonymous in self.mobile_routes():
+            if anonymous:
+                continue
+            for header in ({}, {"HTTP_AUTHORIZATION": "Bearer fdt_not-a-real-token"}):
+                with self.subTest(path=path, header=header):
+                    response = Client().generic(method, path, **header)
+                    self.assertEqual(response.status_code, 401)
+                    self.assertEqual(
+                        response.json(), {"error": "Authentication required"}
+                    )
+                    self.assertEqual(
+                        response["WWW-Authenticate"], 'Bearer realm="Forkluck"'
+                    )
+
+    def test_the_anonymous_routes_validate_rather_than_authenticate(self):
+        for path in self.ANONYMOUS_ROUTES:
+            with self.subTest(path=path):
+                response = Client().post(path, "{}", "application/json")
+                self.assertEqual(response.status_code, 400)
+                self.assertNotEqual(
+                    response.json(), {"error": "Authentication required"}
+                )
+
+    def test_no_mobile_route_sets_a_cookie(self):
+        for path, method, _ in self.mobile_routes():
+            with self.subTest(path=path):
+                response = Client().generic(
+                    method,
+                    path,
+                    "{}",
+                    "application/json",
+                    HTTP_AUTHORIZATION=f"Bearer {self.stranger_token}",
+                )
+                self.assertEqual(response.cookies, {})
+
+    def test_a_stranger_cannot_read_another_tenant_through_the_phone(self):
+        auth = {"HTTP_AUTHORIZATION": f"Bearer {self.stranger_token}"}
+        ref = self.recipe.public_id
+        for path in (
+            f"/api/mobile/v1/recipes/{ref}/",
+            f"/api/mobile/v1/recipes/{ref}/nutrition/",
+        ):
+            with self.subTest(path=path):
+                response = Client().get(path, **auth)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), {"item": None})
+        response = Client().get("/api/mobile/v1/recipes/", **auth)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items"], [])
 
 
 class GuestRouteTests(InternalApiTestCase):
