@@ -87,6 +87,7 @@ RECORDED_ROWS = [
     "0057_fix_kitchen_ingredient_names",
     "0058_saved_comparisons",
     "0059_saved_comparison_settings",
+    "0060_device_token",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",
