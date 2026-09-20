@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 
+import { DevicesList } from "@/components/profile/devices-list"
 import { Page, PageHeader, PageTitle } from "@/components/ui/page"
 import { requireUser } from "@/lib/auth-session"
+import { getDevices } from "@/lib/backend/queries"
 
 export const metadata: Metadata = {
   title: "Your profile",
@@ -9,6 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   const user = await requireUser()
+  const devices = await getDevices()
 
   return (
     <Page>
@@ -29,6 +32,14 @@ export default async function ProfilePage() {
           <dd className="mt-[3px] text-md">{user.email}</dd>
         </div>
       </dl>
+
+      <section className="mt-8">
+        <h2 className="text-md font-medium">Signed-in phones</h2>
+        <p className="mt-[3px] mb-3 text-md text-muted-foreground">
+          Phones using the Forkluck Recipes app with this account.
+        </p>
+        <DevicesList devices={devices} />
+      </section>
     </Page>
   )
 }

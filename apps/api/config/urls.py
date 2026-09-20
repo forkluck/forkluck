@@ -13,6 +13,7 @@ urlpatterns = [
     # adds the emailed-code step.
     path("mommy/login/", admin_login),
     path("mommy/", admin.site.urls),
+    path("api/mobile/v1/", include("forkluck.mobile_urls")),
     path("api/", include("forkluck.public_urls")),
     path("internal/v1/", include("forkluck.internal_urls")),
 ]

@@ -93,6 +93,22 @@ export const newsletterStatusSchema = z.strictObject({
 })
 
 /* -------------------------------------------------------------------------- */
+/* devices/                                                                    */
+/* -------------------------------------------------------------------------- */
+
+/** One phone signed in through the mobile API. Revoked rows are gone, not flagged. */
+export const devicesPayloadSchema = z.strictObject({
+  items: z.array(
+    z.strictObject({
+      id: z.string(),
+      name: z.string(),
+      createdAt: z.date(),
+      lastUsedAt: z.date().nullable(),
+    })
+  ),
+})
+
+/* -------------------------------------------------------------------------- */
 /* ingredients/                                                                */
 /* -------------------------------------------------------------------------- */
 

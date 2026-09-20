@@ -60,12 +60,13 @@ history. It is hidden from import history/latest and the generic
 | ------------------ | ----------------------------------- | ------------------- | ------------------------------------------------------------------------ |
 | `/api/...`         | `apps/api/forkluck/public_urls.py`   | Browser             | Django session cookie; CSRF token on writes (`/api/auth/csrf` issues it) |
 | `/internal/v1/...` | `apps/api/forkluck/internal_urls.py` | Next.js server only | Forwarded Django session cookie **and** `X-Forkluck-Internal-Secret`     |
+| `/api/mobile/v1/...` | `apps/api/forkluck/mobile_urls.py` | Native iOS app     | `Authorization: Bearer fdt_…` device token; no cookie, no CSRF (see [Mobile routes](#mobile-routes-apimobilev1)) |
 
 Next.js also owns `POST /api/invoices/parse`, `GET /api/invoices/drive-file`
 and `POST /api/primo/chat`. They are browser-facing route handlers rather than
 part of Django's public route table — nginx sends only `/api/auth/`,
-`/api/billing/` and `/api/integrations/` to Django, everything else reaches
-Next. Primo requires an explicit same-origin `Origin`, a valid Django session,
+`/api/billing/`, `/api/integrations/` and `/api/mobile/` to Django, everything
+else reaches Next. Primo requires an explicit same-origin `Origin`, a valid Django session,
 a configured provider, and a strict body before it contacts Qwen.
 `drive-file` streams one document out of the connected Drive folder for the
 import dialog's review pane, under the same same-origin, session and
@@ -335,6 +336,53 @@ claimed — an owner needs no membership — and a second claim finds nothing,
 because the invitations are gone. A kitchen invite carries no token and never
 expires; the address is the whole of it.
 
+## Mobile routes (`/api/mobile/v1/`)
+
+The native iOS app's table, `apps/api/forkluck/mobile_urls.py`, pinned by
+`EXPECTED_MOBILE_ROUTES` in `test_contract.py`. A phone holds no session and
+no CSRF cookie: a bearer **device token** is the whole credential, and the
+guard (`device_user` in `apps/api/forkluck/http/auth.py`) never reads or
+writes the session, so no mobile answer ever carries a cookie
+(`test_tenant_isolation.MobileRouteGuardTests`).
+
+```
+POST auth/request-code/     anonymous   {email} → {ok: true}
+POST auth/verify-code/      anonymous   {email, code, deviceName?} → {token, device}
+POST auth/sign-out/         device      → {ok: true}; revokes the presenting token
+GET  session/               device      same payload as /internal/v1/session/
+GET  devices/               device      same payload as /internal/v1/devices/
+GET  recipes/               device      same view, params and payload as /internal/v1/recipes/
+GET  recipes/<recipe_ref>/  device      same as /internal/v1/recipes/<recipe_ref>/
+GET  recipes/<recipe_ref>/nutrition/    same as the internal route
+GET  recipe-categories/     device      same as the internal route
+```
+
+Sign-in is two steps. `request-code` emails a 6-digit code with purpose
+`device` through the same issuer as password reset (10-minute life, at most 3
+live codes per address and 20 per client address per window); an unknown or
+inactive address gets the same `{ok: true}` and no email, and a server with
+no mail provider answers 500 before looking the address up. `verify-code`
+trades a correct code for a token shown exactly once
+(`Cache-Control: no-store`): `fdt_` plus 32 random bytes, of which only the
+SHA-256 digest is stored (`DeviceToken`). Typing the code proves the address,
+so an unverified account becomes verified here as it does on a password
+reset, and every other live `device` code for the address is retired. Wrong,
+expired and replayed codes answer 400 with the password-reset sentence.
+
+Each token is bound to `user.get_session_auth_hash()` at issue: a password
+change or reset, and a Google-only account's first password, sign every phone
+out. A missing, foreign, revoked, rotated or disabled-account token answers
+`401 {"error": "Authentication required"}` with
+`WWW-Authenticate: Bearer realm="Forkluck"`; the app drops its token on 401.
+`lastUsedAt` is stamped at most once per 15 minutes per token.
+
+The reads reuse the internal views unchanged, so the payloads are the ones
+documented under the internal routes, including the owner-only cost fields;
+the phone ignores what it does not show. `sign-out` is the phone's only write
+and is deliberately not an action: it is never gated by billing, so an
+expired or locked account can still sign a phone out. `billing.locked` in
+`session/` is the app's cue to drop its token.
+
 ## Internal routes (`/internal/v1/`)
 
 Read endpoints (GET) unless noted.
@@ -345,6 +393,7 @@ auth-methods/
 primo/conversations/
 primo/conversations/<uuid:conversation_id>/
 newsletter/
+devices/
 search-index/
 ingredients/
 ingredient-price-changes/
@@ -2457,8 +2506,15 @@ disconnect cancel active work, and `cancelled` is terminal. `retry-pos-sync`
 accepts only the user's own failed run and revalidates its connection,
 provider, provider-account identity, and generation.
 
-**Account (2)**
-`update-account`, `set-newsletter`.
+**Account (3)**
+`update-account`, `set-newsletter`, `revoke-device`.
+
+`devices/` lists the phones signed in to the account through the mobile API
+(`{items: [{id, name, createdAt, lastUsedAt}]}`), only those whose token still
+matches the current password. `revoke-device` takes `{id}` and deletes that
+one; it answers 400 "Device not found" for another account's id, and it is
+the one non-billing action that stays open after the trial ends, because
+signing a phone out is account safety, not workspace editing.
 
 `newsletter/` answers `{enabled, available}` for the signed-in user, read
 straight from Ghost: `available` is false when Ghost is unconfigured, and

@@ -4,8 +4,8 @@ from collections.abc import Callable
 from typing import Any
 
 from ...integrations.ghost_members import newsletter_status, set_newsletter
-from ...models import User
-from ..shared.values import bool_value, text_value
+from ...models import DeviceToken, User
+from ..shared.values import bool_value, text_value, uuid_value
 
 JsonObject = dict[str, Any]
 
@@ -27,9 +27,19 @@ def action_set_newsletter(user: User, body: JsonObject) -> JsonObject:
     return {"enabled": newsletter_status(user.email)}
 
 
+def action_revoke_device(user: User, body: JsonObject) -> JsonObject:
+    """Sign one phone out from the web. Deleting the row is the revoke."""
+    device_id = uuid_value(body.get("id"), "device id")
+    deleted, _ = DeviceToken.objects.filter(user=user, id=device_id).delete()
+    if not deleted:
+        raise ValueError("Device not found")
+    return {"ok": True}
+
+
 # Slugs this module answers for, composed into the one action route by
 # forkluck/http/dispatch.py.
 ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "update-account": action_update_account,
     "set-newsletter": action_set_newsletter,
+    "revoke-device": action_revoke_device,
 }

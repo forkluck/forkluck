@@ -73,6 +73,14 @@ class EntitlementGateTests(InternalApiTestCase):
                 self.assertEqual(response.status_code, 403)
                 self.assertEqual(response.json()["code"], "subscription_required")
 
+    def test_revoke_device_stays_open_after_the_trial(self):
+        # Signing a phone out is account safety, not workspace editing.
+        after = trial_ends_at(self.user) + timedelta(days=1)
+        with patch(CLOCK, return_value=after):
+            response = self.post_internal("revoke-device", {"id": "not-a-uuid"})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": "Invalid device id"})
+
     def test_disconnect_stays_open_so_a_downgraded_user_can_leave(self):
         with patch.dict(TRIAL_ENTITLEMENTS, {"connectors": False}):
             response = self.post_internal(

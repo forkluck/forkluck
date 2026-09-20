@@ -28,7 +28,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from . import internal_urls, master_prices, public_urls
+from . import internal_urls, master_prices, mobile_urls, public_urls
 from .domains.sales import connections as sales_connections
 from .domains.sales import core as sales
 from .domains.accounts import billing as accounts_billing
@@ -245,6 +245,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "unignore-sales-skus": "action_unignore_sales_skus",
     "update-account": "action_update_account",
     "set-newsletter": "action_set_newsletter",
+    "revoke-device": "action_revoke_device",
     "update-business-settings": "action_update_business_settings",
     "update-recipe-statuses": "action_update_recipe_statuses",
     "update-recipe-costing": "action_update_recipe_costing",
@@ -267,6 +268,7 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("primo/conversations/", None),
     ("primo/conversations/<uuid:conversation_id>/", None),
     ("newsletter/", None),
+    ("devices/", None),
     ("search-index/", None),
     ("ingredients/", None),
     ("ingredient-price-changes/", None),
@@ -361,8 +363,21 @@ EXPECTED_PUBLIC_ROUTES: list[tuple[str, str | None]] = [
     ("billing/stripe-webhook", "stripe-webhook"),
 ]
 
+EXPECTED_MOBILE_ROUTES: list[tuple[str, str | None]] = [
+    ("auth/request-code/", None),
+    ("auth/verify-code/", None),
+    ("auth/sign-out/", None),
+    ("session/", None),
+    ("devices/", None),
+    ("recipes/", None),
+    ("recipes/<str:recipe_ref>/", None),
+    ("recipes/<str:recipe_ref>/nutrition/", None),
+    ("recipe-categories/", None),
+]
+
 INTERNAL_URL_PREFIX = "internal/v1/"
 PUBLIC_URL_PREFIX = "api/"
+MOBILE_URL_PREFIX = "api/mobile/v1/"
 
 
 class ActionRegistryContractTests(TestCase):
@@ -422,6 +437,9 @@ class UrlTableContractTests(TestCase):
     def test_public_routes_are_frozen(self):
         self.assertRouteList(public_urls.urlpatterns, EXPECTED_PUBLIC_ROUTES)
 
+    def test_mobile_routes_are_frozen(self):
+        self.assertRouteList(mobile_urls.urlpatterns, EXPECTED_MOBILE_ROUTES)
+
     def test_route_groups_are_mounted_under_their_prefixes(self):
         from config import urls as root_urls
 
@@ -432,8 +450,10 @@ class UrlTableContractTests(TestCase):
         }
         self.assertIn(INTERNAL_URL_PREFIX, mounted, CONTRACT_MESSAGE)
         self.assertIn(PUBLIC_URL_PREFIX, mounted, CONTRACT_MESSAGE)
+        self.assertIn(MOBILE_URL_PREFIX, mounted, CONTRACT_MESSAGE)
         self.assertIs(mounted[INTERNAL_URL_PREFIX], internal_urls)
         self.assertIs(mounted[PUBLIC_URL_PREFIX], public_urls)
+        self.assertIs(mounted[MOBILE_URL_PREFIX], mobile_urls)
 
 
 class RecipeMethodContractTests(TestCase):

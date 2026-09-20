@@ -153,6 +153,30 @@ class FeedbackGrant(models.Model):
     access_expires_at = models.DateTimeField(null=True)
 
 
+class DeviceToken(models.Model):
+    """A phone's long-lived sign-in to the mobile API.
+
+    Only the SHA-256 digest of the bearer token is stored, so a database read
+    never yields a usable credential. `credential_hash` is the user's session
+    auth hash at issue time: a password change (or a first password on a
+    Google-only account) rotates it and every phone is signed out. Deleting
+    the row is the revoke.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    token_digest = models.CharField(max_length=64, unique=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="device_tokens"
+    )
+    credential_hash = models.CharField(max_length=64)
+    name = models.CharField(max_length=100, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.name or 'Device'} for {self.user_id}"
+
+
 class UUIDTimestampModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -229,10 +253,12 @@ class EmailVerificationCode(UUIDTimestampModel):
     PURPOSE_SIGNUP = "signup"
     PURPOSE_ADMIN = "admin"
     PURPOSE_PASSWORD_RESET = "password_reset"
+    PURPOSE_DEVICE = "device"
     PURPOSE_CHOICES = [
         (PURPOSE_SIGNUP, "Signup"),
         (PURPOSE_ADMIN, "Admin sign-in"),
         (PURPOSE_PASSWORD_RESET, "Password reset"),
+        (PURPOSE_DEVICE, "Phone sign-in"),
     ]
 
     MAX_ATTEMPTS = 6

@@ -59,7 +59,8 @@ function reviveDates(key: string, value: unknown) {
       key === "soldAt" ||
       key === "lastSoldAt" ||
       key === "lastMessageAt" ||
-      key === "archivedAt")
+      key === "archivedAt" ||
+      key === "lastUsedAt")
   ) {
     return new Date(value)
   }

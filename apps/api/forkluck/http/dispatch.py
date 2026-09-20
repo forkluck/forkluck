@@ -91,9 +91,10 @@ def action(request: HttpRequest, action_name: str) -> JsonResponse:
     if handler is None:
         return error("Not found", 404)
     # A read-only account may still run the billing actions that fix it, and
+    # sign a phone out — that is account safety, not workspace editing — and
     # nothing else. Inert when billing is disabled: write_refusal answers
     # without a query then.
-    if action_name not in BILLING_ACTIONS:
+    if action_name not in BILLING_ACTIONS and action_name != "revoke-device":
         refusal = write_refusal(request.user)
         if refusal is not None:
             return error(refusal, 403, code="subscription_required")

@@ -354,6 +354,14 @@ export type NewsletterStatus = {
   available: boolean
 }
 
+/** A phone signed in through the mobile API; `lastUsedAt` is null until its first read. */
+export type DeviceRow = {
+  id: string
+  name: string
+  createdAt: Date
+  lastUsedAt: Date | null
+}
+
 /**
  * Whether this workspace has an Anthropic key on file, and the last four
  * characters of it. Safe to render: it never carries the key itself.

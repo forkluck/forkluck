@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .domains.accounts import google
+from .domains.accounts import devices, google
 from .domains.accounts import views as account_views
 from .domains.ingredients import views as ingredient_views
 from .domains.invoices import drive_system
@@ -79,6 +79,7 @@ urlpatterns = [
         internal_get(primo_views.conversation_detail),
     ),
     path("newsletter/", internal_get(account_views.internal_newsletter)),
+    path("devices/", internal_get(devices.device_list)),
     path("search-index/", internal_get(search_views.search_index)),
     path("ingredients/", internal_get(ingredient_views.ingredients)),
     path("ingredient-price-changes/", internal_get(ingredient_views.ingredient_price_changes)),

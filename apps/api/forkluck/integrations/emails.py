@@ -18,13 +18,32 @@ class EmailNotConfigured(Exception):
     pass
 
 
+def is_configured() -> bool:
+    """Whether send_email can deliver, or at least log, a message."""
+    return bool(
+        settings.FORKLUCK_MAIL_BRIDGE_URL
+        or settings.ACS_CONNECTION_STRING
+        or settings.DEBUG
+    )
+
+
 def send_email(to: str, subject: str, text: str) -> None:
     """Send through the configured Ghost mail bridge, or directly through ACS.
 
     Raises EmailNotConfigured when neither provider is configured, and
     ValueError when delivery is not accepted. Callers surface friendly errors.
+    A development server with no provider logs the message instead, so a
+    code can be read off the console; DEBUG is never on in production.
     """
     global _client
+
+    if (
+        settings.DEBUG
+        and not settings.FORKLUCK_MAIL_BRIDGE_URL
+        and not settings.ACS_CONNECTION_STRING
+    ):
+        logger.warning("Email to %s (not sent, no provider):\n%s\n%s", to, subject, text)
+        return
 
     if settings.FORKLUCK_MAIL_BRIDGE_URL:
         credentials = base64.b64encode(("api:" + settings.FORKLUCK_MAIL_BRIDGE_API_KEY).encode()).decode()
@@ -82,7 +101,7 @@ def send_email(to: str, subject: str, text: str) -> None:
 
 
 def send_verification_code(to: str, code: str, *, purpose: str) -> None:
-    if purpose == "admin":
+    if purpose in ("admin", "device"):
         subject = "Your Forkluck sign-in code"
     elif purpose == "password_reset":
         subject = "Your Forkluck password reset code"
