@@ -12,7 +12,7 @@ from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
 from .domains.accounts import devices
-from .domains.shared.billing import trial_ends_at
+from .domains.shared.billing import billing_json, trial_ends_at
 from .http.auth import LAST_USED_GRANULARITY, device_token_digest
 from .integrations.emails import EmailNotConfigured
 from .models import DeviceToken, EmailVerificationCode, Recipe, User
@@ -289,6 +289,87 @@ class DeviceSignInTests(InternalApiTestCase, ShapeAssertions):
         response = self.get_internal("devices/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
+
+
+REVIEW = override_settings(
+    FORKLUCK_APP_REVIEW_EMAIL="review@example.com",
+    FORKLUCK_APP_REVIEW_CODE="424242",
+)
+
+
+@override_settings(ACS_CONNECTION_STRING="synthetic", STRIPE_BILLING_ENABLED=False)
+class ReviewAccountTests(InternalApiTestCase):
+    """The App Review address signs in with a fixed code and never expires."""
+
+    def setUp(self) -> None:
+        self.user = User.objects.create_user(
+            email="review@example.com",
+            password="a-long-test-passphrase-2468",
+            name="App Review",
+            email_verified_at=timezone.now(),
+        )
+        self.sent: list[tuple[str, str, str]] = []
+
+    def fake_send(self, email, code, *, purpose):
+        self.sent.append((email, code, purpose))
+
+    def post(self, path, body):
+        return Client().post(ROOT + path, json.dumps(body), "application/json")
+
+    def request_code(self):
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            return self.post("auth/request-code/", {"email": "review@example.com"})
+
+    def verify(self, code):
+        return self.post(
+            "auth/verify-code/",
+            {"email": "review@example.com", "code": code, "deviceName": "Reviewer"},
+        )
+
+    @REVIEW
+    def test_the_fixed_code_signs_in_without_any_mail(self):
+        self.assertEqual(self.request_code().json(), {"ok": True})
+        self.assertEqual(self.sent, [])
+        response = self.verify("424242")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["token"].startswith("fdt_"))
+        self.assertEqual(DeviceToken.objects.get().name, "Reviewer")
+
+    @REVIEW
+    def test_a_wrong_code_is_refused_and_guessing_is_throttled(self):
+        for _ in range(10):
+            self.assertEqual(self.verify("000000").status_code, 400)
+        # The eleventh attempt is refused even with the right code.
+        self.assertEqual(self.verify("424242").status_code, 400)
+        self.assertEqual(DeviceToken.objects.count(), 0)
+
+    @REVIEW
+    def test_the_review_account_is_paid_with_no_trial_clock(self):
+        with override_settings(STRIPE_BILLING_ENABLED=True):
+            state = billing_json(self.user)
+        self.assertEqual((state["plan"], state["trialDaysLeft"]), ("paid", None))
+
+    @REVIEW
+    def test_other_addresses_still_need_their_emailed_code(self):
+        other = User.objects.create_user(
+            email="phone@example.com",
+            password="a-long-test-passphrase-1357",
+            name="Phone Owner",
+        )
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            self.post("auth/request-code/", {"email": other.email})
+        self.assertEqual(len(self.sent), 1)
+        response = self.post(
+            "auth/verify-code/", {"email": other.email, "code": "424242"}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_without_the_settings_the_address_is_ordinary(self):
+        self.assertEqual(self.request_code().status_code, 200)
+        self.assertEqual([purpose for _, _, purpose in self.sent], ["device"])
+        self.assertEqual(self.verify("424242").status_code, 400)
+        with override_settings(STRIPE_BILLING_ENABLED=True):
+            self.assertEqual(billing_json(self.user)["plan"], "trial")
 
 
 class MailFallbackTests(TestCase):
