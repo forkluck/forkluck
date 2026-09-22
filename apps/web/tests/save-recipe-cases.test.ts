@@ -67,6 +67,9 @@ type Case = {
     yieldUnit: string | null
     lines: Line[]
     steps: Step[]
+    /** Text of a recipe saved before the structured editor, sent back as is. */
+    legacyBody?: string
+    legacyMethod?: string
   }
   expected: Record<string, unknown>
 }
@@ -400,6 +403,40 @@ const CASES: Case[] = [
           timings: [{ seconds: 300, yieldCount: 1 }],
         },
       ],
+    },
+  },
+  {
+    name: "a recipe saved as text keeps its text",
+    role: "owner",
+    fresh: false,
+    id: RECIPE,
+    expectedEditVersion: 1,
+    draft: {
+      title: "Soup",
+      kind: "recipe",
+      status: "active",
+      category: null,
+      description: "",
+      yieldAmount: null,
+      yieldUnit: null,
+      lines: [],
+      steps: [],
+      legacyBody: "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      legacyMethod: "Roast, then simmer.",
+    },
+    expected: {
+      id: RECIPE,
+      expectedEditVersion: 1,
+      title: "Soup",
+      description: "",
+      kind: "recipe",
+      status: "active",
+      body: "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      method: "Roast, then simmer.",
+      yieldAmount: null,
+      category: null,
+      items: [],
+      steps: [],
     },
   },
   {

@@ -348,6 +348,40 @@
     }
   },
   {
+    "name": "a recipe saved as text keeps its text",
+    "role": "owner",
+    "fresh": false,
+    "id": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+    "expectedEditVersion": 1,
+    "draft": {
+      "title": "Soup",
+      "kind": "recipe",
+      "status": "active",
+      "category": null,
+      "description": "",
+      "yieldAmount": null,
+      "yieldUnit": null,
+      "lines": [],
+      "steps": [],
+      "legacyBody": "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      "legacyMethod": "Roast, then simmer."
+    },
+    "expected": {
+      "id": "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5",
+      "expectedEditVersion": 1,
+      "title": "Soup",
+      "description": "",
+      "kind": "recipe",
+      "status": "active",
+      "body": "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      "method": "Roast, then simmer.",
+      "yieldAmount": null,
+      "category": null,
+      "items": [],
+      "steps": []
+    }
+  },
+  {
     "name": "a shared editor sends only what editors may change",
     "role": "editor",
     "fresh": false,
