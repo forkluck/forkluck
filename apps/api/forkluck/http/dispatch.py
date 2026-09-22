@@ -82,6 +82,9 @@ def _compose() -> dict[str, ActionHandler]:
 
 ACTIONS: dict[str, ActionHandler] = _compose()
 
+# Open to an expired or locked account: leaving must never need a subscription.
+ACCOUNT_SAFETY_ACTIONS = frozenset({"revoke-device", "delete-account"})
+
 
 @csrf_exempt
 @require_POST
@@ -90,11 +93,11 @@ def action(request: HttpRequest, action_name: str) -> JsonResponse:
     handler = ACTIONS.get(action_name)
     if handler is None:
         return error("Not found", 404)
-    # A read-only account may still run the billing actions that fix it, and
-    # sign a phone out — that is account safety, not workspace editing — and
-    # nothing else. Inert when billing is disabled: write_refusal answers
-    # without a query then.
-    if action_name not in BILLING_ACTIONS and action_name != "revoke-device":
+    # A read-only account may still run the billing actions that fix it, sign
+    # a phone out, or delete itself — that is account safety, not workspace
+    # editing — and nothing else. Inert when billing is disabled:
+    # write_refusal answers without a query then.
+    if action_name not in BILLING_ACTIONS and action_name not in ACCOUNT_SAFETY_ACTIONS:
         refusal = write_refusal(request.user)
         if refusal is not None:
             return error(refusal, 403, code="subscription_required")

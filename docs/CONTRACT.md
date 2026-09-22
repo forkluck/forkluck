@@ -2506,15 +2506,24 @@ disconnect cancel active work, and `cancelled` is terminal. `retry-pos-sync`
 accepts only the user's own failed run and revalidates its connection,
 provider, provider-account identity, and generation.
 
-**Account (3)**
-`update-account`, `set-newsletter`, `revoke-device`.
+**Account (4)**
+`update-account`, `set-newsletter`, `revoke-device`, `delete-account`.
 
 `devices/` lists the phones signed in to the account through the mobile API
 (`{items: [{id, name, createdAt, lastUsedAt}]}`), only those whose token still
 matches the current password. `revoke-device` takes `{id}` and deletes that
-one; it answers 400 "Device not found" for another account's id, and it is
-the one non-billing action that stays open after the trial ends, because
-signing a phone out is account safety, not workspace editing.
+one; it answers 400 "Device not found" for another account's id. It and
+`delete-account` are the two non-billing actions that stay open after the
+trial ends and while the account is locked, because signing a phone out or
+leaving is account safety, not workspace editing.
+
+`delete-account` takes `{}` and runs the same command the admin's delete
+does: the account is locked, open Stripe checkouts are expired, live
+subscriptions are cancelled, the customer is tombstoned, the feedback-board
+user and newsletter member are removed, and the user row is deleted with
+everything that cascades from it, the phones' device tokens included. It
+answers `{ok: true}`; a provider failure leaves the account in the deleting
+state and answers 503 so the owner can retry.
 
 `newsletter/` answers `{enabled, available}` for the signed-in user, read
 straight from Ghost: `available` is false when Ghost is unconfigured, and

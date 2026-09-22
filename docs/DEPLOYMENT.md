@@ -385,6 +385,29 @@ widget: site key `1x00000000000000000000BB` (invisible) with secret
 `1x0000000000000000000000000000000AA`. Secret `2x0000000000000000000000000000000AA`
 always fails, which shows the refusal copy. Put the pair in `apps/api/.env`.
 
+## App Review account for the phone app
+
+Apple reviews the Forkluck Recipes app on their own schedule and cannot read
+our mail, so one ordinary account accepts a fixed phone sign-in code instead
+of an emailed one. Set both values in `/etc/forkluck/backend.env` on chefclaw,
+or leave both empty:
+
+```env
+FORKLUCK_APP_REVIEW_EMAIL=
+FORKLUCK_APP_REVIEW_CODE=
+```
+
+A partial pair refuses startup. The address is an account created on the web
+like any other, seeded with a few recipes by hand; the code is six digits,
+because the app's code field takes six. For that one address
+`auth/request-code/` sends nothing and `auth/verify-code/` compares the typed
+code with the fixed one, throttled like password attempts (ten wrong tries in
+fifteen minutes). The account is also treated as paid with no trial clock, so
+a review never runs into "Trial ended". Every other address is unaffected.
+The pair goes in the App Review Information notes in App Store Connect,
+never in the repo, and can be rotated by editing the file and restarting
+`forkluck-django.service`.
+
 ## Google Drive receipts folder
 
 Importing receipts straight from a Drive folder is optional and configured in

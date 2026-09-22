@@ -45,6 +45,7 @@ from .domains.shared.billing import (
 from .integrations.stripe import StripeError, verify_webhook
 from .models import (
     BillingAccount,
+    DeviceToken,
     Recipe,
     StripeBillingConfiguration,
     StripeCheckoutAttempt,
@@ -960,6 +961,39 @@ class BillingDeletionTests(InternalApiTestCase):
             {call.args[0] for call in cancel_subscription.call_args_list},
             {"sub_1", "sub_2"},
         )
+
+    @patch("forkluck.integrations.stripe.cancel_subscription")
+    @patch("forkluck.integrations.stripe.list_subscriptions")
+    @patch("forkluck.integrations.stripe.search_customers")
+    def test_the_owner_deletes_their_own_account_after_the_trial(
+        self, search_customers, list_subscriptions, cancel_subscription
+    ):
+        # Self-serve deletion from the profile page: the same command the
+        # admin runs, and open to an expired account, since leaving must never
+        # need a subscription.
+        user = make_user("leaving@example.com")
+        StripeCustomer.objects.create(
+            account=get_billing_account(user),
+            stripe_customer_id="cus_1",
+            creation_idempotency_key="customer-1",
+            is_primary=True,
+        )
+        DeviceToken.objects.create(
+            token_digest="digest", user=user, credential_hash="hash", name="Phone"
+        )
+        search_customers.return_value = [provider_customer(user)]
+        list_subscriptions.return_value = [provider_subscription("sub_1")]
+        self.client.force_login(user)
+
+        after = trial_ends_at(user) + timedelta(days=1)
+        with patch(CLOCK, return_value=after):
+            response = self.post_internal("delete-account", {})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"ok": True})
+        self.assertFalse(User.objects.filter(email="leaving@example.com").exists())
+        self.assertEqual(DeviceToken.objects.count(), 0)
+        self.assertEqual(cancel_subscription.call_args.args[0], "sub_1")
 
     @patch("forkluck.domains.accounts.billing.remove_member")
     @patch("forkluck.integrations.stripe.cancel_subscription")

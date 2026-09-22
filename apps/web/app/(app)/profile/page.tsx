@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { DeleteAccount } from "@/components/profile/delete-account"
 import { DevicesList } from "@/components/profile/devices-list"
 import { Page, PageHeader, PageTitle } from "@/components/ui/page"
 import { requireUser } from "@/lib/auth-session"
@@ -39,6 +40,15 @@ export default async function ProfilePage() {
           Phones using the Forkluck Recipes app with this account.
         </p>
         <DevicesList devices={devices} />
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-md font-medium">Delete account</h2>
+        <p className="mt-[3px] mb-3 text-md text-muted-foreground">
+          Deletes your account, every recipe and record in it, and signs out
+          every phone. This cannot be undone.
+        </p>
+        <DeleteAccount />
       </section>
     </Page>
   )

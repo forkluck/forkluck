@@ -278,6 +278,8 @@ if sys.argv[1:2] == ["test"]:
     os.environ.pop("GOOGLE_SIGN_IN_CLIENT_SECRET", None)
     os.environ.pop("TURNSTILE_SITE_KEY", None)
     os.environ.pop("TURNSTILE_SECRET_KEY", None)
+    os.environ.pop("FORKLUCK_APP_REVIEW_EMAIL", None)
+    os.environ.pop("FORKLUCK_APP_REVIEW_CODE", None)
 
 # Optional, dedicated confidential client; independent of the Drive picker.
 GOOGLE_SIGN_IN_CLIENT_ID = os.getenv("GOOGLE_SIGN_IN_CLIENT_ID", "")
@@ -301,6 +303,20 @@ if bool(TURNSTILE_SITE_KEY) != bool(TURNSTILE_SECRET_KEY):
     raise ImproperlyConfigured(
         "Turnstile requires both TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY, "
         "or neither."
+    )
+
+# Optional App Review account for the phone app: one ordinary account,
+# created on the web, whose phone sign-in code is fixed instead of emailed,
+# because Apple's reviewer cannot read our mail. Both or neither. Unset means
+# no address is special, the self-hosted default.
+FORKLUCK_APP_REVIEW_EMAIL = os.getenv("FORKLUCK_APP_REVIEW_EMAIL", "").strip().lower()
+FORKLUCK_APP_REVIEW_CODE = os.getenv("FORKLUCK_APP_REVIEW_CODE", "").strip()
+if bool(FORKLUCK_APP_REVIEW_EMAIL) != bool(FORKLUCK_APP_REVIEW_CODE):
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        "The App Review account requires both FORKLUCK_APP_REVIEW_EMAIL and "
+        "FORKLUCK_APP_REVIEW_CODE, or neither."
     )
 
 if FORKLUCK_MAIL_BRIDGE_URL or FORKLUCK_MAIL_BRIDGE_API_KEY:

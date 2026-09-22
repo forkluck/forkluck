@@ -104,6 +104,9 @@ def billing_json(user: User) -> JsonObject:
         return _state("disabled", "paid", None, False)
     if settings.FORKLUCK_ALLOW_DEMO_ACCOUNT and user.email == DEMO_EMAIL:
         return _state("disabled", "paid", None, False)
+    # The App Review account never runs out of trial mid-review.
+    if settings.FORKLUCK_APP_REVIEW_EMAIL and user.email == settings.FORKLUCK_APP_REVIEW_EMAIL:
+        return _state("disabled", "paid", None, False)
     if user.is_staff:
         return _state("disabled", "paid", None, False)
     row = BillingAccount.objects.filter(user=user).values("status", "locked").first()

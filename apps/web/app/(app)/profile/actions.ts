@@ -22,3 +22,20 @@ export async function revokeDevice(
     return { error: actionErrorMessage(cause, "Couldn’t sign that phone out.") }
   }
 }
+
+/**
+ * Delete the signed-in account. Django runs the same command the admin's
+ * delete does; the caller then leaves through /logout, so nothing here is
+ * revalidated — every page of this workspace is about to be gone.
+ */
+export async function deleteAccount(): Promise<
+  { ok: true } | { error: string }
+> {
+  await requireUser()
+  try {
+    await djangoAction("delete-account", {})
+    return { ok: true }
+  } catch (cause) {
+    return { error: actionErrorMessage(cause, "Couldn’t delete your account.") }
+  }
+}
