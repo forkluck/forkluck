@@ -1,0 +1,537 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
+
+import { describe, expect, it } from "vitest"
+
+import { recipeAggregateSchema } from "@/lib/recipe/aggregate-schema"
+
+/**
+ * The body the phone posts to save-recipe, pinned as data.
+ *
+ * Each case pairs a draft (what the phone's editor holds) with the exact body
+ * its encoder must produce. The bodies are checked here against the schema
+ * the save action enforces, and `tests/fixtures/save-recipe-cases.json` is
+ * copied verbatim into the iOS app (`forkluck-iosTests/Fixtures/`), whose
+ * `SaveRecipeBodyTests` asserts its encoder reproduces every one. Regenerate
+ * with `UPDATE_SAVE_RECIPE_FIXTURE=1 pnpm exec vitest run tests/save-recipe-cases.test.ts`
+ * and copy it across.
+ */
+
+const FIXTURE = new URL("./fixtures/save-recipe-cases.json", import.meta.url)
+
+/** The keys a shared editor may send; anything else the server refuses. */
+const EDITOR_KEYS = [
+  "id",
+  "title",
+  "description",
+  "items",
+  "steps",
+  "expectedEditVersion",
+]
+
+type Line = {
+  serverId?: string
+  kind: string
+  displayName: string
+  quantity: number | null
+  unit: string
+  preparationNote: string
+  efficiency?: number
+  efficiencyAfterCooking?: number
+  isBase?: boolean
+  excludedFromCost?: boolean
+  ingredientId?: string | null
+  subrecipeId?: string | null
+}
+
+type Step = {
+  kind: string
+  title: string
+  body: string
+  laborKind: string
+  timings: { seconds: number; yieldCount: number }[]
+}
+
+type Case = {
+  name: string
+  role: "owner" | "editor"
+  fresh: boolean
+  id: string | null
+  expectedEditVersion: number | null
+  draft: {
+    title: string
+    kind: string
+    status: string
+    category: string | null
+    description: string
+    yieldAmount: number | null
+    yieldUnit: string | null
+    lines: Line[]
+    steps: Step[]
+    /** Text of a recipe saved before the structured editor, sent back as is. */
+    legacyBody?: string
+    legacyMethod?: string
+  }
+  expected: Record<string, unknown>
+}
+
+const ITEM = "4d1f4a1e-2b3c-4d5e-8f90-a1b2c3d4e5f6"
+const SUB = "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d"
+const RECIPE = "0c1d2e3f-4a5b-4c6d-8e9f-a0b1c2d3e4f5"
+
+const CASES: Case[] = [
+  {
+    name: "a personal recipe uploaded whole",
+    role: "owner",
+    fresh: true,
+    id: null,
+    expectedEditVersion: null,
+    draft: {
+      title: "  Granola ",
+      kind: "recipe",
+      status: "active",
+      category: "Breakfast",
+      description: "Crunchy.",
+      yieldAmount: 12,
+      yieldUnit: "pcs",
+      lines: [
+        {
+          kind: "header",
+          displayName: "Dry",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+        },
+        {
+          kind: "ingredient",
+          displayName: "Rolled oats",
+          quantity: 500,
+          unit: "g",
+          preparationNote: "toasted",
+        },
+        {
+          kind: "note",
+          displayName: "Any nut works.",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+        },
+        {
+          kind: "ingredient",
+          displayName: "Salt",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "",
+          body: "Mix.",
+          laborKind: "",
+          timings: [],
+        },
+        { kind: "header", title: "Bake", body: "", laborKind: "", timings: [] },
+        {
+          kind: "note",
+          title: "",
+          body: "Watch the edges.",
+          laborKind: "",
+          timings: [],
+        },
+      ],
+    },
+    expected: {
+      id: null,
+      title: "Granola",
+      description: "Crunchy.",
+      kind: "recipe",
+      status: "active",
+      body: "",
+      method: "",
+      yieldAmount: 12,
+      yieldUnit: "pcs",
+      category: "Breakfast",
+      items: [
+        {
+          kind: "header",
+          displayName: "Dry",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+        {
+          kind: "ingredient",
+          displayName: "Rolled oats",
+          quantity: 500,
+          unit: "g",
+          preparationNote: "toasted",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+        {
+          kind: "note",
+          displayName: "Any nut works.",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+        {
+          kind: "ingredient",
+          displayName: "Salt",
+          quantity: null,
+          unit: "",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "",
+          body: "Mix.",
+          laborKind: "",
+          timings: [],
+        },
+        { kind: "header", title: "Bake", body: "", laborKind: "", timings: [] },
+        {
+          kind: "note",
+          title: "",
+          body: "Watch the edges.",
+          laborKind: "",
+          timings: [],
+        },
+      ],
+      batchSizes: [],
+      equivalency: null,
+    },
+  },
+  {
+    name: "no yield, no category, a third of a cup",
+    role: "owner",
+    fresh: true,
+    id: null,
+    expectedEditVersion: null,
+    draft: {
+      title: "Dressing",
+      kind: "recipe",
+      status: "active",
+      category: null,
+      description: "",
+      yieldAmount: null,
+      yieldUnit: null,
+      lines: [
+        {
+          kind: "ingredient",
+          displayName: "Olive oil",
+          quantity: 0.333333,
+          unit: "cup",
+          preparationNote: "",
+        },
+      ],
+      steps: [],
+    },
+    expected: {
+      id: null,
+      title: "Dressing",
+      description: "",
+      kind: "recipe",
+      status: "active",
+      body: "",
+      method: "",
+      yieldAmount: null,
+      category: null,
+      items: [
+        {
+          kind: "ingredient",
+          displayName: "Olive oil",
+          quantity: 0.333333,
+          unit: "cup",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+      ],
+      steps: [],
+      batchSizes: [],
+      equivalency: null,
+    },
+  },
+  {
+    name: "an owner edits an account recipe and carries what the web set",
+    role: "owner",
+    fresh: false,
+    id: RECIPE,
+    expectedEditVersion: 4,
+    draft: {
+      title: "Shortbread",
+      kind: "component",
+      status: "archived",
+      category: "Biscuits",
+      description: "",
+      yieldAmount: 1.5,
+      yieldUnit: "kg",
+      lines: [
+        {
+          serverId: ITEM,
+          kind: "ingredient",
+          displayName: "Butter",
+          quantity: 200,
+          unit: "g",
+          preparationNote: "",
+          efficiency: 95,
+          efficiencyAfterCooking: 80,
+          isBase: true,
+          excludedFromCost: true,
+          ingredientId: "ing_1",
+          subrecipeId: null,
+        },
+        {
+          serverId: SUB,
+          kind: "subrecipe",
+          displayName: "Vanilla sugar",
+          quantity: 2,
+          unit: "batch",
+          preparationNote: "",
+          ingredientId: null,
+          subrecipeId: "rcp_child",
+        },
+        {
+          kind: "ingredient",
+          displayName: "Flour",
+          quantity: 300,
+          unit: "g",
+          preparationNote: "sifted",
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "Cream",
+          body: "Beat until pale.",
+          laborKind: "active",
+          timings: [{ seconds: 300, yieldCount: 1 }],
+        },
+      ],
+    },
+    expected: {
+      id: RECIPE,
+      expectedEditVersion: 4,
+      title: "Shortbread",
+      description: "",
+      kind: "component",
+      status: "archived",
+      body: "",
+      method: "",
+      yieldAmount: 1.5,
+      yieldUnit: "kg",
+      category: "Biscuits",
+      items: [
+        {
+          id: ITEM,
+          kind: "ingredient",
+          displayName: "Butter",
+          quantity: 200,
+          unit: "g",
+          preparationNote: "",
+          efficiency: 95,
+          efficiencyAfterCooking: 80,
+          isBase: true,
+          excludedFromCost: true,
+          ingredientId: "ing_1",
+          subrecipeId: null,
+        },
+        {
+          id: SUB,
+          kind: "subrecipe",
+          displayName: "Vanilla sugar",
+          quantity: 2,
+          unit: "batch",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: "rcp_child",
+        },
+        {
+          kind: "ingredient",
+          displayName: "Flour",
+          quantity: 300,
+          unit: "g",
+          preparationNote: "sifted",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          excludedFromCost: false,
+          ingredientId: null,
+          subrecipeId: null,
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "Cream",
+          body: "Beat until pale.",
+          laborKind: "active",
+          timings: [{ seconds: 300, yieldCount: 1 }],
+        },
+      ],
+    },
+  },
+  {
+    name: "a recipe saved as text keeps its text",
+    role: "owner",
+    fresh: false,
+    id: RECIPE,
+    expectedEditVersion: 1,
+    draft: {
+      title: "Soup",
+      kind: "recipe",
+      status: "active",
+      category: null,
+      description: "",
+      yieldAmount: null,
+      yieldUnit: null,
+      lines: [],
+      steps: [],
+      legacyBody: "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      legacyMethod: "Roast, then simmer.",
+    },
+    expected: {
+      id: RECIPE,
+      expectedEditVersion: 1,
+      title: "Soup",
+      description: "",
+      kind: "recipe",
+      status: "active",
+      body: "5000 g Canned Tomatoes\n700 g Yellow Onions",
+      method: "Roast, then simmer.",
+      yieldAmount: null,
+      category: null,
+      items: [],
+      steps: [],
+    },
+  },
+  {
+    name: "a shared editor sends only what editors may change",
+    role: "editor",
+    fresh: false,
+    id: RECIPE,
+    expectedEditVersion: 9,
+    draft: {
+      title: "Shortbread",
+      kind: "recipe",
+      status: "active",
+      category: "Biscuits",
+      description: "Theirs.",
+      yieldAmount: 1.5,
+      yieldUnit: "kg",
+      lines: [
+        {
+          serverId: ITEM,
+          kind: "ingredient",
+          displayName: "Butter",
+          quantity: 250,
+          unit: "g",
+          preparationNote: "",
+          excludedFromCost: true,
+          ingredientId: "ing_1",
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "",
+          body: "Cream.",
+          laborKind: "",
+          timings: [],
+        },
+      ],
+    },
+    expected: {
+      id: RECIPE,
+      expectedEditVersion: 9,
+      title: "Shortbread",
+      description: "Theirs.",
+      items: [
+        {
+          id: ITEM,
+          kind: "ingredient",
+          displayName: "Butter",
+          quantity: 250,
+          unit: "g",
+          preparationNote: "",
+          efficiency: 100,
+          efficiencyAfterCooking: 100,
+          isBase: false,
+          ingredientId: "ing_1",
+          subrecipeId: null,
+        },
+      ],
+      steps: [
+        {
+          kind: "instruction",
+          title: "",
+          body: "Cream.",
+          laborKind: "",
+          timings: [],
+        },
+      ],
+    },
+  },
+]
+
+describe("the save-recipe bodies the iOS app asserts against", () => {
+  it("every expected body passes the save action's schema", () => {
+    for (const entry of CASES) {
+      const parsed = recipeAggregateSchema.safeParse(entry.expected)
+      expect(
+        parsed.success,
+        `${entry.name}: ${JSON.stringify(parsed.error?.issues)}`
+      ).toBe(true)
+      if (entry.role === "editor") {
+        expect(Object.keys(entry.expected).sort()).toEqual(
+          [...EDITOR_KEYS].sort()
+        )
+        for (const item of entry.expected.items as Record<string, unknown>[]) {
+          expect(item).not.toHaveProperty("excludedFromCost")
+        }
+      }
+    }
+  })
+
+  it("matches the committed fixture", () => {
+    if (process.env.UPDATE_SAVE_RECIPE_FIXTURE || !existsSync(FIXTURE)) {
+      writeFileSync(FIXTURE, JSON.stringify(CASES, null, 2) + "\n")
+    }
+    const committed = JSON.parse(readFileSync(FIXTURE, "utf8"))
+    expect(committed).toEqual(CASES)
+  })
+})

@@ -293,6 +293,8 @@ class MobileRouteGuardTests(InternalApiTestCase):
     ANONYMOUS_ROUTES = [
         "/api/mobile/v1/auth/request-code/",
         "/api/mobile/v1/auth/verify-code/",
+        "/api/mobile/v1/auth/register/",
+        "/api/mobile/v1/auth/app-attest-challenge/",
     ]
 
     @classmethod

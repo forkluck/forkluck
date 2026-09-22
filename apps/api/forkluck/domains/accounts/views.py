@@ -135,27 +135,58 @@ MAX_CHANGE_PASSWORD_ATTEMPTS_PER_IP = 50
 CHANGE_PASSWORD_WINDOW = timedelta(minutes=15)
 
 
+def throttle_registration(request: HttpRequest) -> None:
+    """Count one sign-up against the client address; raises Throttled past ten an hour."""
+    hit(
+        "register:ip",
+        client_ip(request),
+        limit=MAX_REGISTRATIONS_PER_IP,
+        window=REGISTRATION_WINDOW,
+        message="Too many accounts created from here. Try again later.",
+    )
+
+
+def registration_values(body: dict) -> tuple[str, str, str]:
+    """The three fields a sign-up carries, checked as the form would.
+
+    Raises ValueError or ValidationError with the sentence to show.
+    """
+    name = text_value(body.get("name"), "Name", max_length=150).strip()
+    email = text_value(body.get("email"), "Email", max_length=254).strip().lower()
+    password = text_value(body.get("password"), "Password", max_length=1024)
+    validate_email(email)
+    validate_password(password, user=User(email=email, name=name))
+    return name, email, password
+
+
+def create_account(name: str, email: str, password: str, **fields) -> User:
+    """The user row and its seeded workspace, in one transaction. A taken
+    address raises ValueError with the sentence the form shows."""
+    try:
+        with transaction.atomic():
+            user = User.objects.create_user(
+                email=email,
+                name=name,
+                password=password,
+                first_sign_in_notification_pending=True,
+                **fields,
+            )
+            seed_user_workspace(user)
+    except IntegrityError as exc:
+        raise ValueError("An account with that email already exists") from exc
+    return user
+
+
 @require_POST
 def register(request: HttpRequest) -> JsonResponse:
     try:
-        hit(
-            "register:ip",
-            client_ip(request),
-            limit=MAX_REGISTRATIONS_PER_IP,
-            window=REGISTRATION_WINDOW,
-            message="Too many accounts created from here. Try again later.",
-        )
+        throttle_registration(request)
     except Throttled as exc:
         return error(str(exc), 429, code="rate_limited")
 
     try:
         body = read_json(request)
-        name = text_value(body.get("name"), "Name", max_length=150).strip()
-        email = text_value(body.get("email"), "Email", max_length=254).strip().lower()
-        password = text_value(body.get("password"), "Password", max_length=1024)
-        validate_email(email)
-        candidate = User(email=email, name=name)
-        validate_password(password, user=candidate)
+        name, email, password = registration_values(body)
     except (ValueError, ValidationError) as exc:
         messages = exc.messages if isinstance(exc, ValidationError) else [str(exc)]
         return error(messages[0])
@@ -183,16 +214,9 @@ def register(request: HttpRequest) -> JsonResponse:
             )
 
     try:
-        with transaction.atomic():
-            user = User.objects.create_user(
-                email=email,
-                name=name,
-                password=password,
-                first_sign_in_notification_pending=True,
-            )
-            seed_user_workspace(user)
-    except IntegrityError:
-        return error("An account with that email already exists")
+        user = create_account(name, email, password)
+    except ValueError as exc:
+        return error(str(exc))
 
     if settings.FORKLUCK_REQUIRE_EMAIL_VERIFICATION:
         # No session until the address is proven; the code email is the gate

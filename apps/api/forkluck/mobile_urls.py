@@ -13,6 +13,7 @@ from django.views.decorators.http import require_GET, require_POST
 from .domains.accounts import devices
 from .domains.accounts import views as account_views
 from .domains.recipes import views as recipe_views
+from .http import dispatch
 from .http.auth import device_user
 
 
@@ -39,6 +40,8 @@ def anonymous_post(view):
 urlpatterns = [
     path("auth/request-code/", anonymous_post(devices.request_code)),
     path("auth/verify-code/", anonymous_post(devices.redeem_code)),
+    path("auth/register/", anonymous_post(devices.register)),
+    path("auth/app-attest-challenge/", anonymous_post(devices.app_attest_challenge)),
     path("auth/sign-out/", device_post(devices.sign_out)),
     path("session/", device_get(account_views.internal_session)),
     path("devices/", device_get(devices.device_list)),
@@ -49,4 +52,5 @@ urlpatterns = [
         device_get(recipe_views.recipe_nutrition),
     ),
     path("recipe-categories/", device_get(recipe_views.recipe_categories)),
+    path("actions/<slug:action_name>/", device_post(dispatch.mobile_action)),
 ]

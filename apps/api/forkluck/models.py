@@ -132,6 +132,12 @@ class User(AbstractUser):
     google_subject = models.CharField(
         max_length=255, null=True, blank=True, unique=True
     )
+    # The App Attest key that registered this account from the phone, as hex.
+    # Unique, so one attested key opens one account and a captured
+    # attestation cannot be replayed into another.
+    app_attest_key_id = models.CharField(
+        max_length=64, null=True, blank=True, unique=True
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]
@@ -254,11 +260,13 @@ class EmailVerificationCode(UUIDTimestampModel):
     PURPOSE_ADMIN = "admin"
     PURPOSE_PASSWORD_RESET = "password_reset"
     PURPOSE_DEVICE = "device"
+    PURPOSE_DELETE_ACCOUNT = "delete_account"
     PURPOSE_CHOICES = [
         (PURPOSE_SIGNUP, "Signup"),
         (PURPOSE_ADMIN, "Admin sign-in"),
         (PURPOSE_PASSWORD_RESET, "Password reset"),
         (PURPOSE_DEVICE, "Phone sign-in"),
+        (PURPOSE_DELETE_ACCOUNT, "Account deletion"),
     ]
 
     MAX_ATTEMPTS = 6

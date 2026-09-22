@@ -7,7 +7,7 @@ way — dispatch knows the domains, no domain knows dispatch.
 """
 
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from django.core.exceptions import ImproperlyConfigured, ValidationError
@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from ..domains.accounts.actions import ACTIONS as ACCOUNT_ACTIONS
+from ..domains.accounts.actions import action_delete_account_confirmed
 from ..domains.accounts.billing import ACTIONS as BILLING_ACTIONS
 from ..domains.accounts.billing_configuration import BillingNotReady
 from ..domains.shared.billing import EntitlementError, write_refusal
@@ -83,14 +84,39 @@ def _compose() -> dict[str, ActionHandler]:
 ACTIONS: dict[str, ActionHandler] = _compose()
 
 # Open to an expired or locked account: leaving must never need a subscription.
-ACCOUNT_SAFETY_ACTIONS = frozenset({"revoke-device", "delete-account"})
+ACCOUNT_SAFETY_ACTIONS = frozenset(
+    {"revoke-device", "request-account-deletion", "delete-account"}
+)
+
+# What a phone may do through its bearer token: recipe writes and leaving.
+# A device token is long-lived and sits on a phone, so Stripe, invitations,
+# channels and workspace-wide deletes stay behind a web session. The phone's
+# delete takes an emailed code where the web's relies on its password session.
+MOBILE_ACTIONS: dict[str, ActionHandler] = {
+    "save-recipe": RECIPE_ACTIONS["save-recipe"],
+    "delete-recipe": RECIPE_ACTIONS["delete-recipe"],
+    "update-recipe-statuses": RECIPE_ACTIONS["update-recipe-statuses"],
+    "request-account-deletion": ACCOUNT_ACTIONS["request-account-deletion"],
+    "delete-account": action_delete_account_confirmed,
+}
 
 
 @csrf_exempt
 @require_POST
 @internal_user
 def action(request: HttpRequest, action_name: str) -> JsonResponse:
-    handler = ACTIONS.get(action_name)
+    return run_action(request, action_name, ACTIONS)
+
+
+def mobile_action(request: HttpRequest, action_name: str) -> JsonResponse:
+    """The same funnel for the phone; mobile_urls wraps it with the device guard."""
+    return run_action(request, action_name, MOBILE_ACTIONS)
+
+
+def run_action(
+    request: HttpRequest, action_name: str, actions: Mapping[str, ActionHandler]
+) -> JsonResponse:
+    handler = actions.get(action_name)
     if handler is None:
         return error("Not found", 404)
     # A read-only account may still run the billing actions that fix it, sign

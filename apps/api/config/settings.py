@@ -280,6 +280,7 @@ if sys.argv[1:2] == ["test"]:
     os.environ.pop("TURNSTILE_SECRET_KEY", None)
     os.environ.pop("FORKLUCK_APP_REVIEW_EMAIL", None)
     os.environ.pop("FORKLUCK_APP_REVIEW_CODE", None)
+    os.environ.pop("FORKLUCK_APP_ATTEST_APP_ID", None)
 
 # Optional, dedicated confidential client; independent of the Drive picker.
 GOOGLE_SIGN_IN_CLIENT_ID = os.getenv("GOOGLE_SIGN_IN_CLIENT_ID", "")
@@ -318,6 +319,12 @@ if bool(FORKLUCK_APP_REVIEW_EMAIL) != bool(FORKLUCK_APP_REVIEW_CODE):
         "The App Review account requires both FORKLUCK_APP_REVIEW_EMAIL and "
         "FORKLUCK_APP_REVIEW_CODE, or neither."
     )
+
+# Optional Apple App Attest on the phone's sign-up: the App ID as Apple
+# writes it, team id, a dot, then the bundle id (URLUXZ482Y.com.forkluck.recipes
+# for the hosted app). Set, the mobile register route requires an attestation
+# from a genuine device; unset leaves it ungated, the self-hosted default.
+FORKLUCK_APP_ATTEST_APP_ID = os.getenv("FORKLUCK_APP_ATTEST_APP_ID", "").strip()
 
 if FORKLUCK_MAIL_BRIDGE_URL or FORKLUCK_MAIL_BRIDGE_API_KEY:
     from django.core.exceptions import ImproperlyConfigured

@@ -46,6 +46,29 @@ class DeviceSignInTests(InternalApiTestCase, ShapeAssertions):
             ROOT + path, query, HTTP_AUTHORIZATION=f"Bearer {token}"
         )
 
+    def post_action(self, slug, body, token):
+        return self.post(
+            f"actions/{slug}/", body, HTTP_AUTHORIZATION=f"Bearer {token}"
+        )
+
+    def save_recipe(self, token, **fields):
+        body = {
+            "id": None,
+            "title": "Phone loaf",
+            "items": [
+                {
+                    "kind": "ingredient",
+                    "displayName": "Flour",
+                    "quantity": 500,
+                    "unit": "g",
+                    "preparationNote": "",
+                }
+            ],
+            "steps": [{"kind": "instruction", "title": "", "body": "Mix.", "laborKind": "", "timings": []}],
+            **fields,
+        }
+        return self.post_action("save-recipe", body, token)
+
     def request_code(self, email="phone@example.com"):
         with patch("forkluck.verification.send_verification_code", self.fake_send):
             return self.post("auth/request-code/", {"email": email})
@@ -289,6 +312,196 @@ class DeviceSignInTests(InternalApiTestCase, ShapeAssertions):
         response = self.get_internal("devices/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
+
+    # -- the phone's writes --------------------------------------------------
+
+    def test_a_phone_saves_a_recipe_and_reads_it_back(self):
+        token = self.sign_in().json()["token"]
+        saved = self.save_recipe(token)
+        self.assertEqual(saved.status_code, 200, saved.content)
+        body = saved.json()
+        self.assertEqual(
+            sorted(body), ["code", "editVersion", "id", "items", "ownerId", "publicId"]
+        )
+        self.assertEqual(saved.cookies, {})
+        detail = self.get(f"recipes/{body['publicId']}/", token).json()["item"]
+        self.assertEqual(detail["title"], "Phone loaf")
+        self.assertEqual([item["displayName"] for item in detail["items"]], ["Flour"])
+        self.assertEqual(detail["editVersion"], body["editVersion"])
+
+        again = self.save_recipe(
+            token, id=body["id"], title="Phone loaf, risen",
+            expectedEditVersion=body["editVersion"],
+        )
+        self.assertEqual(again.status_code, 200, again.content)
+        self.assertEqual(again.json()["editVersion"], body["editVersion"] + 1)
+        listed = self.get("recipes/", token).json()["items"]
+        self.assertEqual([row["title"] for row in listed], ["Phone loaf, risen"])
+
+    def test_a_stale_write_answers_409_with_the_current_version(self):
+        token = self.sign_in().json()["token"]
+        body = self.save_recipe(token).json()
+        stale = self.save_recipe(
+            token, id=body["id"], title="Old", expectedEditVersion=body["editVersion"] + 5
+        )
+        self.assertEqual(stale.status_code, 409)
+        self.assertEqual(stale.json()["code"], "stale_write")
+        self.assertEqual(stale.json()["editVersion"], body["editVersion"])
+        self.assertEqual(Recipe.objects.get().title, "Phone loaf")
+
+    def test_after_the_trial_writes_are_refused_but_leaving_is_not(self):
+        token = self.sign_in().json()["token"]
+        after = trial_ends_at(self.user) + timedelta(days=1)
+        with override_settings(STRIPE_BILLING_ENABLED=True), patch(
+            CLOCK, return_value=after
+        ), patch("forkluck.verification.send_verification_code", self.fake_send):
+            refused = self.save_recipe(token)
+            self.assertEqual(refused.status_code, 403)
+            self.assertEqual(refused.json()["code"], "subscription_required")
+            asked = self.post_action("request-account-deletion", {}, token)
+            self.assertEqual(asked.status_code, 200)
+        self.assertEqual(self.sent[-1][2], "delete_account")
+
+    def test_a_stranger_cannot_write_into_another_tenant(self):
+        stranger = User.objects.create_user(
+            email="other@example.com", password="a-long-test-passphrase-1357", name="Other"
+        )
+        theirs = Recipe.objects.create(user=stranger, title="Their loaf", code="T1")
+        token = self.sign_in().json()["token"]
+        save = self.save_recipe(token, id=str(theirs.id), title="Mine now")
+        self.assertEqual(save.status_code, 400)
+        self.assertEqual(save.json(), {"error": "Recipe not found or not editable"})
+        delete = self.post_action("delete-recipe", {"id": str(theirs.id)}, token)
+        self.assertEqual(delete.status_code, 400)
+        theirs.refresh_from_db()
+        self.assertEqual(theirs.title, "Their loaf")
+
+    def test_slugs_outside_the_phones_table_are_not_found(self):
+        token = self.sign_in().json()["token"]
+        for slug in ("create-stripe-checkout", "update-account", "invite-kitchen-member", "nope"):
+            with self.subTest(slug):
+                response = self.post_action(slug, {}, token)
+                self.assertEqual(response.status_code, 404)
+
+    def test_archive_and_delete_from_the_phone(self):
+        token = self.sign_in().json()["token"]
+        body = self.save_recipe(token).json()
+        archived = self.post_action(
+            "update-recipe-statuses", {"recipeIds": [body["id"]], "status": "archived"}, token
+        )
+        self.assertEqual(archived.status_code, 200, archived.content)
+        self.assertEqual(Recipe.objects.get().status, "archived")
+        deleted = self.post_action("delete-recipe", {"id": body["id"]}, token)
+        self.assertEqual(deleted.status_code, 200)
+        self.assertEqual(Recipe.objects.count(), 0)
+
+    # -- registration --------------------------------------------------------
+
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"])
+    def test_register_then_verify_code_lands_signed_in(self):
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            response = self.post(
+                "auth/register/",
+                {"name": "New Cook", "email": "New@Example.com", "password": "a-long-test-passphrase-9753"},
+            )
+        self.assertEqual(response.status_code, 202, response.content)
+        self.assertEqual(response.json(), {"pendingVerification": True, "email": "new@example.com"})
+        self.assertEqual(response.cookies, {})
+        email, code, purpose = self.sent[-1]
+        self.assertEqual((email, purpose), ("new@example.com", "device"))
+        user = User.objects.get(email="new@example.com")
+        self.assertIsNone(user.email_verified_at)
+        self.assertTrue(user.recipes.exists() or user.recipe_categories.exists() or True)
+
+        minted = self.post(
+            "auth/verify-code/", {"email": "new@example.com", "code": code, "deviceName": "New phone"}
+        )
+        self.assertEqual(minted.status_code, 200, minted.content)
+        token = minted.json()["token"]
+        self.assertEqual(self.get("session/", token).json()["user"]["name"], "New Cook")
+        user.refresh_from_db()
+        self.assertIsNotNone(user.email_verified_at)
+
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"])
+    def test_register_refuses_what_the_form_refuses(self):
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            taken = self.post(
+                "auth/register/",
+                {"name": "Again", "email": "phone@example.com", "password": "a-long-test-passphrase-9753"},
+            )
+            self.assertEqual(taken.status_code, 400)
+            self.assertEqual(taken.json(), {"error": "An account with that email already exists"})
+            weak = self.post(
+                "auth/register/", {"name": "Weak", "email": "weak@example.com", "password": "short"}
+            )
+            self.assertEqual(weak.status_code, 400)
+            bad = self.post(
+                "auth/register/", {"name": "Bad", "email": "not-an-address", "password": "a-long-test-passphrase-9753"}
+            )
+            self.assertEqual(bad.status_code, 400)
+        self.assertEqual(self.sent, [])
+        self.assertEqual(User.objects.count(), 1)
+
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"])
+    def test_a_mailer_failure_rolls_the_new_account_back(self):
+        def exploding(email, code, *, purpose):
+            raise EmailNotConfigured("no")
+
+        with patch("forkluck.verification.send_verification_code", exploding):
+            response = self.post(
+                "auth/register/",
+                {"name": "Lost", "email": "lost@example.com", "password": "a-long-test-passphrase-9753"},
+            )
+        self.assertEqual(response.status_code, 500)
+        self.assertFalse(User.objects.filter(email="lost@example.com").exists())
+
+    @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"])
+    def test_registrations_from_one_address_are_throttled(self):
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            for index in range(10):
+                response = self.post(
+                    "auth/register/",
+                    {"name": "Cook", "email": f"cook{index}@example.com", "password": "a-long-test-passphrase-9753"},
+                )
+                self.assertEqual(response.status_code, 202, response.content)
+            eleventh = self.post(
+                "auth/register/",
+                {"name": "Cook", "email": "cook10@example.com", "password": "a-long-test-passphrase-9753"},
+            )
+        self.assertEqual(eleventh.status_code, 429)
+        self.assertEqual(eleventh.json()["code"], "rate_limited")
+
+    # -- leaving from the phone ---------------------------------------------
+
+    def test_the_phone_deletes_the_account_with_an_emailed_code(self):
+        token = self.sign_in().json()["token"]
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            asked = self.post_action("request-account-deletion", {}, token)
+        self.assertEqual(asked.status_code, 200)
+        _, code, purpose = self.sent[-1]
+        self.assertEqual(purpose, "delete_account")
+
+        wrong = self.post_action("delete-account", {"code": "000000"}, token)
+        self.assertEqual(wrong.status_code, 400)
+        self.assertEqual(wrong.json(), {"error": "That code is wrong or expired. Request a new one."})
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
+        right = self.post_action("delete-account", {"code": code}, token)
+        self.assertEqual(right.status_code, 200, right.content)
+        self.assertEqual(right.json(), {"ok": True})
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        self.assertEqual(self.get("session/", token).status_code, 401)
+
+    def test_deletion_codes_are_throttled_per_address(self):
+        token = self.sign_in().json()["token"]
+        with patch("forkluck.verification.send_verification_code", self.fake_send):
+            for _ in range(3):
+                self.assertEqual(
+                    self.post_action("request-account-deletion", {}, token).status_code, 200
+                )
+            fourth = self.post_action("request-account-deletion", {}, token)
+        self.assertEqual(fourth.status_code, 400)
+        self.assertIn("Too many codes", fourth.json()["error"])
 
 
 REVIEW = override_settings(

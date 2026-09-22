@@ -19,10 +19,10 @@ from django.views.decorators.cache import never_cache
 from ... import throttling
 from ...http.auth import DEVICE_TOKEN_PREFIX, device_token_digest
 from ...http.request import error, read_json
-from ...integrations import emails
+from ...integrations import app_attest, emails
 from ...integrations.emails import EmailNotConfigured
 from ...models import DeviceToken, EmailVerificationCode, User
-from ...throttling import client_ip
+from ...throttling import Throttled, client_ip
 from ...verification import (
     MAX_SIGN_IN_ATTEMPTS,
     SIGN_IN_WINDOW,
@@ -31,9 +31,16 @@ from ...verification import (
 )
 from ..shared.recipe_invites import claim_invitations
 from ..shared.values import iso, text_value
-from .views import notify_owner_of_first_verified_sign_in
+from .views import (
+    create_account,
+    notify_owner_of_first_verified_sign_in,
+    registration_values,
+    sync_newsletter_member,
+    throttle_registration,
+)
 
 DEVICE_NAME_MAX_LENGTH = 100
+ATTEST_FAILED = "We couldn't verify this device. Try again."
 
 
 def is_review_account(email: str) -> bool:
@@ -94,6 +101,65 @@ def request_code(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"ok": True})
 
 
+def app_attest_challenge(request: HttpRequest) -> JsonResponse:
+    """A challenge for the phone's attestation key, before it registers."""
+    try:
+        body = read_json(request)
+        key_id = app_attest.key_id_bytes(body.get("keyId"))
+    except ValueError as exc:
+        return error(str(exc))
+    except app_attest.AttestationInvalid:
+        return error("Key id is required")
+    return JsonResponse({"challenge": app_attest.issue_challenge(key_id)})
+
+
+def register(request: HttpRequest) -> JsonResponse:
+    """Create an account from the phone. The same fields and checks as the
+    web form, with App Attest where the web has Turnstile; the code that
+    follows is a `device` one, so `verify-code` finishes the sign-up by
+    minting the token, and `request-code` is the resend."""
+    try:
+        throttle_registration(request)
+    except Throttled as exc:
+        return error(str(exc), 429, code="rate_limited")
+
+    try:
+        body = read_json(request)
+        name, email, password = registration_values(body)
+    except (ValueError, ValidationError) as exc:
+        messages = exc.messages if isinstance(exc, ValidationError) else [str(exc)]
+        return error(messages[0])
+
+    # After field validation, so a bad password does not spend the one-time
+    # attestation, and before any row is written. Unset app id skips the check.
+    fields = {}
+    if app_attest.configured():
+        try:
+            key_id = app_attest.verify_attestation(
+                body.get("keyId"), body.get("attestation"), body.get("challenge")
+            )
+        except app_attest.AttestationInvalid:
+            return error(ATTEST_FAILED, code="verification_failed")
+        if User.objects.filter(app_attest_key_id=key_id).exists():
+            return error(ATTEST_FAILED, code="verification_failed")
+        fields["app_attest_key_id"] = key_id
+
+    try:
+        user = create_account(name, email, password, **fields)
+    except ValueError as exc:
+        return error(str(exc))
+
+    try:
+        issue_code(email, EmailVerificationCode.PURPOSE_DEVICE, client_ip=client_ip(request))
+    except (EmailNotConfigured, ValueError) as exc:
+        # Roll the fresh account back so the address can simply retry.
+        user.delete()
+        if isinstance(exc, EmailNotConfigured):
+            return error("Email sending is not configured", 500)
+        return error(str(exc))
+    return JsonResponse({"pendingVerification": True, "email": email}, status=202)
+
+
 def device_json(row: DeviceToken) -> dict:
     return {
         "id": str(row.id),
@@ -132,6 +198,7 @@ def redeem_code(request: HttpRequest) -> JsonResponse:
         user.save(update_fields=["email_verified_at"])
         claim_invitations(user)
         notify_owner_of_first_verified_sign_in(user)
+        sync_newsletter_member(user)
 
     # One sign-in retires every other code for the address, so a code
     # requested earlier cannot mint a second token later.

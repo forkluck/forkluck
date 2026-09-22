@@ -246,6 +246,7 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "update-account": "action_update_account",
     "set-newsletter": "action_set_newsletter",
     "revoke-device": "action_revoke_device",
+    "request-account-deletion": "action_request_account_deletion",
     "delete-account": "action_delete_account",
     "update-business-settings": "action_update_business_settings",
     "update-recipe-statuses": "action_update_recipe_statuses",
@@ -367,6 +368,8 @@ EXPECTED_PUBLIC_ROUTES: list[tuple[str, str | None]] = [
 EXPECTED_MOBILE_ROUTES: list[tuple[str, str | None]] = [
     ("auth/request-code/", None),
     ("auth/verify-code/", None),
+    ("auth/register/", None),
+    ("auth/app-attest-challenge/", None),
     ("auth/sign-out/", None),
     ("session/", None),
     ("devices/", None),
@@ -374,7 +377,18 @@ EXPECTED_MOBILE_ROUTES: list[tuple[str, str | None]] = [
     ("recipes/<str:recipe_ref>/", None),
     ("recipes/<str:recipe_ref>/nutrition/", None),
     ("recipe-categories/", None),
+    ("actions/<slug:action_name>/", None),
 ]
+
+# What a device token may run. Adding a slug here is a contract change: it
+# widens what a long-lived credential on a phone can do.
+EXPECTED_MOBILE_ACTIONS = {
+    "save-recipe": "action_save_recipe",
+    "delete-recipe": "action_delete_recipe",
+    "update-recipe-statuses": "action_update_recipe_statuses",
+    "request-account-deletion": "action_request_account_deletion",
+    "delete-account": "action_delete_account_confirmed",
+}
 
 INTERNAL_URL_PREFIX = "internal/v1/"
 PUBLIC_URL_PREFIX = "api/"
@@ -385,6 +399,12 @@ class ActionRegistryContractTests(TestCase):
     def test_action_wiring_is_frozen(self):
         wiring = {slug: handler.__name__ for slug, handler in dispatch.ACTIONS.items()}
         self.assertEqual(wiring, EXPECTED_ACTIONS, CONTRACT_MESSAGE)
+
+    def test_mobile_action_wiring_is_frozen(self):
+        wiring = {
+            slug: handler.__name__ for slug, handler in dispatch.MOBILE_ACTIONS.items()
+        }
+        self.assertEqual(wiring, EXPECTED_MOBILE_ACTIONS, CONTRACT_MESSAGE)
 
     def test_every_action_handler_lives_in_a_domain(self):
         # urls -> dispatch -> domains -> integrations. A handler registered

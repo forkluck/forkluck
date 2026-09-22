@@ -53,6 +53,8 @@ __pycache__/
 # misc
 .DS_Store
 *.pem
+# Apple's public App Attestation root, not a key: the verifier reads it from the repo.
+!apps/api/forkluck/integrations/app_attest_root.pem
 
 # debug
 npm-debug.log*
