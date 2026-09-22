@@ -348,6 +348,8 @@ writes the session, so no mobile answer ever carries a cookie
 ```
 POST auth/request-code/     anonymous   {email} → {ok: true}
 POST auth/verify-code/      anonymous   {email, code, deviceName?} → {token, device}
+POST auth/register/         anonymous   {name, email, password, keyId?, attestation?, challenge?} → 202 {pendingVerification: true, email}
+POST auth/app-attest-challenge/  anonymous  {keyId} → {challenge}
 POST auth/sign-out/         device      → {ok: true}; revokes the presenting token
 GET  session/               device      same payload as /internal/v1/session/
 GET  devices/               device      same payload as /internal/v1/devices/
@@ -355,6 +357,7 @@ GET  recipes/               device      same view, params and payload as /intern
 GET  recipes/<recipe_ref>/  device      same as /internal/v1/recipes/<recipe_ref>/
 GET  recipes/<recipe_ref>/nutrition/    same as the internal route
 GET  recipe-categories/     device      same as the internal route
+POST actions/<slug>/        device      the phone's action funnel, see below
 ```
 
 Sign-in is two steps. `request-code` emails a 6-digit code with purpose
@@ -376,12 +379,40 @@ out. A missing, foreign, revoked, rotated or disabled-account token answers
 `WWW-Authenticate: Bearer realm="Forkluck"`; the app drops its token on 401.
 `lastUsedAt` is stamped at most once per 15 minutes per token.
 
+`register` creates an account from the phone with the same fields, checks,
+throttle (ten per client address an hour, 429 `rate_limited`) and sentences
+as `POST /api/auth/register`, then issues a `device` code, so the phone
+finishes through `verify-code` and lands signed in; `request-code` is the
+resend. A mailer failure rolls the fresh account back. Where the web form
+carries a Turnstile token, the phone carries an App Attest attestation: with
+`FORKLUCK_APP_ATTEST_APP_ID` set, `register` requires `keyId` (base64 of the
+key's SHA-256), `challenge` (from `app-attest-challenge`, bound to that key,
+ten-minute life, nothing stored) and `attestation` (Apple's CBOR object,
+base64). The chain is verified against Apple's pinned root, the nonce
+against SHA-256(authData ‖ SHA-256(challenge)), the key id against the leaf's
+public key, the app id, a zero counter and the production environment; the
+key id is stored on the user and refused a second time. Every failure is
+`400 {"error": "We couldn't verify this device. Try again.", "code":
+"verification_failed"}`, after field validation and before any row. With the
+setting unset the three fields are ignored.
+
 The reads reuse the internal views unchanged, so the payloads are the ones
 documented under the internal routes, including the owner-only cost fields;
-the phone ignores what it does not show. `sign-out` is the phone's only write
-and is deliberately not an action: it is never gated by billing, so an
-expired or locked account can still sign a phone out. `billing.locked` in
-`session/` is the app's cue to drop its token.
+the phone ignores what it does not show. `sign-out` is deliberately not an
+action: it is never gated by billing, so an expired or locked account can
+still sign a phone out. `billing.locked` in `session/` is the app's cue to
+drop its token.
+
+`actions/<slug>/` is the internal action funnel behind the device guard:
+same bodies, same answers (400 sentences, 403 `subscription_required`, 409
+`stale_write` with `editVersion`), for the slugs a phone needs and no other:
+`save-recipe`, `delete-recipe`, `update-recipe-statuses`,
+`request-account-deletion`, and `delete-account`. Every other slug is 404,
+because a device token is long-lived and sits on a phone. On this table
+`delete-account` takes `{code}`: `request-account-deletion` emails a
+`delete_account` code and the delete consumes it, where the web's delete
+relies on its password session. The pair is pinned by
+`EXPECTED_MOBILE_ACTIONS` in `test_contract.py`.
 
 ## Internal routes (`/internal/v1/`)
 
@@ -2506,16 +2537,22 @@ disconnect cancel active work, and `cancelled` is terminal. `retry-pos-sync`
 accepts only the user's own failed run and revalidates its connection,
 provider, provider-account identity, and generation.
 
-**Account (4)**
-`update-account`, `set-newsletter`, `revoke-device`, `delete-account`.
+**Account (5)**
+`update-account`, `set-newsletter`, `revoke-device`,
+`request-account-deletion`, `delete-account`.
 
 `devices/` lists the phones signed in to the account through the mobile API
 (`{items: [{id, name, createdAt, lastUsedAt}]}`), only those whose token still
 matches the current password. `revoke-device` takes `{id}` and deletes that
-one; it answers 400 "Device not found" for another account's id. It and
-`delete-account` are the two non-billing actions that stay open after the
-trial ends and while the account is locked, because signing a phone out or
-leaving is account safety, not workspace editing.
+one; it answers 400 "Device not found" for another account's id. It,
+`request-account-deletion` and `delete-account` are the non-billing actions
+that stay open after the trial ends and while the account is locked, because
+signing a phone out or leaving is account safety, not workspace editing.
+
+`request-account-deletion` takes `{}` and emails a six-digit `delete_account`
+code to the account's address (three per ten minutes, then 400 "Too many
+codes"). The web's `delete-account` does not need it; the phone's does, see
+the mobile routes.
 
 `delete-account` takes `{}` and runs the same command the admin's delete
 does: the account is locked, open Stripe checkouts are expired, live
@@ -2523,7 +2560,7 @@ subscriptions are cancelled, the customer is tombstoned, the feedback-board
 user and newsletter member are removed, and the user row is deleted with
 everything that cascades from it, the phones' device tokens included. It
 answers `{ok: true}`; a provider failure leaves the account in the deleting
-state and answers 503 so the owner can retry.
+state and answers 503 so the owner can retry. The demo account is refused.
 
 `newsletter/` answers `{enabled, available}` for the signed-in user, read
 straight from Ghost: `available` is false when Ghost is unconfigured, and

@@ -408,6 +408,25 @@ The pair goes in the App Review Information notes in App Store Connect,
 never in the repo, and can be rotated by editing the file and restarting
 `forkluck-django.service`.
 
+## App Attest on the phone's sign-up
+
+The phone app can create accounts. The web form is gated by Turnstile, which
+a native app cannot run, so the mobile register route is gated by Apple App
+Attest instead: the phone proves it is a genuine copy of the app on a genuine
+device, and the attested key is stored on the account so one attestation
+opens one account. Set the App ID in `/etc/forkluck/backend.env`, team id, a
+dot, then the bundle id, or leave it empty to skip the check (the self-hosted
+and development default, since a Debug build on the simulator cannot attest):
+
+```env
+FORKLUCK_APP_ATTEST_APP_ID=URLUXZ482Y.com.forkluck.recipes
+```
+
+Only production attestations pass, which is what TestFlight and App Store
+builds produce. Apple's App Attestation Root CA is checked in beside the
+verifier (`apps/api/forkluck/integrations/app_attest_root.pem`); it expires
+in 2045.
+
 ## Google Drive receipts folder
 
 Importing receipts straight from a Drive folder is optional and configured in

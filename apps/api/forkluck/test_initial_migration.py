@@ -88,6 +88,7 @@ RECORDED_ROWS = [
     "0058_saved_comparisons",
     "0059_saved_comparison_settings",
     "0060_device_token",
+    "0061_app_attest_key_and_delete_purpose",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",
