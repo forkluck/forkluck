@@ -89,30 +89,41 @@ beforeEach(() => {
   })
 })
 
-describe("read-only banner", () => {
-  it("sits above the page only while the account is read-only", () => {
+describe("free plan banner", () => {
+  it("sits above an operations section only, and only on the free plan", () => {
+    state.pathname = "/menu/mnu_0123456789ab"
     const { rerender } = render(
       <AppShell
         user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}
-        readOnlyNotice="Your trial ended. Subscribe to keep editing."
+        freePlan
       >
-        <main>Recipe</main>
+        <main>Menu</main>
       </AppShell>
     )
-    expect(
-      screen.getByText("Your trial ended. Subscribe to keep editing.")
-    ).toBeTruthy()
+    expect(screen.getByText("This feature needs a subscription.")).toBeTruthy()
     expect(
       screen.getByRole("button", { name: "Subscribe" }).getAttribute("href")
     ).toBe("/subscribe")
+    state.pathname = "/recipes/rcp_0123456789ab/cost"
     rerender(
       <AppShell
         user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}
+        freePlan
       >
         <main>Recipe</main>
       </AppShell>
     )
     expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull()
+    state.pathname = "/menu/mnu_0123456789ab"
+    rerender(
+      <AppShell
+        user={{ id: "1", name: "Ada", email: "ada@example.com" } as SessionUser}
+      >
+        <main>Menu</main>
+      </AppShell>
+    )
+    expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull()
+    state.pathname = "/recipes/rcp_0123456789ab/cost"
   })
 })
 

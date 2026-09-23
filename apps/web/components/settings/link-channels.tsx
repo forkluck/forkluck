@@ -39,6 +39,7 @@ const ERROR_COPY: Record<string, string> = {
   not_configured: "This integration isn’t configured on the server yet.",
   unsupported_currency:
     "That account reports sales in a currency Forkluck can’t track yet.",
+  upgrade_required: "This feature needs a subscription.",
 }
 
 const POLL_INTERVAL_MS = 3_000

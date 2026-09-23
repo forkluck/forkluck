@@ -529,13 +529,13 @@ provider customer and subscription outside a transaction, then commits only if
 no newer generation superseded it. Missing snapshot rows stop contributing to
 access. Precedence is active, trialing, past due, then the newest lapsed status.
 `locked` means one thing only: the account is being deleted. A lapsed
-subscription unlocks and goes read-only. The dispatch and guest-link gates read
+subscription unlocks and goes free. The dispatch and guest-link gates read
 only the stored decision plus the account's own clock, at one query regardless
 of customer count, while disabled/demo/staff exemptions remain zero-query.
 
 `domains/shared/billing.py` holds the plan catalog those gates spend. The
-hosted plans are `paid`, `trial` and `expired`. Status maps to a plan: active,
-trialing and past due are paid, and every other status is trial or expired by
+hosted plans are `paid`, `trial` and `free`. Status maps to a plan: active,
+trialing and past due are paid, and every other status is trial or free by
 the clock. The trial is app-side and calendar-based, computed as
 `max(user.date_joined, TRIAL_FLOOR) + 14 days` with no extra column and no
 extra query; `TRIAL_FLOOR` is the launch date, so accounts older than it get
@@ -544,13 +544,16 @@ trial gets extended. Stripe never trials: Checkout starts a paid subscription
 and nothing else. The disabled/demo/staff exemptions are paid with no clock.
 The plan indexes one declarative dict of entitlements per plan, which
 `billing_json` ships to the session together with `trialDaysLeft`. Trial and
-paid share every flag, Primo included; expired has none, and there is no recipe
-cap on any plan. Expired means read-only: every read works, and every action
-outside billing is refused with `subscription_required` and a sentence that
-says whether the trial or the subscription ended (`write_refusal`). A new
-account needs no card, and a canceled one keeps everything it made. Changing a
-limit is an edit to that dict; the gates raise `EntitlementError`, which
-dispatch turns into a 403 carrying the raiser's code.
+paid share every flag, Primo included; free keeps the two searches that feed
+a recipe, and there is no recipe cap on any plan. Free is recipe development
+forever: recipes, ingredients, costing, nutrition, sharing and kitchen
+members keep writing, every read works, and operations (`PAID_ACTIONS` in
+`http/dispatch.py`: the invoices, connectors, labor, Primo and sales
+registries plus the menu and supplier-item slugs, minus the disconnects) are
+refused with `upgrade_required`. Only deletion refuses a workspace outright
+(`write_refusal_for`). A new account needs no card, and a canceled one keeps
+everything it made. Changing a limit is an edit to that dict; the gates raise
+`EntitlementError`, which dispatch turns into a 403 carrying the raiser's code.
 
 `domains/accounts/billing.py` owns Checkout, portal, return-page sync, webhook,
 and account deletion. Checkout reserves a local customer and attempt before a

@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell"
 import { BusinessSettingsProvider } from "@/components/business-settings-provider"
 import { getSession } from "@/lib/auth-session"
 import { getBusinessSettings } from "@/lib/backend/queries"
-import { billingLocked, readOnlyNotice } from "@/lib/billing"
+import { billingLocked, onFreePlan } from "@/lib/billing"
 import { KITCHEN_COOKIE, resolveActiveKitchen } from "@/lib/kitchen"
 import { primoAvailable } from "@/lib/primo/access"
 import { kitchenToolDescriptors } from "@/lib/kitchen-tools/catalog"
@@ -36,7 +36,7 @@ export default async function AppLayout({
         kitchens={session.kitchens}
         primoEnabled={primoAvailable(session.billing)}
         webmcpTools={kitchenToolDescriptors()}
-        readOnlyNotice={readOnlyNotice(session.billing)}
+        freePlan={onFreePlan(session.billing)}
       >
         {children}
       </AppShell>

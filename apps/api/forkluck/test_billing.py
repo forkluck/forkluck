@@ -28,7 +28,8 @@ from .domains.accounts.billing_reconciliation import (
     reconcile_billing_account,
 )
 from .domains.shared.billing import (
-    EXPIRED_ENTITLEMENTS,
+    FREE_ENTITLEMENTS,
+    NEEDS_SUBSCRIPTION,
     PAID_ENTITLEMENTS,
     PLAN_ENTITLEMENTS,
     TRIAL_DAYS,
@@ -39,8 +40,7 @@ from .domains.shared.billing import (
     require_entitlement,
     trial_ends_at,
     workspace_closed,
-    write_blocked,
-    write_refusal,
+    write_refusal_for,
 )
 from .integrations.stripe import StripeError, verify_webhook
 from .models import (
@@ -60,8 +60,6 @@ from .testing import InternalApiTestCase
 PASSWORD = "a-long-test-passphrase-2468"
 PRODUCT_ID = "prod_forkluck"
 CLOCK = "forkluck.domains.shared.billing.current_time"
-TRIAL_ENDED = "Your trial has ended. Subscribe to keep editing."
-SUBSCRIPTION_ENDED = "Your subscription has ended. Subscribe to keep editing."
 DELETING = "This account is being deleted."
 PRICE_ID = "price_forkluck"
 
@@ -191,9 +189,9 @@ class BillingReadModelTests(InternalApiTestCase):
                 },
             )
         with self.assertNumQueries(1, msg="write gate stays one account lookup"):
-            self.assertIsNone(write_refusal(self.user))
+            self.assertIsNone(write_refusal_for(billing_json(self.user)))
 
-    def test_the_window_closes_after_fourteen_days_and_never_reopens(self):
+    def test_the_window_closes_after_fourteen_days_and_lands_on_free(self):
         end = trial_ends_at(self.user)
         self.assertEqual(end, self.user.date_joined + timedelta(days=TRIAL_DAYS))
         self.now.return_value = end - timedelta(seconds=1)
@@ -201,23 +199,23 @@ class BillingReadModelTests(InternalApiTestCase):
         self.assertEqual((state["plan"], state["trialDaysLeft"]), ("trial", 1))
 
         self.now.return_value = end
+        state = billing_json(self.user)
         self.assertEqual(
-            billing_json(self.user),
+            state,
             {
                 "status": "none",
                 "trialDaysLeft": None,
                 "locked": False,
-                "plan": "expired",
-                "entitlements": EXPIRED_ENTITLEMENTS,
+                "plan": "free",
+                "entitlements": FREE_ENTITLEMENTS,
             },
         )
-        self.assertEqual(write_refusal(self.user), TRIAL_ENDED)
-        self.assertTrue(write_blocked(self.user))
-        # Reads such as guest links stay open until the account is deleted.
+        # Free still writes: only deletion refuses a workspace outright.
+        self.assertIsNone(write_refusal_for(state))
         self.assertFalse(workspace_closed(self.user))
 
         self.now.return_value = end + timedelta(days=400)
-        self.assertEqual(billing_json(self.user)["plan"], "expired")
+        self.assertEqual(billing_json(self.user)["plan"], "free")
 
     def test_accounts_older_than_the_floor_start_their_window_at_the_floor(self):
         self.user.date_joined = TRIAL_FLOOR - timedelta(days=90)
@@ -252,30 +250,33 @@ class BillingReadModelTests(InternalApiTestCase):
             self.assertEqual(state["entitlements"], PLAN_ENTITLEMENTS[plan])
             self.assertEqual(state["trialDaysLeft"], 11 if plan == "trial" else None)
             with self.assertNumQueries(1, msg="write gate stays one account lookup"):
-                self.assertEqual(write_blocked(self.user), locked)
+                self.assertEqual(
+                    write_refusal_for(billing_json(self.user)) is not None, locked
+                )
 
-    def test_a_lapsed_subscriber_past_the_window_is_read_only(self):
+    def test_a_lapsed_subscriber_past_the_window_is_free(self):
         account = BillingAccount.objects.create(user=self.user, status="canceled")
         self.now.return_value = trial_ends_at(self.user) + timedelta(days=1)
         state = billing_json(self.user)
         self.assertEqual(
             (state["status"], state["plan"], state["locked"]),
-            ("canceled", "expired", False),
+            ("canceled", "free", False),
         )
-        self.assertEqual(write_refusal(self.user), SUBSCRIPTION_ENDED)
+        self.assertIsNone(write_refusal_for(state))
         self.assertFalse(workspace_closed(self.user))
 
         account.status = "deleting"
         account.locked = True
         account.save(update_fields=["status", "locked"])
-        self.assertEqual(write_refusal(self.user), DELETING)
+        self.assertEqual(write_refusal_for(billing_json(self.user)), DELETING)
         self.assertTrue(workspace_closed(self.user))
 
         account.status = "active"
         account.locked = False
         account.save(update_fields=["status", "locked"])
-        self.assertEqual(billing_json(self.user)["plan"], "paid")
-        self.assertIsNone(write_refusal(self.user))
+        state = billing_json(self.user)
+        self.assertEqual(state["plan"], "paid")
+        self.assertIsNone(write_refusal_for(state))
 
     @override_settings(FORKLUCK_ALLOW_DEMO_ACCOUNT=True)
     def test_demo_staff_and_disabled_exemptions_do_not_query_account_state(self):
@@ -303,20 +304,25 @@ class BillingReadModelTests(InternalApiTestCase):
         ):
             self.assertEqual(billing_json(self.user), disabled)
 
-    def test_the_trial_is_the_whole_product_and_expired_is_none_of_it(self):
+    def test_the_trial_is_the_whole_product_and_free_is_recipe_development(self):
         self.assertEqual(TRIAL_ENTITLEMENTS, PAID_ENTITLEMENTS)
         self.assertTrue(all(PAID_ENTITLEMENTS.values()))
-        self.assertEqual(set(EXPIRED_ENTITLEMENTS), set(PAID_ENTITLEMENTS))
-        self.assertFalse(any(EXPIRED_ENTITLEMENTS.values()))
+        self.assertEqual(set(FREE_ENTITLEMENTS), set(PAID_ENTITLEMENTS))
+        # The two searches feed a recipe; everything else spends per use.
+        self.assertEqual(
+            {key for key, on in FREE_ENTITLEMENTS.items() if on},
+            {"usdaSearch", "catalogSearch"},
+        )
         self.assertNotIn("maxRecipes", PAID_ENTITLEMENTS)
 
     def test_require_entitlement_refuses_only_what_the_plan_withholds(self):
         require_entitlement(self.user, "primo")
         self.now.return_value = trial_ends_at(self.user) + timedelta(days=1)
+        require_entitlement(self.user, "usdaSearch")
         with self.assertRaises(EntitlementError) as raised:
             require_entitlement(self.user, "primo")
         self.assertEqual(raised.exception.code, "upgrade_required")
-        self.assertEqual(str(raised.exception), "This feature needs a subscription.")
+        self.assertEqual(str(raised.exception), NEEDS_SUBSCRIPTION)
 
 
 @BILLING_ON
@@ -1111,35 +1117,85 @@ class DispatchGateTests(InternalApiTestCase):
     def rename(self, name: str):
         return self.post_internal("update-account", {"name": name})
 
+    # One operations action per paid domain, plus the two that live in free
+    # registries. Each body fails validation just past the gate, so a pass
+    # shows up as a 400 (or a 200) rather than a provider call.
+    OPERATIONS = [
+        ("save-menu", {}),
+        ("import-labor", {}),
+        ("save-invoice", {}),
+        ("save-sales-product", {}),
+        ("connect-square-token", {}),
+        ("primo-save-turn", {}),
+        ("set-preferred-supplier-item", {}),
+    ]
+
     @BILLING_ON
-    def test_a_trial_writes_and_an_expired_account_is_read_only(self):
+    def test_a_trial_writes_and_a_free_account_keeps_recipe_development(self):
         self.assertEqual(self.rename("Trial Name").status_code, 200)
+        for slug, body in self.OPERATIONS:
+            with self.subTest(action=slug):
+                response = self.post_internal(slug, body)
+                self.assertNotEqual(response.json().get("code"), "upgrade_required")
         after = trial_ends_at(self.user) + timedelta(days=1)
         with patch(CLOCK, return_value=after):
-            refused = self.rename("Expired Name")
-            self.assertEqual(refused.status_code, 403)
-            self.assertEqual(
-                refused.json(),
-                {"error": TRIAL_ENDED, "code": "subscription_required"},
-            )
-            # Reads still work: the session reports the state the app renders.
+            # Recipe development keeps writing.
+            self.assertEqual(self.rename("Free Name").status_code, 200)
+            recipe = self.post_internal("save-recipe", {"id": None, "title": "Free loaf"})
+            self.assertEqual(recipe.status_code, 200)
             session = self.get_internal("session/")
             self.assertEqual(session.status_code, 200)
-            self.assertEqual(session.json()["billing"]["plan"], "expired")
+            self.assertEqual(session.json()["billing"]["plan"], "free")
+            # Operations are turned back with the one sentence.
+            for slug, body in self.OPERATIONS:
+                with self.subTest(action=slug):
+                    refused = self.post_internal(slug, body)
+                    self.assertEqual(refused.status_code, 403)
+                    self.assertEqual(
+                        refused.json(),
+                        {"error": NEEDS_SUBSCRIPTION, "code": "upgrade_required"},
+                    )
 
             account = BillingAccount.objects.create(user=self.user, status="canceled")
-            lapsed = self.rename("Lapsed Name")
+            self.assertEqual(self.rename("Lapsed Name").status_code, 200)
+            lapsed = self.post_internal("save-menu", {})
             self.assertEqual(lapsed.status_code, 403)
-            self.assertEqual(lapsed.json()["error"], SUBSCRIPTION_ENDED)
+            self.assertEqual(lapsed.json()["code"], "upgrade_required")
 
             account.status = "deleting"
             account.locked = True
             account.save(update_fields=["status", "locked"])
             deleting = self.rename("Deleting Name")
             self.assertEqual(deleting.status_code, 403)
-            self.assertEqual(deleting.json()["error"], DELETING)
+            self.assertEqual(
+                deleting.json(), {"error": DELETING, "code": "subscription_required"}
+            )
         self.user.refresh_from_db()
-        self.assertEqual(self.user.name, "Trial Name")
+        self.assertEqual(self.user.name, "Lapsed Name")
+
+    def test_the_paid_action_set_is_every_operations_slug_and_nothing_shared(self):
+        from .http import dispatch
+
+        self.assertTrue(dispatch.PAID_ACTIONS <= set(dispatch.ACTIONS))
+        for other in (
+            set(dispatch.MOBILE_ACTIONS),
+            dispatch.DISCONNECT_ACTIONS,
+            set(dispatch.BILLING_ACTIONS),
+            dispatch.ACCOUNT_SAFETY_ACTIONS,
+        ):
+            self.assertFalse(dispatch.PAID_ACTIONS & other)
+        for owner, registry in dispatch.REGISTRIES:
+            if owner in dispatch.PAID_OWNERS:
+                self.assertTrue(
+                    set(registry) <= dispatch.PAID_ACTIONS | dispatch.DISCONNECT_ACTIONS,
+                    owner,
+                )
+            elif owner not in ("accounts", "billing"):
+                self.assertTrue(
+                    (set(registry) & dispatch.PAID_ACTIONS)
+                    <= {"save-menu", "delete-menu", "set-preferred-supplier-item"},
+                    owner,
+                )
 
     @BILLING_ON
     def test_no_plan_caps_recipes(self):

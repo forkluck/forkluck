@@ -349,15 +349,16 @@ class DeviceSignInTests(InternalApiTestCase, ShapeAssertions):
         self.assertEqual(stale.json()["editVersion"], body["editVersion"])
         self.assertEqual(Recipe.objects.get().title, "Phone loaf")
 
-    def test_after_the_trial_writes_are_refused_but_leaving_is_not(self):
+    def test_after_the_trial_recipe_writes_still_work(self):
         token = self.sign_in().json()["token"]
         after = trial_ends_at(self.user) + timedelta(days=1)
         with override_settings(STRIPE_BILLING_ENABLED=True), patch(
             CLOCK, return_value=after
         ), patch("forkluck.verification.send_verification_code", self.fake_send):
-            refused = self.save_recipe(token)
-            self.assertEqual(refused.status_code, 403)
-            self.assertEqual(refused.json()["code"], "subscription_required")
+            saved = self.save_recipe(token)
+            self.assertEqual(saved.status_code, 200, saved.content)
+            session = self.get("session/", token)
+            self.assertEqual(session.json()["billing"]["plan"], "free")
             asked = self.post_action("request-account-deletion", {}, token)
             self.assertEqual(asked.status_code, 200)
         self.assertEqual(self.sent[-1][2], "delete_account")

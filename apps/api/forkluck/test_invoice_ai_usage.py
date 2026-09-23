@@ -129,17 +129,15 @@ class InvoiceAiUsageTests(InternalApiTestCase):
         )
         self.assertFalse(InvoiceAiRead.objects.exists())
 
-    def test_an_expired_account_has_no_allowance_and_cannot_spend(self):
+    def test_a_free_account_has_no_allowance_and_cannot_spend(self):
         after = trial_ends_at(self.user) + timedelta(days=1)
         with patch("forkluck.domains.shared.billing.current_time", return_value=after):
             self.assertEqual(invoice_ai_usage(self.user)["maxPages"], 0)
             self.assertTrue(invoice_ai_usage(self.user)["exhausted"])
             with self.assertRaises(EntitlementError) as caught:
                 self.reserve()
-        self.assertEqual(caught.exception.code, "subscription_required")
-        self.assertEqual(
-            str(caught.exception), "Your trial has ended. Subscribe to keep editing."
-        )
+        self.assertEqual(caught.exception.code, "upgrade_required")
+        self.assertEqual(str(caught.exception), "This feature needs a subscription.")
         self.assertFalse(InvoiceAiRead.objects.exists())
 
     def test_a_paid_account_gets_the_full_allowance(self):

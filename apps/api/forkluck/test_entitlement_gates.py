@@ -2,7 +2,8 @@
 
 Every flag is True on the trial, so each case runs twice: once as it ships,
 and once with the trial catalog flipped to prove the gate is wired to the
-entitlement rather than to a hard-coded plan test.
+entitlement rather than to a hard-coded plan test. The free plan keeps the
+two searches that feed a recipe and loses the rest.
 """
 
 from datetime import timedelta
@@ -10,7 +11,12 @@ from unittest.mock import patch
 
 from django.test import Client, override_settings
 
-from .domains.shared.billing import TRIAL_ENTITLEMENTS, trial_ends_at
+from .domains.shared.billing import (
+    FREE_ENTITLEMENTS,
+    NEEDS_SUBSCRIPTION,
+    TRIAL_ENTITLEMENTS,
+    trial_ends_at,
+)
 from .models import User
 from .testing import InternalApiTestCase
 
@@ -65,13 +71,33 @@ class EntitlementGateTests(InternalApiTestCase):
                 self.assertEqual(response.status_code, 403)
                 self.assertEqual(response.json()["code"], "upgrade_required")
 
-    def test_an_expired_account_is_refused_before_any_gate(self):
+    def test_the_free_plan_keeps_the_recipe_searches_and_loses_the_rest(self):
         after = trial_ends_at(self.user) + timedelta(days=1)
-        for _key, slug, body in GATED:
+        for key, slug, body in GATED:
             with self.subTest(action=slug), patch(CLOCK, return_value=after):
                 response = self.post_internal(slug, body)
-                self.assertEqual(response.status_code, 403)
-                self.assertEqual(response.json()["code"], "subscription_required")
+                if FREE_ENTITLEMENTS[key]:
+                    self.assertNotEqual(response.status_code, 403, key)
+                else:
+                    self.assertEqual(response.status_code, 403)
+                    self.assertEqual(
+                        response.json(),
+                        {"error": NEEDS_SUBSCRIPTION, "code": "upgrade_required"},
+                    )
+
+    def test_connecting_a_sales_channel_needs_the_plan_before_a_state_is_minted(self):
+        after = trial_ends_at(self.user) + timedelta(days=1)
+        for path in (
+            "/api/integrations/square/connect",
+            "/api/integrations/shopify/connect?shop=demo.myshopify.com",
+        ):
+            with self.subTest(path=path):
+                during = self.client.get(path)
+                self.assertNotIn("upgrade_required", during["Location"])
+                with patch(CLOCK, return_value=after):
+                    refused = self.client.get(path)
+                self.assertEqual(refused.status_code, 302)
+                self.assertIn("integration_error=upgrade_required", refused["Location"])
 
     def test_revoke_device_stays_open_after_the_trial(self):
         # Signing a phone out is account safety, not workspace editing.
@@ -87,3 +113,13 @@ class EntitlementGateTests(InternalApiTestCase):
                 "disconnect-connector", {"connectionId": "not-a-uuid"}
             )
         self.assertEqual(response.status_code, 400)
+        # And on the free plan, where the whole domain is otherwise refused.
+        after = trial_ends_at(self.user) + timedelta(days=1)
+        for slug, body in (
+            ("disconnect-connector", {"connectionId": "not-a-uuid"}),
+            ("disconnect-pos", {"provider": "nowhere"}),
+            ("disconnect-drive-folder", {}),
+        ):
+            with self.subTest(action=slug), patch(CLOCK, return_value=after):
+                response = self.post_internal(slug, body)
+                self.assertNotEqual(response.status_code, 403, slug)

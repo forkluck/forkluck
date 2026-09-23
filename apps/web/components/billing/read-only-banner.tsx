@@ -3,11 +3,10 @@ import Link from "next/link"
 import { NoticeBanner, NoticeBannerAction } from "@/components/ui/notice-banner"
 
 /**
- * What a read-only account sees above every screen: the trial or the
- * subscription ended, everything is still here, and the one way back is a
- * subscription. The sentence itself comes from `readOnlyNotice`, so the
- * never-subscribed and lapsed wordings live beside the rest of the billing
- * copy.
+ * What a free account sees above an operations section: menus, sales,
+ * invoices, labor and integrations stay readable, everything made during the
+ * trial is still here, and writing there takes a subscription. The sentence
+ * is the one the server answers such a write with, passed in by the shell.
  */
 export function ReadOnlyBanner({ notice }: { notice: string }) {
   return (

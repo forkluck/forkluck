@@ -7,7 +7,12 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from ...models import InvoiceAiRead, User
-from ..shared.billing import EntitlementError, billing_json, write_refusal_for
+from ..shared.billing import (
+    NEEDS_SUBSCRIPTION,
+    EntitlementError,
+    billing_json,
+    write_refusal_for,
+)
 from ..shared.locking import lock_workspace
 from ..shared.values import uuid_value
 
@@ -29,8 +34,8 @@ def next_period(start: date) -> date:
 def page_limit(billing: dict) -> int | None:
     if billing["status"] == "disabled":
         return None
-    # Expired is read-only, so its allowance is nothing rather than a number
-    # that would invite a read the action funnel refuses anyway.
+    # Free reads no invoices with AI: its allowance is nothing rather than a
+    # number that would invite a read the reserve refuses anyway.
     return {"paid": PAID_AI_PAGES, "trial": TRIAL_AI_PAGES}.get(billing["plan"], 0)
 
 
@@ -90,6 +95,11 @@ def action_invoice_ai_usage(user: User, body: dict) -> dict:
         refusal = write_refusal_for(billing)
         if refusal is not None:
             raise EntitlementError(refusal, "subscription_required")
+        # The Drive watcher reaches here outside the action funnel, so the
+        # plan is checked again: a free account is turned back with the
+        # subscription sentence, not an allowance of zero pages.
+        if not billing["entitlements"]["invoiceAi"]:
+            raise EntitlementError(NEEDS_SUBSCRIPTION)
         limit = page_limit(billing)
         if limit is None:
             return {"readId": None}

@@ -13,6 +13,7 @@ import { KitchenToolsWebMcp } from "@/components/kitchen-tools-webmcp"
 import { PrimoProvider, usePrimo } from "@/components/primo/primo-provider"
 import { PrimoRail } from "@/components/primo/primo-rail"
 import { ReadOnlyBanner } from "@/components/billing/read-only-banner"
+import { NEEDS_SUBSCRIPTION, inPaidSection } from "@/lib/billing"
 import { LoadingRegion } from "@/components/ui/loading-region"
 import { ToastProvider } from "@/components/ui/toast"
 import type { SessionUser } from "@/lib/auth-session"
@@ -27,14 +28,14 @@ function AppShellContents({
   kitchens,
   children,
   primoEnabled,
-  readOnlyNotice,
+  freePlan,
 }: {
   user: SessionUser
   kitchen: ActiveKitchen | null
   kitchens: ActiveKitchen[]
   children: React.ReactNode
   primoEnabled: boolean
-  readOnlyNotice: string | null
+  freePlan: boolean
 }) {
   const [navOpen, setNavOpen] = React.useState(false)
   const [collapsed, setCollapsed] = React.useState(false)
@@ -46,6 +47,10 @@ function AppShellContents({
   // trigger does not flash in over the loading screen and vanish once the
   // chat registers itself.
   const homeChat = primoEnabled && pathname === "/"
+  // A free account sees the operations sections it made during the trial,
+  // with the sentence the server would answer a write there with.
+  const readOnlyNotice =
+    freePlan && inPaidSection(pathname) ? NEEDS_SUBSCRIPTION : null
   const inlineChat = inlineCount > 0 || homeChat
   const viewport = useVisualViewport(inlineCount > 0)
   const primoRailVisible = primoOpen && !inlineChat
@@ -147,7 +152,7 @@ export function AppShell({
   children,
   primoEnabled = false,
   webmcpTools = [],
-  readOnlyNotice = null,
+  freePlan = false,
 }: {
   user: SessionUser
   kitchen?: ActiveKitchen | null
@@ -155,7 +160,7 @@ export function AppShell({
   children: React.ReactNode
   primoEnabled?: boolean
   webmcpTools?: KitchenToolDescriptor[]
-  readOnlyNotice?: string | null
+  freePlan?: boolean
 }) {
   return (
     <NavigationBlockerProvider>
@@ -167,7 +172,7 @@ export function AppShell({
             kitchen={kitchen}
             kitchens={kitchens}
             primoEnabled={primoEnabled}
-            readOnlyNotice={readOnlyNotice}
+            freePlan={freePlan}
           >
             {children}
           </AppShellContents>

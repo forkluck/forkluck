@@ -20,7 +20,12 @@ from ..domains.accounts.actions import ACTIONS as ACCOUNT_ACTIONS
 from ..domains.accounts.actions import action_delete_account_confirmed
 from ..domains.accounts.billing import ACTIONS as BILLING_ACTIONS
 from ..domains.accounts.billing_configuration import BillingNotReady
-from ..domains.shared.billing import EntitlementError, write_refusal
+from ..domains.shared.billing import (
+    NEEDS_SUBSCRIPTION,
+    EntitlementError,
+    billing_json,
+    write_refusal_for,
+)
 from ..domains.shared.versioning import StaleWriteError
 from ..domains.ingredients.actions import ACTIONS as INGREDIENT_ACTIONS
 from ..domains.invoices.actions import ACTIONS as INVOICE_ACTIONS
@@ -83,10 +88,39 @@ def _compose() -> dict[str, ActionHandler]:
 
 ACTIONS: dict[str, ActionHandler] = _compose()
 
-# Open to an expired or locked account: leaving must never need a subscription.
+# Open to a locked account: leaving must never need a subscription.
 ACCOUNT_SAFETY_ACTIONS = frozenset(
     {"revoke-device", "request-account-deletion", "delete-account"}
 )
+
+# Operations: what the free plan reads but may not write. Recipe development
+# (recipes, ingredients, costing, nutrition, the kitchen and its members) is
+# free; menus live in the recipes registry and supplier items in the
+# ingredients registry, but both are operations. Taking a provider's access
+# back is never refused, so a downgraded account can always leave.
+PAID_OWNERS = frozenset(
+    {
+        "invoices",
+        "invoices-connectors",
+        "labor",
+        "primo",
+        "sales-connections",
+        "sales-sync",
+        "sales",
+    }
+)
+DISCONNECT_ACTIONS = frozenset(
+    {"disconnect-pos", "disconnect-connector", "disconnect-drive-folder"}
+)
+PAID_ACTIONS = (
+    frozenset(
+        slug
+        for owner, registry in REGISTRIES
+        if owner in PAID_OWNERS
+        for slug in registry
+    )
+    | {"save-menu", "delete-menu", "set-preferred-supplier-item"}
+) - DISCONNECT_ACTIONS
 
 # What a phone may do through its bearer token: recipe writes and leaving.
 # A device token is long-lived and sits on a phone, so Stripe, invitations,
@@ -119,14 +153,18 @@ def run_action(
     handler = actions.get(action_name)
     if handler is None:
         return error("Not found", 404)
-    # A read-only account may still run the billing actions that fix it, sign
-    # a phone out, or delete itself — that is account safety, not workspace
-    # editing — and nothing else. Inert when billing is disabled:
-    # write_refusal answers without a query then.
+    # An account being deleted may still run the billing actions, sign a
+    # phone out, or finish deleting itself — that is account safety, not
+    # workspace editing — and nothing else. A free account writes recipes and
+    # is turned back from operations. One account lookup answers both, and
+    # none at all when billing is disabled.
     if action_name not in BILLING_ACTIONS and action_name not in ACCOUNT_SAFETY_ACTIONS:
-        refusal = write_refusal(request.user)
+        state = billing_json(request.user)
+        refusal = write_refusal_for(state)
         if refusal is not None:
             return error(refusal, 403, code="subscription_required")
+        if action_name in PAID_ACTIONS and state["plan"] == "free":
+            return error(NEEDS_SUBSCRIPTION, 403, code="upgrade_required")
     try:
         result = handler(request.user, read_json(request))
         return JsonResponse(result)

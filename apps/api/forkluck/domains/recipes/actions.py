@@ -72,7 +72,7 @@ from ...integrations.emails import (
 )
 from ..sales.bundles import BundleIndex
 from ..shared.activity import activity_event, record_event
-from ..shared.billing import write_blocked
+from ..shared.billing import workspace_closed
 from ..shared.locking import lock_workspace
 from ..shared.ingredient_identity import save_line_match
 from ..shared.preparations import seeded_preparation_yield
@@ -534,12 +534,14 @@ def action_save_recipe(user: User, body: JsonObject) -> JsonObject:
 
 
 def _require_open_kitchen(owner: User) -> None:
-    """A closed workspace refuses another account's writes as well as its own.
+    """A kitchen being deleted refuses another account's writes as well as
+    its own.
 
     Dispatch gates every action on the caller's own billing; a collaborator
     writing into someone else's kitchen has to be gated on that kitchen.
+    Only deletion closes one: a free or trial kitchen takes recipe writes.
     """
-    if write_blocked(owner):
+    if workspace_closed(owner):
         raise ValueError("This kitchen is closed for edits.")
 
 

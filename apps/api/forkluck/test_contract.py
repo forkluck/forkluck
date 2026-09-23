@@ -377,6 +377,7 @@ EXPECTED_MOBILE_ROUTES: list[tuple[str, str | None]] = [
     ("recipes/<str:recipe_ref>/", None),
     ("recipes/<str:recipe_ref>/nutrition/", None),
     ("recipe-categories/", None),
+    ("business-settings/", None),
     ("actions/<slug:action_name>/", None),
 ]
 
