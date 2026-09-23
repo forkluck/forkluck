@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest"
 
 import {
   billingLocked,
-  billingReadOnly,
   billingStatusLabel,
+  inPaidSection,
+  onFreePlan,
   onTrial,
-  readOnlyNotice,
   trialDaysLeftLabel,
 } from "../lib/billing"
 import type { BillingState } from "../lib/billing"
@@ -18,19 +18,19 @@ const PAID_ENTITLEMENTS = {
   catalogSearch: true,
   invoiceAi: true,
 }
-const EXPIRED_ENTITLEMENTS = {
+const FREE_ENTITLEMENTS = {
   primo: false,
   posSync: false,
   connectors: false,
-  usdaSearch: false,
-  catalogSearch: false,
+  usdaSearch: true,
+  catalogSearch: true,
   invoiceAi: false,
 }
 
 const PAID_STATUSES = ["disabled", "trialing", "active", "past_due"]
 
 /** A session the backend would ship: paid statuses are paid, everything
- * else is the calendar trial or the read-only account after it. */
+ * else is the calendar trial or the free account after it. */
 function state(
   status: string,
   trialDaysLeft: number | null = null,
@@ -38,7 +38,7 @@ function state(
   plan = PAID_STATUSES.includes(status)
     ? "paid"
     : trialDaysLeft === null
-      ? "expired"
+      ? "free"
       : "trial"
 ): BillingState {
   return {
@@ -46,7 +46,7 @@ function state(
     trialDaysLeft,
     locked,
     plan,
-    entitlements: plan === "expired" ? EXPIRED_ENTITLEMENTS : PAID_ENTITLEMENTS,
+    entitlements: plan === "free" ? FREE_ENTITLEMENTS : PAID_ENTITLEMENTS,
     recipeCount: 0,
   }
 }
@@ -59,7 +59,7 @@ describe("billing lock", () => {
     expect(billingLocked(state("past_due"))).toBe(false)
   })
 
-  it("leaves every lapsed status unlocked: read-only is not a lock", () => {
+  it("leaves every lapsed status unlocked: free is not a lock", () => {
     for (const status of [
       "none",
       "canceled",
@@ -82,34 +82,45 @@ describe("billing lock", () => {
 })
 
 describe("plan", () => {
-  it("reads the trial and the read-only state the backend derived", () => {
+  it("reads the trial and the free plan the backend derived", () => {
     expect(onTrial(state("none", 9))).toBe(true)
     expect(onTrial(state("canceled", 2))).toBe(true)
     expect(onTrial(state("active"))).toBe(false)
-    expect(billingReadOnly(state("none"))).toBe(true)
-    expect(billingReadOnly(state("canceled"))).toBe(true)
-    expect(billingReadOnly(state("none", 9))).toBe(false)
-    expect(billingReadOnly(state("disabled"))).toBe(false)
+    expect(onFreePlan(state("none"))).toBe(true)
+    expect(onFreePlan(state("canceled"))).toBe(true)
+    expect(onFreePlan(state("none", 9))).toBe(false)
+    expect(onFreePlan(state("disabled"))).toBe(false)
   })
 })
 
-describe("read-only notice", () => {
-  it("tells a trial that ran out apart from a subscription that ended", () => {
-    expect(readOnlyNotice(state("none"))).toBe(
-      "Your trial ended. Subscribe to keep editing."
-    )
-    expect(readOnlyNotice(state("canceled"))).toBe(
-      "Your subscription ended. Subscribe to keep editing."
-    )
-    expect(readOnlyNotice(state("unpaid"))).toBe(
-      "Your subscription ended. Subscribe to keep editing."
-    )
+describe("paid sections", () => {
+  it("names the operations sections by their first path segment", () => {
+    for (const path of [
+      "/menu",
+      "/menu/mnu_1",
+      "/products",
+      "/sales/imports",
+      "/invoices",
+      "/labor",
+      "/integrations/sales/connections",
+    ]) {
+      expect(inPaidSection(path), path).toBe(true)
+    }
   })
 
-  it("is silent while writes are allowed", () => {
-    expect(readOnlyNotice(state("none", 14))).toBeNull()
-    expect(readOnlyNotice(state("active"))).toBeNull()
-    expect(readOnlyNotice(state("disabled"))).toBeNull()
+  it("leaves recipe development and everything else alone", () => {
+    for (const path of [
+      "/",
+      "/recipes",
+      "/recipes/rcp_1/cost",
+      "/ingredients/ing_1",
+      "/costs",
+      "/settings",
+      "/menus-like",
+      "/invoicesx",
+    ]) {
+      expect(inPaidSection(path), path).toBe(false)
+    }
   })
 })
 
@@ -126,7 +137,7 @@ describe("billing status label", () => {
     expect(billingStatusLabel(state("past_due"))).toBe("Past due")
   })
 
-  it("labels a read-only account by what ended", () => {
+  it("labels a free account by what ended", () => {
     expect(billingStatusLabel(state("none"))).toBe("Trial ended")
     expect(billingStatusLabel(state("canceled"))).toBe("Subscription ended")
     expect(billingStatusLabel(state("unpaid"))).toBe("Subscription ended")

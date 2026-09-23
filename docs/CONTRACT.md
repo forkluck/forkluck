@@ -357,6 +357,7 @@ GET  recipes/               device      same view, params and payload as /intern
 GET  recipes/<recipe_ref>/  device      same as /internal/v1/recipes/<recipe_ref>/
 GET  recipes/<recipe_ref>/nutrition/    same as the internal route
 GET  recipe-categories/     device      same as the internal route
+GET  business-settings/     device      same payload as /internal/v1/business-settings/
 POST actions/<slug>/        device      the phone's action funnel, see below
 ```
 
@@ -399,8 +400,8 @@ setting unset the three fields are ignored.
 The reads reuse the internal views unchanged, so the payloads are the ones
 documented under the internal routes, including the owner-only cost fields;
 the phone ignores what it does not show. `sign-out` is deliberately not an
-action: it is never gated by billing, so an expired or locked account can
-still sign a phone out. `billing.locked` in `session/` is the app's cue to
+action: it is never gated by billing, so a locked account can still sign a
+phone out. `billing.locked` in `session/` is the app's cue to
 drop its token.
 
 `actions/<slug>/` is the internal action funnel behind the device guard:
@@ -856,9 +857,9 @@ deleted and nothing else; it stays authoritative for the hard redirect in Next
 and is one half of Django's write gate, and the frontend does not repeat the
 Stripe-status precedence table.
 
-`plan` is `"paid"`, `"trial"` or `"expired"`. `active`, `trialing` and
+`plan` is `"paid"`, `"trial"` or `"free"`. `active`, `trialing` and
 `past_due` are paid. Every other status — `none`, `canceled`, `unpaid`,
-`deleting`, anything unrecognized — is trial or expired by the clock: the trial
+`deleting`, anything unrecognized — is trial or free by the clock: the trial
 ends at `max(user.date_joined, TRIAL_FLOOR) + 14 days`, computed in
 `apps/api/forkluck/domains/shared/billing.py` from the loaded user with no
 extra column and no extra query. `TRIAL_FLOOR` is the launch date, so accounts
@@ -867,9 +868,18 @@ the Django admin extends a trial. Stripe never trials. The self-hosted, demo
 and staff exemptions are paid with no clock. `entitlements` is the plan's row
 of the catalog in that module: the boolean flags `primo`, `posSync`,
 `connectors`, `usdaSearch`, `catalogSearch` and `invoiceAi`. Trial and paid
-share every flag; expired has none. There is no recipe cap on any plan.
-Expired is read-only: every read works, and every action outside billing is
-refused with `subscription_required`. `recipeCount` is the account's owned
+share every flag; free keeps `usdaSearch` and `catalogSearch` and none of the
+rest. There is no recipe cap on any plan. Free is recipe development,
+forever: recipes, ingredients, costing, nutrition, sharing and kitchen
+members keep writing, and every read works. Operations are refused for free
+with `upgrade_required` and "This feature needs a subscription.": every
+action of the invoices, connectors, labor, Primo and sales registries
+(`PAID_OWNERS` in `http/dispatch.py`) plus `save-menu`, `delete-menu` and
+`set-preferred-supplier-item`, except `disconnect-pos`, `disconnect-connector`
+and `disconnect-drive-folder`, which stay open so an account can always take
+a provider's access back (`PAID_ACTIONS`). Connecting Square or Shopify,
+which starts outside the funnel, is turned back the same way with
+`integration_error=upgrade_required`. `recipeCount` is the account's owned
 recipe count — every status and both kinds, recipes shared to the user and
 recipes in kitchens it belongs to excluded — on every plan: it is the signal
 that decides whether an account with no recipes of its own lands in a kitchen
@@ -1693,8 +1703,8 @@ A create may carry `ownerId`, the owner of a kitchen the caller is an _editor_
 member of; it is refused alongside `id`, because a kitchen is chosen only when
 a recipe is created. Everything the create writes then belongs to that
 kitchen: its category and its code. A kitchen the caller is not an editor of
-answers "Kitchen not found or read-only", and one whose owner is expired or
-being deleted answers "This kitchen is closed for edits." The
+answers "Kitchen not found or read-only", and one whose owner is being
+deleted answers "This kitchen is closed for edits." The
 activity line is written in the owner's log with the member as its actor. The
 creator is an _editor_ of what they made, not its owner: no costs, no delete,
 and the same title/description/items/steps allowlist on the next save.
@@ -1983,7 +1993,8 @@ Both reserve under the workspace's User row lock, before any provider call.
   Repeated or older totals cannot decrease the recorded usage or refund work.
 
 Trial kitchens receive 25 AI pages and paid kitchens 100 per UTC calendar
-month; an expired kitchen receives none, and a self-hosted one is unlimited.
+month; a free kitchen receives none and is refused with `upgrade_required`
+before any page is reserved, and a self-hosted one is unlimited.
 Each plan also has eight reserved model attempts per allowed page, shared by
 detection, extraction, escalation and transport retries. A call reserves both
 its initial attempt and its possible retry, conservatively retaining unused
@@ -2675,7 +2686,7 @@ session retains its returned subscription id and is neither replaced nor
 allowed through account deletion until that exact subscription appears in the
 local mirror. No Stripe trial is ever attached; the 14-day trial is the
 account's own clock. Checkout is refused only when the account's status already
-maps to the paid plan, so a trial or expired account can always subscribe.
+maps to the paid plan, so a trial or free account can always subscribe.
 
 `create-billing-portal` takes `{customerId?}`. After a complete account refresh,
 one relevant Stripe customer returns `{url}`. Multiple relevant customers and
@@ -2691,7 +2702,7 @@ and returns the session's `billing` shape without `recipeCount`, so
 `{status, trialDaysLeft, locked, plan, entitlements}`. The completion UI treats
 `plan === "paid"` as success, retrying eight times at 500 ms intervals, then
 shows a manual retry instead of navigating on a snapshot that is still trial
-or expired.
+or free.
 
 The authoritative slug → handler mapping lives in `EXPECTED_ACTIONS` in
 `apps/api/forkluck/test_contract.py`.
@@ -2728,7 +2739,8 @@ machine-readable `code` is listed below.
 | `StaleWriteError`                                                              | 409    | `{"error": "This <kind> changed in another window. Reload to see the latest.", "code": "stale_write", "editVersion": n}` |
 | `TokenCryptoError`                                                             | 400    | `"Stored provider credentials could not be read. Reconnect the channel in Settings."`                                    |
 | Billing configuration, provider, or concurrent refresh temporarily unavailable | 503    | `{"error": "Billing is temporarily unavailable. Try again shortly.", "code": "billing_not_ready"}`                       |
-| Account expired or being deleted                                               | 403    | `{"error": <write refusal>, "code": "subscription_required"}`                                                            |
+| Account being deleted                                                          | 403    | `{"error": "This account is being deleted.", "code": "subscription_required"}`                                            |
+| Free plan, operations action                                                   | 403    | `{"error": "This feature needs a subscription.", "code": "upgrade_required"}`                                            |
 | `EntitlementError`                                                             | 403    | `{"error": str(exc), "code": "upgrade_required"}`, or the code the raiser named                                          |
 
 `TokenCryptoError` and `IntegrityError` details name key ids, tables, and
@@ -2738,21 +2750,22 @@ domain that can explain a specific constraint catches it itself and raises
 handler's returned dict _is_ the response body (`JsonResponse` verbatim).
 
 The `subscription_required` 403 is raised by the dispatch route before the
-handler runs, on every action except the three billing ones, so an expired
-account or one under deletion can still reach Checkout and the portal. The
-write refusal is one of three sentences from `write_refusal`: "Your trial has
-ended. Subscribe to keep editing." when the account never subscribed, "Your
-subscription has ended. Subscribe to keep editing." when it did, and "This
-account is being deleted." while deletion runs. Reads are never refused, so an
-expired account keeps every page, print and export, and its guest links keep
-resolving; only a deleting owner's links go dark.
+handler runs, on every action except the three billing ones and the three
+account-safety ones (`revoke-device`, `request-account-deletion`,
+`delete-account`), and only while the account is being deleted: the one
+sentence is "This account is being deleted." (`write_refusal_for`). The
+`upgrade_required` 403 is raised at the same point for a free account running
+an operations action (`PAID_ACTIONS`), with "This feature needs a
+subscription.". Reads are never refused, so a free account keeps every page,
+print and export, and its guest links keep resolving; only a deleting owner's
+links go dark.
 
 `EntitlementError` is raised by a handler instead, once the plan's catalog says
 the feature is not included. The boolean flags raise the default
 `upgrade_required` from the handlers that spend money per use: nutrition and
-catalog search, POS sync enqueue and retry, and connector connect,
-complete-authorization and sync. Reads stay ungated, so a downgraded account
-can still see and disconnect what it connected.
+catalog search, POS sync enqueue and retry, connector connect,
+complete-authorization and sync, and the AI page reserve. Reads stay ungated,
+so a downgraded account can still see and disconnect what it connected.
 
 Next Server Actions expose expected failures as data — each returns its
 payload or `{error: string}` — without changing the Django wire format above.

@@ -403,7 +403,7 @@ because the app's code field takes six. For that one address
 `auth/request-code/` sends nothing and `auth/verify-code/` compares the typed
 code with the fixed one, throttled like password attempts (ten wrong tries in
 fifteen minutes). The account is also treated as paid with no trial clock, so
-a review never runs into "Trial ended". Every other address is unaffected.
+a review never lands on the free plan. Every other address is unaffected.
 The pair goes in the App Review Information notes in App Store Connect,
 never in the repo, and can be rotated by editing the file and restarting
 `forkluck-django.service`.

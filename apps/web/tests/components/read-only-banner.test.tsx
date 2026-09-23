@@ -15,12 +15,8 @@ afterEach(cleanup)
 
 describe("ReadOnlyBanner", () => {
   it("shows the sentence it was given beside the way to subscribe", () => {
-    render(
-      <ReadOnlyBanner notice="Your trial ended. Subscribe to keep editing." />
-    )
-    expect(
-      screen.getByText("Your trial ended. Subscribe to keep editing.")
-    ).toBeDefined()
+    render(<ReadOnlyBanner notice="This feature needs a subscription." />)
+    expect(screen.getByText("This feature needs a subscription.")).toBeDefined()
     expect(
       screen.getByRole("button", { name: "Subscribe" }).getAttribute("href")
     ).toBe("/subscribe")

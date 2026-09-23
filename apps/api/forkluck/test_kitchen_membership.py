@@ -565,9 +565,9 @@ class CreateInKitchenTests(KitchenTestCase):
         row = Recipe.objects.get(id=self.create().json()["id"])
         self.assertNotEqual(row.code, "RCP-0501")
 
-    def test_an_expired_kitchen_refuses_the_create(self):
-        # The owner's window has closed while the member's is still open, so
-        # the refusal is the kitchen's, not the caller's own gate.
+    def test_a_free_kitchen_takes_the_create(self):
+        # The owner's trial has ended while the member's is still open; a
+        # free kitchen keeps writing recipes, so nothing refuses this.
         now = trial_ends_at(self.owner) + timedelta(days=1)
         self.member.date_joined = now - timedelta(days=1)
         self.member.save(update_fields=["date_joined"])
@@ -575,9 +575,8 @@ class CreateInKitchenTests(KitchenTestCase):
             "forkluck.domains.shared.billing.current_time", return_value=now
         ):
             response = self.create()
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["error"], CLOSED)
-        self.assertEqual(Recipe.objects.count(), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Recipe.objects.count(), 2)
 
     def test_a_locked_kitchen_refuses_the_create(self):
         BillingAccount.objects.create(

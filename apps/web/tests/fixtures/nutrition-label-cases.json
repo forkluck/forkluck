@@ -1,0 +1,1783 @@
+{
+  "rounding": {
+    "calories": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 4.9,
+        "expect": "0"
+      },
+      {
+        "input": 5,
+        "expect": "5"
+      },
+      {
+        "input": 7.4,
+        "expect": "5"
+      },
+      {
+        "input": 7.5,
+        "expect": "10"
+      },
+      {
+        "input": 12,
+        "expect": "10"
+      },
+      {
+        "input": 50,
+        "expect": "50"
+      },
+      {
+        "input": 52,
+        "expect": "50"
+      },
+      {
+        "input": 55,
+        "expect": "60"
+      },
+      {
+        "input": 250,
+        "expect": "250"
+      },
+      {
+        "input": 254,
+        "expect": "250"
+      },
+      {
+        "input": 255,
+        "expect": "260"
+      },
+      {
+        "input": 1234,
+        "expect": "1230"
+      }
+    ],
+    "fatGrams": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 0.49,
+        "expect": "0"
+      },
+      {
+        "input": 0.5,
+        "expect": "0.5"
+      },
+      {
+        "input": 0.74,
+        "expect": "0.5"
+      },
+      {
+        "input": 0.75,
+        "expect": "1"
+      },
+      {
+        "input": 1.3,
+        "expect": "1.5"
+      },
+      {
+        "input": 4.9,
+        "expect": "5"
+      },
+      {
+        "input": 5,
+        "expect": "5"
+      },
+      {
+        "input": 5.2,
+        "expect": "5"
+      },
+      {
+        "input": 5.5,
+        "expect": "6"
+      },
+      {
+        "input": 12.6,
+        "expect": "13"
+      }
+    ],
+    "cholesterol": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 1.9,
+        "expect": "0"
+      },
+      {
+        "input": 2,
+        "expect": "less than 5"
+      },
+      {
+        "input": 3.5,
+        "expect": "less than 5"
+      },
+      {
+        "input": 5,
+        "expect": "less than 5"
+      },
+      {
+        "input": 5.1,
+        "expect": "5"
+      },
+      {
+        "input": 7.4,
+        "expect": "5"
+      },
+      {
+        "input": 7.5,
+        "expect": "10"
+      },
+      {
+        "input": 63,
+        "expect": "65"
+      },
+      {
+        "input": 300,
+        "expect": "300"
+      }
+    ],
+    "sodium": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 4.9,
+        "expect": "0"
+      },
+      {
+        "input": 5,
+        "expect": "5"
+      },
+      {
+        "input": 7.4,
+        "expect": "5"
+      },
+      {
+        "input": 7.5,
+        "expect": "10"
+      },
+      {
+        "input": 140,
+        "expect": "140"
+      },
+      {
+        "input": 141,
+        "expect": "140"
+      },
+      {
+        "input": 144,
+        "expect": "140"
+      },
+      {
+        "input": 145,
+        "expect": "150"
+      },
+      {
+        "input": 1180,
+        "expect": "1180"
+      }
+    ],
+    "carbGrams": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 0.49,
+        "expect": "0"
+      },
+      {
+        "input": 0.5,
+        "expect": "less than 1"
+      },
+      {
+        "input": 0.99,
+        "expect": "less than 1"
+      },
+      {
+        "input": 1,
+        "expect": "1"
+      },
+      {
+        "input": 1.4,
+        "expect": "1"
+      },
+      {
+        "input": 1.5,
+        "expect": "2"
+      },
+      {
+        "input": 22.6,
+        "expect": "23"
+      }
+    ],
+    "vitaminD": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 0.04,
+        "expect": "0"
+      },
+      {
+        "input": 0.05,
+        "expect": "0.1"
+      },
+      {
+        "input": 0.14,
+        "expect": "0.1"
+      },
+      {
+        "input": 2.06,
+        "expect": "2.1"
+      },
+      {
+        "input": 20,
+        "expect": "20"
+      }
+    ],
+    "iron": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 0.04,
+        "expect": "0"
+      },
+      {
+        "input": 0.05,
+        "expect": "0.1"
+      },
+      {
+        "input": 1.25,
+        "expect": "1.3"
+      },
+      {
+        "input": 1.35,
+        "expect": "1.4"
+      },
+      {
+        "input": 18,
+        "expect": "18"
+      }
+    ],
+    "mineral10": [
+      {
+        "input": 0,
+        "expect": "0"
+      },
+      {
+        "input": 4,
+        "expect": "0"
+      },
+      {
+        "input": 5,
+        "expect": "10"
+      },
+      {
+        "input": 14,
+        "expect": "10"
+      },
+      {
+        "input": 15,
+        "expect": "20"
+      },
+      {
+        "input": 126,
+        "expect": "130"
+      },
+      {
+        "input": 1300,
+        "expect": "1300"
+      }
+    ],
+    "euGrams": [
+      {
+        "input": 0,
+        "expect": "<0.5"
+      },
+      {
+        "input": 0.4,
+        "expect": "<0.5"
+      },
+      {
+        "input": 0.49,
+        "expect": "<0.5"
+      },
+      {
+        "input": 0.5,
+        "expect": "0.5"
+      },
+      {
+        "input": 0.55,
+        "expect": "0.6"
+      },
+      {
+        "input": 3.14,
+        "expect": "3.1"
+      },
+      {
+        "input": 9.99,
+        "expect": "10"
+      },
+      {
+        "input": 10,
+        "expect": "10"
+      },
+      {
+        "input": 10.4,
+        "expect": "10"
+      },
+      {
+        "input": 10.5,
+        "expect": "11"
+      },
+      {
+        "input": 47.3,
+        "expect": "47"
+      }
+    ],
+    "euSalt": [
+      {
+        "input": 0,
+        "expect": "<0.01"
+      },
+      {
+        "input": 0.01,
+        "expect": "<0.01"
+      },
+      {
+        "input": 0.0124,
+        "expect": "<0.01"
+      },
+      {
+        "input": 0.0125,
+        "expect": "0.01"
+      },
+      {
+        "input": 0.125,
+        "expect": "0.13"
+      },
+      {
+        "input": 0.99,
+        "expect": "0.99"
+      },
+      {
+        "input": 1,
+        "expect": "1"
+      },
+      {
+        "input": 1.05,
+        "expect": "1.1"
+      },
+      {
+        "input": 2.46,
+        "expect": "2.5"
+      }
+    ]
+  },
+  "percent": [
+    {
+      "amount": 0,
+      "dailyValue": 78,
+      "kind": "macro",
+      "expect": 0
+    },
+    {
+      "amount": 3.9,
+      "dailyValue": 78,
+      "kind": "macro",
+      "expect": 5
+    },
+    {
+      "amount": 10,
+      "dailyValue": 78,
+      "kind": "macro",
+      "expect": 13
+    },
+    {
+      "amount": 1.2,
+      "dailyValue": 20,
+      "kind": "macro",
+      "expect": 6
+    },
+    {
+      "amount": 0.5,
+      "dailyValue": 20,
+      "kind": "micro",
+      "expect": 2
+    },
+    {
+      "amount": 2,
+      "dailyValue": 20,
+      "kind": "micro",
+      "expect": 10
+    },
+    {
+      "amount": 3,
+      "dailyValue": 20,
+      "kind": "micro",
+      "expect": 15
+    },
+    {
+      "amount": 9,
+      "dailyValue": 20,
+      "kind": "micro",
+      "expect": 45
+    },
+    {
+      "amount": 11,
+      "dailyValue": 20,
+      "kind": "micro",
+      "expect": 60
+    },
+    {
+      "amount": 260,
+      "dailyValue": 1300,
+      "kind": "micro",
+      "expect": 20
+    },
+    {
+      "amount": 700,
+      "dailyValue": 1300,
+      "kind": "micro",
+      "expect": 50
+    },
+    {
+      "amount": 1500,
+      "dailyValue": 1300,
+      "kind": "micro",
+      "expect": 120
+    }
+  ],
+  "servings": [
+    {
+      "count": 1,
+      "expect": "1 serving per container"
+    },
+    {
+      "count": 1.4,
+      "expect": "about 1 serving per container"
+    },
+    {
+      "count": 1.5,
+      "expect": "about 2 servings per container"
+    },
+    {
+      "count": 2,
+      "expect": "2 servings per container"
+    },
+    {
+      "count": 2.26,
+      "expect": "about 2.5 servings per container"
+    },
+    {
+      "count": 2.5,
+      "expect": "2.5 servings per container"
+    },
+    {
+      "count": 2.74,
+      "expect": "about 2.5 servings per container"
+    },
+    {
+      "count": 4.8,
+      "expect": "about 5 servings per container"
+    },
+    {
+      "count": 5.4,
+      "expect": "about 5 servings per container"
+    },
+    {
+      "count": 6.5,
+      "expect": "about 7 servings per container"
+    },
+    {
+      "count": 12,
+      "expect": "12 servings per container"
+    },
+    {
+      "count": 24.9,
+      "expect": "about 25 servings per container"
+    }
+  ],
+  "servingLabels": [
+    {
+      "amount": 1,
+      "unit": "slice",
+      "grams": 45,
+      "expect": "1 slice (45 g)"
+    },
+    {
+      "amount": 2,
+      "unit": "pcs",
+      "grams": 30.5,
+      "expect": "2 pcs (30.5 g)"
+    },
+    {
+      "amount": 100,
+      "unit": "g",
+      "grams": 100,
+      "expect": "100 g"
+    },
+    {
+      "amount": 0.5,
+      "unit": "cup",
+      "grams": 120,
+      "expect": "0.5 cup (120 g)"
+    },
+    {
+      "amount": null,
+      "unit": "",
+      "grams": 55,
+      "expect": "55 g"
+    },
+    {
+      "amount": 3,
+      "unit": "pcs",
+      "grams": null,
+      "expect": "3 pcs"
+    },
+    {
+      "amount": null,
+      "unit": "",
+      "grams": null,
+      "expect": "Not set"
+    },
+    {
+      "amount": 1234.567,
+      "unit": "g",
+      "grams": 1234.567,
+      "expect": "1,234.57 g"
+    }
+  ],
+  "panels": {
+    "cookie": {
+      "nutrients": {
+        "calories": {
+          "amount": 254.4,
+          "complete": true
+        },
+        "energyKj": {
+          "amount": 1064.4,
+          "complete": true
+        },
+        "fat": {
+          "amount": 12.6,
+          "complete": true
+        },
+        "saturatedFat": {
+          "amount": 7.4,
+          "complete": true
+        },
+        "transFat": {
+          "amount": 0.2,
+          "complete": true
+        },
+        "cholesterolMg": {
+          "amount": 33.4,
+          "complete": true
+        },
+        "sodiumMg": {
+          "amount": 143,
+          "complete": true
+        },
+        "salt": {
+          "amount": 0.3575,
+          "complete": true
+        },
+        "totalCarbohydrate": {
+          "amount": 32.6,
+          "complete": true
+        },
+        "fiber": {
+          "amount": 0.9,
+          "complete": true
+        },
+        "sugars": {
+          "amount": 18.4,
+          "complete": true
+        },
+        "addedSugars": {
+          "amount": 17.9,
+          "complete": true
+        },
+        "protein": {
+          "amount": 2.6,
+          "complete": true
+        },
+        "vitaminDMcg": {
+          "amount": 0.14,
+          "complete": true
+        },
+        "calciumMg": {
+          "amount": 14,
+          "complete": true
+        },
+        "ironMg": {
+          "amount": 1.25,
+          "complete": true
+        },
+        "potassiumMg": {
+          "amount": 61,
+          "complete": true
+        }
+      },
+      "us": {
+        "calories": "250",
+        "rows": [
+          {
+            "key": "fat",
+            "label": "Total Fat",
+            "amount": "13",
+            "unit": "g",
+            "percent": 16,
+            "indent": 0
+          },
+          {
+            "key": "saturatedFat",
+            "label": "Saturated Fat",
+            "amount": "7",
+            "unit": "g",
+            "percent": 37,
+            "indent": 1
+          },
+          {
+            "key": "transFat",
+            "label": "Trans Fat",
+            "amount": "0",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "cholesterolMg",
+            "label": "Cholesterol",
+            "amount": "35",
+            "unit": "mg",
+            "percent": 11,
+            "indent": 0
+          },
+          {
+            "key": "sodiumMg",
+            "label": "Sodium",
+            "amount": "140",
+            "unit": "mg",
+            "percent": 6,
+            "indent": 0
+          },
+          {
+            "key": "totalCarbohydrate",
+            "label": "Total Carbohydrate",
+            "amount": "33",
+            "unit": "g",
+            "percent": 12,
+            "indent": 0
+          },
+          {
+            "key": "fiber",
+            "label": "Dietary Fiber",
+            "amount": "less than 1",
+            "unit": "g",
+            "percent": 3,
+            "indent": 1
+          },
+          {
+            "key": "sugars",
+            "label": "Total Sugars",
+            "amount": "18",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "addedSugars",
+            "label": "Added Sugars",
+            "amount": "18",
+            "unit": "g",
+            "percent": 36,
+            "indent": 2
+          },
+          {
+            "key": "protein",
+            "label": "Protein",
+            "amount": "3",
+            "unit": "g",
+            "percent": null,
+            "indent": 0
+          }
+        ],
+        "vitamins": [
+          {
+            "key": "vitaminDMcg",
+            "label": "Vitamin D",
+            "amount": "0.1",
+            "unit": "mcg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "calciumMg",
+            "label": "Calcium",
+            "amount": "10",
+            "unit": "mg",
+            "percent": 2,
+            "indent": 0
+          },
+          {
+            "key": "ironMg",
+            "label": "Iron",
+            "amount": "1.3",
+            "unit": "mg",
+            "percent": 6,
+            "indent": 0
+          },
+          {
+            "key": "potassiumMg",
+            "label": "Potassium",
+            "amount": "60",
+            "unit": "mg",
+            "percent": 2,
+            "indent": 0
+          }
+        ]
+      },
+      "eu": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "1064 kJ / 254 kcal",
+          "perServing": "1064 kJ / 254 kcal",
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "13 g",
+          "perServing": "13 g",
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "7.4 g",
+          "perServing": "7.4 g",
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "33 g",
+          "perServing": "33 g",
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "18 g",
+          "perServing": "18 g",
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "2.6 g",
+          "perServing": "2.6 g",
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "0.36 g",
+          "perServing": "0.36 g",
+          "indent": false
+        }
+      ],
+      "euWithoutServing": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "1064 kJ / 254 kcal",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "13 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "7.4 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "33 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "18 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "2.6 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "0.36 g",
+          "perServing": null,
+          "indent": false
+        }
+      ]
+    },
+    "broth": {
+      "nutrients": {
+        "calories": {
+          "amount": 4.2,
+          "complete": true
+        },
+        "energyKj": {
+          "amount": 17.6,
+          "complete": true
+        },
+        "fat": {
+          "amount": 0.3,
+          "complete": true
+        },
+        "saturatedFat": {
+          "amount": 0.04,
+          "complete": true
+        },
+        "transFat": {
+          "amount": 0,
+          "complete": true
+        },
+        "cholesterolMg": {
+          "amount": 1.8,
+          "complete": true
+        },
+        "sodiumMg": {
+          "amount": 4.6,
+          "complete": true
+        },
+        "salt": {
+          "amount": 0.0115,
+          "complete": true
+        },
+        "totalCarbohydrate": {
+          "amount": 0.6,
+          "complete": true
+        },
+        "fiber": {
+          "amount": 0,
+          "complete": true
+        },
+        "sugars": {
+          "amount": 0.4,
+          "complete": true
+        },
+        "addedSugars": {
+          "amount": 0,
+          "complete": false
+        },
+        "protein": {
+          "amount": 0.9,
+          "complete": true
+        },
+        "vitaminDMcg": {
+          "amount": 0,
+          "complete": false
+        },
+        "calciumMg": {
+          "amount": 3,
+          "complete": true
+        },
+        "ironMg": {
+          "amount": 0.04,
+          "complete": true
+        },
+        "potassiumMg": {
+          "amount": 38,
+          "complete": true
+        }
+      },
+      "us": {
+        "calories": "0",
+        "rows": [
+          {
+            "key": "fat",
+            "label": "Total Fat",
+            "amount": "0",
+            "unit": "g",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "saturatedFat",
+            "label": "Saturated Fat",
+            "amount": "0",
+            "unit": "g",
+            "percent": 0,
+            "indent": 1
+          },
+          {
+            "key": "transFat",
+            "label": "Trans Fat",
+            "amount": "0",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "cholesterolMg",
+            "label": "Cholesterol",
+            "amount": "0",
+            "unit": "mg",
+            "percent": 1,
+            "indent": 0
+          },
+          {
+            "key": "sodiumMg",
+            "label": "Sodium",
+            "amount": "0",
+            "unit": "mg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "totalCarbohydrate",
+            "label": "Total Carbohydrate",
+            "amount": "less than 1",
+            "unit": "g",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "fiber",
+            "label": "Dietary Fiber",
+            "amount": "0",
+            "unit": "g",
+            "percent": 0,
+            "indent": 1
+          },
+          {
+            "key": "sugars",
+            "label": "Total Sugars",
+            "amount": "0",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "addedSugars",
+            "label": "Added Sugars",
+            "amount": "0",
+            "unit": "g",
+            "percent": 0,
+            "indent": 2
+          },
+          {
+            "key": "protein",
+            "label": "Protein",
+            "amount": "less than 1",
+            "unit": "g",
+            "percent": null,
+            "indent": 0
+          }
+        ],
+        "vitamins": [
+          {
+            "key": "vitaminDMcg",
+            "label": "Vitamin D",
+            "amount": "0",
+            "unit": "mcg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "calciumMg",
+            "label": "Calcium",
+            "amount": "0",
+            "unit": "mg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "ironMg",
+            "label": "Iron",
+            "amount": "0",
+            "unit": "mg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "potassiumMg",
+            "label": "Potassium",
+            "amount": "40",
+            "unit": "mg",
+            "percent": 0,
+            "indent": 0
+          }
+        ]
+      },
+      "eu": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "18 kJ / 4 kcal",
+          "perServing": "18 kJ / 4 kcal",
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "<0.5 g",
+          "perServing": "<0.5 g",
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "<0.5 g",
+          "perServing": "<0.5 g",
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "0.6 g",
+          "perServing": "0.6 g",
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "<0.5 g",
+          "perServing": "<0.5 g",
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "0.9 g",
+          "perServing": "0.9 g",
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "<0.01 g",
+          "perServing": "<0.01 g",
+          "indent": false
+        }
+      ],
+      "euWithoutServing": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "18 kJ / 4 kcal",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "<0.5 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "<0.5 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "0.6 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "<0.5 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "0.9 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "<0.01 g",
+          "perServing": null,
+          "indent": false
+        }
+      ]
+    },
+    "loaf": {
+      "nutrients": {
+        "calories": {
+          "amount": 1180,
+          "complete": true
+        },
+        "energyKj": {
+          "amount": 4937,
+          "complete": true
+        },
+        "fat": {
+          "amount": 4.5,
+          "complete": true
+        },
+        "saturatedFat": {
+          "amount": 0.75,
+          "complete": true
+        },
+        "transFat": {
+          "amount": 0,
+          "complete": true
+        },
+        "cholesterolMg": {
+          "amount": 0,
+          "complete": true
+        },
+        "sodiumMg": {
+          "amount": 1180,
+          "complete": true
+        },
+        "salt": {
+          "amount": 2.95,
+          "complete": true
+        },
+        "totalCarbohydrate": {
+          "amount": 240,
+          "complete": true
+        },
+        "fiber": {
+          "amount": 9.6,
+          "complete": true
+        },
+        "sugars": {
+          "amount": 5.4,
+          "complete": true
+        },
+        "addedSugars": {
+          "amount": 5.4,
+          "complete": true
+        },
+        "protein": {
+          "amount": 38,
+          "complete": true
+        },
+        "vitaminDMcg": {
+          "amount": 0,
+          "complete": true
+        },
+        "calciumMg": {
+          "amount": 126,
+          "complete": true
+        },
+        "ironMg": {
+          "amount": 15.7,
+          "complete": true
+        },
+        "potassiumMg": {
+          "amount": 700,
+          "complete": true
+        }
+      },
+      "us": {
+        "calories": "1180",
+        "rows": [
+          {
+            "key": "fat",
+            "label": "Total Fat",
+            "amount": "4.5",
+            "unit": "g",
+            "percent": 6,
+            "indent": 0
+          },
+          {
+            "key": "saturatedFat",
+            "label": "Saturated Fat",
+            "amount": "1",
+            "unit": "g",
+            "percent": 4,
+            "indent": 1
+          },
+          {
+            "key": "transFat",
+            "label": "Trans Fat",
+            "amount": "0",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "cholesterolMg",
+            "label": "Cholesterol",
+            "amount": "0",
+            "unit": "mg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "sodiumMg",
+            "label": "Sodium",
+            "amount": "1180",
+            "unit": "mg",
+            "percent": 51,
+            "indent": 0
+          },
+          {
+            "key": "totalCarbohydrate",
+            "label": "Total Carbohydrate",
+            "amount": "240",
+            "unit": "g",
+            "percent": 87,
+            "indent": 0
+          },
+          {
+            "key": "fiber",
+            "label": "Dietary Fiber",
+            "amount": "10",
+            "unit": "g",
+            "percent": 34,
+            "indent": 1
+          },
+          {
+            "key": "sugars",
+            "label": "Total Sugars",
+            "amount": "5",
+            "unit": "g",
+            "percent": null,
+            "indent": 1
+          },
+          {
+            "key": "addedSugars",
+            "label": "Added Sugars",
+            "amount": "5",
+            "unit": "g",
+            "percent": 11,
+            "indent": 2
+          },
+          {
+            "key": "protein",
+            "label": "Protein",
+            "amount": "38",
+            "unit": "g",
+            "percent": null,
+            "indent": 0
+          }
+        ],
+        "vitamins": [
+          {
+            "key": "vitaminDMcg",
+            "label": "Vitamin D",
+            "amount": "0",
+            "unit": "mcg",
+            "percent": 0,
+            "indent": 0
+          },
+          {
+            "key": "calciumMg",
+            "label": "Calcium",
+            "amount": "130",
+            "unit": "mg",
+            "percent": 10,
+            "indent": 0
+          },
+          {
+            "key": "ironMg",
+            "label": "Iron",
+            "amount": "15.7",
+            "unit": "mg",
+            "percent": 90,
+            "indent": 0
+          },
+          {
+            "key": "potassiumMg",
+            "label": "Potassium",
+            "amount": "700",
+            "unit": "mg",
+            "percent": 15,
+            "indent": 0
+          }
+        ]
+      },
+      "eu": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "4937 kJ / 1180 kcal",
+          "perServing": "4937 kJ / 1180 kcal",
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "4.5 g",
+          "perServing": "4.5 g",
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "0.8 g",
+          "perServing": "0.8 g",
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "240 g",
+          "perServing": "240 g",
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "5.4 g",
+          "perServing": "5.4 g",
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "38 g",
+          "perServing": "38 g",
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "3 g",
+          "perServing": "3 g",
+          "indent": false
+        }
+      ],
+      "euWithoutServing": [
+        {
+          "key": "energyKj",
+          "label": "Energy",
+          "per100g": "4937 kJ / 1180 kcal",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "fat",
+          "label": "Fat",
+          "per100g": "4.5 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "saturatedFat",
+          "label": "of which saturates",
+          "per100g": "0.8 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "totalCarbohydrate",
+          "label": "Carbohydrate",
+          "per100g": "240 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "sugars",
+          "label": "of which sugars",
+          "per100g": "5.4 g",
+          "perServing": null,
+          "indent": true
+        },
+        {
+          "key": "protein",
+          "label": "Protein",
+          "per100g": "38 g",
+          "perServing": null,
+          "indent": false
+        },
+        {
+          "key": "salt",
+          "label": "Salt",
+          "per100g": "3 g",
+          "perServing": null,
+          "indent": false
+        }
+      ]
+    }
+  },
+  "allergens": [
+    {
+      "name": "us, named nuts and wheat",
+      "region": "us",
+      "entries": [
+        {
+          "name": "Bread Flour",
+          "grams": 500,
+          "allergens": [
+            "wheat",
+            "gluten_cereals"
+          ]
+        },
+        {
+          "name": "Butter",
+          "grams": 200,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Hazelnuts",
+          "grams": 80,
+          "allergens": [
+            "tree_nuts"
+          ]
+        },
+        {
+          "name": "Onion",
+          "grams": 40,
+          "allergens": [
+            "allium"
+          ]
+        }
+      ],
+      "contains": [
+        "wheat",
+        "gluten_cereals",
+        "milk",
+        "tree_nuts",
+        "allium"
+      ],
+      "mayContain": [
+        "peanut",
+        "sesame",
+        "nightshades"
+      ],
+      "runs": [
+        {
+          "name": "bread flour",
+          "emphasised": false
+        },
+        {
+          "name": "butter",
+          "emphasised": false
+        },
+        {
+          "name": "hazelnuts",
+          "emphasised": false
+        },
+        {
+          "name": "onion",
+          "emphasised": false
+        }
+      ],
+      "containsLine": {
+        "groups": [
+          "Milk",
+          "Tree nuts (hazelnuts)",
+          "Wheat"
+        ],
+        "unnamedSpecies": false
+      },
+      "declared": {
+        "declared": [
+          "Milk",
+          "Tree nuts",
+          "Wheat"
+        ],
+        "kitchen": [
+          "Allium"
+        ]
+      },
+      "mayContainDeclared": {
+        "declared": [
+          "Peanut",
+          "Sesame"
+        ],
+        "kitchen": [
+          "Nightshades"
+        ]
+      }
+    },
+    {
+      "name": "eu, same recipe",
+      "region": "eu",
+      "entries": [
+        {
+          "name": "Bread Flour",
+          "grams": 500,
+          "allergens": [
+            "wheat",
+            "gluten_cereals"
+          ]
+        },
+        {
+          "name": "Butter",
+          "grams": 200,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Hazelnuts",
+          "grams": 80,
+          "allergens": [
+            "tree_nuts"
+          ]
+        },
+        {
+          "name": "Onion",
+          "grams": 40,
+          "allergens": [
+            "allium"
+          ]
+        }
+      ],
+      "contains": [
+        "wheat",
+        "gluten_cereals",
+        "milk",
+        "tree_nuts",
+        "allium"
+      ],
+      "mayContain": [
+        "peanut",
+        "sesame",
+        "nightshades"
+      ],
+      "runs": [
+        {
+          "name": "bread flour",
+          "emphasised": true
+        },
+        {
+          "name": "butter",
+          "emphasised": true
+        },
+        {
+          "name": "hazelnuts",
+          "emphasised": true
+        },
+        {
+          "name": "onion",
+          "emphasised": false
+        }
+      ],
+      "containsLine": {
+        "groups": [],
+        "unnamedSpecies": false
+      },
+      "declared": {
+        "declared": [
+          "Milk",
+          "Tree nuts",
+          "Wheat",
+          "Cereals containing gluten"
+        ],
+        "kitchen": [
+          "Allium"
+        ]
+      },
+      "mayContainDeclared": {
+        "declared": [
+          "Peanut",
+          "Sesame"
+        ],
+        "kitchen": [
+          "Nightshades"
+        ]
+      }
+    },
+    {
+      "name": "us, unnamed species and an unknown tag",
+      "region": "us",
+      "entries": [
+        {
+          "name": "Fish stock",
+          "grams": 900,
+          "allergens": []
+        },
+        {
+          "name": "Salt",
+          "grams": 12,
+          "allergens": []
+        }
+      ],
+      "contains": [
+        "fish",
+        "shellfish",
+        "mystery"
+      ],
+      "mayContain": [
+        "fish"
+      ],
+      "runs": [
+        {
+          "name": "fish stock",
+          "emphasised": false
+        },
+        {
+          "name": "salt",
+          "emphasised": false
+        }
+      ],
+      "containsLine": {
+        "groups": [
+          "Fish",
+          "Crustacean shellfish"
+        ],
+        "unnamedSpecies": true
+      },
+      "declared": {
+        "declared": [
+          "Fish",
+          "Crustacean shellfish"
+        ],
+        "kitchen": [
+          "mystery"
+        ]
+      },
+      "mayContainDeclared": {
+        "declared": [
+          "Fish"
+        ],
+        "kitchen": []
+      }
+    }
+  ],
+  "money": [
+    {
+      "cents": 0,
+      "currency": "USD",
+      "expect": "$0.00"
+    },
+    {
+      "cents": 1234.5,
+      "currency": "USD",
+      "expect": "$12.35"
+    },
+    {
+      "cents": 1234.4,
+      "currency": "USD",
+      "expect": "$12.34"
+    },
+    {
+      "cents": 100000,
+      "currency": "USD",
+      "expect": "$1,000.00"
+    },
+    {
+      "cents": 7,
+      "currency": "USD",
+      "expect": "$0.07"
+    },
+    {
+      "cents": 99999.6,
+      "currency": "EUR",
+      "expect": "€1,000.00"
+    },
+    {
+      "cents": 250,
+      "currency": "GBP",
+      "expect": "£2.50"
+    },
+    {
+      "cents": 123456,
+      "currency": "JPY",
+      "expect": "¥1,235"
+    },
+    {
+      "cents": 4.4,
+      "currency": "CAD",
+      "expect": "CA$0.04"
+    }
+  ],
+  "unitWords": {
+    "pcs": "piece",
+    "slice": "slice",
+    "g": "gram",
+    "kg": "kilogram",
+    "oz": "ounce",
+    "lb": "pound",
+    "ml": "milliliter",
+    "l": "liter",
+    "fl-oz": "fluid ounce",
+    "cup": "cup",
+    "pt": "pint",
+    "qt": "quart",
+    "gal": "gallon"
+  },
+  "nutrientLabels": {
+    "calories": "Calories",
+    "energyKj": "Energy",
+    "fat": "Total fat",
+    "saturatedFat": "Saturated fat",
+    "transFat": "Trans fat",
+    "cholesterolMg": "Cholesterol",
+    "sodiumMg": "Sodium",
+    "salt": "Salt",
+    "totalCarbohydrate": "Total carbohydrate",
+    "fiber": "Dietary fiber",
+    "sugars": "Total sugars",
+    "addedSugars": "Added sugars",
+    "protein": "Protein",
+    "vitaminDMcg": "Vitamin D",
+    "calciumMg": "Calcium",
+    "ironMg": "Iron",
+    "potassiumMg": "Potassium"
+  },
+  "issueCodes": {
+    "batch": [
+      "unlinkedIngredient",
+      "unweighedItem",
+      "unresolvedItem",
+      "subrecipeIncomplete",
+      "subrecipeUnresolved",
+      "subrecipeEmpty",
+      "allExcluded",
+      "noYield"
+    ],
+    "serving": [
+      "noServingSize",
+      "servingNeedsEquivalency",
+      "packageNeedsEquivalency",
+      "packageBelowServing",
+      "servingAboveBatch",
+      "packageAboveBatch"
+    ]
+  }
+}

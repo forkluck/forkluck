@@ -331,8 +331,8 @@ class GuestLinkInvariantTests(GuestLinkTestCase):
         with override_settings(STRIPE_BILLING_ENABLED=True):
             self.assertEqual(self.guest_get(token).status_code, 200)
 
-    def test_an_expired_owner_keeps_serving(self):
-        # Read-only means reads still work; only deletion takes a link down.
+    def test_a_free_owner_keeps_serving(self):
+        # Only deletion takes a link down; the end of a trial changes nothing here.
         token = self.mint()
         after = trial_ends_at(self.owner) + timedelta(days=1)
         with (

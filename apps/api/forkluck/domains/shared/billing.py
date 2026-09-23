@@ -17,8 +17,11 @@ JsonObject = dict[str, Any]
 
 # camelCase because these ship verbatim in the session JSON; every key is a
 # plain on/off feature flag. The trial row is the paid row, because the point
-# of a trial is to show the whole product. Expired is read-only and spends
-# nothing. Withholding a feature from the trial is a one-key edit here.
+# of a trial is to show the whole product. Free is recipe development,
+# forever: it keeps the two searches that feed a recipe and none of the
+# per-use spend of operations. Which actions free may not run at all is
+# decided in dispatch (PAID_ACTIONS); these flags gate what costs money per
+# use. Withholding a feature from a plan is a one-key edit here.
 PAID_ENTITLEMENTS = {
     "primo": True,
     "posSync": True,
@@ -28,17 +31,27 @@ PAID_ENTITLEMENTS = {
     "invoiceAi": True,
 }
 TRIAL_ENTITLEMENTS = dict(PAID_ENTITLEMENTS)
-EXPIRED_ENTITLEMENTS = {key: False for key in PAID_ENTITLEMENTS}
+FREE_ENTITLEMENTS = {
+    "primo": False,
+    "posSync": False,
+    "connectors": False,
+    "usdaSearch": True,
+    "catalogSearch": True,
+    "invoiceAi": False,
+}
 PLAN_ENTITLEMENTS = {
     "paid": PAID_ENTITLEMENTS,
     "trial": TRIAL_ENTITLEMENTS,
-    "expired": EXPIRED_ENTITLEMENTS,
+    "free": FREE_ENTITLEMENTS,
 }
+
+# The one sentence every plan gate answers with.
+NEEDS_SUBSCRIPTION = "This feature needs a subscription."
 
 # The hosted trial is a calendar window on the account, not a Stripe trial:
 # no card, no subscription, no column. Accounts older than the floor start
 # their window at the floor, so nobody who signed up before the trial existed
-# is expired on the day it ships. Set the floor to the launch date; moving it
+# loses the trial on the day it ships. Set the floor to the launch date; moving it
 # later only ever adds days. Editing `date_joined` in the admin extends one
 # account's trial.
 TRIAL_DAYS = 14
@@ -83,7 +96,7 @@ def _clock_plan(user: User) -> tuple[str, int | None]:
     """The plan an account without a live subscription is on right now."""
     remaining = (trial_ends_at(user) - current_time()).total_seconds()
     if remaining <= 0:
-        return "expired", None
+        return "free", None
     return "trial", math.ceil(remaining / 86400)
 
 
@@ -116,43 +129,32 @@ def billing_json(user: User) -> JsonObject:
     if is_paid_status(row["status"]):
         return _state(row["status"], "paid", None, row["locked"])
     # Anything Stripe reports that is not live, and an account that never
-    # subscribed, sit on the calendar: still inside the window or read-only.
+    # subscribed, sit on the calendar: still inside the window or free.
     plan, days_left = _clock_plan(user)
     return _state(row["status"], plan, days_left, row["locked"])
 
 
 def require_entitlement(user: User, key: str) -> None:
     if not billing_json(user)["entitlements"][key]:
-        raise EntitlementError("This feature needs a subscription.")
+        raise EntitlementError(NEEDS_SUBSCRIPTION)
 
 
 def write_refusal_for(state: JsonObject) -> str | None:
-    """Why this account may not write right now, or None while it may.
+    """Why this account may not write at all, or None while it may.
 
-    Answered from one billing state so a caller that already holds it, or
-    dispatch with its single lookup, can refuse with the right sentence.
+    Only deletion closes a workspace. The free plan's limits are per action
+    (dispatch) and per feature (`require_entitlement`), never a blanket
+    refusal: recipes stay writable on every plan.
     """
     if state["locked"]:
         return "This account is being deleted."
-    if state["plan"] != "expired":
-        return None
-    if state["status"] == "none":
-        return "Your trial has ended. Subscribe to keep editing."
-    return "Your subscription has ended. Subscribe to keep editing."
-
-
-def write_refusal(user: User) -> str | None:
-    return write_refusal_for(billing_json(user))
-
-
-def write_blocked(user: User) -> bool:
-    return write_refusal(user) is not None
+    return None
 
 
 def workspace_closed(user: User) -> bool:
     """Whether the account is going away.
 
-    Reads such as guest links stop at deletion, not at the end of a trial:
-    read-only means reads still work.
+    Reads such as guest links stop at deletion, not at the end of a trial,
+    and a collaborator's writes into a kitchen stop at the same point.
     """
     return bool(billing_json(user)["locked"])

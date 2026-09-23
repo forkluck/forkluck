@@ -13,6 +13,7 @@ from django.views.decorators.http import require_GET, require_POST
 from .domains.accounts import devices
 from .domains.accounts import views as account_views
 from .domains.recipes import views as recipe_views
+from .domains.workspace import views as workspace_views
 from .http import dispatch
 from .http.auth import device_user
 
@@ -52,5 +53,6 @@ urlpatterns = [
         device_get(recipe_views.recipe_nutrition),
     ),
     path("recipe-categories/", device_get(recipe_views.recipe_categories)),
+    path("business-settings/", device_get(workspace_views.business_settings)),
     path("actions/<slug:action_name>/", device_post(dispatch.mobile_action)),
 ]

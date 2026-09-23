@@ -33,13 +33,13 @@ function subscribeCopy(state: SubscribeState, trialDaysLeft: number | null) {
     case "trialEnded":
       return {
         heading: "Subscribe to Forkluck",
-        body: "Your trial has ended. Subscribe to keep editing. Everything you made is still here.",
+        body: "Your trial has ended. Recipes, ingredients, costing and nutrition stay free. Menus, sales, invoices, labor and Primo need a subscription: $7 a month. Cancel anytime.",
         button: "Subscribe",
       }
     case "lapsed":
       return {
         heading: "Resubscribe to Forkluck",
-        body: "Your subscription has ended. Forkluck is $7 a month. Cancel anytime. Everything you made is still here.",
+        body: "Your subscription has ended. Recipes, ingredients, costing and nutrition stay free. Menus, sales, invoices, labor and Primo need a subscription: $7 a month. Cancel anytime.",
         button: "Resubscribe",
       }
   }

@@ -68,13 +68,13 @@ function billingState(status: string, plan: string): BillingState {
     locked: false,
     plan,
     entitlements:
-      plan === "expired"
+      plan === "free"
         ? {
             primo: false,
             posSync: false,
             connectors: false,
-            usdaSearch: false,
-            catalogSearch: false,
+            usdaSearch: true,
+            catalogSearch: true,
             invoiceAi: false,
           }
         : PAID_ENTITLEMENTS,
@@ -152,7 +152,7 @@ describe("billing settings", () => {
   })
 
   it("names the trial that ended on the subscription row", () => {
-    renderSettings(billingState("none", "expired"))
+    renderSettings(billingState("none", "free"))
 
     expect(
       screen.getByRole("link", { name: /Subscribe/ }).textContent
@@ -160,7 +160,7 @@ describe("billing settings", () => {
   })
 
   it("keeps the portal beside the subscription row after a lapse", () => {
-    renderSettings(billingState("canceled", "expired"))
+    renderSettings(billingState("canceled", "free"))
 
     expect(screen.getByRole("button", { name: /Manage billing/ })).toBeTruthy()
     expect(
