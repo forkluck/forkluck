@@ -1,0 +1,1632 @@
+{
+  "generator": "cd apps/api && UPDATE_ENGINE_FIXTURE=1 .venv/bin/python manage.py test forkluck.test_mac_parity_fixtures",
+  "keywords": {
+    "milk": [
+      "milk",
+      "butter",
+      "cream",
+      "cheese",
+      "whey",
+      "casein",
+      "caseinate",
+      "lactose",
+      "yogurt",
+      "yoghurt",
+      "ghee",
+      "buttermilk"
+    ],
+    "egg": [
+      "egg",
+      "eggs",
+      "albumen",
+      "albumin",
+      "mayonnaise"
+    ],
+    "fish": [
+      "fish",
+      "anchovy",
+      "anchovies",
+      "cod",
+      "salmon",
+      "tuna",
+      "sardine",
+      "haddock",
+      "pollock",
+      "fish sauce"
+    ],
+    "shellfish": [
+      "shrimp",
+      "prawn",
+      "crab",
+      "lobster",
+      "crayfish",
+      "krill"
+    ],
+    "mollusks": [
+      "clam",
+      "mussel",
+      "oyster",
+      "scallop",
+      "squid",
+      "octopus",
+      "snail",
+      "cuttlefish"
+    ],
+    "tree_nuts": [
+      "almond",
+      "walnut",
+      "pecan",
+      "cashew",
+      "pistachio",
+      "hazelnut",
+      "filbert",
+      "macadamia",
+      "brazil nut",
+      "pine nut"
+    ],
+    "peanut": [
+      "peanut",
+      "peanuts",
+      "groundnut"
+    ],
+    "wheat": [
+      "wheat",
+      "durum",
+      "semolina",
+      "spelt",
+      "kamut",
+      "farina",
+      "bulgur",
+      "couscous",
+      "seitan"
+    ],
+    "gluten_cereals": [
+      "wheat",
+      "durum",
+      "semolina",
+      "spelt",
+      "kamut",
+      "farina",
+      "bulgur",
+      "couscous",
+      "seitan",
+      "rye",
+      "barley",
+      "malt",
+      "oats",
+      "oat",
+      "triticale"
+    ],
+    "soy": [
+      "soy",
+      "soya",
+      "soybean",
+      "soybeans",
+      "tofu",
+      "edamame",
+      "miso",
+      "tempeh"
+    ],
+    "sesame": [
+      "sesame",
+      "tahini"
+    ],
+    "sulphites": [
+      "sulfite",
+      "sulfites",
+      "sulphite",
+      "sulphites",
+      "sulfur dioxide",
+      "sulphur dioxide",
+      "metabisulfite",
+      "metabisulphite"
+    ],
+    "mustard": [
+      "mustard"
+    ],
+    "celery": [
+      "celery",
+      "celeriac"
+    ],
+    "lupin": [
+      "lupin",
+      "lupine"
+    ]
+  },
+  "exclusions": {
+    "milk": [
+      "cream of tartar",
+      "coconut milk",
+      "almond milk",
+      "oat milk",
+      "soy milk",
+      "rice milk",
+      "cocoa butter",
+      "shea butter",
+      "peanut butter",
+      "almond butter",
+      "nut butter",
+      "butternut"
+    ],
+    "gluten_cereals": [
+      "gluten free"
+    ]
+  },
+  "allergenHints": [
+    {
+      "text": "",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "   ",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "WATER, SUGAR, SALT.",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "SESAME MEAL, PALM SHORTENING (NON-HYDROGENATED), CHOCOLATE CHIP (EVAPORATED CANE JUICE, NATURAL CHOCOLATE LIQUOR, COCOA BUTTER), WATER, CHICORY EXTRACT, FLAX MEAL, BAKING POWDER (ALUMINUM-FREE, GLUTEN-FREE), SEA SALT, BAKING SODA (ALUMINUM-FREE, GLUTEN FREE)",
+      "expect": {
+        "contains": [
+          "sesame"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "WHEAT FLOUR, MILK. CONTAINS: MILK. MAY CONTAIN MILK AND SOY.",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": [
+          "soy"
+        ]
+      }
+    },
+    {
+      "text": "SUGAR, COCOA MASS, COCOA BUTTER, SUNFLOWER LECITHIN. MAY CONTAIN MILK, HAZELNUTS AND WHEAT.",
+      "expect": {
+        "contains": [],
+        "mayContain": [
+          "gluten_cereals",
+          "milk",
+          "tree_nuts",
+          "wheat"
+        ]
+      }
+    },
+    {
+      "text": "DISTILLED VINEGAR, WATER, MOLASSES, SUGAR, SALT, SPICES, CITRIC ACID, ANCHOVY (FISH), CELERY SEED, NATURAL FLAVOR (CONTAINS SOY), XANTHAN GUM (THICKENER), GARLIC POWDER & TAMARIND EXTRACT.",
+      "expect": {
+        "contains": [
+          "celery",
+          "fish",
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "ENRICHED FLOUR (WHEAT FLOUR, NIACIN, REDUCED IRON, THIAMINE MONONITRATE, RIBOFLAVIN, FOLIC ACID), SUGAR, PEANUT BUTTER (PEANUTS, CORN SYRUP SOLIDS, SALT), SOYBEAN OIL, HIGH FRUCTOSE CORN SYRUP, SOY LECITHIN (EMULSIFIER), VANILLIN - AN ARTIFICIAL FLAVOR. CONTAINS: WHEAT, PEANUT, AND SOY.",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "peanut",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, milk, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, egg, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, fish, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, shrimp, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, clam, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, almond, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, peanut, salt",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, wheat, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, soy, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sesame, salt",
+      "expect": {
+        "contains": [
+          "sesame"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulfite, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, mustard, salt",
+      "expect": {
+        "contains": [
+          "mustard"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, celery, salt",
+      "expect": {
+        "contains": [
+          "celery"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, lupin, salt",
+      "expect": {
+        "contains": [
+          "lupin"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "Eggplant, maltodextrin",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "eggs, ALMONDS",
+      "expect": {
+        "contains": [
+          "egg",
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "Sodium Metabisulfite",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "SULFUR DIOXIDE",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "OATS, RAISINS. MANUFACTURED IN A FACILITY THAT ALSO PROCESSES PEANUTS.",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": [
+          "peanut"
+        ]
+      }
+    },
+    {
+      "text": "RICE FLOUR, SALT. PRODUCED ON SHARED EQUIPMENT WITH SOY.",
+      "expect": {
+        "contains": [],
+        "mayContain": [
+          "soy"
+        ]
+      }
+    },
+    {
+      "text": "RICE FLOUR. MAY ALSO CONTAIN SESAME SEEDS.",
+      "expect": {
+        "contains": [],
+        "mayContain": [
+          "sesame"
+        ]
+      }
+    },
+    {
+      "text": "PEANUT BUTTER",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "ALMOND MILK",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "GLUTEN FREE OATS",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "COCONUT MILK, WATER",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "ALMOND MILK, SEA SALT",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "OAT MILK",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "SOY MILK",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "RICE MILK",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "SUGAR, COCOA BUTTER",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "SHEA BUTTER",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "PEANUT BUTTER, SALT",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "ALMOND BUTTER",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "ORGANIC NUT BUTTER",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "BUTTERNUT SQUASH",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "BAKING SODA, CREAM OF TARTAR",
+      "expect": {
+        "contains": [],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": [
+          "fish"
+        ]
+      }
+    },
+    {
+      "text": "water, milk, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, butter, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, cream, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, cheese, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, whey, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, casein, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, caseinate, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, lactose, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, yogurt, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, yoghurt, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, ghee, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, buttermilk, salt",
+      "expect": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, egg, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, eggs, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, albumen, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, albumin, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, mayonnaise, salt",
+      "expect": {
+        "contains": [
+          "egg"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, fish, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, anchovy, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, anchovies, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, cod, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, salmon, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, tuna, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sardine, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, haddock, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, pollock, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, fish sauce, salt",
+      "expect": {
+        "contains": [
+          "fish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, shrimp, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, prawn, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, crab, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, lobster, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, crayfish, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, krill, salt",
+      "expect": {
+        "contains": [
+          "shellfish"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, clam, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, mussel, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, oyster, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, scallop, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, squid, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, octopus, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, snail, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, cuttlefish, salt",
+      "expect": {
+        "contains": [
+          "mollusks"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, almond, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, walnut, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, pecan, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, cashew, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, pistachio, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, hazelnut, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, filbert, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, macadamia, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, brazil nut, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, pine nut, salt",
+      "expect": {
+        "contains": [
+          "tree_nuts"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, peanut, salt",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, peanuts, salt",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, groundnut, salt",
+      "expect": {
+        "contains": [
+          "peanut"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, wheat, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, durum, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, semolina, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, spelt, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, kamut, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, farina, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, bulgur, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, couscous, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, seitan, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, wheat, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, durum, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, semolina, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, spelt, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, kamut, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, farina, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, bulgur, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, couscous, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, seitan, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, rye, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, barley, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, malt, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, oats, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, oat, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, triticale, salt",
+      "expect": {
+        "contains": [
+          "gluten_cereals"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, soy, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, soya, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, soybean, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, soybeans, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, tofu, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, edamame, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, miso, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, tempeh, salt",
+      "expect": {
+        "contains": [
+          "soy"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sesame, salt",
+      "expect": {
+        "contains": [
+          "sesame"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, tahini, salt",
+      "expect": {
+        "contains": [
+          "sesame"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulfite, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulfites, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulphite, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulphites, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulfur dioxide, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, sulphur dioxide, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, metabisulfite, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, metabisulphite, salt",
+      "expect": {
+        "contains": [
+          "sulphites"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, mustard, salt",
+      "expect": {
+        "contains": [
+          "mustard"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, celery, salt",
+      "expect": {
+        "contains": [
+          "celery"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, celeriac, salt",
+      "expect": {
+        "contains": [
+          "celery"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, lupin, salt",
+      "expect": {
+        "contains": [
+          "lupin"
+        ],
+        "mayContain": []
+      }
+    },
+    {
+      "text": "water, lupine, salt",
+      "expect": {
+        "contains": [
+          "lupin"
+        ],
+        "mayContain": []
+      }
+    }
+  ],
+  "ingredientAllergenHints": [
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {},
+      "overrides": {},
+      "nonEdible": false,
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": [
+          "fish"
+        ],
+        "checkLabel": []
+      },
+      "hasHints": true
+    },
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {
+        "sulphites": "checkLabel"
+      },
+      "overrides": {},
+      "nonEdible": false,
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": [
+          "fish"
+        ],
+        "checkLabel": [
+          "sulphites"
+        ]
+      },
+      "hasHints": true
+    },
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {
+        "sulphites": "checkLabel"
+      },
+      "overrides": {
+        "wheat": "contains",
+        "fish": "doesNotContain",
+        "sulphites": "mayContain"
+      },
+      "nonEdible": false,
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "soy"
+        ],
+        "mayContain": [],
+        "checkLabel": []
+      },
+      "hasHints": true
+    },
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {
+        "soy": "contains"
+      },
+      "overrides": {},
+      "nonEdible": false,
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": [
+          "fish"
+        ],
+        "checkLabel": []
+      },
+      "hasHints": true
+    },
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {
+        "soy": "checkLabel"
+      },
+      "overrides": {},
+      "nonEdible": false,
+      "expect": {
+        "contains": [
+          "gluten_cereals",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": [
+          "fish"
+        ],
+        "checkLabel": []
+      },
+      "hasHints": true
+    },
+    {
+      "package": "WATER, WHEAT, SOYBEANS, SALT. MAY CONTAIN FISH.",
+      "catalog": {
+        "sulphites": "checkLabel"
+      },
+      "overrides": {},
+      "nonEdible": true,
+      "expect": {
+        "contains": [],
+        "mayContain": [],
+        "checkLabel": []
+      },
+      "hasHints": false
+    },
+    {
+      "package": "",
+      "catalog": {
+        "milk": "contains",
+        "egg": "mayContain"
+      },
+      "overrides": {},
+      "nonEdible": false,
+      "expect": {
+        "contains": [],
+        "mayContain": [],
+        "checkLabel": []
+      },
+      "hasHints": false
+    },
+    {
+      "package": "",
+      "catalog": null,
+      "overrides": {
+        "peanut": "contains"
+      },
+      "nonEdible": false,
+      "expect": {
+        "contains": [],
+        "mayContain": [],
+        "checkLabel": []
+      },
+      "hasHints": false
+    }
+  ]
+}

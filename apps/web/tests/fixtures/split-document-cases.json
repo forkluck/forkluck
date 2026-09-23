@@ -1,0 +1,117 @@
+{
+  "generator": "cd apps/web && UPDATE_SPLIT_DOCUMENT_FIXTURE=1 pnpm exec vitest run tests/split-document-cases.test.ts",
+  "cases": [
+    {
+      "text": "Lemon tart\n\n# Pastry\n250 g plain flour\n125 g cold butter\n1 egg yolk\n\n# Filling\n4 eggs\n150 ml lemon juice\n> use unwaxed lemons\n\nMethod:\nRub the butter into the flour until it looks like sand.\nLine the tin and blind bake for 15 minutes.\nWhisk the eggs with the juice.\nBake until the filling only just sets.",
+      "expect": {
+        "ingredients": "Lemon tart\n\n# Pastry\n250 g plain flour\n125 g cold butter\n1 egg yolk\n\n# Filling\n4 eggs\n150 ml lemon juice\n> use unwaxed lemons",
+        "method": "Rub the butter into the flour until it looks like sand.\nLine the tin and blind bake for 15 minutes.\nWhisk the eggs with the juice.\nBake until the filling only just sets."
+      }
+    },
+    {
+      "text": "250 g plain flour\n125 g cold butter\n4 eggs\n150 ml lemon juice\nRub the butter into the flour until it looks like sand.\nLine the tin and blind bake for 15 minutes.\nWhisk the eggs with the juice.\nBake until the filling only just sets.",
+      "expect": {
+        "ingredients": "250 g plain flour\n125 g cold butter\n4 eggs\n150 ml lemon juice",
+        "method": "Rub the butter into the flour until it looks like sand.\nLine the tin and blind bake for 15 minutes.\nWhisk the eggs with the juice.\nBake until the filling only just sets."
+      }
+    },
+    {
+      "text": "500 g flour\n10 g salt\n1. Whisk the eggs.\n2. Fold in the flour.",
+      "expect": {
+        "ingredients": "500 g flour\n10 g salt",
+        "method": "1. Whisk the eggs.\n2. Fold in the flour."
+      }
+    },
+    {
+      "text": "Ingredients\n500 g flour\nMethod\nMix it well.\nBake it.\n# Ingredients\n200 g sugar",
+      "expect": {
+        "ingredients": "500 g flour\n200 g sugar",
+        "method": "Mix it well.\nBake it."
+      }
+    },
+    {
+      "text": "500 g flour\nUse the good flour here.\n10 g salt",
+      "expect": {
+        "ingredients": "500 g flour\nUse the good flour here.\n10 g salt",
+        "method": ""
+      }
+    },
+    {
+      "text": "500 g flour\n10 g salt\nChill overnight.",
+      "expect": {
+        "ingredients": "500 g flour\n10 g salt\nChill overnight.",
+        "method": ""
+      }
+    },
+    {
+      "text": "Some thoughts about a recipe.\nAnd another line of them.",
+      "expect": {
+        "ingredients": "Some thoughts about a recipe.\nAnd another line of them.",
+        "method": ""
+      }
+    },
+    {
+      "text": "INGREDIENTS:\n2 cups flour\n1 tsp salt\n\nDIRECTIONS:\nMix.\nBake at 350F for 20 minutes.",
+      "expect": {
+        "ingredients": "2 cups flour\n1 tsp salt",
+        "method": "Mix.\nBake at 350F for 20 minutes."
+      }
+    },
+    {
+      "text": "## Instructions\nStir well.\nServe warm.",
+      "expect": {
+        "ingredients": "",
+        "method": "Stir well.\nServe warm."
+      }
+    },
+    {
+      "text": "2 eggs\r\n100 g sugar\r\nWhisk the eggs and sugar until pale.\r\nFold in the flour gently.",
+      "expect": {
+        "ingredients": "2 eggs\n100 g sugar",
+        "method": "Whisk the eggs and sugar until pale.\nFold in the flour gently."
+      }
+    },
+    {
+      "text": "Steps\n1) Mix\n2) Bake",
+      "expect": {
+        "ingredients": "",
+        "method": "1) Mix\n2) Bake"
+      }
+    },
+    {
+      "text": "How to make it\nMix everything together.",
+      "expect": {
+        "ingredients": "",
+        "method": "Mix everything together."
+      }
+    },
+    {
+      "text": "",
+      "expect": {
+        "ingredients": "",
+        "method": ""
+      }
+    },
+    {
+      "text": "   \n  \n",
+      "expect": {
+        "ingredients": "",
+        "method": ""
+      }
+    },
+    {
+      "text": "500 g flour\n10 g salt\nKnead for ten minutes until smooth.\nRest the dough for an hour.",
+      "expect": {
+        "ingredients": "500 g flour\n10 g salt",
+        "method": "Knead for ten minutes until smooth.\nRest the dough for an hour."
+      }
+    },
+    {
+      "text": "Preparation:\n1 onion\n2 carrots",
+      "expect": {
+        "ingredients": "",
+        "method": "1 onion\n2 carrots"
+      }
+    }
+  ]
+}

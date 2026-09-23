@@ -1,0 +1,2787 @@
+{
+  "generator": "cd apps/api && UPDATE_ENGINE_FIXTURE=1 .venv/bin/python manage.py test forkluck.test_mac_parity_fixtures",
+  "purchaseQuantity": [
+    {
+      "amount": 100,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": 80,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 100.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 125.0,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.125,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "each",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 36,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "each"
+        },
+        "purchase": {
+          "amount": 0.05555555555555555,
+          "unit": "case"
+        },
+        "purchaseUnits": 0.05555555555555555,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "case",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 36,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "case"
+        },
+        "purchase": {
+          "amount": 2.0,
+          "unit": "case"
+        },
+        "purchaseUnits": 2.0,
+        "issues": []
+      }
+    },
+    {
+      "amount": 20,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 36,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 20.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 900,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 1800,
+            "unit": "g"
+          },
+          {
+            "amount": 36,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 900.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 0.5,
+          "unit": "case"
+        },
+        "purchaseUnits": 0.5,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "lb",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 227,
+            "unit": "g"
+          },
+          {
+            "amount": 1,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 0.5004493351596722,
+          "unit": "lb"
+        },
+        "purchaseUnits": 0.5004493351596722,
+        "issues": []
+      }
+    },
+    {
+      "amount": 227,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "lb",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 227,
+            "unit": "g"
+          },
+          {
+            "amount": 1,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 227.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 0.5004493351596722,
+          "unit": "lb"
+        },
+        "purchaseUnits": 0.5004493351596722,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 25,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 227,
+            "unit": "g"
+          },
+          {
+            "amount": 1,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 0.22699999999999998,
+          "unit": "kg"
+        },
+        "purchaseUnits": 0.00908,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "each",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 227,
+            "unit": "g"
+          },
+          {
+            "amount": 1,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-purchase-unit"
+        ]
+      }
+    },
+    {
+      "amount": 3,
+      "unit": "each",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "eggs",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 3.0,
+          "unit": "each"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "flour",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 100,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "l",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "milk",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 100.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 0.0969623920081967,
+          "unit": "l"
+        },
+        "purchaseUnits": 0.0969623920081967,
+        "issues": []
+      }
+    },
+    {
+      "amount": 100,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "l",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "milk",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 100.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 100,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "l",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "milk",
+        "qualifier": "scalded"
+      },
+      "expect": {
+        "usage": {
+          "amount": 100.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 200,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "flour",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 200.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 0.2,
+          "unit": "kg"
+        },
+        "purchaseUnits": 0.2,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 8,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": {
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 1000,
+            "unit": "g"
+          },
+          {
+            "amount": 4,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 500.0,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.5,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 8,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": {
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-purchase-unit"
+        ]
+      }
+    },
+    {
+      "amount": 250,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 8,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": {
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": false
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 250.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 250.0,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.25,
+        "issues": []
+      }
+    },
+    {
+      "amount": 100,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": {
+        "yieldPercent": 88,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 100.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 113.63636363636364,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.11363636363636365,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 8,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": {
+        "yieldPercent": 50,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 500.0,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.5,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 8,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 250.0,
+          "unit": "g"
+        },
+        "purchaseUnits": 0.25,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "lb",
+      "source": {
+        "purchaseSize": 10,
+        "purchaseUnit": "lb",
+        "yieldPercent": 90,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "lb"
+        },
+        "purchase": {
+          "amount": 1.1111111111111112,
+          "unit": "lb"
+        },
+        "purchaseUnits": 0.11111111111111112,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "lb",
+      "source": {
+        "purchaseSize": 10,
+        "purchaseUnit": "lb",
+        "yieldPercent": 100,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "lb"
+        },
+        "purchase": {
+          "amount": 1.0,
+          "unit": "lb"
+        },
+        "purchaseUnits": 0.1,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "lb",
+      "source": {
+        "purchaseSize": 10,
+        "purchaseUnit": "lb",
+        "yieldPercent": 90,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": {
+        "yieldPercent": 50,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "lb"
+        },
+        "purchase": {
+          "amount": 2.0,
+          "unit": "lb"
+        },
+        "purchaseUnits": 0.2,
+        "issues": []
+      }
+    },
+    {
+      "amount": 200,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "gal",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "canola oil",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 200.0,
+          "unit": "g"
+        },
+        "purchase": {
+          "amount": 0.05733944954128439,
+          "unit": "gal"
+        },
+        "purchaseUnits": 0.05733944954128439,
+        "issues": []
+      }
+    },
+    {
+      "amount": 200,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "gal",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "canola oil",
+        "qualifier": " "
+      },
+      "expect": {
+        "usage": {
+          "amount": 200.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "pcs",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "dozen",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "pcs"
+        },
+        "purchase": {
+          "amount": 0.16666666666666666,
+          "unit": "dozen"
+        },
+        "purchaseUnits": 0.16666666666666666,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "slice",
+      "source": {
+        "purchaseSize": 8,
+        "purchaseUnit": "each",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "slice"
+        },
+        "purchase": {
+          "amount": 1.0,
+          "unit": "each"
+        },
+        "purchaseUnits": 0.125,
+        "issues": []
+      }
+    },
+    {
+      "amount": 3,
+      "unit": "each",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 120,
+            "unit": "g"
+          },
+          {
+            "amount": 1,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 3.0,
+          "unit": "each"
+        },
+        "purchase": {
+          "amount": 0.36,
+          "unit": "kg"
+        },
+        "purchaseUnits": 0.36,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "cup"
+          },
+          {
+            "amount": 2,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-purchase-unit"
+        ]
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "cup"
+          },
+          {
+            "amount": 2,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 0.5,
+          "unit": "case"
+        },
+        "purchaseUnits": 0.5,
+        "issues": []
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": {
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "cup"
+          },
+          {
+            "amount": 2,
+            "unit": "each"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-purchase-unit"
+        ]
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "cup",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [
+          {
+            "amount": 4,
+            "unit": "cup"
+          }
+        ],
+        "conversionIsAutomatic": false
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 2.0,
+          "unit": "cup"
+        },
+        "purchase": {
+          "amount": 0.5,
+          "unit": "kg"
+        },
+        "purchaseUnits": 0.5,
+        "issues": []
+      }
+    },
+    {
+      "amount": null,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": null,
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-quantity"
+        ]
+      }
+    },
+    {
+      "amount": 0,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": null,
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-quantity"
+        ]
+      }
+    },
+    {
+      "amount": -1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": null,
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-quantity"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": null,
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-quantity"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": null,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-purchase-size"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 0,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-purchase-size"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": null,
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "missing-purchase-unit"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": {
+        "yieldPercent": 0,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "invalid-yield"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "g",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": 0,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "g"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "invalid-yield"
+        ]
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "bushel",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "bushel",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": null,
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "bushel"
+        },
+        "purchase": {
+          "amount": 1.0,
+          "unit": "bushel"
+        },
+        "purchaseUnits": 1.0,
+        "issues": []
+      }
+    },
+    {
+      "amount": 1,
+      "unit": "bushel",
+      "source": {
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": null,
+        "conversion": [],
+        "conversionIsAutomatic": true
+      },
+      "preparation": null,
+      "bridge": {
+        "name": "apples",
+        "qualifier": ""
+      },
+      "expect": {
+        "usage": {
+          "amount": 1.0,
+          "unit": "bushel"
+        },
+        "purchase": null,
+        "purchaseUnits": null,
+        "issues": [
+          "unresolved-conversion"
+        ]
+      }
+    }
+  ],
+  "batches": [
+    {
+      "yieldAmount": 2,
+      "yieldUnit": "kg",
+      "equivalency": {
+        "mass": [
+          1000,
+          "g"
+        ],
+        "volume": [
+          1,
+          "l"
+        ],
+        "count": null,
+        "standard": true
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 2.0,
+            "unit": "kg"
+          },
+          {
+            "amount": 2.0,
+            "unit": "l"
+          }
+        ],
+        "grams": 2000.0,
+        "pieces": null,
+        "volume": {
+          "amount": 2.0,
+          "unit": "l"
+        },
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.125,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": 0.125,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": 0.11829411825,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 2.75,
+      "yieldUnit": "cup",
+      "equivalency": {
+        "mass": [
+          700,
+          "g"
+        ],
+        "volume": null,
+        "count": [
+          8,
+          "each"
+        ],
+        "standard": false
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 2.75,
+            "unit": "cup"
+          },
+          {
+            "amount": 700,
+            "unit": "g"
+          },
+          {
+            "amount": 8,
+            "unit": "each"
+          }
+        ],
+        "grams": 700.0,
+        "pieces": {
+          "amount": 8.0,
+          "unit": "each"
+        },
+        "volume": {
+          "amount": 2.75,
+          "unit": "cup"
+        },
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.35714285714285715,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": 0.75,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": 0.25,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": 0.125,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": 0.3842502579754887,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": 0.36363636363636365,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 1600,
+      "yieldUnit": "ml",
+      "equivalency": {
+        "mass": [
+          8,
+          "oz"
+        ],
+        "volume": [
+          1,
+          "cup"
+        ],
+        "count": null,
+        "standard": true
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 1600.0,
+            "unit": "ml"
+          },
+          {
+            "amount": 54.1024363229488,
+            "unit": "oz"
+          }
+        ],
+        "grams": 1533.778269656277,
+        "pieces": null,
+        "volume": {
+          "amount": 1600.0,
+          "unit": "ml"
+        },
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.16299618070350255,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": 0.15625,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": 0.1478676478125,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 12,
+      "yieldUnit": "pcs",
+      "equivalency": {
+        "mass": [
+          50,
+          "g"
+        ],
+        "volume": null,
+        "count": [
+          1,
+          "each"
+        ],
+        "standard": true
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 12.0,
+            "unit": "pcs"
+          },
+          {
+            "amount": 600.0,
+            "unit": "g"
+          }
+        ],
+        "grams": 600.0,
+        "pieces": {
+          "amount": 12.0,
+          "unit": "pcs"
+        },
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.4166666666666667,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": 0.5,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": 0.16666666666666666,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": 0.08333333333333333,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 12,
+      "yieldUnit": "pcs",
+      "equivalency": null,
+      "expect": {
+        "pairs": [
+          {
+            "amount": 12.0,
+            "unit": "pcs"
+          }
+        ],
+        "grams": null,
+        "pieces": {
+          "amount": 12.0,
+          "unit": "pcs"
+        },
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": null,
+            "grams": 250.0,
+            "issues": [
+              "unresolved-yield"
+            ]
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": 0.5,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": 0.16666666666666666,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": 0.08333333333333333,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": null,
+      "yieldUnit": "g",
+      "equivalency": {
+        "mass": [
+          400,
+          "g"
+        ],
+        "volume": null,
+        "count": [
+          31,
+          "pcs"
+        ],
+        "standard": false
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 400,
+            "unit": "g"
+          },
+          {
+            "amount": 31,
+            "unit": "pcs"
+          }
+        ],
+        "grams": 400.0,
+        "pieces": {
+          "amount": 31.0,
+          "unit": "pcs"
+        },
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.625,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": 0.1935483870967742,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": 0.06451612903225806,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": 0.03225806451612903,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": null,
+      "yieldUnit": "g",
+      "equivalency": {
+        "mass": [
+          400,
+          "g"
+        ],
+        "volume": null,
+        "count": null,
+        "standard": true
+      },
+      "expect": {
+        "pairs": [],
+        "grams": null,
+        "pieces": null,
+        "volume": null,
+        "issues": [
+          "missing-yield"
+        ],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": null,
+            "grams": 250.0,
+            "issues": [
+              "unresolved-yield"
+            ]
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 0,
+      "yieldUnit": "g",
+      "equivalency": null,
+      "expect": {
+        "pairs": [],
+        "grams": null,
+        "pieces": null,
+        "volume": null,
+        "issues": [
+          "missing-yield"
+        ],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": null,
+            "grams": 250.0,
+            "issues": [
+              "unresolved-yield"
+            ]
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 1,
+      "yieldUnit": "kg",
+      "equivalency": {
+        "mass": null,
+        "volume": [
+          2,
+          "l"
+        ],
+        "count": null,
+        "standard": true
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 1.0,
+            "unit": "kg"
+          }
+        ],
+        "grams": 1000.0,
+        "pieces": null,
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.25,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 8,
+      "yieldUnit": "slice",
+      "equivalency": {
+        "mass": [
+          900,
+          "g"
+        ],
+        "volume": null,
+        "count": [
+          4,
+          "each"
+        ],
+        "standard": true
+      },
+      "expect": {
+        "pairs": [
+          {
+            "amount": 8.0,
+            "unit": "slice"
+          },
+          {
+            "amount": 1800.0,
+            "unit": "g"
+          }
+        ],
+        "grams": 1800.0,
+        "pieces": {
+          "amount": 8.0,
+          "unit": "slice"
+        },
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": 0.1388888888888889,
+            "grams": 250.0,
+            "issues": []
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": 0.75,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": 0.25,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": 0.125,
+            "grams": null,
+            "issues": []
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "yieldAmount": 3,
+      "yieldUnit": "portion",
+      "equivalency": null,
+      "expect": {
+        "pairs": [
+          {
+            "amount": 3.0,
+            "unit": "portion"
+          }
+        ],
+        "grams": null,
+        "pieces": {
+          "amount": 3.0,
+          "unit": "portion"
+        },
+        "volume": null,
+        "issues": [],
+        "shares": [
+          {
+            "amount": 250,
+            "unit": "g",
+            "factor": null,
+            "grams": 250.0,
+            "issues": [
+              "unresolved-yield"
+            ]
+          },
+          {
+            "amount": 6,
+            "unit": "pcs",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 2,
+            "unit": "each",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "slice",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 250,
+            "unit": "ml",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "cup",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          },
+          {
+            "amount": 0,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": null,
+            "unit": "g",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "missing-quantity"
+            ]
+          },
+          {
+            "amount": 1,
+            "unit": "bushel",
+            "factor": null,
+            "grams": null,
+            "issues": [
+              "unresolved-conversion"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "normalizedName": [
+    {
+      "input": "  Bread Flour ",
+      "expect": "bread flour"
+    },
+    {
+      "input": "Crème Fraîche",
+      "expect": "creme fraiche"
+    },
+    {
+      "input": "Jalapeño",
+      "expect": "jalapeno"
+    },
+    {
+      "input": "püree",
+      "expect": "puree"
+    },
+    {
+      "input": "Extra-Virgin  Olive Oil",
+      "expect": "extra virgin olive oil"
+    },
+    {
+      "input": "Straße",
+      "expect": "straße"
+    },
+    {
+      "input": "Œufs",
+      "expect": "œufs"
+    },
+    {
+      "input": "Salt_and_pepper",
+      "expect": "salt and pepper"
+    },
+    {
+      "input": "日本酒",
+      "expect": "日本酒"
+    },
+    {
+      "input": "ﬁne salt",
+      "expect": "fine salt"
+    },
+    {
+      "input": "",
+      "expect": ""
+    }
+  ],
+  "qualifierClauses": [
+    {
+      "input": "",
+      "expect": []
+    },
+    {
+      "input": " , ; ",
+      "expect": []
+    },
+    {
+      "input": "minced",
+      "expect": [
+        "minced"
+      ]
+    },
+    {
+      "input": "Minced, room temperature; 100 g",
+      "expect": [
+        "minced",
+        "room temperature",
+        "100 g"
+      ]
+    },
+    {
+      "input": "finely minced",
+      "expect": [
+        "finely minced"
+      ]
+    },
+    {
+      "input": "Large; beaten",
+      "expect": [
+        "large",
+        "beaten"
+      ]
+    }
+  ],
+  "density": [
+    {
+      "milliliters": 236.5882365,
+      "name": "Canola oil",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 218.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Canola oil",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": 218.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Canola oil",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Canola oil",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Bread flour",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 127.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Bread flour",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": 127.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Bread flour",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Bread flour",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honey",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 340.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honey",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": 340.0
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honey",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honey",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honeycrisp apples",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 226.796185
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honeycrisp apples",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honeycrisp apples",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Honeycrisp apples",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Sugar snap peas",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 226.796185
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Sugar snap peas",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Sugar snap peas",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Sugar snap peas",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Pimentón",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": 226.796185
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Pimentón",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Pimentón",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "Pimentón",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "!!!",
+      "qualifier": "",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "!!!",
+      "qualifier": "",
+      "allowStandard": false,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "!!!",
+      "qualifier": "sifted",
+      "allowStandard": true,
+      "expect": null
+    },
+    {
+      "milliliters": 236.5882365,
+      "name": "!!!",
+      "qualifier": "sifted",
+      "allowStandard": false,
+      "expect": null
+    }
+  ]
+}

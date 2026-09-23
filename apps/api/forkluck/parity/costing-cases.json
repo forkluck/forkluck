@@ -1,0 +1,3518 @@
+{
+  "generator": "cd apps/api && UPDATE_ENGINE_FIXTURE=1 .venv/bin/python manage.py test forkluck.test_mac_parity_fixtures",
+  "scenario": {
+    "settings": {
+      "wagePerHourCents": 2000,
+      "foodCostTargetBps": 3000
+    },
+    "catalog": [
+      {
+        "key": "bread-flour",
+        "name": "Bread flour",
+        "synonyms": [
+          "strong flour"
+        ],
+        "allergens": [
+          "wheat",
+          "gluten_cereals"
+        ],
+        "verify": [],
+        "measures": [
+          {
+            "unit": "cup",
+            "amount": 1,
+            "grams": 127,
+            "qualifier": "",
+            "confidence": "high"
+          }
+        ],
+        "preparations": []
+      },
+      {
+        "key": "all-purpose-flour",
+        "name": "All-purpose flour",
+        "synonyms": [],
+        "allergens": [
+          "wheat",
+          "gluten_cereals"
+        ],
+        "verify": [],
+        "measures": [
+          {
+            "unit": "cup",
+            "amount": 1,
+            "grams": 125,
+            "qualifier": "",
+            "confidence": "high"
+          }
+        ],
+        "preparations": []
+      },
+      {
+        "key": "ap-flour",
+        "name": "AP flour",
+        "synonyms": [],
+        "allergens": [],
+        "verify": [],
+        "measures": [
+          {
+            "unit": "cup",
+            "amount": 1,
+            "grams": 130,
+            "qualifier": "",
+            "confidence": "low"
+          },
+          {
+            "unit": "tbsp",
+            "amount": 1,
+            "grams": 8,
+            "qualifier": "",
+            "confidence": "low"
+          }
+        ],
+        "preparations": []
+      }
+    ],
+    "ingredients": [
+      {
+        "key": "flour",
+        "name": "Bread flour",
+        "catalogKey": "bread-flour",
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 250,
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "ap-flour",
+        "name": "AP flour",
+        "catalogKey": "all-purpose-flour",
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 300,
+        "purchaseSize": 5,
+        "purchaseUnit": "lb",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "butter",
+        "name": "Unsalted butter",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 1200,
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": 227,
+          "weightUnit": "g",
+          "volumeAmount": 1,
+          "volumeUnit": "cup",
+          "eachAmount": null,
+          "eachUnit": "",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "canola",
+        "name": "Canola oil",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 1200,
+        "purchaseSize": 1,
+        "purchaseUnit": "gal",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "sesame",
+        "name": "Sesame oil",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 900,
+        "purchaseSize": 1,
+        "purchaseUnit": "l",
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": null,
+          "weightUnit": "",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "eachAmount": 1,
+          "eachUnit": "bottle",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "eggs",
+        "name": "Eggs",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 1800,
+        "purchaseSize": 1,
+        "purchaseUnit": "case",
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": null,
+          "weightUnit": "",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "eachAmount": 36,
+          "eachUnit": "each",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "lemons",
+        "name": "Lemons",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 600,
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": 120,
+          "weightUnit": "g",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "eachAmount": 1,
+          "eachUnit": "each",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "tomatoes",
+        "name": "Tomatoes",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 1000,
+        "purchaseSize": 10,
+        "purchaseUnit": "lb",
+        "yieldPercent": 90,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "garlic",
+        "name": "Garlic",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 400,
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [
+          {
+            "name": "Minced",
+            "yieldPercent": 88,
+            "usesStandard": true,
+            "weightAmount": null,
+            "weightUnit": "",
+            "volumeAmount": null,
+            "volumeUnit": "",
+            "eachAmount": null,
+            "eachUnit": "",
+            "source": "user"
+          }
+        ],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "cabbage",
+        "name": "Cabbage",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 300,
+        "purchaseSize": 1000,
+        "purchaseUnit": "g",
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": null,
+          "weightUnit": "",
+          "volumeAmount": 8,
+          "volumeUnit": "cup",
+          "eachAmount": null,
+          "eachUnit": "",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [
+          {
+            "name": "Shredded",
+            "yieldPercent": null,
+            "usesStandard": false,
+            "weightAmount": 1000,
+            "weightUnit": "g",
+            "volumeAmount": 4,
+            "volumeUnit": "cup",
+            "eachAmount": null,
+            "eachUnit": "",
+            "source": "user"
+          },
+          {
+            "name": "Cooked",
+            "yieldPercent": 50,
+            "usesStandard": true,
+            "weightAmount": null,
+            "weightUnit": "",
+            "volumeAmount": null,
+            "volumeUnit": "",
+            "eachAmount": null,
+            "eachUnit": "",
+            "source": "user"
+          },
+          {
+            "name": "Wilted",
+            "yieldPercent": 100,
+            "usesStandard": false,
+            "weightAmount": null,
+            "weightUnit": "",
+            "volumeAmount": null,
+            "volumeUnit": "",
+            "eachAmount": null,
+            "eachUnit": "",
+            "source": "user"
+          }
+        ],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "brown-sugar",
+        "name": "Brown sugar",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 300,
+        "purchaseSize": 1,
+        "purchaseUnit": "kg",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [
+          {
+            "unit": "cup",
+            "amount": 1,
+            "grams": 220,
+            "qualifier": "packed"
+          }
+        ],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "water",
+        "name": "Water",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": 1,
+        "purchaseUnit": "l",
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      }
+    ],
+    "recipes": [
+      {
+        "key": "mass-direct",
+        "title": "Mass direct",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "md-flour",
+            "kind": "ingredient",
+            "displayName": "Bread flour",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "stated-pairs",
+        "title": "Stated pairs",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "sp-cup",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 0.5,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "sp-grams",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 113.5,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "sp-tbsp",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "tbsp",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "butter",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "density",
+        "title": "Density",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "de-canola",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 200,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "canola",
+            "subrecipeKey": null
+          },
+          {
+            "key": "de-cold",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 200,
+            "unit": "g",
+            "preparationNote": "cold",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "canola",
+            "subrecipeKey": null
+          },
+          {
+            "key": "de-blank-note",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 200,
+            "unit": "g",
+            "preparationNote": " ",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "canola",
+            "subrecipeKey": null
+          },
+          {
+            "key": "de-cup",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "canola",
+            "subrecipeKey": null
+          },
+          {
+            "key": "de-sesame",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "sesame",
+            "subrecipeKey": null
+          },
+          {
+            "key": "de-sesame-bottle",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "bottle",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "sesame",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "counts",
+        "title": "Counts",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "co-eggs",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "eggs",
+            "subrecipeKey": null
+          },
+          {
+            "key": "co-case",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "case",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "eggs",
+            "subrecipeKey": null
+          },
+          {
+            "key": "co-egg-grams",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 20,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "eggs",
+            "subrecipeKey": null
+          },
+          {
+            "key": "co-lemons",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 3,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "lemons",
+            "subrecipeKey": null
+          },
+          {
+            "key": "co-lemon-pcs",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "lemons",
+            "subrecipeKey": null
+          },
+          {
+            "key": "co-lemon-grams",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 240,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "lemons",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "yields",
+        "title": "Yields",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "yi-tomatoes",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "lb",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "tomatoes",
+            "subrecipeKey": null
+          },
+          {
+            "key": "yi-garlic",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "minced",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "garlic",
+            "subrecipeKey": null
+          },
+          {
+            "key": "yi-garlic-compound",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "Minced, room temperature; 100 g",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "garlic",
+            "subrecipeKey": null
+          },
+          {
+            "key": "yi-garlic-partial",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "finely minced",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "garlic",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "preparations",
+        "title": "Preparations",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pr-shredded",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "shredded",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          },
+          {
+            "key": "pr-cooked",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "cooked",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          },
+          {
+            "key": "pr-chopped",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "chopped",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          },
+          {
+            "key": "pr-plain",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          },
+          {
+            "key": "pr-wilted",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "wilted",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          },
+          {
+            "key": "pr-wilted-grams",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 250,
+            "unit": "g",
+            "preparationNote": "wilted",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "cabbage",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "measures",
+        "title": "Measures",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "me-packed",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "packed",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "brown-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-unpacked",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "brown-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-packed-grams",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 200,
+            "unit": "g",
+            "preparationNote": "packed",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "brown-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-ap-cup",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "ap-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-ap-tbsp",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "tbsp",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "ap-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-bread-cup",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "me-bread-sifted",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "sifted",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "efficiency",
+        "title": "Efficiency",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ef-header",
+            "kind": "header",
+            "displayName": "Dough",
+            "quantity": null,
+            "unit": "",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-eighty",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 400,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 80,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-zero",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 400,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 0,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-excluded",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 300,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": true,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-no-quantity",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": null,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-no-unit",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-zero-price",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "l",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "water",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-unresolved",
+            "kind": "ingredient",
+            "displayName": "Mystery spice",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": null
+          },
+          {
+            "key": "ef-note",
+            "kind": "note",
+            "displayName": "Rest overnight",
+            "quantity": null,
+            "unit": "",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "pastry-cream",
+        "title": "Pastry cream",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1000,
+        "yieldUnit": "g",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pc-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1000,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "choux",
+        "title": "Choux",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 24,
+        "yieldUnit": "pcs",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ch-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ch-eggs",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 8,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "eggs",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "glaze",
+        "title": "Glaze",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1600,
+        "yieldUnit": "ml",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": {
+          "massAmount": 8,
+          "massUnit": "oz",
+          "volumeAmount": 1,
+          "volumeUnit": "cup",
+          "countAmount": null,
+          "countUnit": "",
+          "standard": true
+        },
+        "lines": [
+          {
+            "key": "gl-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 400,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "loaf",
+        "title": "Loaf",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 2,
+        "yieldUnit": "pcs",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": {
+          "massAmount": 1500,
+          "massUnit": "g",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "countAmount": null,
+          "countUnit": "",
+          "standard": false
+        },
+        "lines": [
+          {
+            "key": "lo-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 600,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "no-yield-sauce",
+        "title": "No yield sauce",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ny-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "subrecipes",
+        "title": "Subrecipes",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "su-cream",
+            "kind": "subrecipe",
+            "displayName": "Pastry cream",
+            "quantity": 250,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "pastry-cream"
+          },
+          {
+            "key": "su-choux",
+            "kind": "subrecipe",
+            "displayName": "Choux",
+            "quantity": 6,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "choux"
+          },
+          {
+            "key": "su-choux-each",
+            "kind": "subrecipe",
+            "displayName": "Choux",
+            "quantity": 6,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "choux"
+          },
+          {
+            "key": "su-choux-grams",
+            "kind": "subrecipe",
+            "displayName": "Choux",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "choux"
+          },
+          {
+            "key": "su-glaze-grams",
+            "kind": "subrecipe",
+            "displayName": "Glaze",
+            "quantity": 200,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "glaze"
+          },
+          {
+            "key": "su-glaze-ml",
+            "kind": "subrecipe",
+            "displayName": "Glaze",
+            "quantity": 400,
+            "unit": "ml",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "glaze"
+          },
+          {
+            "key": "su-loaf-grams",
+            "kind": "subrecipe",
+            "displayName": "Loaf",
+            "quantity": 750,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "loaf"
+          },
+          {
+            "key": "su-loaf-pcs",
+            "kind": "subrecipe",
+            "displayName": "Loaf",
+            "quantity": 1,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "loaf"
+          },
+          {
+            "key": "su-no-yield",
+            "kind": "subrecipe",
+            "displayName": "No yield sauce",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "no-yield-sauce"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "custard-base",
+        "title": "Custard base",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "cb-cream",
+            "kind": "subrecipe",
+            "displayName": "Pastry cream",
+            "quantity": 250,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "pastry-cream"
+          },
+          {
+            "key": "cb-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "nested",
+        "title": "Nested",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ne-base",
+            "kind": "subrecipe",
+            "displayName": "Custard base",
+            "quantity": 250,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "custard-base"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "cycle-a",
+        "title": "Cycle A",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ca-b",
+            "kind": "subrecipe",
+            "displayName": "Cycle B",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cycle-b"
+          },
+          {
+            "key": "ca-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "cycle-b",
+        "title": "Cycle B",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "cb2-a",
+            "kind": "subrecipe",
+            "displayName": "Cycle A",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cycle-a"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "stray-words",
+        "title": "Stray words",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "sw-flour",
+            "kind": "ingredient",
+            "displayName": "Bread flour, sifted twice",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "sw-plain",
+            "kind": "ingredient",
+            "displayName": "BREAD  flour",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "sw-cream",
+            "kind": "subrecipe",
+            "displayName": "Pastry cream (vanilla)",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "pastry-cream"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "no-yield",
+        "title": "No yield",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "nyr-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "no-portion",
+        "title": "No portion",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "np-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "portion-needs-equivalency",
+        "title": "Portion needs equivalency",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 1000,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "each",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pne-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "portion-by-count",
+        "title": "Portion by count",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 1000,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "each",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": {
+          "massAmount": null,
+          "massUnit": "",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "countAmount": 8,
+          "countUnit": "each",
+          "standard": false
+        },
+        "lines": [
+          {
+            "key": "pbc-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "portion-by-weight",
+        "title": "Portion by weight",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 2,
+        "yieldUnit": "kg",
+        "servingAmount": 250,
+        "servingUnit": "g",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pbw-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1000,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "portion-by-slice",
+        "title": "Portion by slice",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 8,
+        "yieldUnit": "slice",
+        "servingAmount": 2,
+        "servingUnit": "slice",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pbs-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1000,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "menu-recipe",
+        "title": "Menu recipe",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 12,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": 450,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "mr-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "menu-over",
+        "title": "Menu over target",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 12,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": 20,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "mo-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "menu-component",
+        "title": "Menu component",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 12,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": 450,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "mc-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "menu-unpriced",
+        "title": "Menu unpriced",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 12,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": 0,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "mu-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "labour-minutes",
+        "title": "Labour minutes",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": 30,
+        "prepTimeUnit": "minutes",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "lm-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "labour-hours",
+        "title": "Labour hours",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": 1.5,
+        "prepTimeUnit": "hours",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "lh-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "labour-auto",
+        "title": "Labour auto",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": 99,
+        "prepTimeUnit": "minutes",
+        "autoPrepTimeEnabled": true,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "la-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": [
+          {
+            "kind": "header",
+            "title": "",
+            "body": "",
+            "laborKind": "",
+            "timings": []
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": [
+              {
+                "seconds": 600,
+                "yieldCount": 1
+              },
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": []
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": []
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "passive",
+            "timings": [
+              {
+                "seconds": 1800,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "",
+            "timings": [
+              {
+                "seconds": 100,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "labour-auto-one",
+        "title": "Labour auto one untimed",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": true,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "lao-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": [
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": [
+              {
+                "seconds": 900,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": []
+          }
+        ]
+      },
+      {
+        "key": "labour-auto-none",
+        "title": "Labour auto none",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": true,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "lan-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": [
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "active",
+            "timings": []
+          },
+          {
+            "kind": "instruction",
+            "title": "",
+            "body": "Work.",
+            "laborKind": "passive",
+            "timings": [
+              {
+                "seconds": 720,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "empty",
+        "title": "Empty",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [],
+        "steps": []
+      }
+    ]
+  },
+  "expect": {
+    "mass-direct": {
+      "lineCosts": {
+        "md-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "md-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "stated-pairs": {
+      "lineCosts": {
+        "sp-cup": 136.20000000000002,
+        "sp-grams": 136.20000000000002,
+        "sp-tbsp": 34.050000000000004
+      },
+      "total": 306.45000000000005,
+      "portionCents": 30.645000000000003,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "sp-cup": {
+          "ingredientCents": 136.20000000000002,
+          "lineGrams": 113.5,
+          "purchaseIssues": []
+        },
+        "sp-grams": {
+          "ingredientCents": 136.20000000000002,
+          "lineGrams": 113.5,
+          "purchaseIssues": []
+        },
+        "sp-tbsp": {
+          "ingredientCents": 34.050000000000004,
+          "lineGrams": 28.375,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "density": {
+      "lineCosts": {
+        "de-canola": 68.80733944954127,
+        "de-cold": null,
+        "de-blank-note": null,
+        "de-cup": 75.0,
+        "de-sesame": null,
+        "de-sesame-bottle": 1800.0
+      },
+      "total": 1943.8073394495414,
+      "portionCents": 194.38073394495413,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "unpriced ingredient"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "de-canola": {
+          "ingredientCents": 68.80733944954127,
+          "lineGrams": 200.0,
+          "purchaseIssues": []
+        },
+        "de-cold": {
+          "ingredientCents": null,
+          "lineGrams": 200.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "de-blank-note": {
+          "ingredientCents": null,
+          "lineGrams": 200.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "de-cup": {
+          "ingredientCents": 75.0,
+          "lineGrams": 218.00000000000003,
+          "purchaseIssues": []
+        },
+        "de-sesame": {
+          "ingredientCents": null,
+          "lineGrams": 100.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "de-sesame-bottle": {
+          "ingredientCents": 1800.0,
+          "lineGrams": null,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "counts": {
+      "lineCosts": {
+        "co-eggs": 100.0,
+        "co-case": 1800.0,
+        "co-egg-grams": null,
+        "co-lemons": 216.0,
+        "co-lemon-pcs": 144.0,
+        "co-lemon-grams": 144.0
+      },
+      "total": 2404.0,
+      "portionCents": 240.4,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "unpriced ingredient"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "co-eggs": {
+          "ingredientCents": 100.0,
+          "lineGrams": null,
+          "purchaseIssues": []
+        },
+        "co-case": {
+          "ingredientCents": 1800.0,
+          "lineGrams": null,
+          "purchaseIssues": []
+        },
+        "co-egg-grams": {
+          "ingredientCents": null,
+          "lineGrams": 20.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "co-lemons": {
+          "ingredientCents": 216.0,
+          "lineGrams": 360.0,
+          "purchaseIssues": []
+        },
+        "co-lemon-pcs": {
+          "ingredientCents": 144.0,
+          "lineGrams": 240.0,
+          "purchaseIssues": []
+        },
+        "co-lemon-grams": {
+          "ingredientCents": 144.0,
+          "lineGrams": 240.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "yields": {
+      "lineCosts": {
+        "yi-tomatoes": 111.11111111111111,
+        "yi-garlic": 45.45454545454546,
+        "yi-garlic-compound": 45.45454545454546,
+        "yi-garlic-partial": 40.0
+      },
+      "total": 242.02020202020205,
+      "portionCents": 24.202020202020204,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "yi-tomatoes": {
+          "ingredientCents": 111.11111111111111,
+          "lineGrams": 453.59237,
+          "purchaseIssues": []
+        },
+        "yi-garlic": {
+          "ingredientCents": 45.45454545454546,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        },
+        "yi-garlic-compound": {
+          "ingredientCents": 45.45454545454546,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        },
+        "yi-garlic-partial": {
+          "ingredientCents": 40.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "preparations": {
+      "lineCosts": {
+        "pr-shredded": 150.0,
+        "pr-cooked": 150.0,
+        "pr-chopped": 75.0,
+        "pr-plain": 75.0,
+        "pr-wilted": null,
+        "pr-wilted-grams": 75.0
+      },
+      "total": 525.0,
+      "portionCents": 52.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "unpriced ingredient"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pr-shredded": {
+          "ingredientCents": 150.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        },
+        "pr-cooked": {
+          "ingredientCents": 150.0,
+          "lineGrams": 250.0,
+          "purchaseIssues": []
+        },
+        "pr-chopped": {
+          "ingredientCents": 75.0,
+          "lineGrams": 250.0,
+          "purchaseIssues": []
+        },
+        "pr-plain": {
+          "ingredientCents": 75.0,
+          "lineGrams": 250.0,
+          "purchaseIssues": []
+        },
+        "pr-wilted": {
+          "ingredientCents": null,
+          "lineGrams": null,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "pr-wilted-grams": {
+          "ingredientCents": 75.0,
+          "lineGrams": 250.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "measures": {
+      "lineCosts": {
+        "me-packed": 66.0,
+        "me-unpacked": null,
+        "me-packed-grams": 60.0,
+        "me-ap-cup": 17.196056450420453,
+        "me-ap-tbsp": 2.1164377169748247,
+        "me-bread-cup": 31.75,
+        "me-bread-sifted": null
+      },
+      "total": 177.06249416739527,
+      "portionCents": 17.706249416739528,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "unpriced ingredient"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "me-packed": {
+          "ingredientCents": 66.0,
+          "lineGrams": 220.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "me-unpacked": {
+          "ingredientCents": null,
+          "lineGrams": null,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "me-packed-grams": {
+          "ingredientCents": 60.0,
+          "lineGrams": 200.0,
+          "purchaseIssues": []
+        },
+        "me-ap-cup": {
+          "ingredientCents": 17.196056450420453,
+          "lineGrams": 130.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "me-ap-tbsp": {
+          "ingredientCents": 2.1164377169748247,
+          "lineGrams": 16.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "me-bread-cup": {
+          "ingredientCents": 31.75,
+          "lineGrams": 127.0,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        },
+        "me-bread-sifted": {
+          "ingredientCents": null,
+          "lineGrams": null,
+          "purchaseIssues": [
+            "unresolved-conversion"
+          ]
+        }
+      }
+    },
+    "efficiency": {
+      "lineCosts": {
+        "ef-eighty": 125.0,
+        "ef-zero": 100.0,
+        "ef-excluded": 0.0,
+        "ef-no-quantity": null,
+        "ef-no-unit": null,
+        "ef-zero-price": null,
+        "ef-unresolved": null
+      },
+      "total": 225.0,
+      "portionCents": 22.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "missing quantity",
+        "unpriced ingredient",
+        "unresolved item"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "ef-eighty": {
+          "ingredientCents": 100.0,
+          "lineGrams": 400.0,
+          "purchaseIssues": []
+        },
+        "ef-zero": {
+          "ingredientCents": 100.0,
+          "lineGrams": 400.0,
+          "purchaseIssues": []
+        },
+        "ef-excluded": {
+          "ingredientCents": 75.0,
+          "lineGrams": 300.0,
+          "purchaseIssues": []
+        },
+        "ef-zero-price": {
+          "ingredientCents": null,
+          "lineGrams": 1000.0497214070068,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "pastry-cream": {
+      "lineCosts": {
+        "pc-flour": 250.0
+      },
+      "total": 250.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pc-flour": {
+          "ingredientCents": 250.0,
+          "lineGrams": 1000.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "choux": {
+      "lineCosts": {
+        "ch-flour": 125.0,
+        "ch-eggs": 400.0
+      },
+      "total": 525.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "ch-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        },
+        "ch-eggs": {
+          "ingredientCents": 400.0,
+          "lineGrams": null,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "glaze": {
+      "lineCosts": {
+        "gl-flour": 100.0
+      },
+      "total": 100.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "gl-flour": {
+          "ingredientCents": 100.0,
+          "lineGrams": 400.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "loaf": {
+      "lineCosts": {
+        "lo-flour": 150.0
+      },
+      "total": 150.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "lo-flour": {
+          "ingredientCents": 150.0,
+          "lineGrams": 600.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "no-yield-sauce": {
+      "lineCosts": {
+        "ny-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no yield"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "ny-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "subrecipes": {
+      "lineCosts": {
+        "pc-flour": 250.0,
+        "su-cream": 62.5,
+        "ch-flour": 125.0,
+        "ch-eggs": 400.0,
+        "su-choux": 131.25,
+        "su-choux-each": 131.25,
+        "su-choux-grams": null,
+        "gl-flour": 100.0,
+        "su-glaze-grams": 13.039694456280204,
+        "su-glaze-ml": 25.0,
+        "lo-flour": 150.0,
+        "su-loaf-grams": 75.0,
+        "su-loaf-pcs": 75.0,
+        "ny-flour": 25.0,
+        "su-no-yield": null
+      },
+      "total": 513.0396944562801,
+      "portionCents": 51.30396944562801,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "unpriced subrecipe"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {}
+    },
+    "custard-base": {
+      "lineCosts": {
+        "pc-flour": 250.0,
+        "cb-cream": 62.5,
+        "cb-flour": 25.0
+      },
+      "total": 87.5,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "cb-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "nested": {
+      "lineCosts": {
+        "pc-flour": 250.0,
+        "cb-cream": 62.5,
+        "cb-flour": 25.0,
+        "ne-base": 43.75
+      },
+      "total": 43.75,
+      "portionCents": 4.375,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {}
+    },
+    "cycle-a": {
+      "lineCosts": {
+        "cb2-a": null,
+        "ca-b": 0.0,
+        "ca-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion",
+        "subrecipe cycle",
+        "unpriced subrecipe"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "ca-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "cycle-b": {
+      "lineCosts": {
+        "ca-b": null,
+        "ca-flour": 25.0,
+        "cb2-a": 2.5
+      },
+      "total": 2.5,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion",
+        "subrecipe cycle",
+        "unpriced subrecipe"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {}
+    },
+    "stray-words": {
+      "lineCosts": {
+        "sw-flour": 25.0,
+        "sw-plain": 25.0,
+        "pc-flour": 250.0,
+        "sw-cream": 25.0
+      },
+      "total": 75.0,
+      "portionCents": 7.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "stray words"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "sw-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        },
+        "sw-plain": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "no-yield": {
+      "lineCosts": {
+        "nyr-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no yield"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "nyr-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "no-portion": {
+      "lineCosts": {
+        "np-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no portion"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "np-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "portion-needs-equivalency": {
+      "lineCosts": {
+        "pne-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "portion needs equivalency"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pne-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "portion-by-count": {
+      "lineCosts": {
+        "pbc-flour": 25.0
+      },
+      "total": 25.0,
+      "portionCents": 3.125,
+      "suffix": "/1 each",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pbc-flour": {
+          "ingredientCents": 25.0,
+          "lineGrams": 100.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "portion-by-weight": {
+      "lineCosts": {
+        "pbw-flour": 250.0
+      },
+      "total": 250.0,
+      "portionCents": 31.25,
+      "suffix": "/250 g",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pbw-flour": {
+          "ingredientCents": 250.0,
+          "lineGrams": 1000.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "portion-by-slice": {
+      "lineCosts": {
+        "pbs-flour": 250.0
+      },
+      "total": 250.0,
+      "portionCents": 62.5,
+      "suffix": "/2 slice",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "pbs-flour": {
+          "ingredientCents": 250.0,
+          "lineGrams": 1000.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "menu-recipe": {
+      "lineCosts": {
+        "mr-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 10.416666666666666,
+      "suffix": "/1 pcs",
+      "menuPriceCents": 450,
+      "foodCost": 0.023148148148148147,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "mr-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "menu-over": {
+      "lineCosts": {
+        "mo-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 10.416666666666666,
+      "suffix": "/1 pcs",
+      "menuPriceCents": 20,
+      "foodCost": 0.5208333333333333,
+      "overTarget": true,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "mo-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "menu-component": {
+      "lineCosts": {
+        "mc-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 10.416666666666666,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "mc-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "menu-unpriced": {
+      "lineCosts": {
+        "mu-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 10.416666666666666,
+      "suffix": "/1 pcs",
+      "menuPriceCents": 0,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {
+        "mu-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "labour-minutes": {
+      "lineCosts": {
+        "lm-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [],
+      "laborSeconds": 1800.0,
+      "untimedSteps": 0,
+      "labor": {
+        "centsPerBatch": 1000,
+        "centsPerPiece": 100.0
+      },
+      "probes": {
+        "lm-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "labour-hours": {
+      "lineCosts": {
+        "lh-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [],
+      "laborSeconds": 5400.0,
+      "untimedSteps": 0,
+      "labor": {
+        "centsPerBatch": 3000,
+        "centsPerPiece": 300.0
+      },
+      "probes": {
+        "lh-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "labour-auto": {
+      "lineCosts": {
+        "la-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "2 steps untimed"
+      ],
+      "laborSeconds": 450.0,
+      "untimedSteps": 2,
+      "labor": {
+        "centsPerBatch": 250,
+        "centsPerPiece": 25.0
+      },
+      "probes": {
+        "la-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "labour-auto-one": {
+      "lineCosts": {
+        "lao-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "1 step untimed"
+      ],
+      "laborSeconds": 900.0,
+      "untimedSteps": 1,
+      "labor": {
+        "centsPerBatch": 500,
+        "centsPerPiece": 50.0
+      },
+      "probes": {
+        "lao-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "labour-auto-none": {
+      "lineCosts": {
+        "lan-flour": 125.0
+      },
+      "total": 125.0,
+      "portionCents": 12.5,
+      "suffix": "/1 pcs",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No timed steps"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 1,
+      "labor": null,
+      "probes": {
+        "lan-flour": {
+          "ingredientCents": 125.0,
+          "lineGrams": 500.0,
+          "purchaseIssues": []
+        }
+      }
+    },
+    "empty": {
+      "lineCosts": {},
+      "total": 0.0,
+      "portionCents": null,
+      "suffix": "",
+      "menuPriceCents": null,
+      "foodCost": null,
+      "overTarget": false,
+      "issues": [
+        "No prep time",
+        "no yield"
+      ],
+      "laborSeconds": null,
+      "untimedSteps": 0,
+      "labor": null,
+      "probes": {}
+    }
+  }
+}

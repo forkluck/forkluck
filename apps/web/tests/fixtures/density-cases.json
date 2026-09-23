@@ -1,0 +1,6151 @@
+{
+  "generator": "cd apps/web && UPDATE_DENSITY_FIXTURE=1 pnpm exec vitest run tests/density-cases.test.ts",
+  "cases": [
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 114,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.125,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.48184982350126276,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.3750000000000004,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.25,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 481.8498235012628,
+        "rule": "cake-flour"
+      }
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cake flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 120,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.5,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.507210340527645,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.5000000000000004,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 507.21034052764503,
+        "rule": "whole-wheat-flour"
+      }
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Whole wheat flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 127,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.9375,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5367976103917577,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.6458333333333335,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.875,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 536.7976103917576,
+        "rule": "bread-flour"
+      }
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Bread Flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 167,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 10.4375,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.7058677239009726,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.479166666666667,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 20.875,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 705.8677239009727,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Semolina",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 167,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 10.4375,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.7058677239009726,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.479166666666667,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 20.875,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 705.8677239009727,
+        "rule": "semolina-flour"
+      }
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Semolina flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 96,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 6,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.405768272422116,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 12,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 405.768272422116,
+        "rule": "almond-flour"
+      }
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Almond flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 138,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 8.625,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5832918916067917,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.8750000000000004,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 17.25,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 583.2918916067918,
+        "rule": "corn-flour"
+      }
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Corn flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 138,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 8.625,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5832918916067917,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.8750000000000004,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 17.25,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 583.2918916067918,
+        "rule": "cornmeal"
+      }
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cornmeal",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 128,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 8,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.541024363229488,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.666666666666667,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 16,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 541.024363229488,
+        "rule": "cornstarch"
+      }
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cornstarch",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 102,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 6.375,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.43112878944849825,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.1250000000000004,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 12.75,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 431.12878944849825,
+        "rule": "rye-flour"
+      }
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rye flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.8125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5283441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.604166666666667,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.625,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 528.3441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "All-purpose flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.8125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5283441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.604166666666667,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.625,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 528.3441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 120,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.5,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.507210340527645,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.5000000000000004,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 507.21034052764503,
+        "rule": "powdered-sugar"
+      }
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Powdered sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 120,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.5,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.507210340527645,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.5000000000000004,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 507.21034052764503,
+        "rule": "confectioners-sugar"
+      }
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Confectioners' sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 213,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.3125,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9002983544365699,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.437500000000001,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 26.625,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 900.2983544365699,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 213,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.3125,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9002983544365699,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.437500000000001,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 26.625,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 900.2983544365699,
+        "rule": "brown-sugar"
+      }
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Light brown sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 200,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 12.5,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.845350567546075,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.166666666666667,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 25,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 845.350567546075,
+        "rule": "granulated-sugar"
+      }
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Granulated sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 200,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 12.5,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.845350567546075,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.166666666666667,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 25,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 845.350567546075,
+        "rule": "sugar"
+      }
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sanding sugar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar syrup",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sugar Snap Peas",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 145,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 9.0625,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.6128791614709044,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.0208333333333335,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 18.125,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 612.8791614709044,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Kosher salt",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 145,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 9.0625,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.6128791614709044,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.0208333333333335,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 18.125,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 612.8791614709044,
+        "rule": "kosher-salt"
+      }
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Diamond Crystal kosher salt",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 250,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.625,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0566882094325938,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.208333333333334,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 31.25,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1056.6882094325938,
+        "rule": "sea-salt"
+      }
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sea salt",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sea salt caramel",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 292,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 18.25,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.2342118286172694,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 6.083333333333334,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 36.5,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1234.2118286172695,
+        "rule": "salt"
+      }
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Salt",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "No salt seasoning",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 216,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.5,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.912978612949761,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.500000000000001,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 912.978612949761,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Olive oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 216,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.5,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.912978612949761,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.500000000000001,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 912.978612949761,
+        "rule": "olive-oil"
+      }
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Extra-virgin olive oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.625,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9214321186252218,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.541666666666667,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.25,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 921.4321186252217,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.625,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9214321186252218,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.541666666666667,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.25,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 921.4321186252217,
+        "rule": "vegetable-oil"
+      }
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Vegetable oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.625,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9214321186252218,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.541666666666667,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.25,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 921.4321186252217,
+        "rule": "sunflower-oil"
+      }
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sunflower oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.625,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9214321186252218,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.541666666666667,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.25,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 921.4321186252217,
+        "rule": "sesame-oil"
+      }
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sesame oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.625,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9214321186252218,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.541666666666667,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.25,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 921.4321186252217,
+        "rule": "oil"
+      }
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Oil",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Oil packed tuna",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 239,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.9375,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0101939282175596,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.979166666666667,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 29.875,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1010.1939282175597,
+        "rule": "vinegar"
+      }
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Red wine vinegar",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 255,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.9375,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0778219736212455,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.312500000000001,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 31.875,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1077.8219736212457,
+        "rule": "soy-sauce"
+      }
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Soy sauce",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 273,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 17.0625,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.1539035247003924,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.687500000000001,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 34.125,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1153.9035247003924,
+        "rule": "shiro-miso"
+      }
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Shiro miso",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 340,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 21.25,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.4370959648283275,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.083333333333334,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 42.5,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1437.0959648283276,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honey",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honeycrisp apples",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honey mustard",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 322,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 20.125,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.3610144137491806,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 6.708333333333334,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 40.25,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1361.014413749181,
+        "rule": "maple-syrup"
+      }
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Maple syrup",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 337,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 21.0625,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.4244157063151364,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.020833333333334,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 42.125,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1424.4157063151365,
+        "rule": "molasses"
+      }
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Molasses",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 245,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.3125,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0355544452439418,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.104166666666667,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 30.625,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1035.554445243942,
+        "rule": "buttermilk"
+      }
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Buttermilk",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 238,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.875,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0059671753798292,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.958333333333334,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 29.75,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1005.9671753798293,
+        "rule": "heavy-cream"
+      }
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Heavy cream",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 230,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.375,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9721531526779862,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.791666666666667,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.75,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 972.1531526779863,
+        "rule": "sour-cream"
+      }
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sour cream",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.125,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9552461413270648,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.708333333333334,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.25,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 955.2461413270648,
+        "rule": "coconut-milk"
+      }
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Coconut milk",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 252,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.75,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0651417151080544,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.250000000000001,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 31.5,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1065.1417151080545,
+        "rule": "evaporated-milk"
+      }
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Evaporated milk",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 306,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 19.125,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.2933863683454947,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 6.375000000000001,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 38.25,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1293.3863683454947,
+        "rule": "condensed-milk"
+      }
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sweetened condensed milk",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 244,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.25,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0313276924062116,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.083333333333334,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 30.5,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1031.3276924062116,
+        "rule": "milk"
+      }
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Whole milk",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Milk powder",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 245,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.3125,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0355544452439418,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.104166666666667,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 30.625,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1035.554445243942,
+        "rule": "yogurt"
+      }
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Greek yogurt",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 232,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.5,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.980606658353447,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.833333333333334,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 29,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 980.6066583534471,
+        "rule": "cream-cheese"
+      }
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cream cheese",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 236.6,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.7875,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0000497214070068,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.929166666666667,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 29.575,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1000.0497214070067,
+        "rule": "water"
+      }
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Water",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Sparkling water",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Coconut water",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 192,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 12,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.811536544844232,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 24,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 811.536544844232,
+        "rule": "baking-powder"
+      }
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Baking powder",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 220,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.75,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9298856243006824,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.583333333333334,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.5,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 929.8856243006825,
+        "rule": "baking-soda"
+      }
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Baking soda",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 85,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.3125,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.35927399120708187,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.7708333333333335,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 10.625,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 359.2739912070819,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa powder",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 85,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.3125,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.35927399120708187,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.7708333333333335,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 10.625,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 359.2739912070819,
+        "rule": "cocoa-powder"
+      }
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Dutch-process cocoa",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa butter",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cocoa nibs",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 258,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 16.125,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0905022321344366,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.375000000000001,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 32.25,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1090.5022321344368,
+        "rule": "peanut-butter"
+      }
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Peanut butter",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Peanut butter powder",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 220,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 13.75,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9298856243006824,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.583333333333334,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 27.5,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 929.8856243006825,
+        "rule": "mayonnaise"
+      }
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Mayonnaise",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 240,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.01442068105529,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.000000000000001,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 30,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1014.4206810552901,
+        "rule": "ketchup"
+      }
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Ketchup",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 245,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.3125,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.0355544452439418,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.104166666666667,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 30.625,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1035.554445243942,
+        "rule": "tomato-sauce"
+      }
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Tomato sauce",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 262,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 16.375,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.1074092434853582,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.458333333333334,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 32.75,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 1107.4092434853583,
+        "rule": "tomato-paste"
+      }
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Tomato paste",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 90,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.625,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.38040775539573374,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.8750000000000002,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 11.25,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 380.4077553957338,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rolled oats",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 90,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.625,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.38040775539573374,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 1.8750000000000002,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 11.25,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 380.4077553957338,
+        "rule": "rolled-oats"
+      }
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Old-fashioned rolled oats",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 185,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 11.5625,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.7819492749801193,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.854166666666667,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 23.125,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 781.9492749801194,
+        "rule": "rice"
+      }
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Jasmine rice",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cooked rice",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 7.8125,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.5283441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 2.604166666666667,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 15.625,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 528.3441047162969,
+        "rule": "flour"
+      }
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Rice flour",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Cauliflower rice",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 173,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 10.8125,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.7312282409273548,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 3.604166666666667,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 21.625,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 731.2282409273549,
+        "rule": "couscous"
+      }
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Couscous",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 192,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 12,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.811536544844232,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 24,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 811.536544844232,
+        "rule": "lentils"
+      }
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Lentils",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Canned lentils",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Saffron threads",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "  ",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 226.796185,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 14.1747615625,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "ml",
+      "qualifier": null,
+      "expect": {
+        "grams": 0.9586114185351732,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "tsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 4.724920520833334,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "fl-oz",
+      "qualifier": null,
+      "expect": {
+        "grams": 28.349523125,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "l",
+      "qualifier": null,
+      "expect": {
+        "grams": 958.6114185351731,
+        "rule": "standard-8oz-cup"
+      }
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "g",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "!!!",
+      "amount": 1,
+      "unit": "each",
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "name": "Honey",
+      "amount": 0.25,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 5.3125,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 2.5,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 53.125,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Honey",
+      "amount": 1000,
+      "unit": "tbsp",
+      "qualifier": null,
+      "expect": {
+        "grams": 21250,
+        "rule": "honey"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": "",
+      "expect": {
+        "grams": 218,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": null,
+      "expect": {
+        "grams": 218,
+        "rule": "canola-oil"
+      }
+    },
+    {
+      "name": "Canola oil",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": "cold",
+      "expect": null
+    },
+    {
+      "name": "Flour",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": "sifted",
+      "expect": null
+    },
+    {
+      "name": "Brown sugar",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": "packed",
+      "expect": null
+    },
+    {
+      "name": "Pimentón de la Vera",
+      "amount": 1,
+      "unit": "cup",
+      "qualifier": "smoked",
+      "expect": null
+    }
+  ]
+}

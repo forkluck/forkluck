@@ -1,0 +1,643 @@
+{
+  "generator": "cd apps/web && UPDATE_MARKDOWN_FIXTURE=1 pnpm exec vitest run tests/markdown-cases.test.ts",
+  "cases": [
+    {
+      "title": "Focaccia",
+      "items": [
+        {
+          "kind": "header",
+          "displayName": "Dough",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Bread flour",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Fine sea salt",
+          "quantity": 10.5,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Water",
+          "quantity": 1.5,
+          "unit": "cup",
+          "preparationNote": "lukewarm"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Egg",
+          "quantity": 2,
+          "unit": "each",
+          "preparationNote": ""
+        },
+        {
+          "kind": "header",
+          "displayName": "Topping",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Tomato sauce",
+          "quantity": 250,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "sauce"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Olive oil",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": "for brushing"
+        },
+        {
+          "kind": "note",
+          "displayName": "Rest overnight for the best flavour",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        }
+      ],
+      "scale": 1,
+      "subrecipes": {
+        "sauce": {
+          "title": "Tomato sauce",
+          "yieldAmount": 1000,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Tomatoes",
+              "quantity": 800,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Olive oil",
+              "quantity": 40,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "note",
+              "displayName": "Simmer until thick",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Focaccia\n\n## Dough\n- 500 g Bread flour\n- 10.5 g Fine sea salt\n- 1 1/2 cup Water, lukewarm\n- 2 ea Egg\n\n## Topping\n- 250 g Tomato sauce\n- Olive oil, for brushing\n> Rest overnight for the best flavour\n\n## Tomato sauce\n- 200 g Tomatoes\n- 10 g Olive oil\n> Simmer until thick"
+    },
+    {
+      "title": "",
+      "items": [
+        {
+          "kind": "ingredient",
+          "displayName": "Bread flour",
+          "quantity": 300,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Fine sea salt",
+          "quantity": 7,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Water",
+          "quantity": 3,
+          "unit": "tbsp",
+          "preparationNote": ""
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Tomato sauce",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "sauce"
+        }
+      ],
+      "scale": 1.5,
+      "subrecipes": {
+        "sauce": {
+          "title": "Tomato sauce",
+          "yieldAmount": 1000,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Tomatoes",
+              "quantity": 800,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Olive oil",
+              "quantity": 40,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "note",
+              "displayName": "Simmer until thick",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "- 450 g Bread flour\n- 10.5 g Fine sea salt\n- 4 1/2 tbsp Water\n- 750 g Tomato sauce\n\n## Tomato sauce\n- 600 g Tomatoes\n- 30 g Olive oil\n> Simmer until thick"
+    },
+    {
+      "title": "Buns",
+      "items": [
+        {
+          "kind": "subrecipe",
+          "displayName": "Glaze",
+          "quantity": 30,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "glaze"
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Glaze",
+          "quantity": 20,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "glaze"
+        }
+      ],
+      "scale": 1,
+      "subrecipes": {
+        "glaze": {
+          "title": "Glaze",
+          "yieldAmount": 100,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "header",
+              "displayName": "Base",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Sugar",
+              "quantity": 100,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "subrecipe",
+              "displayName": "Stock syrup",
+              "quantity": 20,
+              "unit": "g",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Buns\n- 30 g Glaze\n- 20 g Glaze\n\n## Glaze\n\n### Base\n- 50 g Sugar\n- 10 g Stock syrup"
+    },
+    {
+      "title": "Tart",
+      "items": [
+        {
+          "kind": "subrecipe",
+          "displayName": "Pastry",
+          "quantity": 1,
+          "unit": "each",
+          "preparationNote": "",
+          "subrecipeKey": "pastry"
+        }
+      ],
+      "scale": 1,
+      "subrecipes": {
+        "pastry": {
+          "title": "Pastry",
+          "yieldAmount": null,
+          "yieldUnit": null,
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Butter",
+              "quantity": 250,
+              "unit": "g",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Tart\n- 1 ea Pastry\n\n## Pastry\n> Amounts for one full batch\n- 250 g Butter"
+    },
+    {
+      "title": "  ",
+      "items": [
+        {
+          "kind": "ingredient",
+          "displayName": "  ",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "header",
+          "displayName": "",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Bread flour",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Sauce",
+          "quantity": 100,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "untitled"
+        }
+      ],
+      "scale": 1,
+      "subrecipes": {
+        "untitled": {
+          "title": "",
+          "yieldAmount": 1000,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Tomatoes",
+              "quantity": 800,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Olive oil",
+              "quantity": 40,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "note",
+              "displayName": "Simmer until thick",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "- 500 g Bread flour\n- 100 g Sauce"
+    },
+    {
+      "title": "",
+      "items": [],
+      "scale": 1,
+      "subrecipes": {},
+      "expect": ""
+    },
+    {
+      "title": "Focaccia",
+      "items": [
+        {
+          "kind": "header",
+          "displayName": "Dough",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Bread flour",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Fine sea salt",
+          "quantity": 10.5,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Water",
+          "quantity": 1.5,
+          "unit": "cup",
+          "preparationNote": "lukewarm"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Egg",
+          "quantity": 2,
+          "unit": "each",
+          "preparationNote": ""
+        },
+        {
+          "kind": "header",
+          "displayName": "Topping",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Tomato sauce",
+          "quantity": 250,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "sauce"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Olive oil",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": "for brushing"
+        },
+        {
+          "kind": "note",
+          "displayName": "Rest overnight for the best flavour",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        }
+      ],
+      "scale": 0.5,
+      "subrecipes": {
+        "sauce": {
+          "title": "Tomato sauce",
+          "yieldAmount": 1000,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Tomatoes",
+              "quantity": 800,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Olive oil",
+              "quantity": 40,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "note",
+              "displayName": "Simmer until thick",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Focaccia\n\n## Dough\n- 250 g Bread flour\n- 5.3 g Fine sea salt\n- 3/4 cup Water, lukewarm\n- 1 ea Egg\n\n## Topping\n- 125 g Tomato sauce\n- Olive oil, for brushing\n> Rest overnight for the best flavour\n\n## Tomato sauce\n- 100 g Tomatoes\n- 5 g Olive oil\n> Simmer until thick"
+    },
+    {
+      "title": "Focaccia",
+      "items": [
+        {
+          "kind": "header",
+          "displayName": "Dough",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Bread flour",
+          "quantity": 500,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Fine sea salt",
+          "quantity": 10.5,
+          "unit": "g",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Water",
+          "quantity": 1.5,
+          "unit": "cup",
+          "preparationNote": "lukewarm"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Egg",
+          "quantity": 2,
+          "unit": "each",
+          "preparationNote": ""
+        },
+        {
+          "kind": "header",
+          "displayName": "Topping",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Tomato sauce",
+          "quantity": 250,
+          "unit": "g",
+          "preparationNote": "",
+          "subrecipeKey": "sauce"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Olive oil",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": "for brushing"
+        },
+        {
+          "kind": "note",
+          "displayName": "Rest overnight for the best flavour",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": ""
+        }
+      ],
+      "scale": 3,
+      "subrecipes": {
+        "sauce": {
+          "title": "Tomato sauce",
+          "yieldAmount": 1000,
+          "yieldUnit": "g",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Tomatoes",
+              "quantity": 800,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Olive oil",
+              "quantity": 40,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "note",
+              "displayName": "Simmer until thick",
+              "quantity": null,
+              "unit": "",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Focaccia\n\n## Dough\n- 1,500 g Bread flour\n- 31.5 g Fine sea salt\n- 4 1/2 cup Water, lukewarm\n- 6 ea Egg\n\n## Topping\n- 750 g Tomato sauce\n- Olive oil, for brushing\n> Rest overnight for the best flavour\n\n## Tomato sauce\n- 600 g Tomatoes\n- 30 g Olive oil\n> Simmer until thick"
+    },
+    {
+      "title": "Tart plate",
+      "items": [
+        {
+          "kind": "subrecipe",
+          "displayName": "Tart",
+          "quantity": 2,
+          "unit": "slice",
+          "preparationNote": "",
+          "subrecipeKey": "tart"
+        },
+        {
+          "kind": "subrecipe",
+          "displayName": "Tart",
+          "quantity": null,
+          "unit": "",
+          "preparationNote": "",
+          "subrecipeKey": "tart"
+        }
+      ],
+      "scale": 2,
+      "subrecipes": {
+        "tart": {
+          "title": "Tart",
+          "yieldAmount": 8,
+          "yieldUnit": "slice",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Butter",
+              "quantity": 250,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Eggs",
+              "quantity": 3,
+              "unit": "each",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Milk",
+              "quantity": 1,
+              "unit": "cup",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Tart plate\n- 4 slice Tart\n- Tart\n\n## Tart\n> Amounts for one full batch\n- 250 g Butter\n- 3 ea Eggs\n- 1 cup Milk"
+    },
+    {
+      "title": "Tart plate",
+      "items": [
+        {
+          "kind": "subrecipe",
+          "displayName": "Tart",
+          "quantity": 4,
+          "unit": "slice",
+          "preparationNote": "",
+          "subrecipeKey": "tart"
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Cream",
+          "quantity": 0.333333,
+          "unit": "cup",
+          "preparationNote": ""
+        },
+        {
+          "kind": "ingredient",
+          "displayName": "Vanilla",
+          "quantity": 1,
+          "unit": "tsp",
+          "preparationNote": ""
+        }
+      ],
+      "scale": 1.5,
+      "subrecipes": {
+        "tart": {
+          "title": "Tart",
+          "yieldAmount": 8,
+          "yieldUnit": "slice",
+          "items": [
+            {
+              "kind": "ingredient",
+              "displayName": "Butter",
+              "quantity": 250,
+              "unit": "g",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Eggs",
+              "quantity": 3,
+              "unit": "each",
+              "preparationNote": ""
+            },
+            {
+              "kind": "ingredient",
+              "displayName": "Milk",
+              "quantity": 1,
+              "unit": "cup",
+              "preparationNote": ""
+            }
+          ]
+        }
+      },
+      "expect": "# Tart plate\n- 6 slice Tart\n- 1/2 cup Cream\n- 1 1/2 tsp Vanilla\n\n## Tart\n- 188 g Butter\n- 2 1/4 ea Eggs\n- 3/4 cup Milk"
+    }
+  ]
+}

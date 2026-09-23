@@ -1,0 +1,709 @@
+{
+  "generator": "cd apps/web && UPDATE_BENCHCOST_FIXTURE=1 pnpm exec vitest run tests/benchcost-cases.test.ts",
+  "scaleBatchCost": [
+    {
+      "input": {
+        "lineCostCents": [
+          120,
+          null,
+          80
+        ],
+        "basePortions": 10,
+        "prepTimeSeconds": 600,
+        "autoPrepTime": false,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ],
+        "wagePerHourCents": 3600,
+        "scale": 1
+      },
+      "expect": {
+        "lineCostCents": [
+          120,
+          null,
+          80
+        ],
+        "ingredientTotalCents": 200,
+        "unpricedLineCount": 1,
+        "portions": 10,
+        "portionCostCents": 20,
+        "labor": {
+          "sellable": 10,
+          "laborSecondsPerBatch": 600,
+          "laborCentsPerBatch": 600,
+          "laborCentsPerPiece": 60,
+          "laborSource": "prep",
+          "ingredientCentsPerPiece": 20,
+          "totalCentsPerPiece": 80,
+          "untimedActiveStepCount": 0,
+          "timedActiveStepCount": 1
+        }
+      }
+    },
+    {
+      "input": {
+        "lineCostCents": [
+          120,
+          null,
+          80
+        ],
+        "basePortions": 10,
+        "prepTimeSeconds": 600,
+        "autoPrepTime": false,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ],
+        "wagePerHourCents": 3600,
+        "scale": 2
+      },
+      "expect": {
+        "lineCostCents": [
+          240,
+          null,
+          160
+        ],
+        "ingredientTotalCents": 400,
+        "unpricedLineCount": 1,
+        "portions": 20,
+        "portionCostCents": 20,
+        "labor": {
+          "sellable": 20,
+          "laborSecondsPerBatch": 1200,
+          "laborCentsPerBatch": 1200,
+          "laborCentsPerPiece": 60,
+          "laborSource": "prep",
+          "ingredientCentsPerPiece": 20,
+          "totalCentsPerPiece": 80,
+          "untimedActiveStepCount": 0,
+          "timedActiveStepCount": 1
+        }
+      }
+    },
+    {
+      "input": {
+        "lineCostCents": [
+          200
+        ],
+        "basePortions": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": false,
+        "steps": [],
+        "wagePerHourCents": 3600,
+        "scale": 2
+      },
+      "expect": {
+        "lineCostCents": [
+          400
+        ],
+        "ingredientTotalCents": 400,
+        "unpricedLineCount": 0,
+        "portions": null,
+        "portionCostCents": null,
+        "labor": {
+          "sellable": 1,
+          "laborSecondsPerBatch": null,
+          "laborCentsPerBatch": null,
+          "laborCentsPerPiece": null,
+          "laborSource": "prep",
+          "ingredientCentsPerPiece": 400,
+          "totalCentsPerPiece": 400,
+          "untimedActiveStepCount": 0,
+          "timedActiveStepCount": 0
+        }
+      }
+    },
+    {
+      "input": {
+        "lineCostCents": [
+          120,
+          null,
+          80
+        ],
+        "basePortions": 10,
+        "prepTimeSeconds": 600,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ],
+        "wagePerHourCents": 3600,
+        "scale": 0.5
+      },
+      "expect": {
+        "lineCostCents": [
+          60,
+          null,
+          40
+        ],
+        "ingredientTotalCents": 100,
+        "unpricedLineCount": 1,
+        "portions": 5,
+        "portionCostCents": 20,
+        "labor": {
+          "sellable": 5,
+          "laborSecondsPerBatch": 150,
+          "laborCentsPerBatch": 150,
+          "laborCentsPerPiece": 30,
+          "laborSource": "steps",
+          "ingredientCentsPerPiece": 20,
+          "totalCentsPerPiece": 50,
+          "untimedActiveStepCount": 0,
+          "timedActiveStepCount": 1
+        }
+      }
+    },
+    {
+      "input": {
+        "lineCostCents": [
+          33.3333,
+          12.5,
+          null,
+          null
+        ],
+        "basePortions": 7,
+        "prepTimeSeconds": 1234,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 600,
+                "yieldCount": 1
+              },
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "id": "pack",
+            "kind": "active",
+            "timings": []
+          },
+          {
+            "id": "bake",
+            "kind": "passive",
+            "timings": [
+              {
+                "seconds": 1800,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ],
+        "wagePerHourCents": 2000,
+        "scale": 1.75
+      },
+      "expect": {
+        "lineCostCents": [
+          58.333275,
+          21.875,
+          null,
+          null
+        ],
+        "ingredientTotalCents": 80.208275,
+        "unpricedLineCount": 2,
+        "portions": 12.25,
+        "portionCostCents": 6.547614285714285,
+        "labor": {
+          "sellable": 12.25,
+          "laborSecondsPerBatch": 787.5,
+          "laborCentsPerBatch": 437.5,
+          "laborCentsPerPiece": 35.714285714285715,
+          "laborSource": "steps",
+          "ingredientCentsPerPiece": 6.547614285714285,
+          "totalCentsPerPiece": 42.2619,
+          "untimedActiveStepCount": 1,
+          "timedActiveStepCount": 1
+        }
+      }
+    },
+    {
+      "input": {
+        "lineCostCents": [],
+        "basePortions": 0,
+        "prepTimeSeconds": 0,
+        "autoPrepTime": false,
+        "steps": [],
+        "wagePerHourCents": 2000,
+        "scale": 3
+      },
+      "expect": {
+        "lineCostCents": [],
+        "ingredientTotalCents": 0,
+        "unpricedLineCount": 0,
+        "portions": 0,
+        "portionCostCents": null,
+        "labor": {
+          "sellable": 1,
+          "laborSecondsPerBatch": 0,
+          "laborCentsPerBatch": 0,
+          "laborCentsPerPiece": 0,
+          "laborSource": "prep",
+          "ingredientCentsPerPiece": 0,
+          "totalCentsPerPiece": 0,
+          "untimedActiveStepCount": 0,
+          "timedActiveStepCount": 0
+        }
+      }
+    }
+  ],
+  "observedSecondsForBatch": [
+    {
+      "step": {
+        "id": "mix",
+        "kind": "active",
+        "timings": [
+          {
+            "seconds": 600,
+            "yieldCount": 1
+          },
+          {
+            "seconds": 300,
+            "yieldCount": 1
+          }
+        ]
+      },
+      "expect": 450
+    },
+    {
+      "step": {
+        "id": "mix",
+        "kind": "active",
+        "timings": [
+          {
+            "seconds": 600,
+            "yieldCount": 70
+          }
+        ]
+      },
+      "expect": 600
+    },
+    {
+      "step": {
+        "id": "mix",
+        "kind": "active",
+        "timings": []
+      },
+      "expect": null
+    },
+    {
+      "step": {
+        "id": "mix",
+        "kind": "active",
+        "timings": [
+          {
+            "seconds": 0,
+            "yieldCount": 1
+          }
+        ]
+      },
+      "expect": null
+    },
+    {
+      "step": {
+        "id": "mix",
+        "kind": "active",
+        "timings": [
+          {
+            "seconds": 0,
+            "yieldCount": 1
+          },
+          {
+            "seconds": 400,
+            "yieldCount": 1
+          },
+          {
+            "seconds": 0,
+            "yieldCount": 1
+          },
+          {
+            "seconds": 200,
+            "yieldCount": 1
+          }
+        ]
+      },
+      "expect": 300
+    },
+    {
+      "step": {
+        "id": "rest",
+        "kind": "passive",
+        "timings": [
+          {
+            "seconds": 100,
+            "yieldCount": 1
+          }
+        ]
+      },
+      "expect": 100
+    }
+  ],
+  "sellableCount": [
+    {
+      "batchYield": 72,
+      "sellableYield": 68,
+      "expect": 68
+    },
+    {
+      "batchYield": 72,
+      "sellableYield": null,
+      "expect": 72
+    },
+    {
+      "batchYield": 72,
+      "sellableYield": 0,
+      "expect": 72
+    },
+    {
+      "batchYield": 72,
+      "sellableYield": -5,
+      "expect": 72
+    },
+    {
+      "batchYield": 0,
+      "sellableYield": null,
+      "expect": 1
+    },
+    {
+      "batchYield": -3,
+      "sellableYield": null,
+      "expect": 1
+    },
+    {
+      "batchYield": 0.5,
+      "sellableYield": null,
+      "expect": 0.5
+    }
+  ],
+  "computeCostBreakdown": [
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 2000,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": null,
+        "laborCentsPerBatch": null,
+        "laborCentsPerPiece": null,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 34.02777777777778,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": 1800,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": 1800,
+        "laborCentsPerBatch": 1800,
+        "laborCentsPerPiece": 25,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 59.02777777777778,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": null,
+        "laborCentsPerBatch": null,
+        "laborCentsPerPiece": null,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 34.02777777777778,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": 9999,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 600,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "id": "shape",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 300,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ]
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": 900,
+        "laborCentsPerBatch": 900,
+        "laborCentsPerPiece": 12.5,
+        "laborSource": "steps",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 46.52777777777778,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 2
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 600,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "id": "bake",
+            "kind": "passive",
+            "timings": [
+              {
+                "seconds": 720,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ]
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": 600,
+        "laborCentsPerBatch": 600,
+        "laborCentsPerPiece": 8.333333333333334,
+        "laborSource": "steps",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 42.361111111111114,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 1
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "mix",
+            "kind": "active",
+            "timings": [
+              {
+                "seconds": 600,
+                "yieldCount": 1
+              }
+            ]
+          },
+          {
+            "id": "pack",
+            "kind": "active",
+            "timings": []
+          },
+          {
+            "id": "bake",
+            "kind": "passive",
+            "timings": []
+          }
+        ]
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": 600,
+        "laborCentsPerBatch": 600,
+        "laborCentsPerPiece": 8.333333333333334,
+        "laborSource": "steps",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 42.361111111111114,
+        "untimedActiveStepCount": 1,
+        "timedActiveStepCount": 1
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": null,
+        "autoPrepTime": true,
+        "steps": [
+          {
+            "id": "pack",
+            "kind": "active",
+            "timings": []
+          },
+          {
+            "id": "bake",
+            "kind": "passive",
+            "timings": [
+              {
+                "seconds": 720,
+                "yieldCount": 1
+              }
+            ]
+          }
+        ]
+      },
+      "wagePerHourCents": 3600,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": null,
+        "laborCentsPerBatch": null,
+        "laborCentsPerPiece": null,
+        "laborSource": "steps",
+        "ingredientCentsPerPiece": 34.02777777777778,
+        "totalCentsPerPiece": 34.02777777777778,
+        "untimedActiveStepCount": 1,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 72,
+        "sellableYield": 60,
+        "prepTimeSeconds": null,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 2000,
+      "expect": {
+        "sellable": 60,
+        "laborSecondsPerBatch": null,
+        "laborCentsPerBatch": null,
+        "laborCentsPerPiece": null,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 40.833333333333336,
+        "totalCentsPerPiece": 40.833333333333336,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 2450,
+        "batchYield": 0,
+        "sellableYield": null,
+        "prepTimeSeconds": 900,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 1725,
+      "expect": {
+        "sellable": 1,
+        "laborSecondsPerBatch": 900,
+        "laborCentsPerBatch": 431.25,
+        "laborCentsPerPiece": 431.25,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 2450,
+        "totalCentsPerPiece": 2881.25,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    },
+    {
+      "recipe": {
+        "ingredientCostCents": 0,
+        "batchYield": 72,
+        "sellableYield": null,
+        "prepTimeSeconds": 0,
+        "autoPrepTime": false,
+        "steps": []
+      },
+      "wagePerHourCents": 2000,
+      "expect": {
+        "sellable": 72,
+        "laborSecondsPerBatch": 0,
+        "laborCentsPerBatch": 0,
+        "laborCentsPerPiece": 0,
+        "laborSource": "prep",
+        "ingredientCentsPerPiece": 0,
+        "totalCentsPerPiece": 0,
+        "untimedActiveStepCount": 0,
+        "timedActiveStepCount": 0
+      }
+    }
+  ]
+}

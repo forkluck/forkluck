@@ -1,0 +1,1543 @@
+{
+  "generator": "cd apps/web && UPDATE_RESOLVE_LINE_FIXTURE=1 pnpm exec vitest run tests/resolve-line-cases.test.ts",
+  "cases": [
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg"
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "links a plural to the pantry row that stocks it",
+      "line": {
+        "baseName": "eggs"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": ""
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "status": "archived"
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "leaves an archived pantry row for the catalog to answer",
+      "line": {
+        "baseName": "eggs"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "eggs"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "reads a size word as the preparation it names",
+      "line": {
+        "baseName": "large eggs",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "large"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "keeps the note the line already carried, preparation first",
+      "line": {
+        "baseName": "large eggs",
+        "noteText": "2 ounces; 56 g",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "large, 2 ounces; 56 g"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg"
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "falls back to the qualifier when the line has no written note",
+      "line": {
+        "baseName": "eggs",
+        "qualifier": "beaten"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "beaten"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "links a title the cook already has as a recipe",
+      "line": {
+        "baseName": "lemon curd"
+      },
+      "expect": {
+        "patch": {
+          "kind": "subrecipe",
+          "ingredientId": null,
+          "subrecipeId": "rec-curd",
+          "subrecipePublicId": "rcp_curd",
+          "displayName": "Lemon Curd",
+          "preparationNote": ""
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-curd",
+          "name": "Lemon curd"
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "prefers the pantry over a recipe of the same name",
+      "line": {
+        "baseName": "Lemon Curd"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-curd",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Lemon curd",
+          "preparationNote": ""
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-other",
+            "name": "Lemon zest"
+          },
+          {
+            "id": "cat-juice",
+            "name": "Lemon juice",
+            "preparations": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-juice": {
+          "id": "pantry-juice",
+          "name": "Lemon juice",
+          "preparations": []
+        }
+      },
+      "name": "pulls an exact catalog match into the pantry",
+      "line": {
+        "baseName": "lemon juice"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-juice",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Lemon juice",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-juice",
+          "name": "Lemon juice",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "lemon juice"
+        ],
+        "activations": [
+          "cat-juice"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-tomato",
+            "name": "San Marzano tomato"
+          }
+        ]
+      },
+      "activations": {
+        "cat-tomato": {
+          "id": "pantry-tomato",
+          "name": "San Marzano tomato",
+          "preparations": []
+        }
+      },
+      "name": "treats the plural of the complete name as the same identity",
+      "line": {
+        "baseName": "San Marzano tomatoes"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-tomato",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "San Marzano tomato",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-tomato",
+          "name": "San Marzano tomato",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "San Marzano tomatoes"
+        ],
+        "activations": [
+          "cat-tomato"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-caster",
+            "name": "Caster sugar",
+            "aliases": []
+          },
+          {
+            "id": "cat-powdered",
+            "name": "Powdered sugar",
+            "preparations": [],
+            "aliases": [
+              "confectioners sugar",
+              "icing sugar"
+            ]
+          }
+        ]
+      },
+      "activations": {
+        "cat-powdered": {
+          "id": "pantry-powdered",
+          "name": "Powdered sugar",
+          "preparations": []
+        }
+      },
+      "name": "links a synonym the catalog card answers to",
+      "line": {
+        "baseName": "confectioners sugar"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-powdered",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Powdered sugar",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-powdered",
+          "name": "Powdered sugar",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "confectioners sugar"
+        ],
+        "activations": [
+          "cat-powdered"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-sirloin",
+            "name": "Sirloin steak",
+            "aliases": [
+              "sirloin"
+            ]
+          }
+        ]
+      },
+      "activations": {
+        "cat-sirloin": {
+          "id": "pantry-sirloin",
+          "name": "Sirloin steak",
+          "preparations": []
+        }
+      },
+      "name": "does not replace a specific ingredient through a generic alias",
+      "line": {
+        "baseName": "lamb sirloin",
+        "identityCandidates": [
+          "lamb sirloin",
+          "sirloin"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "lamb sirloin"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-generic",
+            "name": "Orange juice",
+            "aliases": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-generic": {
+          "id": "pantry-generic",
+          "name": "Orange juice",
+          "preparations": []
+        }
+      },
+      "name": "does not remove words from Blood orange juice to reach Orange juice",
+      "line": {
+        "baseName": "Blood orange juice",
+        "identityCandidates": [
+          "Blood orange juice",
+          "Orange juice"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Blood orange juice"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-generic",
+            "name": "Eggplant",
+            "aliases": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-generic": {
+          "id": "pantry-generic",
+          "name": "Eggplant",
+          "preparations": []
+        }
+      },
+      "name": "does not remove words from Graffiti eggplant to reach Eggplant",
+      "line": {
+        "baseName": "Graffiti eggplant",
+        "identityCandidates": [
+          "Graffiti eggplant",
+          "Eggplant"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Graffiti eggplant"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-generic",
+            "name": "Tomatoes",
+            "aliases": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-generic": {
+          "id": "pantry-generic",
+          "name": "Tomatoes",
+          "preparations": []
+        }
+      },
+      "name": "does not remove words from San Marzano tomatoes to reach Tomatoes",
+      "line": {
+        "baseName": "San Marzano tomatoes",
+        "identityCandidates": [
+          "San Marzano tomatoes",
+          "Tomatoes"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "San Marzano tomatoes"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-generic",
+            "name": "Kosher salt",
+            "aliases": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-generic": {
+          "id": "pantry-generic",
+          "name": "Kosher salt",
+          "preparations": []
+        }
+      },
+      "name": "does not remove words from Diamond Crystal kosher salt to reach Kosher salt",
+      "line": {
+        "baseName": "Diamond Crystal kosher salt",
+        "identityCandidates": [
+          "Diamond Crystal kosher salt",
+          "Kosher salt"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Diamond Crystal kosher salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-alias",
+            "name": "Powdered sugar",
+            "aliases": [
+              "icing sugar"
+            ]
+          },
+          {
+            "id": "cat-name",
+            "name": "Icing sugar",
+            "aliases": []
+          }
+        ]
+      },
+      "activations": {
+        "cat-name": {
+          "id": "pantry-icing",
+          "name": "Icing sugar",
+          "preparations": []
+        }
+      },
+      "name": "prefers the card named as written over one aliased to it",
+      "line": {
+        "baseName": "icing sugar"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-icing",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Icing sugar",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-icing",
+          "name": "Icing sugar",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "icing sugar"
+        ],
+        "activations": [
+          "cat-name"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-powdered",
+            "name": "Powdered sugar",
+            "aliases": [
+              "confectioners sugar"
+            ]
+          }
+        ]
+      },
+      "activations": {},
+      "name": "still needs a pick for a fuzzy hit no synonym covers",
+      "line": {
+        "baseName": "powdened sugra"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "powdened sugra"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-1",
+            "name": "Carrots"
+          }
+        ]
+      },
+      "activations": {},
+      "name": "leaves a name nothing answers unlinked",
+      "line": {
+        "baseName": "popo"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "popo"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-1",
+            "name": "Popo"
+          }
+        ]
+      },
+      "activations": {},
+      "name": "stays unlinked when the catalog copy fails",
+      "line": {
+        "baseName": "popo"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "popo"
+        ],
+        "activations": [
+          "cat-1"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "never asks the catalog for a name the pantry answered",
+      "line": {
+        "baseName": "egg"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": ""
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-salt",
+          "name": "Kosher salt"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "does not infer a pantry row by removing a presumed brand",
+      "line": {
+        "baseName": "Diamond Crystal kosher salt",
+        "identityCandidates": [
+          "diamond crystal kosher salt",
+          "kosher salt",
+          "salt"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Diamond Crystal kosher salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [],
+      "catalog": {
+        "items": [],
+        "byQuery": {
+          "kosher salt": [
+            {
+              "id": "cat-salt",
+              "name": "Kosher salt"
+            }
+          ]
+        }
+      },
+      "activations": {
+        "cat-salt": {
+          "id": "pantry-new",
+          "name": "Kosher salt",
+          "preparations": []
+        }
+      },
+      "name": "does not search the catalog again with a shortened name",
+      "line": {
+        "baseName": "Diamond Crystal kosher salt",
+        "identityCandidates": [
+          "diamond crystal kosher salt",
+          "kosher salt",
+          "salt"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Diamond Crystal kosher salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large"
+          ]
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "matches the size word to a preparation under the bare name",
+      "line": {
+        "baseName": "large eggs",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "large"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-salt",
+          "name": "Salt"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-diamond",
+            "name": "Diamond Crystal kosher salt"
+          }
+        ]
+      },
+      "activations": {
+        "cat-diamond": {
+          "id": "pantry-diamond",
+          "name": "Diamond Crystal kosher salt",
+          "preparations": []
+        }
+      },
+      "name": "takes an exact catalog card over a generic pantry row",
+      "line": {
+        "baseName": "Diamond Crystal kosher salt",
+        "identityCandidates": [
+          "diamond crystal kosher salt",
+          "kosher salt",
+          "salt"
+        ]
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-diamond",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Diamond Crystal kosher salt",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-diamond",
+          "name": "Diamond Crystal kosher salt",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "Diamond Crystal kosher salt"
+        ],
+        "activations": [
+          "cat-diamond"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-salt",
+          "name": "Salt"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "leaves the line open when only a generic pantry row exists",
+      "line": {
+        "baseName": "Diamond Crystal kosher salt",
+        "identityCandidates": [
+          "diamond crystal kosher salt",
+          "kosher salt",
+          "salt"
+        ]
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "Diamond Crystal kosher salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "keeps the size word as the note when no preparation carries it",
+      "line": {
+        "baseName": "large eggs",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "large"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [
+          "large eggs"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-granulated",
+          "name": "Granulated sugar"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "does not infer a longer pantry identity from a generic name",
+      "line": {
+        "baseName": "sugar"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "sugar"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-granulated",
+          "name": "Granulated sugar"
+        },
+        {
+          "id": "pantry-brown",
+          "name": "Brown sugar"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "leaves the line unlinked when two pantry rows could be meant",
+      "line": {
+        "baseName": "sugar"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "sugar"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-kosher",
+          "name": "Kosher salt"
+        },
+        {
+          "id": "pantry-flour",
+          "name": "Bread flour"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "does not link salt to the only specific salt the cook stocks",
+      "line": {
+        "baseName": "salt"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-kosher",
+          "name": "Kosher salt"
+        },
+        {
+          "id": "pantry-sea",
+          "name": "Sea salt",
+          "status": "archived"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "does not infer an active specific name after skipping an archived one",
+      "line": {
+        "baseName": "salt"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [
+          "salt"
+        ],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-granulated",
+          "name": "Granulated sugar"
+        },
+        {
+          "id": "pantry-sugar",
+          "name": "Sugar"
+        }
+      ],
+      "recipes": [],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "never overrides the row the name was written as",
+      "line": {
+        "baseName": "sugar"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-sugar",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Sugar",
+          "preparationNote": ""
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "a blank name resolves to nothing",
+      "line": {
+        "baseName": "  "
+      },
+      "expect": null,
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-x",
+            "name": "X"
+          }
+        ]
+      },
+      "activations": {
+        "cat-x": {
+          "id": "pantry-x",
+          "name": "X",
+          "preparations": []
+        }
+      },
+      "name": "a one-letter name never reaches the catalog",
+      "line": {
+        "baseName": "x"
+      },
+      "expect": null,
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [],
+      "catalog": {
+        "items": [
+          {
+            "id": "cat-onion",
+            "name": "Onion",
+            "preparations": [
+              "small",
+              "medium"
+            ]
+          }
+        ]
+      },
+      "activations": {
+        "cat-onion": {
+          "id": "pantry-onion",
+          "name": "Onion",
+          "preparations": [
+            "small",
+            "medium"
+          ]
+        }
+      },
+      "name": "a size word finds its preparation on a catalog card",
+      "line": {
+        "baseName": "medium onions",
+        "identityCandidates": [
+          "onion"
+        ],
+        "sizeWord": "medium"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-onion",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Onion",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-onion",
+          "name": "Onion",
+          "preparations": [
+            "small",
+            "medium"
+          ]
+        }
+      },
+      "calls": {
+        "searches": [
+          "medium onions"
+        ],
+        "activations": [
+          "cat-onion"
+        ]
+      }
+    },
+    {
+      "ingredients": [],
+      "recipes": [],
+      "catalog": {
+        "items": [],
+        "byQuery": {
+          "egg": [
+            {
+              "id": "cat-egg",
+              "name": "Egg"
+            }
+          ]
+        }
+      },
+      "activations": {
+        "cat-egg": {
+          "id": "pantry-egg2",
+          "name": "Egg",
+          "preparations": []
+        }
+      },
+      "name": "a size-free identity asks the catalog a second time",
+      "line": {
+        "baseName": "large eggs",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg2",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": ""
+        },
+        "activated": {
+          "id": "pantry-egg2",
+          "name": "Egg",
+          "preparations": []
+        }
+      },
+      "calls": {
+        "searches": [
+          "large eggs",
+          "egg"
+        ],
+        "activations": [
+          "cat-egg"
+        ]
+      }
+    },
+    {
+      "ingredients": [
+        {
+          "id": "pantry-egg",
+          "name": "Egg",
+          "preparations": [
+            "large",
+            "medium"
+          ]
+        }
+      ],
+      "recipes": [
+        {
+          "id": "rec-curd",
+          "publicId": "rcp_curd",
+          "title": "Lemon Curd"
+        }
+      ],
+      "catalog": {
+        "items": []
+      },
+      "activations": {},
+      "name": "a note that already names the preparation keeps it once",
+      "line": {
+        "baseName": "large eggs",
+        "noteText": "Large, beaten",
+        "identityCandidates": [
+          "egg"
+        ],
+        "sizeWord": "large"
+      },
+      "expect": {
+        "patch": {
+          "kind": "ingredient",
+          "ingredientId": "pantry-egg",
+          "subrecipeId": null,
+          "subrecipePublicId": null,
+          "displayName": "Egg",
+          "preparationNote": "Large, beaten"
+        },
+        "activated": null
+      },
+      "calls": {
+        "searches": [],
+        "activations": []
+      }
+    }
+  ]
+}

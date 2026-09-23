@@ -1,0 +1,7331 @@
+{
+  "generator": "cd apps/api && UPDATE_ENGINE_FIXTURE=1 .venv/bin/python manage.py test forkluck.test_mac_parity_fixtures",
+  "scenario": {
+    "settings": {
+      "wagePerHourCents": 2000,
+      "foodCostTargetBps": 3000
+    },
+    "catalog": [
+      {
+        "key": "wheat-flour",
+        "name": "Wheat flour",
+        "synonyms": [],
+        "allergens": [
+          "wheat",
+          "gluten_cereals"
+        ],
+        "verify": [],
+        "measures": [
+          {
+            "unit": "cup",
+            "amount": 1,
+            "grams": 125,
+            "qualifier": "",
+            "confidence": "high"
+          }
+        ],
+        "preparations": []
+      },
+      {
+        "key": "almonds",
+        "name": "Almonds",
+        "synonyms": [],
+        "allergens": [
+          "tree_nuts"
+        ],
+        "verify": [],
+        "measures": [],
+        "preparations": []
+      },
+      {
+        "key": "soy-sauce",
+        "name": "Soy sauce",
+        "synonyms": [],
+        "allergens": [
+          "soy"
+        ],
+        "verify": [
+          "wheat"
+        ],
+        "measures": [],
+        "preparations": []
+      }
+    ],
+    "ingredients": [
+      {
+        "key": "n-flour",
+        "name": "Wheat flour",
+        "catalogKey": "wheat-flour",
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 12,
+          "fat": 1.5,
+          "protein": 10.3,
+          "sugars": 0.3,
+          "starch": 72.2,
+          "fiber": 2.7,
+          "salt": 0.005,
+          "other": 1,
+          "totalCarbohydrate": 75.2,
+          "sodiumMg": 2,
+          "saturatedFat": 0.3,
+          "calories": 364,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 15,
+          "ironMg": 1.2,
+          "potassiumMg": 107
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-butter",
+        "name": "Butter",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {
+          "milk": "contains"
+        },
+        "nutritionPer100g": {
+          "water": 16,
+          "fat": 81,
+          "protein": 0.9,
+          "sugars": 0.1,
+          "starch": 0,
+          "fiber": 0,
+          "salt": 1.6,
+          "other": 0.4,
+          "totalCarbohydrate": 0.1,
+          "sodiumMg": 640,
+          "saturatedFat": 51,
+          "calories": 717,
+          "transFat": null,
+          "cholesterolMg": 215,
+          "addedSugars": null,
+          "vitaminDMcg": null,
+          "calciumMg": 24,
+          "ironMg": 0.02,
+          "potassiumMg": 24
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": "Butter (cream, salt)"
+      },
+      {
+        "key": "n-sugar",
+        "name": "Sugar",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 0.02,
+          "fat": 0,
+          "protein": 0,
+          "sugars": 99.8,
+          "starch": 0,
+          "fiber": 0,
+          "salt": 0.003,
+          "other": 0.18,
+          "totalCarbohydrate": 99.98,
+          "sodiumMg": 1,
+          "saturatedFat": 0,
+          "calories": 387,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": null,
+          "vitaminDMcg": 0,
+          "calciumMg": 1,
+          "ironMg": 0.05,
+          "potassiumMg": 2
+        },
+        "sugarsAreAdded": true,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-salt",
+        "name": "Sea salt",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 0,
+          "fat": 0,
+          "protein": 0,
+          "sugars": 0,
+          "starch": 0,
+          "fiber": 0,
+          "salt": 100,
+          "other": 0,
+          "totalCarbohydrate": 0,
+          "sodiumMg": null,
+          "saturatedFat": 0,
+          "calories": 0,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 24,
+          "ironMg": 0.33,
+          "potassiumMg": 8
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-oats",
+        "name": "Rolled oats",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 10,
+          "fat": 6.5,
+          "protein": 13,
+          "sugars": 1,
+          "starch": 57,
+          "fiber": 10,
+          "salt": 0.01,
+          "other": 2.5,
+          "totalCarbohydrate": null,
+          "sodiumMg": 6,
+          "saturatedFat": 1.1,
+          "calories": null,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 52,
+          "ironMg": 4.3,
+          "potassiumMg": 362
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-eggs",
+        "name": "Eggs",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": 50,
+          "weightUnit": "g",
+          "volumeAmount": null,
+          "volumeUnit": "",
+          "eachAmount": 1,
+          "eachUnit": "each",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {
+          "egg": "contains"
+        },
+        "nutritionPer100g": {
+          "water": 76,
+          "fat": 9.5,
+          "protein": 12.6,
+          "sugars": 0.2,
+          "starch": 0.5,
+          "fiber": 0,
+          "salt": 0.35,
+          "other": 0.85,
+          "totalCarbohydrate": 0.7,
+          "sodiumMg": 140,
+          "saturatedFat": 3.1,
+          "calories": 143,
+          "transFat": 0.04,
+          "cholesterolMg": 372,
+          "addedSugars": 0,
+          "vitaminDMcg": 2,
+          "calciumMg": 56,
+          "ironMg": 1.75,
+          "potassiumMg": 138
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": "Whole egg"
+      },
+      {
+        "key": "n-vanilla",
+        "name": "Vanilla extract",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-parchment",
+        "name": "Parchment paper",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": true,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {
+          "milk": "contains"
+        },
+        "nutritionPer100g": null,
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-oil",
+        "name": "Frying oil",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 0,
+          "fat": 100,
+          "protein": 0,
+          "sugars": 0,
+          "starch": 0,
+          "fiber": 0,
+          "salt": 0,
+          "other": 0,
+          "totalCarbohydrate": 0,
+          "sodiumMg": 0,
+          "saturatedFat": 7.4,
+          "calories": 884,
+          "transFat": 0.4,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 0,
+          "ironMg": 0,
+          "potassiumMg": 0
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-almonds",
+        "name": "Almonds",
+        "catalogKey": "almonds",
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 4.4,
+          "fat": 49.9,
+          "protein": 21.2,
+          "sugars": 4.4,
+          "starch": 0.7,
+          "fiber": 12.5,
+          "salt": 0.003,
+          "other": 6.9,
+          "totalCarbohydrate": 21.6,
+          "sodiumMg": 1,
+          "saturatedFat": 3.8,
+          "calories": 579,
+          "transFat": 0.02,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 269,
+          "ironMg": 3.7,
+          "potassiumMg": 733
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-chips",
+        "name": "Chocolate chips",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {
+          "milk": "mayContain",
+          "tree_nuts": "mayContain",
+          "peanut": "mayContain"
+        },
+        "nutritionPer100g": {
+          "water": 0.7,
+          "fat": 30,
+          "protein": 4.2,
+          "sugars": 54.5,
+          "starch": 8,
+          "fiber": 5.9,
+          "salt": 0.03,
+          "other": 0.67,
+          "totalCarbohydrate": 68.4,
+          "sodiumMg": 11,
+          "saturatedFat": 18,
+          "calories": 479,
+          "transFat": 0.1,
+          "cholesterolMg": 3,
+          "addedSugars": 52,
+          "vitaminDMcg": 0,
+          "calciumMg": 32,
+          "ironMg": 3.1,
+          "potassiumMg": 365
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-milk",
+        "name": "Whole milk",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": {
+          "usesStandard": false,
+          "weightAmount": 1030,
+          "weightUnit": "g",
+          "volumeAmount": 1,
+          "volumeUnit": "l",
+          "eachAmount": null,
+          "eachUnit": "",
+          "source": "user",
+          "confidence": "high"
+        },
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {
+          "milk": "contains"
+        },
+        "nutritionPer100g": {
+          "water": 88,
+          "fat": 3.3,
+          "protein": 3.2,
+          "sugars": 5,
+          "starch": 0,
+          "fiber": 0,
+          "salt": 0.1,
+          "other": 0.4,
+          "totalCarbohydrate": 4.8,
+          "sodiumMg": 40,
+          "saturatedFat": 1.9,
+          "calories": 61,
+          "transFat": 0.1,
+          "cholesterolMg": 10,
+          "addedSugars": 0,
+          "vitaminDMcg": 1.3,
+          "calciumMg": 113,
+          "ironMg": 0.03,
+          "potassiumMg": 132
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-cardamom",
+        "name": "Cardamom pods",
+        "catalogKey": null,
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 8,
+          "fat": 6.7,
+          "protein": 10.8,
+          "sugars": 0,
+          "starch": 40,
+          "fiber": 28,
+          "salt": 0.05,
+          "other": 6.45,
+          "totalCarbohydrate": 68,
+          "sodiumMg": 18,
+          "saturatedFat": 0.7,
+          "calories": 311,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 383,
+          "ironMg": 14,
+          "potassiumMg": 1119
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      },
+      {
+        "key": "n-soy",
+        "name": "Soy sauce",
+        "catalogKey": "soy-sauce",
+        "status": "active",
+        "nonEdible": false,
+        "purchaseCostCents": 0,
+        "purchaseSize": null,
+        "purchaseUnit": null,
+        "yieldPercent": 100,
+        "conversion": null,
+        "measures": [],
+        "preparations": [],
+        "allergenOverrides": {},
+        "nutritionPer100g": {
+          "water": 71,
+          "fat": 0.6,
+          "protein": 8.1,
+          "sugars": 0.4,
+          "starch": 4.5,
+          "fiber": 0.8,
+          "salt": 14.3,
+          "other": 0.3,
+          "totalCarbohydrate": 4.9,
+          "sodiumMg": 5720,
+          "saturatedFat": 0.1,
+          "calories": 53,
+          "transFat": 0,
+          "cholesterolMg": 0,
+          "addedSugars": 0,
+          "vitaminDMcg": 0,
+          "calciumMg": 33,
+          "ironMg": 1.5,
+          "potassiumMg": 435
+        },
+        "sugarsAreAdded": false,
+        "nutritionLabelName": ""
+      }
+    ],
+    "recipes": [
+      {
+        "key": "linked-basic",
+        "title": "Linked basic",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 12,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 1,
+        "nutritionServingUnit": "pcs",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "lb-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 250,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-butter",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-sugar",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 80,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-salt",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-salt",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-eggs",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 2,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-eggs",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-oats",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-oats",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-flour-cup",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "lb-soy",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 15,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-soy",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "retention",
+        "title": "Retention",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 200,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 50,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "re-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "re-oil",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 0,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-oil",
+            "subrecipeKey": null
+          },
+          {
+            "key": "re-butter",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 85,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "re-parchment",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-parchment",
+            "subrecipeKey": null
+          },
+          {
+            "key": "re-blank",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 10,
+            "unit": "g",
+            "preparationNote": " ",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-sugar",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "blocked",
+        "title": "Blocked",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 50,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "bl-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "bl-vanilla",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 5,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-vanilla",
+            "subrecipeKey": null
+          },
+          {
+            "key": "bl-cardamom",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 3,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-cardamom",
+            "subrecipeKey": null
+          },
+          {
+            "key": "bl-unresolved",
+            "kind": "ingredient",
+            "displayName": "Mystery",
+            "quantity": 10,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": null
+          },
+          {
+            "key": "bl-no-quantity",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": null,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "all-excluded",
+        "title": "All excluded",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 10,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ax-parchment",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-parchment",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ax-oil",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 0,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-oil",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "empty-child",
+        "title": "Empty child",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 100,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [],
+        "steps": []
+      },
+      {
+        "key": "cookie-dough",
+        "title": "Cookie dough",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 24,
+        "yieldUnit": "pcs",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "cd-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 300,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "cd-butter",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 150,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "cd-sugar",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "cd-chips",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-chips",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "vanilla-sauce",
+        "title": "Vanilla sauce",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "l",
+        "servingAmount": null,
+        "servingUnit": "",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "vs-milk",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "l",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-milk",
+            "subrecipeKey": null
+          },
+          {
+            "key": "vs-sugar",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-sugar",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "child-pcs",
+        "title": "Child by pieces",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 8,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 1,
+        "nutritionServingUnit": "pcs",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "cp-dough",
+            "kind": "subrecipe",
+            "displayName": "Cookie dough",
+            "quantity": 6,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cookie-dough"
+          },
+          {
+            "key": "cp-dough-each",
+            "kind": "subrecipe",
+            "displayName": "Cookie dough",
+            "quantity": 2,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cookie-dough"
+          },
+          {
+            "key": "cp-almonds",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 30,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-almonds",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "child-volume",
+        "title": "Child by volume",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 100,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "cv-sauce",
+            "kind": "subrecipe",
+            "displayName": "Vanilla sauce",
+            "quantity": 250,
+            "unit": "ml",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "vanilla-sauce"
+          },
+          {
+            "key": "cv-sauce-cup",
+            "kind": "subrecipe",
+            "displayName": "Vanilla sauce",
+            "quantity": 2,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 85,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "vanilla-sauce"
+          },
+          {
+            "key": "cv-sauce-grams",
+            "kind": "subrecipe",
+            "displayName": "Vanilla sauce",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "vanilla-sauce"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "child-issues",
+        "title": "Child issues",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ci-blocked",
+            "kind": "subrecipe",
+            "displayName": "Blocked",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "blocked"
+          },
+          {
+            "key": "ci-empty",
+            "kind": "subrecipe",
+            "displayName": "Empty child",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "empty-child"
+          },
+          {
+            "key": "ci-cup",
+            "kind": "subrecipe",
+            "displayName": "Cookie dough",
+            "quantity": 1,
+            "unit": "cup",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cookie-dough"
+          },
+          {
+            "key": "ci-discarded",
+            "kind": "subrecipe",
+            "displayName": "Cookie dough",
+            "quantity": 2,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 0,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cookie-dough"
+          },
+          {
+            "key": "ci-unlinked",
+            "kind": "subrecipe",
+            "displayName": "Lost sauce",
+            "quantity": 10,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "n-cycle-a",
+        "title": "Nutrition cycle A",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "nca-b",
+            "kind": "subrecipe",
+            "displayName": "Nutrition cycle B",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "n-cycle-b"
+          },
+          {
+            "key": "nca-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "n-cycle-b",
+        "title": "Nutrition cycle B",
+        "kind": "component",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ncb-a",
+            "kind": "subrecipe",
+            "displayName": "Nutrition cycle A",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "n-cycle-a"
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "declared-batch",
+        "title": "Declared batch",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 600,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 60,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": 300,
+        "nutritionPackageUnit": "g",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "db-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "db-milk",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 300,
+            "unit": "ml",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-milk",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "input-batch",
+        "title": "Input batch",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 10,
+        "yieldUnit": "pcs",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 1,
+        "nutritionServingUnit": "pcs",
+        "nutritionPackageAmount": 2,
+        "nutritionPackageUnit": "pcs",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ib-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "ib-milk",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 300,
+            "unit": "ml",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-milk",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "serving-needs-equivalency",
+        "title": "Serving needs equivalency",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 1,
+        "nutritionServingUnit": "each",
+        "nutritionPackageAmount": 2,
+        "nutritionPackageUnit": "cup",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "sne-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1000,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "serving-with-equivalency",
+        "title": "Serving with equivalency",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 1,
+        "yieldUnit": "kg",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 1,
+        "nutritionServingUnit": "each",
+        "nutritionPackageAmount": 1,
+        "nutritionPackageUnit": "cup",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": {
+          "massAmount": null,
+          "massUnit": "",
+          "volumeAmount": 2,
+          "volumeUnit": "l",
+          "countAmount": 10,
+          "countUnit": "each",
+          "standard": false
+        },
+        "lines": [
+          {
+            "key": "swe-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1000,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "standard-equivalency",
+        "title": "Standard equivalency",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 2,
+        "yieldUnit": "cup",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 100,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": {
+          "massAmount": 250,
+          "massUnit": "g",
+          "volumeAmount": 1,
+          "volumeUnit": "cup",
+          "countAmount": null,
+          "countUnit": "",
+          "standard": true
+        },
+        "lines": [
+          {
+            "key": "se-milk",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "l",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-milk",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "package-above-batch",
+        "title": "Package above batch",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 50,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": 1,
+        "nutritionPackageUnit": "kg",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pab-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "package-below-serving",
+        "title": "Package below serving",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 200,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": 100,
+        "nutritionPackageUnit": "g",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "pbs-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "serving-above-batch",
+        "title": "Serving above batch",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 500,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 600,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "sab-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 500,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "no-serving",
+        "title": "No serving",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": 400,
+        "yieldUnit": "g",
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": null,
+        "nutritionServingUnit": "",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "ns-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 400,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      },
+      {
+        "key": "statement",
+        "title": "Statement",
+        "kind": "recipe",
+        "status": "active",
+        "yieldAmount": null,
+        "yieldUnit": null,
+        "servingAmount": 1,
+        "servingUnit": "pcs",
+        "menuPriceCents": null,
+        "nutritionServingAmount": 30,
+        "nutritionServingUnit": "g",
+        "nutritionPackageAmount": null,
+        "nutritionPackageUnit": "",
+        "prepTimeAmount": null,
+        "prepTimeUnit": "",
+        "autoPrepTimeEnabled": false,
+        "equivalency": null,
+        "lines": [
+          {
+            "key": "st-sugar",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-sugar",
+            "subrecipeKey": null
+          },
+          {
+            "key": "st-flour",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 100,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-flour",
+            "subrecipeKey": null
+          },
+          {
+            "key": "st-butter",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "st-butter-again",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 50,
+            "unit": "g",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-butter",
+            "subrecipeKey": null
+          },
+          {
+            "key": "st-dough",
+            "kind": "subrecipe",
+            "displayName": "Cookie dough",
+            "quantity": 2,
+            "unit": "pcs",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": null,
+            "subrecipeKey": "cookie-dough"
+          },
+          {
+            "key": "st-eggs",
+            "kind": "ingredient",
+            "displayName": "",
+            "quantity": 1,
+            "unit": "each",
+            "preparationNote": "",
+            "efficiency": 100,
+            "efficiencyAfterCooking": 100,
+            "isBase": false,
+            "excludedFromCost": false,
+            "ingredientKey": "n-eggs",
+            "subrecipeKey": null
+          }
+        ],
+        "steps": []
+      }
+    ]
+  },
+  "per100gNutrients": {
+    "n-flour": {
+      "calories": 364.0,
+      "energyKj": 1522.976,
+      "fat": 1.5,
+      "saturatedFat": 0.3,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 2.0,
+      "salt": 0.005,
+      "totalCarbohydrate": 75.2,
+      "fiber": 2.7,
+      "sugars": 0.3,
+      "addedSugars": 0.0,
+      "protein": 10.3,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 15.0,
+      "ironMg": 1.2,
+      "potassiumMg": 107.0
+    },
+    "n-butter": {
+      "calories": 717.0,
+      "energyKj": 2999.9280000000003,
+      "fat": 81.0,
+      "saturatedFat": 51.0,
+      "transFat": null,
+      "cholesterolMg": 215.0,
+      "sodiumMg": 640.0,
+      "salt": 1.6,
+      "totalCarbohydrate": 0.1,
+      "fiber": 0.0,
+      "sugars": 0.1,
+      "addedSugars": null,
+      "protein": 0.9,
+      "vitaminDMcg": null,
+      "calciumMg": 24.0,
+      "ironMg": 0.02,
+      "potassiumMg": 24.0
+    },
+    "n-sugar": {
+      "calories": 387.0,
+      "energyKj": 1619.208,
+      "fat": 0.0,
+      "saturatedFat": 0.0,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 1.0,
+      "salt": 0.003,
+      "totalCarbohydrate": 99.98,
+      "fiber": 0.0,
+      "sugars": 99.8,
+      "addedSugars": 99.8,
+      "protein": 0.0,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 1.0,
+      "ironMg": 0.05,
+      "potassiumMg": 2.0
+    },
+    "n-salt": {
+      "calories": 0.0,
+      "energyKj": 0.0,
+      "fat": 0.0,
+      "saturatedFat": 0.0,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 40000.0,
+      "salt": 100.0,
+      "totalCarbohydrate": 0.0,
+      "fiber": 0.0,
+      "sugars": 0.0,
+      "addedSugars": 0.0,
+      "protein": 0.0,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 24.0,
+      "ironMg": 0.33,
+      "potassiumMg": 8.0
+    },
+    "n-oats": {
+      "calories": 362.5,
+      "energyKj": 1516.7,
+      "fat": 6.5,
+      "saturatedFat": 1.1,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 6.0,
+      "salt": 0.01,
+      "totalCarbohydrate": 68.0,
+      "fiber": 10.0,
+      "sugars": 1.0,
+      "addedSugars": 0.0,
+      "protein": 13.0,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 52.0,
+      "ironMg": 4.3,
+      "potassiumMg": 362.0
+    },
+    "n-eggs": {
+      "calories": 143.0,
+      "energyKj": 598.312,
+      "fat": 9.5,
+      "saturatedFat": 3.1,
+      "transFat": 0.04,
+      "cholesterolMg": 372.0,
+      "sodiumMg": 140.0,
+      "salt": 0.35,
+      "totalCarbohydrate": 0.7,
+      "fiber": 0.0,
+      "sugars": 0.2,
+      "addedSugars": 0.0,
+      "protein": 12.6,
+      "vitaminDMcg": 2.0,
+      "calciumMg": 56.0,
+      "ironMg": 1.75,
+      "potassiumMg": 138.0
+    },
+    "n-oil": {
+      "calories": 884.0,
+      "energyKj": 3698.656,
+      "fat": 100.0,
+      "saturatedFat": 7.4,
+      "transFat": 0.4,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 0.0,
+      "salt": 0.0,
+      "totalCarbohydrate": 0.0,
+      "fiber": 0.0,
+      "sugars": 0.0,
+      "addedSugars": 0.0,
+      "protein": 0.0,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 0.0,
+      "ironMg": 0.0,
+      "potassiumMg": 0.0
+    },
+    "n-almonds": {
+      "calories": 579.0,
+      "energyKj": 2422.536,
+      "fat": 49.9,
+      "saturatedFat": 3.8,
+      "transFat": 0.02,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 1.0,
+      "salt": 0.003,
+      "totalCarbohydrate": 21.6,
+      "fiber": 12.5,
+      "sugars": 4.4,
+      "addedSugars": 0.0,
+      "protein": 21.2,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 269.0,
+      "ironMg": 3.7,
+      "potassiumMg": 733.0
+    },
+    "n-chips": {
+      "calories": 479.0,
+      "energyKj": 2004.136,
+      "fat": 30.0,
+      "saturatedFat": 18.0,
+      "transFat": 0.1,
+      "cholesterolMg": 3.0,
+      "sodiumMg": 11.0,
+      "salt": 0.03,
+      "totalCarbohydrate": 68.4,
+      "fiber": 5.9,
+      "sugars": 54.5,
+      "addedSugars": 52.0,
+      "protein": 4.2,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 32.0,
+      "ironMg": 3.1,
+      "potassiumMg": 365.0
+    },
+    "n-milk": {
+      "calories": 61.0,
+      "energyKj": 255.22400000000002,
+      "fat": 3.3,
+      "saturatedFat": 1.9,
+      "transFat": 0.1,
+      "cholesterolMg": 10.0,
+      "sodiumMg": 40.0,
+      "salt": 0.1,
+      "totalCarbohydrate": 4.8,
+      "fiber": 0.0,
+      "sugars": 5.0,
+      "addedSugars": 0.0,
+      "protein": 3.2,
+      "vitaminDMcg": 1.3,
+      "calciumMg": 113.0,
+      "ironMg": 0.03,
+      "potassiumMg": 132.0
+    },
+    "n-cardamom": {
+      "calories": 311.0,
+      "energyKj": 1301.2240000000002,
+      "fat": 6.7,
+      "saturatedFat": 0.7,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 18.0,
+      "salt": 0.05,
+      "totalCarbohydrate": 68.0,
+      "fiber": 28.0,
+      "sugars": 0.0,
+      "addedSugars": 0.0,
+      "protein": 10.8,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 383.0,
+      "ironMg": 14.0,
+      "potassiumMg": 1119.0
+    },
+    "n-soy": {
+      "calories": 53.0,
+      "energyKj": 221.752,
+      "fat": 0.6,
+      "saturatedFat": 0.1,
+      "transFat": 0.0,
+      "cholesterolMg": 0.0,
+      "sodiumMg": 5720.0,
+      "salt": 14.3,
+      "totalCarbohydrate": 4.9,
+      "fiber": 0.8,
+      "sugars": 0.4,
+      "addedSugars": 0.0,
+      "protein": 8.1,
+      "vitaminDMcg": 0.0,
+      "calciumMg": 33.0,
+      "ironMg": 1.5,
+      "potassiumMg": 435.0
+    }
+  },
+  "expect": {
+    "linked-basic": {
+      "recipeId": "linked-basic",
+      "publicId": "linked-basic",
+      "title": "Linked basic",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 1.0,
+        "unit": "pcs",
+        "grams": 60.167
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 722.0,
+        "declaredGrams": null,
+        "inputGrams": 722.0,
+        "servings": 12.0,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "lb-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 250.0,
+          "netGrams": 250.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-butter",
+          "kind": "ingredient",
+          "name": "Butter",
+          "ingredientPublicId": "n-butter",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-sugar",
+          "kind": "ingredient",
+          "name": "Sugar",
+          "ingredientPublicId": "n-sugar",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 80.0,
+          "netGrams": 80.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-salt",
+          "kind": "ingredient",
+          "name": "Sea salt",
+          "ingredientPublicId": "n-salt",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 2.0,
+          "netGrams": 2.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-eggs",
+          "kind": "ingredient",
+          "name": "Eggs",
+          "ingredientPublicId": "n-eggs",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-oats",
+          "kind": "ingredient",
+          "name": "Rolled oats",
+          "ingredientPublicId": "n-oats",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 50.0,
+          "netGrams": 50.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-flour-cup",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 125.0,
+          "netGrams": 125.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "lb-soy",
+          "kind": "ingredient",
+          "name": "Soy sauce",
+          "ingredientPublicId": "n-soy",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": true,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 15.0,
+          "netGrams": 15.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 2723.8,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 11396.379,
+            "complete": true
+          },
+          "fat": {
+            "amount": 99.465,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 55.79,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.04,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 587.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2449.3,
+            "complete": true
+          },
+          "salt": {
+            "amount": 6.121,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 397.519,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 15.245,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 81.825,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 79.84,
+            "complete": false
+          },
+          "protein": {
+            "amount": 59.84,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 2.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 168.48,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 8.692,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 811.26,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 377.258,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1578.446,
+            "complete": true
+          },
+          "fat": {
+            "amount": 13.776,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 7.727,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.006,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 81.302,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 339.238,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.848,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 55.058,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.111,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 11.333,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 11.058,
+            "complete": false
+          },
+          "protein": {
+            "amount": 8.288,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.277,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 23.335,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.204,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 112.363,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 226.983,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 949.698,
+            "complete": true
+          },
+          "fat": {
+            "amount": 8.289,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 4.649,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.003,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 48.917,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 204.108,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.51,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 33.127,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.27,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 6.819,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 6.653,
+            "complete": false
+          },
+          "protein": {
+            "amount": 4.987,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.167,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 14.04,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.724,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 67.605,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "egg",
+          "gluten_cereals",
+          "milk",
+          "soy",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 375.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Butter (cream, salt)",
+          "grams": 100.0,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Whole egg",
+          "grams": 100.0,
+          "allergens": [
+            "egg"
+          ]
+        },
+        {
+          "name": "Sugar",
+          "grams": 80.0,
+          "allergens": []
+        },
+        {
+          "name": "Rolled oats",
+          "grams": 50.0,
+          "allergens": []
+        },
+        {
+          "name": "Soy sauce",
+          "grams": 15.0,
+          "allergens": [
+            "soy"
+          ]
+        },
+        {
+          "name": "Sea salt",
+          "grams": 2.0,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": [
+            "transFat",
+            "addedSugars",
+            "vitaminDMcg"
+          ]
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "retention": {
+      "recipeId": "retention",
+      "publicId": "retention",
+      "title": "Retention",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 50.0,
+        "unit": "g",
+        "grams": 50.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 200.0,
+        "declaredGrams": 200.0,
+        "inputGrams": 195.0,
+        "servings": 4.0,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "re-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "re-oil",
+          "kind": "ingredient",
+          "name": "Frying oil",
+          "ingredientPublicId": "n-oil",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 0.0,
+          "grams": 50.0,
+          "netGrams": 0.0,
+          "status": "discarded"
+        },
+        {
+          "itemId": "re-butter",
+          "kind": "ingredient",
+          "name": "Butter",
+          "ingredientPublicId": "n-butter",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 85.0,
+          "grams": 100.0,
+          "netGrams": 85.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "re-parchment",
+          "kind": "ingredient",
+          "name": "Parchment paper",
+          "ingredientPublicId": "n-parchment",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": true,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "nonEdible"
+        },
+        {
+          "itemId": "re-blank",
+          "kind": "ingredient",
+          "name": "Sugar",
+          "ingredientPublicId": "n-sugar",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 10.0,
+          "netGrams": 10.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1012.15,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 4234.836,
+            "complete": true
+          },
+          "fat": {
+            "amount": 70.35,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 43.65,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 182.75,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 546.1,
+            "complete": true
+          },
+          "salt": {
+            "amount": 1.365,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 85.283,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 10.365,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 9.98,
+            "complete": false
+          },
+          "protein": {
+            "amount": 11.065,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 35.5,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.222,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 127.6,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 506.075,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 2117.418,
+            "complete": true
+          },
+          "fat": {
+            "amount": 35.175,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 21.825,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 91.375,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 273.05,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.683,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 42.642,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.35,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 5.183,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 4.99,
+            "complete": false
+          },
+          "protein": {
+            "amount": 5.533,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 17.75,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.611,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 63.8,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 253.038,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1058.709,
+            "complete": true
+          },
+          "fat": {
+            "amount": 17.587,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 10.912,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 45.688,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 136.525,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.341,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 21.321,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.675,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 2.591,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 2.495,
+            "complete": false
+          },
+          "protein": {
+            "amount": 2.766,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 8.875,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.305,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 31.9,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Butter (cream, salt)",
+          "grams": 100.0,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Wheat flour",
+          "grams": 100.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Sugar",
+          "grams": 10.0,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": [
+            "transFat",
+            "addedSugars",
+            "vitaminDMcg"
+          ]
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "blocked": {
+      "recipeId": "blocked",
+      "publicId": "blocked",
+      "title": "Blocked",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 50.0,
+        "unit": "g",
+        "grams": 50.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 100.0,
+        "servings": 10.0,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "bl-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "bl-vanilla",
+          "kind": "ingredient",
+          "name": "Vanilla extract",
+          "ingredientPublicId": "n-vanilla",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 5.0,
+          "netGrams": 5.0,
+          "status": "unlinked"
+        },
+        {
+          "itemId": "bl-cardamom",
+          "kind": "ingredient",
+          "name": "Cardamom pods",
+          "ingredientPublicId": "n-cardamom",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "unweighed"
+        },
+        {
+          "itemId": "bl-unresolved",
+          "kind": "ingredient",
+          "name": "Mystery",
+          "ingredientPublicId": null,
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "unresolved"
+        },
+        {
+          "itemId": "bl-no-quantity",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "unweighed"
+        }
+      ],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 100.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [
+          "unlinkedIngredient",
+          "unresolvedItem",
+          "unweighedItem"
+        ],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "all-excluded": {
+      "recipeId": "all-excluded",
+      "publicId": "all-excluded",
+      "title": "All excluded",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 10.0,
+        "unit": "g",
+        "grams": 10.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": null,
+        "declaredGrams": null,
+        "inputGrams": 0.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "ax-parchment",
+          "kind": "ingredient",
+          "name": "Parchment paper",
+          "ingredientPublicId": "n-parchment",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": true,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "nonEdible"
+        },
+        {
+          "itemId": "ax-oil",
+          "kind": "ingredient",
+          "name": "Frying oil",
+          "ingredientPublicId": "n-oil",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 0.0,
+          "grams": 50.0,
+          "netGrams": 0.0,
+          "status": "discarded"
+        }
+      ],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [],
+        "mayContain": []
+      },
+      "statement": [],
+      "issues": {
+        "batch": [
+          "allExcluded"
+        ],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "empty-child": {
+      "recipeId": "empty-child",
+      "publicId": "empty-child",
+      "title": "Empty child",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 100.0,
+        "declaredGrams": 100.0,
+        "inputGrams": 0.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [],
+        "mayContain": []
+      },
+      "statement": [],
+      "issues": {
+        "batch": [
+          "allExcluded"
+        ],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "cookie-dough": {
+      "recipeId": "cookie-dough",
+      "publicId": "cookie-dough",
+      "title": "Cookie dough",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 650.0,
+        "declaredGrams": null,
+        "inputGrams": 650.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "cd-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 300.0,
+          "netGrams": 300.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "cd-butter",
+          "kind": "ingredient",
+          "name": "Butter",
+          "ingredientPublicId": "n-butter",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 150.0,
+          "netGrams": 150.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "cd-sugar",
+          "kind": "ingredient",
+          "name": "Sugar",
+          "ingredientPublicId": "n-sugar",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "cd-chips",
+          "kind": "ingredient",
+          "name": "Chocolate chips",
+          "ingredientPublicId": "n-chips",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 3033.5,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 12692.164,
+            "complete": true
+          },
+          "fat": {
+            "amount": 156.0,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 95.4,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.1,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 325.5,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 978.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 2.448,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 394.13,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 14.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 155.35,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 151.8,
+            "complete": false
+          },
+          "protein": {
+            "amount": 36.45,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 114.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.78,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 724.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 466.692,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1952.641,
+            "complete": true
+          },
+          "fat": {
+            "amount": 24.0,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 14.677,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.015,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 50.077,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 150.462,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.377,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 60.635,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.154,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 23.9,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 23.354,
+            "complete": false
+          },
+          "protein": {
+            "amount": 5.608,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 17.538,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.043,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 111.385,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": [
+          "peanut",
+          "tree_nuts"
+        ]
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 300.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Butter (cream, salt)",
+          "grams": 150.0,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Chocolate chips",
+          "grams": 100.0,
+          "allergens": []
+        },
+        {
+          "name": "Sugar",
+          "grams": 100.0,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": [
+            "transFat",
+            "addedSugars",
+            "vitaminDMcg"
+          ]
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "vanilla-sauce": {
+      "recipeId": "vanilla-sauce",
+      "publicId": "vanilla-sauce",
+      "title": "Vanilla sauce",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 1130.0,
+        "declaredGrams": null,
+        "inputGrams": 1130.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "vs-milk",
+          "kind": "ingredient",
+          "name": "Whole milk",
+          "ingredientPublicId": "n-milk",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 1030.0,
+          "netGrams": 1030.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "vs-sugar",
+          "kind": "ingredient",
+          "name": "Sugar",
+          "ingredientPublicId": "n-sugar",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1015.3,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 4248.015,
+            "complete": true
+          },
+          "fat": {
+            "amount": 33.99,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 19.57,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 1.03,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 103.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 413.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 1.033,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 149.42,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 151.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 99.8,
+            "complete": true
+          },
+          "protein": {
+            "amount": 32.96,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 13.39,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 1164.9,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.359,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 1361.6,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 89.85,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 375.931,
+            "complete": true
+          },
+          "fat": {
+            "amount": 3.008,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.732,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 9.115,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 36.549,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 13.223,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 13.389,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 8.832,
+            "complete": true
+          },
+          "protein": {
+            "amount": 2.917,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 1.185,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 103.088,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.032,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 120.496,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Whole milk",
+          "grams": 1030.0,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Sugar",
+          "grams": 100.0,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "child-pcs": {
+      "recipeId": "child-pcs",
+      "publicId": "child-pcs",
+      "title": "Child by pieces",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 1.0,
+        "unit": "pcs",
+        "grams": 30.833
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 246.667,
+        "declaredGrams": null,
+        "inputGrams": 246.667,
+        "servings": 8.0,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "cp-dough",
+          "kind": "subrecipe",
+          "name": "Cookie dough",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "cookie-dough",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 162.5,
+          "netGrams": 162.5,
+          "status": "linked"
+        },
+        {
+          "itemId": "cp-dough-each",
+          "kind": "subrecipe",
+          "name": "Cookie dough",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "cookie-dough",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 54.167,
+          "netGrams": 54.167,
+          "status": "linked"
+        },
+        {
+          "itemId": "cp-almonds",
+          "kind": "ingredient",
+          "name": "Almonds",
+          "ingredientPublicId": "n-almonds",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 30.0,
+          "netGrams": 30.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1184.867,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 4957.482,
+            "complete": true
+          },
+          "fat": {
+            "amount": 66.97,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 32.94,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.039,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 108.5,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 326.3,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.817,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 137.857,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 8.417,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 53.103,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 50.6,
+            "complete": false
+          },
+          "protein": {
+            "amount": 18.51,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 118.7,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 3.37,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 461.233,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 480.351,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 2009.79,
+            "complete": true
+          },
+          "fat": {
+            "amount": 27.15,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 13.354,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.016,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 43.986,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 132.284,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.331,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 55.888,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 3.412,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 21.528,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 20.514,
+            "complete": false
+          },
+          "protein": {
+            "amount": 7.504,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 48.122,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.366,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 186.986,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 148.108,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 619.685,
+            "complete": true
+          },
+          "fat": {
+            "amount": 8.371,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 4.117,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.005,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 13.562,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 40.788,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.102,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 17.232,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.052,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 6.638,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 6.325,
+            "complete": false
+          },
+          "protein": {
+            "amount": 2.314,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 14.838,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.421,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 57.654,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "tree_nuts",
+          "wheat"
+        ],
+        "mayContain": [
+          "peanut"
+        ]
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 100.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Butter (cream, salt)",
+          "grams": 50.0,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Chocolate chips",
+          "grams": 33.333,
+          "allergens": []
+        },
+        {
+          "name": "Sugar",
+          "grams": 33.333,
+          "allergens": []
+        },
+        {
+          "name": "Almonds",
+          "grams": 30.0,
+          "allergens": [
+            "tree_nuts"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": [
+            "transFat",
+            "addedSugars",
+            "vitaminDMcg"
+          ]
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "child-volume": {
+      "recipeId": "child-volume",
+      "publicId": "child-volume",
+      "title": "Child by volume",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 100.0,
+        "unit": "g",
+        "grams": 100.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 836.986,
+        "declaredGrams": null,
+        "inputGrams": 836.986,
+        "servings": 8.37,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "cv-sauce",
+          "kind": "subrecipe",
+          "name": "Vanilla sauce",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "vanilla-sauce",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 282.5,
+          "netGrams": 282.5,
+          "status": "linked"
+        },
+        {
+          "itemId": "cv-sauce-cup",
+          "kind": "subrecipe",
+          "name": "Vanilla sauce",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "vanilla-sauce",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 85.0,
+          "grams": 534.689,
+          "netGrams": 454.486,
+          "status": "linked"
+        },
+        {
+          "itemId": "cv-sauce-grams",
+          "kind": "subrecipe",
+          "name": "Vanilla sauce",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "vanilla-sauce",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 752.028,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 3146.486,
+            "complete": true
+          },
+          "fat": {
+            "amount": 25.176,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 14.495,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.763,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 76.292,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 305.907,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.765,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 110.675,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 112.067,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 73.921,
+            "complete": true
+          },
+          "protein": {
+            "amount": 24.413,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 9.918,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 862.836,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.266,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 1008.531,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 89.85,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 375.931,
+            "complete": true
+          },
+          "fat": {
+            "amount": 3.008,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.732,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 9.115,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 36.549,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 13.223,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 13.389,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 8.832,
+            "complete": true
+          },
+          "protein": {
+            "amount": 2.917,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 1.185,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 103.088,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.032,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 120.496,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 89.85,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 375.931,
+            "complete": true
+          },
+          "fat": {
+            "amount": 3.008,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.732,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 9.115,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 36.549,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.091,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 13.223,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 13.389,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 8.832,
+            "complete": true
+          },
+          "protein": {
+            "amount": 2.917,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 1.185,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 103.088,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.032,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 120.496,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Whole milk",
+          "grams": 836.022,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Sugar",
+          "grams": 81.167,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": true,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "child-issues": {
+      "recipeId": "child-issues",
+      "publicId": "child-issues",
+      "title": "Child issues",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 0.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "ci-blocked",
+          "kind": "subrecipe",
+          "name": "Blocked",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "blocked",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "subrecipeIncomplete"
+        },
+        {
+          "itemId": "ci-empty",
+          "kind": "subrecipe",
+          "name": "Empty child",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "empty-child",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "subrecipeIncomplete"
+        },
+        {
+          "itemId": "ci-cup",
+          "kind": "subrecipe",
+          "name": "Cookie dough",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "cookie-dough",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "unweighed"
+        },
+        {
+          "itemId": "ci-discarded",
+          "kind": "subrecipe",
+          "name": "Cookie dough",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "cookie-dough",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 0.0,
+          "grams": 54.167,
+          "netGrams": 0.0,
+          "status": "discarded"
+        },
+        {
+          "itemId": "ci-unlinked",
+          "kind": "subrecipe",
+          "name": "Lost sauce",
+          "ingredientPublicId": null,
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "unresolved"
+        }
+      ],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": [
+          "peanut",
+          "tree_nuts"
+        ]
+      },
+      "statement": [],
+      "issues": {
+        "batch": [
+          "subrecipeEmpty",
+          "subrecipeIncomplete",
+          "subrecipeUnresolved",
+          "unresolvedItem"
+        ],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "n-cycle-a": {
+      "recipeId": "n-cycle-a",
+      "publicId": "n-cycle-a",
+      "title": "Nutrition cycle A",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 1000.0,
+        "declaredGrams": 1000.0,
+        "inputGrams": 100.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "nca-b",
+          "kind": "subrecipe",
+          "name": "Nutrition cycle B",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "n-cycle-b",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "subrecipeIncomplete"
+        },
+        {
+          "itemId": "nca-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 100.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [
+          "subrecipeIncomplete"
+        ],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "n-cycle-b": {
+      "recipeId": "n-cycle-b",
+      "publicId": "n-cycle-b",
+      "title": "Nutrition cycle B",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 1000.0,
+        "declaredGrams": 1000.0,
+        "inputGrams": 0.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "ncb-a",
+          "kind": "subrecipe",
+          "name": "Nutrition cycle A",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "n-cycle-a",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": null,
+          "netGrams": null,
+          "status": "subrecipeIncomplete"
+        }
+      ],
+      "totals": {
+        "batch": null,
+        "per100g": null,
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [],
+      "issues": {
+        "batch": [
+          "subrecipeIncomplete"
+        ],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": false,
+          "missing": []
+        }
+      }
+    },
+    "declared-batch": {
+      "recipeId": "declared-batch",
+      "publicId": "declared-batch",
+      "title": "Declared batch",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 60.0,
+        "unit": "g",
+        "grams": 60.0
+      },
+      "package": {
+        "amount": 300.0,
+        "unit": "g",
+        "grams": 300.0
+      },
+      "batch": {
+        "grams": 600.0,
+        "declaredGrams": 600.0,
+        "inputGrams": 809.0,
+        "servings": 5.0,
+        "containers": 2.0
+      },
+      "lines": [
+        {
+          "itemId": "db-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 500.0,
+          "netGrams": 500.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "db-milk",
+          "kind": "ingredient",
+          "name": "Whole milk",
+          "ingredientPublicId": "n-milk",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 309.0,
+          "netGrams": 309.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 2008.49,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 8403.522,
+            "complete": true
+          },
+          "fat": {
+            "amount": 17.697,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 7.371,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.309,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 30.9,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 133.6,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.334,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 390.832,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 13.5,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 16.95,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 61.388,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 4.017,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 424.17,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.093,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 942.88,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 334.748,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1400.587,
+            "complete": true
+          },
+          "fat": {
+            "amount": 2.949,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.228,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.051,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 5.15,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 22.267,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.056,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 65.139,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.25,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 2.825,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.231,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.669,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 70.695,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.015,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 157.147,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 200.849,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 840.352,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.77,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.737,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.031,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 3.09,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 13.36,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.033,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 39.083,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.35,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.695,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 6.139,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.402,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 42.417,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.609,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 94.288,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 500.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Whole milk",
+          "grams": 309.0,
+          "allergens": [
+            "milk"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": true,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "input-batch": {
+      "recipeId": "input-batch",
+      "publicId": "input-batch",
+      "title": "Input batch",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 1.0,
+        "unit": "pcs",
+        "grams": 80.9
+      },
+      "package": {
+        "amount": 2.0,
+        "unit": "pcs",
+        "grams": 161.8
+      },
+      "batch": {
+        "grams": 809.0,
+        "declaredGrams": null,
+        "inputGrams": 809.0,
+        "servings": 2.0,
+        "containers": 5.0
+      },
+      "lines": [
+        {
+          "itemId": "ib-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 500.0,
+          "netGrams": 500.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "ib-milk",
+          "kind": "ingredient",
+          "name": "Whole milk",
+          "ingredientPublicId": "n-milk",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 309.0,
+          "netGrams": 309.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 2008.49,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 8403.522,
+            "complete": true
+          },
+          "fat": {
+            "amount": 17.697,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 7.371,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.309,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 30.9,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 133.6,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.334,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 390.832,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 13.5,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 16.95,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 61.388,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 4.017,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 424.17,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.093,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 942.88,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 248.268,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1038.754,
+            "complete": true
+          },
+          "fat": {
+            "amount": 2.188,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.911,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.038,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 3.82,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 16.514,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.041,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 48.311,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.669,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 2.095,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 7.588,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.497,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 52.431,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.753,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 116.549,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 200.849,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 840.352,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.77,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.737,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.031,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 3.09,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 13.36,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.033,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 39.083,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 1.35,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.695,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 6.139,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.402,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 42.417,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.609,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 94.288,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 500.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Whole milk",
+          "grams": 309.0,
+          "allergens": [
+            "milk"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": true,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "serving-needs-equivalency": {
+      "recipeId": "serving-needs-equivalency",
+      "publicId": "serving-needs-equivalency",
+      "title": "Serving needs equivalency",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 1.0,
+        "unit": "each",
+        "grams": null
+      },
+      "package": {
+        "amount": 2.0,
+        "unit": "cup",
+        "grams": null
+      },
+      "batch": {
+        "grams": 1000.0,
+        "declaredGrams": 1000.0,
+        "inputGrams": 1000.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "sne-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 1000.0,
+          "netGrams": 1000.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 3640.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 15229.76,
+            "complete": true
+          },
+          "fat": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 3.0,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 20.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.05,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 752.0,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 27.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 3.0,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 103.0,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 150.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 12.0,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 1070.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 1000.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "packageNeedsEquivalency",
+          "servingNeedsEquivalency"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "serving-with-equivalency": {
+      "recipeId": "serving-with-equivalency",
+      "publicId": "serving-with-equivalency",
+      "title": "Serving with equivalency",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 1.0,
+        "unit": "each",
+        "grams": 100.0
+      },
+      "package": {
+        "amount": 1.0,
+        "unit": "cup",
+        "grams": 118.294
+      },
+      "batch": {
+        "grams": 1000.0,
+        "declaredGrams": 1000.0,
+        "inputGrams": 1000.0,
+        "servings": 1.183,
+        "containers": 8.454
+      },
+      "lines": [
+        {
+          "itemId": "swe-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 1000.0,
+          "netGrams": 1000.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 3640.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 15229.76,
+            "complete": true
+          },
+          "fat": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 3.0,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 20.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.05,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 752.0,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 27.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 3.0,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 103.0,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 150.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 12.0,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 1070.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 1000.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": true,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "standard-equivalency": {
+      "recipeId": "standard-equivalency",
+      "publicId": "standard-equivalency",
+      "title": "Standard equivalency",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 100.0,
+        "unit": "g",
+        "grams": 100.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 1030.0,
+        "servings": 5.0,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "se-milk",
+          "kind": "ingredient",
+          "name": "Whole milk",
+          "ingredientPublicId": "n-milk",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 1030.0,
+          "netGrams": 1030.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 628.3,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 2628.807,
+            "complete": true
+          },
+          "fat": {
+            "amount": 33.99,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 19.57,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 1.03,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 103.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 412.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 1.03,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 49.44,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 51.5,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 32.96,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 13.39,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 1163.9,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.309,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 1359.6,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 125.66,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 525.761,
+            "complete": true
+          },
+          "fat": {
+            "amount": 6.798,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 3.914,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.206,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 20.6,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 82.4,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.206,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 9.888,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 6.592,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 2.678,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 232.78,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.062,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 271.92,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 125.66,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 525.761,
+            "complete": true
+          },
+          "fat": {
+            "amount": 6.798,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 3.914,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.206,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 20.6,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 82.4,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.206,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 9.888,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 6.592,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 2.678,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 232.78,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.062,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 271.92,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "milk"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Whole milk",
+          "grams": 1030.0,
+          "allergens": [
+            "milk"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": true,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "package-above-batch": {
+      "recipeId": "package-above-batch",
+      "publicId": "package-above-batch",
+      "title": "Package above batch",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 50.0,
+        "unit": "g",
+        "grams": 50.0
+      },
+      "package": {
+        "amount": 1.0,
+        "unit": "kg",
+        "grams": 1000.0
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 500.0,
+        "servings": 20.0,
+        "containers": 0.5
+      },
+      "lines": [
+        {
+          "itemId": "pab-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 500.0,
+          "netGrams": 500.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1820.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 7614.88,
+            "complete": true
+          },
+          "fat": {
+            "amount": 7.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 10.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.025,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 376.0,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 13.5,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 51.5,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 75.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.0,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 535.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 500.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "packageAboveBatch"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "package-below-serving": {
+      "recipeId": "package-below-serving",
+      "publicId": "package-below-serving",
+      "title": "Package below serving",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 200.0,
+        "unit": "g",
+        "grams": 200.0
+      },
+      "package": {
+        "amount": 100.0,
+        "unit": "g",
+        "grams": 100.0
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 500.0,
+        "servings": 0.5,
+        "containers": 5.0
+      },
+      "lines": [
+        {
+          "itemId": "pbs-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 500.0,
+          "netGrams": 500.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1820.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 7614.88,
+            "complete": true
+          },
+          "fat": {
+            "amount": 7.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 10.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.025,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 376.0,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 13.5,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 51.5,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 75.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.0,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 535.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 500.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "packageBelowServing"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "serving-above-batch": {
+      "recipeId": "serving-above-batch",
+      "publicId": "serving-above-batch",
+      "title": "Serving above batch",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 600.0,
+        "unit": "g",
+        "grams": 600.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 500.0,
+        "declaredGrams": 500.0,
+        "inputGrams": 500.0,
+        "servings": 0.833,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "sab-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 500.0,
+          "netGrams": 500.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1820.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 7614.88,
+            "complete": true
+          },
+          "fat": {
+            "amount": 7.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 10.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.025,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 376.0,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 13.5,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 51.5,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 75.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 6.0,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 535.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 500.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "servingAboveBatch"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "no-serving": {
+      "recipeId": "no-serving",
+      "publicId": "no-serving",
+      "title": "No serving",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 400.0,
+        "declaredGrams": 400.0,
+        "inputGrams": 400.0,
+        "servings": null,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "ns-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 400.0,
+          "netGrams": 400.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1456.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 6091.904,
+            "complete": true
+          },
+          "fat": {
+            "amount": 6.0,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 8.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.02,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 300.8,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 10.8,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 41.2,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 60.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 4.8,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 428.0,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 364.0,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1522.976,
+            "complete": true
+          },
+          "fat": {
+            "amount": 1.5,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "cholesterolMg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 2.0,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.005,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 75.2,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 2.7,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 0.3,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "protein": {
+            "amount": 10.3,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.0,
+            "complete": true
+          },
+          "calciumMg": {
+            "amount": 15.0,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 1.2,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 107.0,
+            "complete": true
+          }
+        },
+        "perServing": null
+      },
+      "allergens": {
+        "contains": [
+          "gluten_cereals",
+          "wheat"
+        ],
+        "mayContain": []
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 400.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": [
+          "noServingSize"
+        ]
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": []
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    },
+    "statement": {
+      "recipeId": "statement",
+      "publicId": "statement",
+      "title": "Statement",
+      "permission": "owner",
+      "canEdit": true,
+      "serving": {
+        "amount": 30.0,
+        "unit": "g",
+        "grams": 30.0
+      },
+      "package": {
+        "amount": null,
+        "unit": "",
+        "grams": null
+      },
+      "batch": {
+        "grams": 404.167,
+        "declaredGrams": null,
+        "inputGrams": 404.167,
+        "servings": 13.472,
+        "containers": null
+      },
+      "lines": [
+        {
+          "itemId": "st-sugar",
+          "kind": "ingredient",
+          "name": "Sugar",
+          "ingredientPublicId": "n-sugar",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "st-flour",
+          "kind": "ingredient",
+          "name": "Wheat flour",
+          "ingredientPublicId": "n-flour",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 100.0,
+          "netGrams": 100.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "st-butter",
+          "kind": "ingredient",
+          "name": "Butter",
+          "ingredientPublicId": "n-butter",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 50.0,
+          "netGrams": 50.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "st-butter-again",
+          "kind": "ingredient",
+          "name": "Butter",
+          "ingredientPublicId": "n-butter",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 50.0,
+          "netGrams": 50.0,
+          "status": "linked"
+        },
+        {
+          "itemId": "st-dough",
+          "kind": "subrecipe",
+          "name": "Cookie dough",
+          "ingredientPublicId": null,
+          "subrecipePublicId": "cookie-dough",
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 54.167,
+          "netGrams": 54.167,
+          "status": "linked"
+        },
+        {
+          "itemId": "st-eggs",
+          "kind": "ingredient",
+          "name": "Eggs",
+          "ingredientPublicId": "n-eggs",
+          "subrecipePublicId": null,
+          "linkedDescription": null,
+          "linkedSource": null,
+          "nonEdible": false,
+          "hasAllergenHints": false,
+          "efficiencyAfterCooking": 100.0,
+          "grams": 50.0,
+          "netGrams": 50.0,
+          "status": "linked"
+        }
+      ],
+      "totals": {
+        "batch": {
+          "calories": {
+            "amount": 1792.292,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 7498.948,
+            "complete": true
+          },
+          "fat": {
+            "amount": 100.25,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 60.8,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.028,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 428.125,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 794.5,
+            "complete": true
+          },
+          "salt": {
+            "amount": 1.987,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 208.474,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 3.867,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 113.246,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 112.45,
+            "complete": false
+          },
+          "protein": {
+            "amount": 20.537,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 1.0,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 77.5,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 2.71,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 262.333,
+            "complete": true
+          }
+        },
+        "per100g": {
+          "calories": {
+            "amount": 443.454,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 1855.41,
+            "complete": true
+          },
+          "fat": {
+            "amount": 24.804,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 15.043,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.007,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 105.928,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 196.577,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.492,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 51.581,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.957,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 28.02,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 27.823,
+            "complete": false
+          },
+          "protein": {
+            "amount": 5.081,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.247,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 19.175,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.671,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 64.907,
+            "complete": true
+          }
+        },
+        "perServing": {
+          "calories": {
+            "amount": 133.036,
+            "complete": true
+          },
+          "energyKj": {
+            "amount": 556.623,
+            "complete": true
+          },
+          "fat": {
+            "amount": 7.441,
+            "complete": true
+          },
+          "saturatedFat": {
+            "amount": 4.513,
+            "complete": true
+          },
+          "transFat": {
+            "amount": 0.002,
+            "complete": false
+          },
+          "cholesterolMg": {
+            "amount": 31.778,
+            "complete": true
+          },
+          "sodiumMg": {
+            "amount": 58.973,
+            "complete": true
+          },
+          "salt": {
+            "amount": 0.147,
+            "complete": true
+          },
+          "totalCarbohydrate": {
+            "amount": 15.474,
+            "complete": true
+          },
+          "fiber": {
+            "amount": 0.287,
+            "complete": true
+          },
+          "sugars": {
+            "amount": 8.406,
+            "complete": true
+          },
+          "addedSugars": {
+            "amount": 8.347,
+            "complete": false
+          },
+          "protein": {
+            "amount": 1.524,
+            "complete": true
+          },
+          "vitaminDMcg": {
+            "amount": 0.074,
+            "complete": false
+          },
+          "calciumMg": {
+            "amount": 5.753,
+            "complete": true
+          },
+          "ironMg": {
+            "amount": 0.201,
+            "complete": true
+          },
+          "potassiumMg": {
+            "amount": 19.472,
+            "complete": true
+          }
+        }
+      },
+      "allergens": {
+        "contains": [
+          "egg",
+          "gluten_cereals",
+          "milk",
+          "wheat"
+        ],
+        "mayContain": [
+          "peanut",
+          "tree_nuts"
+        ]
+      },
+      "statement": [
+        {
+          "name": "Wheat flour",
+          "grams": 125.0,
+          "allergens": [
+            "gluten_cereals",
+            "wheat"
+          ]
+        },
+        {
+          "name": "Butter (cream, salt)",
+          "grams": 112.5,
+          "allergens": [
+            "milk"
+          ]
+        },
+        {
+          "name": "Sugar",
+          "grams": 108.333,
+          "allergens": []
+        },
+        {
+          "name": "Whole egg",
+          "grams": 50.0,
+          "allergens": [
+            "egg"
+          ]
+        },
+        {
+          "name": "Chocolate chips",
+          "grams": 8.333,
+          "allergens": []
+        }
+      ],
+      "issues": {
+        "batch": [],
+        "serving": []
+      },
+      "readiness": {
+        "us": {
+          "ready": false,
+          "missing": [
+            "transFat",
+            "addedSugars",
+            "vitaminDMcg"
+          ]
+        },
+        "eu": {
+          "ready": true,
+          "missing": []
+        }
+      }
+    }
+  }
+}

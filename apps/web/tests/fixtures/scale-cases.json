@@ -1,0 +1,3960 @@
+{
+  "generator": "cd apps/web && UPDATE_SCALE_FIXTURE=1 pnpm exec vitest run tests/scale-cases.test.ts",
+  "minScaleFactor": 0.001,
+  "maxScaleFactor": 1000,
+  "runs": [
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 1,
+          "rawLine": "500 gr. Bread Flour",
+          "enteredAmount": 500,
+          "enteredUnit": "gr",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Bread Flour",
+            "grams": 500
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Water",
+          "baseName": "Water",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 2,
+          "rawLine": "2 kg Water",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "note": "Converted 2 kg to 2000 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Water",
+            "grams": 2000
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Bread Flour",
+            "grams": 500,
+            "original": {
+              "amount": 500,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 2,
+            "name": "Water",
+            "grams": 2000,
+            "original": {
+              "amount": 2,
+              "unit": "kg"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 150,
+            "original": null,
+            "measure": null,
+            "eachCount": 3,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "500 g",
+          "2 kg",
+          "3 ea"
+        ],
+        "us": [
+          "1.102 lb",
+          "4.409 lb",
+          "3 ea"
+        ],
+        "totalGrams": 2650
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 1,
+          "rawLine": "500 gr. Bread Flour",
+          "enteredAmount": 500,
+          "enteredUnit": "gr",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Bread Flour",
+            "grams": 500
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Water",
+          "baseName": "Water",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 2,
+          "rawLine": "2 kg Water",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "note": "Converted 2 kg to 2000 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Water",
+            "grams": 2000
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Bread Flour",
+            "grams": 1000,
+            "original": {
+              "amount": 1000,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 2,
+            "name": "Water",
+            "grams": 4000,
+            "original": {
+              "amount": 4,
+              "unit": "kg"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 300,
+            "original": null,
+            "measure": null,
+            "eachCount": 6,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1,000 g",
+          "4 kg",
+          "6 ea"
+        ],
+        "us": [
+          "2.205 lb",
+          "8.818 lb",
+          "6 ea"
+        ],
+        "totalGrams": 5300
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Flour",
+          "baseName": "Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "lineNumber": 6,
+          "rawLine": "2 kg (1500 g total) Flour",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "note": "Used the explicit weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-6",
+            "name": "Flour",
+            "grams": 1500
+          }
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 6,
+            "name": "Flour",
+            "grams": 1500,
+            "original": null,
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1.5 kg"
+        ],
+        "us": [
+          "3.307 lb"
+        ],
+        "totalGrams": 1500
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Flour",
+          "baseName": "Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "lineNumber": 6,
+          "rawLine": "2 kg (1500 g total) Flour",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "note": "Used the explicit weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-6",
+            "name": "Flour",
+            "grams": 1500
+          }
+        }
+      ],
+      "factor": 3,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 6,
+            "name": "Flour",
+            "grams": 4500,
+            "original": null,
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "4.5 kg"
+        ],
+        "us": [
+          "9.921 lb"
+        ],
+        "totalGrams": 4500
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "2 kg (1500 g total) Flour",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "ingredientName": "Flour",
+          "baseName": "Flour",
+          "sizeWord": null,
+          "identityCandidates": [
+            "flour"
+          ],
+          "qualifier": null,
+          "noteText": "1500 g",
+          "note": "Used the explicit weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Flour",
+            "grams": 1500
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": {
+            "amount": 1500,
+            "unit": "g"
+          },
+          "alert": null
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Flour",
+            "grams": 3000,
+            "original": null,
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "3 kg"
+        ],
+        "us": [
+          "6.614 lb"
+        ],
+        "totalGrams": 3000
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Milk",
+          "baseName": "Milk",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "catalog-measure",
+          "measureRange": {
+            "lowGrams": 235,
+            "highGrams": 245,
+            "requiresReview": false
+          },
+          "lineNumber": 9,
+          "rawLine": "1 cup Milk",
+          "enteredAmount": 1,
+          "enteredUnit": "cup",
+          "normalizedUnit": "cup",
+          "note": "Converted using a catalog estimate.",
+          "ingredient": {
+            "id": "paste-9",
+            "name": "Milk",
+            "grams": 240
+          }
+        }
+      ],
+      "factor": 0.001,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 9,
+            "name": "Milk",
+            "grams": 0.24,
+            "original": null,
+            "measure": {
+              "amount": 0.001,
+              "unit": "cup"
+            },
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": true,
+            "range": {
+              "lowGrams": 0.23500000000000001,
+              "highGrams": 0.245
+            }
+          }
+        ],
+        "metric": [
+          "0.24 g"
+        ],
+        "us": [
+          "0.0085 oz"
+        ],
+        "totalGrams": 0.24
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Flour",
+          "baseName": "Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "catalog-measure",
+          "measureRange": {
+            "lowGrams": 200,
+            "highGrams": 300,
+            "requiresReview": true
+          },
+          "lineNumber": 7,
+          "rawLine": "2 cups Flour",
+          "enteredAmount": 2,
+          "enteredUnit": "cups",
+          "normalizedUnit": "cup",
+          "note": "Converted using a catalog estimate. Source range: 200–300 g; review this estimate.",
+          "ingredient": {
+            "id": "paste-7",
+            "name": "Flour",
+            "grams": 250
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 7,
+            "name": "Flour",
+            "grams": 500,
+            "original": null,
+            "measure": {
+              "amount": 4,
+              "unit": "cups"
+            },
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": true,
+            "isEstimate": true,
+            "range": {
+              "lowGrams": 400,
+              "highGrams": 600
+            }
+          }
+        ],
+        "metric": [
+          "500 g"
+        ],
+        "us": [
+          "1.102 lb"
+        ],
+        "totalGrams": 500
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Milk",
+          "baseName": "Milk",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "catalog-measure",
+          "measureRange": {
+            "lowGrams": 235,
+            "highGrams": 245,
+            "requiresReview": false
+          },
+          "lineNumber": 9,
+          "rawLine": "1 cup Milk",
+          "enteredAmount": 1,
+          "enteredUnit": "cup",
+          "normalizedUnit": "cup",
+          "note": "Converted using a catalog estimate.",
+          "ingredient": {
+            "id": "paste-9",
+            "name": "Milk",
+            "grams": 240
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 9,
+            "name": "Milk",
+            "grams": 480,
+            "original": null,
+            "measure": {
+              "amount": 2,
+              "unit": "cup"
+            },
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": true,
+            "range": {
+              "lowGrams": 470,
+              "highGrams": 490
+            }
+          }
+        ],
+        "metric": [
+          "480 g"
+        ],
+        "us": [
+          "1.058 lb"
+        ],
+        "totalGrams": 480
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 1,
+          "rawLine": "500 gr. Bread Flour",
+          "enteredAmount": 500,
+          "enteredUnit": "gr",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Bread Flour",
+            "grams": 500
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Bread Flour",
+            "grams": 1000,
+            "original": {
+              "amount": 1000,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1,000 g"
+        ],
+        "us": [
+          "2.205 lb"
+        ],
+        "totalGrams": 1000
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "500 gr. Bread Flour",
+          "enteredAmount": 500,
+          "enteredUnit": "gr",
+          "normalizedUnit": "g",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [
+            "bread flour"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Bread Flour",
+            "grams": 500
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "entered-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 2,
+          "rawLine": "2 kg Water",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "ingredientName": "Water",
+          "baseName": "Water",
+          "sizeWord": null,
+          "identityCandidates": [
+            "water"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Converted 2 kg to 2000 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Water",
+            "grams": 2000
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "converted-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Bread Flour",
+            "grams": 1000,
+            "original": {
+              "amount": 1000,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 2,
+            "name": "Water",
+            "grams": 4000,
+            "original": {
+              "amount": 4,
+              "unit": "kg"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1,000 g",
+          "4 kg"
+        ],
+        "us": [
+          "2.205 lb",
+          "8.818 lb"
+        ],
+        "totalGrams": 5000
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 4,
+          "rawLine": "620 Bread Flour",
+          "enteredAmount": 620,
+          "enteredUnit": null,
+          "normalizedUnit": "assumed-g",
+          "note": "No unit supplied; assumed grams.",
+          "ingredient": {
+            "id": "paste-4",
+            "name": "Bread Flour",
+            "grams": 620
+          }
+        }
+      ],
+      "factor": 0.5,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 4,
+            "name": "Bread Flour",
+            "grams": 310,
+            "original": {
+              "amount": 310,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "310 g"
+        ],
+        "us": [
+          "10.93 oz"
+        ],
+        "totalGrams": 310
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 4.333,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 649.95,
+            "original": null,
+            "measure": null,
+            "eachCount": 12.999,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "13 ea"
+        ],
+        "us": [
+          "13 ea"
+        ],
+        "totalGrams": 649.95
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 1.5,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 225,
+            "original": null,
+            "measure": null,
+            "eachCount": 4.5,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "4.5 ea"
+        ],
+        "us": [
+          "4.5 ea"
+        ],
+        "totalGrams": 225
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "1 ea Cookie jam",
+          "enteredAmount": 1,
+          "enteredUnit": "ea",
+          "normalizedUnit": "each",
+          "ingredientName": "Cookie jam",
+          "baseName": "Cookie jam",
+          "sizeWord": null,
+          "identityCandidates": [
+            "cookie jam"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Costed from the component's 60-piece yield.",
+          "ingredient": null,
+          "componentQuantity": {
+            "amount": 1,
+            "unit": "each"
+          },
+          "identityMatched": true,
+          "resolutionSource": "component-yield",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 3,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Cookie jam",
+            "grams": 0,
+            "original": null,
+            "measure": null,
+            "eachCount": 3,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "3 ea"
+        ],
+        "us": [
+          "3 ea"
+        ],
+        "totalGrams": 0
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "2 400 g cans Diced tomatoes",
+          "enteredAmount": 2,
+          "enteredUnit": null,
+          "normalizedUnit": "can",
+          "ingredientName": "Diced tomatoes",
+          "baseName": "Diced tomatoes",
+          "sizeWord": null,
+          "identityCandidates": [
+            "diced tomatoes"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Diced tomatoes",
+            "grams": 800
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Diced tomatoes",
+            "grams": 1600,
+            "original": null,
+            "measure": null,
+            "eachCount": 4,
+            "countUnit": "can",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "4 cans"
+        ],
+        "us": [
+          "4 cans"
+        ],
+        "totalGrams": 1600
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "2 400 g cans Diced tomatoes",
+          "enteredAmount": 2,
+          "enteredUnit": null,
+          "normalizedUnit": "can",
+          "ingredientName": "Diced tomatoes",
+          "baseName": "Diced tomatoes",
+          "sizeWord": null,
+          "identityCandidates": [
+            "diced tomatoes"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Diced tomatoes",
+            "grams": 800
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 0.5,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Diced tomatoes",
+            "grams": 400,
+            "original": null,
+            "measure": null,
+            "eachCount": 1,
+            "countUnit": "can",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1 can"
+        ],
+        "us": [
+          "1 can"
+        ],
+        "totalGrams": 400
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "3 400 g cans Diced tomatoes",
+          "enteredAmount": 3,
+          "enteredUnit": null,
+          "normalizedUnit": "can",
+          "ingredientName": "Diced tomatoes",
+          "baseName": "Diced tomatoes",
+          "sizeWord": null,
+          "identityCandidates": [
+            "diced tomatoes"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Diced tomatoes",
+            "grams": 1200
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 0.333,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Diced tomatoes",
+            "grams": 399.6,
+            "original": null,
+            "measure": null,
+            "eachCount": 0.9990000000000001,
+            "countUnit": "can",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1 can"
+        ],
+        "us": [
+          "1 can"
+        ],
+        "totalGrams": 399.6
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "3 400 g cans Diced tomatoes",
+          "enteredAmount": 3,
+          "enteredUnit": null,
+          "normalizedUnit": "can",
+          "ingredientName": "Diced tomatoes",
+          "baseName": "Diced tomatoes",
+          "sizeWord": null,
+          "identityCandidates": [
+            "diced tomatoes"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Diced tomatoes",
+            "grams": 1200
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 0.4,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Diced tomatoes",
+            "grams": 480,
+            "original": null,
+            "measure": null,
+            "eachCount": 1.2000000000000002,
+            "countUnit": "can",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "1.2 cans"
+        ],
+        "us": [
+          "1.2 cans"
+        ],
+        "totalGrams": 480
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "3 400 g cans Diced tomatoes",
+          "enteredAmount": 3,
+          "enteredUnit": null,
+          "normalizedUnit": "can",
+          "ingredientName": "Diced tomatoes",
+          "baseName": "Diced tomatoes",
+          "sizeWord": null,
+          "identityCandidates": [
+            "diced tomatoes"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Diced tomatoes",
+            "grams": 1200
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 0.16666666666666666,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Diced tomatoes",
+            "grams": 200,
+            "original": null,
+            "measure": null,
+            "eachCount": 0.5,
+            "countUnit": "can",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.5 cans"
+        ],
+        "us": [
+          "0.5 cans"
+        ],
+        "totalGrams": 200
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "2 250 g boxes Pasta",
+          "enteredAmount": 2,
+          "enteredUnit": null,
+          "normalizedUnit": "box",
+          "ingredientName": "Pasta",
+          "baseName": "Pasta",
+          "sizeWord": null,
+          "identityCandidates": [
+            "pasta"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Pasta",
+            "grams": 500
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Pasta",
+            "grams": 500,
+            "original": null,
+            "measure": null,
+            "eachCount": 2,
+            "countUnit": "box",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "2 boxes"
+        ],
+        "us": [
+          "2 boxes"
+        ],
+        "totalGrams": 500
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "3 100 g jars Honey",
+          "enteredAmount": 3,
+          "enteredUnit": null,
+          "normalizedUnit": "jar",
+          "ingredientName": "Honey",
+          "baseName": "Honey",
+          "sizeWord": null,
+          "identityCandidates": [
+            "honey"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Honey",
+            "grams": 300
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Honey",
+            "grams": 300,
+            "original": null,
+            "measure": null,
+            "eachCount": 3,
+            "countUnit": "jar",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "3 jars"
+        ],
+        "us": [
+          "3 jars"
+        ],
+        "totalGrams": 300
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "2 20 g cloves Garlic",
+          "enteredAmount": 2,
+          "enteredUnit": null,
+          "normalizedUnit": "clove",
+          "ingredientName": "Garlic",
+          "baseName": "Garlic",
+          "sizeWord": null,
+          "identityCandidates": [
+            "garlic"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Garlic",
+            "grams": 40
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Garlic",
+            "grams": 40,
+            "original": null,
+            "measure": null,
+            "eachCount": 2,
+            "countUnit": "clove",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "2 cloves"
+        ],
+        "us": [
+          "2 cloves"
+        ],
+        "totalGrams": 40
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "4 15 g bunches Basil",
+          "enteredAmount": 4,
+          "enteredUnit": null,
+          "normalizedUnit": "bunch",
+          "ingredientName": "Basil",
+          "baseName": "Basil",
+          "sizeWord": null,
+          "identityCandidates": [
+            "basil"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Used the package weight written in the recipe.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Basil",
+            "grams": 60
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "explicit-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Basil",
+            "grams": 60,
+            "original": null,
+            "measure": null,
+            "eachCount": 4,
+            "countUnit": "bunch",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "4 bunches"
+        ],
+        "us": [
+          "4 bunches"
+        ],
+        "totalGrams": 60
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Water",
+          "baseName": "Water",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 2,
+          "rawLine": "2 kg Water",
+          "enteredAmount": 2,
+          "enteredUnit": "kg",
+          "normalizedUnit": "kg",
+          "note": "Converted 2 kg to 2000 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Water",
+            "grams": 2000
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 2,
+            "name": "Water",
+            "grams": 4000,
+            "original": {
+              "amount": 4,
+              "unit": "kg"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "4 kg"
+        ],
+        "us": [
+          "8.818 lb"
+        ],
+        "totalGrams": 4000
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Butter",
+          "baseName": "Butter",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 3,
+          "rawLine": "4 oz Butter",
+          "enteredAmount": 4,
+          "enteredUnit": "oz",
+          "normalizedUnit": "oz",
+          "note": "Converted 4 oz to 113.4 g.",
+          "ingredient": {
+            "id": "paste-3",
+            "name": "Butter",
+            "grams": 113.3980925
+          }
+        }
+      ],
+      "factor": 2,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 3,
+            "name": "Butter",
+            "grams": 226.796185,
+            "original": {
+              "amount": 8,
+              "unit": "oz"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "227 g"
+        ],
+        "us": [
+          "8 oz"
+        ],
+        "totalGrams": 226.796185
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Yeast",
+          "baseName": "Yeast",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 8,
+          "rawLine": "1 g Yeast",
+          "enteredAmount": 1,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-8",
+            "name": "Yeast",
+            "grams": 1
+          }
+        }
+      ],
+      "factor": 0.01,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 8,
+            "name": "Yeast",
+            "grams": 0.01,
+            "original": {
+              "amount": 0.01,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.01 g"
+        ],
+        "us": [
+          "0.00035 oz"
+        ],
+        "totalGrams": 0.01
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Yeast",
+          "baseName": "Yeast",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 8,
+          "rawLine": "1 g Yeast",
+          "enteredAmount": 1,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-8",
+            "name": "Yeast",
+            "grams": 1
+          }
+        }
+      ],
+      "factor": 0.001,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 8,
+            "name": "Yeast",
+            "grams": 0.001,
+            "original": {
+              "amount": 0.001,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.001 g"
+        ],
+        "us": [
+          "0.000035 oz"
+        ],
+        "totalGrams": 0.001
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 0.001,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 0.15,
+            "original": null,
+            "measure": null,
+            "eachCount": 0.003,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.003 ea"
+        ],
+        "us": [
+          "0.003 ea"
+        ],
+        "totalGrams": 0.15
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Bread Flour",
+          "baseName": "Bread Flour",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 1,
+          "rawLine": "500 gr. Bread Flour",
+          "enteredAmount": 500,
+          "enteredUnit": "gr",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Bread Flour",
+            "grams": 500
+          }
+        }
+      ],
+      "factor": 1,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Bread Flour",
+            "grams": 500,
+            "original": {
+              "amount": 500,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "500 g"
+        ],
+        "us": [
+          "1.102 lb"
+        ],
+        "totalGrams": 500
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Yeast",
+          "baseName": "Yeast",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 8,
+          "rawLine": "1 g Yeast",
+          "enteredAmount": 1,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-8",
+            "name": "Yeast",
+            "grams": 1
+          }
+        }
+      ],
+      "factor": 0.05,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 8,
+            "name": "Yeast",
+            "grams": 0.05,
+            "original": {
+              "amount": 0.05,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.05 g"
+        ],
+        "us": [
+          "0.0018 oz"
+        ],
+        "totalGrams": 0.05
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Yeast",
+          "baseName": "Yeast",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 8,
+          "rawLine": "1 g Yeast",
+          "enteredAmount": 1,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-8",
+            "name": "Yeast",
+            "grams": 1
+          }
+        }
+      ],
+      "factor": 0.049,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 8,
+            "name": "Yeast",
+            "grams": 0.049,
+            "original": {
+              "amount": 0.049,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.049 g"
+        ],
+        "us": [
+          "0.0017 oz"
+        ],
+        "totalGrams": 0.049
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 5,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "note": "Converted using 50 g per Egg.",
+          "ingredient": {
+            "id": "paste-5",
+            "name": "Eggs",
+            "grams": 150
+          }
+        }
+      ],
+      "factor": 4.111,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 5,
+            "name": "Eggs",
+            "grams": 616.65,
+            "original": null,
+            "measure": null,
+            "eachCount": 12.332999999999998,
+            "countUnit": "each",
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "12.33 ea"
+        ],
+        "us": [
+          "12.33 ea"
+        ],
+        "totalGrams": 616.65
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Kosher salt",
+          "baseName": "Kosher salt",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 9,
+          "rawLine": "10 g kosher salt",
+          "enteredAmount": 10,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-9",
+            "name": "Kosher salt",
+            "grams": 10
+          }
+        }
+      ],
+      "factor": 1.0333,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 9,
+            "name": "Kosher salt",
+            "grams": 10.333000000000002,
+            "original": {
+              "amount": 10.333000000000002,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "10.3 g"
+        ],
+        "us": [
+          "0.36 oz"
+        ],
+        "totalGrams": 10.333000000000002
+      }
+    },
+    {
+      "lines": [],
+      "factor": 3,
+      "expect": {
+        "scaled": [],
+        "metric": [],
+        "us": [],
+        "totalGrams": 0
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "ingredientName": "Butter",
+          "baseName": "Butter",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 3,
+          "rawLine": "4 oz Butter",
+          "enteredAmount": 4,
+          "enteredUnit": "oz",
+          "normalizedUnit": "oz",
+          "note": "Converted 4 oz to 113.4 g.",
+          "ingredient": {
+            "id": "paste-3",
+            "name": "Butter",
+            "grams": 113.3980925
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Kosher salt",
+          "baseName": "Kosher salt",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": null,
+          "measureRange": null,
+          "lineNumber": 9,
+          "rawLine": "10 g kosher salt",
+          "enteredAmount": 10,
+          "enteredUnit": "g",
+          "normalizedUnit": "g",
+          "note": null,
+          "ingredient": {
+            "id": "paste-9",
+            "name": "Kosher salt",
+            "grams": 10
+          }
+        },
+        {
+          "kind": "ingredient",
+          "ingredientName": "Milk",
+          "baseName": "Milk",
+          "sizeWord": null,
+          "identityCandidates": [],
+          "qualifier": null,
+          "noteText": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null,
+          "componentQuantity": null,
+          "identityMatched": true,
+          "resolutionSource": "catalog-measure",
+          "measureRange": {
+            "lowGrams": 235,
+            "highGrams": 245,
+            "requiresReview": false
+          },
+          "lineNumber": 9,
+          "rawLine": "1 cup Milk",
+          "enteredAmount": 1,
+          "enteredUnit": "cup",
+          "normalizedUnit": "cup",
+          "note": "Converted using a catalog estimate.",
+          "ingredient": {
+            "id": "paste-9",
+            "name": "Milk",
+            "grams": 240
+          }
+        }
+      ],
+      "factor": 0.75,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 3,
+            "name": "Butter",
+            "grams": 85.048569375,
+            "original": {
+              "amount": 3,
+              "unit": "oz"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 9,
+            "name": "Kosher salt",
+            "grams": 7.5,
+            "original": {
+              "amount": 7.5,
+              "unit": "g"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 9,
+            "name": "Milk",
+            "grams": 180,
+            "original": null,
+            "measure": {
+              "amount": 0.75,
+              "unit": "cup"
+            },
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": true,
+            "range": {
+              "lowGrams": 176.25,
+              "highGrams": 183.75
+            }
+          }
+        ],
+        "metric": [
+          "85 g",
+          "7.5 g",
+          "180 g"
+        ],
+        "us": [
+          "3 oz",
+          "0.26 oz",
+          "6.35 oz"
+        ],
+        "totalGrams": 272.548569375
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "1 1/2 cups Milk",
+          "enteredAmount": 1.5,
+          "enteredUnit": "cups",
+          "normalizedUnit": "cup",
+          "ingredientName": "Milk",
+          "baseName": "Milk",
+          "sizeWord": null,
+          "identityCandidates": [
+            "milk"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": null,
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": null,
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 2,
+          "rawLine": "6 tsp Vanilla extract",
+          "enteredAmount": 6,
+          "enteredUnit": "tsp",
+          "normalizedUnit": "tsp",
+          "ingredientName": "Vanilla extract",
+          "baseName": "Vanilla extract",
+          "sizeWord": null,
+          "identityCandidates": [
+            "vanilla extract"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": null,
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": null,
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 3,
+          "rawLine": "2 tbsp Butter",
+          "enteredAmount": 2,
+          "enteredUnit": "tbsp",
+          "normalizedUnit": "tbsp",
+          "ingredientName": "Butter",
+          "baseName": "Butter",
+          "sizeWord": null,
+          "identityCandidates": [
+            "butter"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": null,
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": null,
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 8,
+      "expect": {
+        "scaled": [],
+        "metric": [],
+        "us": [],
+        "totalGrams": 0
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "3 each Eggs",
+          "enteredAmount": 3,
+          "enteredUnit": "each",
+          "normalizedUnit": "each",
+          "ingredientName": "Eggs",
+          "baseName": "Eggs",
+          "sizeWord": null,
+          "identityCandidates": [
+            "eggs"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": null,
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": null,
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 2,
+          "rawLine": "1 pinch Salt",
+          "enteredAmount": 1,
+          "enteredUnit": "pinch",
+          "normalizedUnit": "pinch",
+          "ingredientName": "Salt",
+          "baseName": "Salt",
+          "sizeWord": null,
+          "identityCandidates": [
+            "salt"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Converted 1 pinch to 0.3 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Salt",
+            "grams": 0.28349523125000003
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "approximate-unit",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 3,
+          "rawLine": "2 sprigs Thyme",
+          "enteredAmount": 2,
+          "enteredUnit": "sprigs",
+          "normalizedUnit": "sprig",
+          "ingredientName": "Thyme",
+          "baseName": "Thyme",
+          "sizeWord": null,
+          "identityCandidates": [
+            "thyme"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": null,
+          "ingredient": null,
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": null,
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 2.5,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 2,
+            "name": "Salt",
+            "grams": 0.7087380781250001,
+            "original": null,
+            "measure": {
+              "amount": 2.5,
+              "unit": "pinch"
+            },
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "0.71 g"
+        ],
+        "us": [
+          "0.025 oz"
+        ],
+        "totalGrams": 0.7087380781250001
+      }
+    },
+    {
+      "lines": [
+        {
+          "kind": "ingredient",
+          "lineNumber": 1,
+          "rawLine": "1 lb Butter",
+          "enteredAmount": 1,
+          "enteredUnit": "lb",
+          "normalizedUnit": "lb",
+          "ingredientName": "Butter",
+          "baseName": "Butter",
+          "sizeWord": null,
+          "identityCandidates": [
+            "butter"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Converted 1 lb to 453.6 g.",
+          "ingredient": {
+            "id": "paste-1",
+            "name": "Butter",
+            "grams": 453.59237
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "converted-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        },
+        {
+          "kind": "ingredient",
+          "lineNumber": 2,
+          "rawLine": "8 oz Sugar",
+          "enteredAmount": 8,
+          "enteredUnit": "oz",
+          "normalizedUnit": "oz",
+          "ingredientName": "Sugar",
+          "baseName": "Sugar",
+          "sizeWord": null,
+          "identityCandidates": [
+            "sugar"
+          ],
+          "qualifier": null,
+          "noteText": null,
+          "note": "Converted 8 oz to 226.8 g.",
+          "ingredient": {
+            "id": "paste-2",
+            "name": "Sugar",
+            "grams": 226.796185
+          },
+          "componentQuantity": null,
+          "identityMatched": false,
+          "resolutionSource": "converted-weight",
+          "measureRange": null,
+          "amountRange": null,
+          "equivalent": null,
+          "alert": null
+        }
+      ],
+      "factor": 1.5,
+      "expect": {
+        "scaled": [
+          {
+            "lineNumber": 1,
+            "name": "Butter",
+            "grams": 680.388555,
+            "original": {
+              "amount": 1.5,
+              "unit": "lb"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          },
+          {
+            "lineNumber": 2,
+            "name": "Sugar",
+            "grams": 340.1942775,
+            "original": {
+              "amount": 12,
+              "unit": "oz"
+            },
+            "measure": null,
+            "eachCount": null,
+            "countUnit": null,
+            "requiresReview": false,
+            "isEstimate": false,
+            "range": null
+          }
+        ],
+        "metric": [
+          "680 g",
+          "340 g"
+        ],
+        "us": [
+          "1.5 lb",
+          "12 oz"
+        ],
+        "totalGrams": 1020.5828325
+      }
+    }
+  ],
+  "factors": [
+    {
+      "factor": 0,
+      "clamp": null,
+      "quantize": null,
+      "format": null,
+      "formatApplied": null
+    },
+    {
+      "factor": -1,
+      "clamp": null,
+      "quantize": null,
+      "format": null,
+      "formatApplied": null
+    },
+    {
+      "factor": "NaN",
+      "clamp": null,
+      "quantize": null,
+      "format": null,
+      "formatApplied": null
+    },
+    {
+      "factor": "Infinity",
+      "clamp": null,
+      "quantize": null,
+      "format": null,
+      "formatApplied": null
+    },
+    {
+      "factor": 1000000000,
+      "clamp": 1000,
+      "quantize": 1000,
+      "format": "1000",
+      "formatApplied": "1000"
+    },
+    {
+      "factor": 1e-9,
+      "clamp": 0.001,
+      "quantize": 0.001,
+      "format": "0.001",
+      "formatApplied": "0.001"
+    },
+    {
+      "factor": 1,
+      "clamp": 1,
+      "quantize": 1,
+      "format": "1",
+      "formatApplied": "1"
+    },
+    {
+      "factor": 0.0014,
+      "clamp": 0.0014,
+      "quantize": 0.001,
+      "format": "0.001",
+      "formatApplied": "0.0014"
+    },
+    {
+      "factor": 4.3333333,
+      "clamp": 4.3333333,
+      "quantize": 4.333,
+      "format": "4.333",
+      "formatApplied": "4.3333333"
+    },
+    {
+      "factor": 0.3333333333333333,
+      "clamp": 0.3333333333333333,
+      "quantize": 0.333,
+      "format": "0.333",
+      "formatApplied": "0.333333333333333"
+    },
+    {
+      "factor": 1000,
+      "clamp": 1000,
+      "quantize": 1000,
+      "format": "1000",
+      "formatApplied": "1000"
+    },
+    {
+      "factor": 0.001,
+      "clamp": 0.001,
+      "quantize": 0.001,
+      "format": "0.001",
+      "formatApplied": "0.001"
+    },
+    {
+      "factor": 2,
+      "clamp": 2,
+      "quantize": 2,
+      "format": "2",
+      "formatApplied": "2"
+    },
+    {
+      "factor": 0.0015,
+      "clamp": 0.0015,
+      "quantize": 0.002,
+      "format": "0.002",
+      "formatApplied": "0.0015"
+    },
+    {
+      "factor": 4.333333333333333,
+      "clamp": 4.333333333333333,
+      "quantize": 4.333,
+      "format": "4.333",
+      "formatApplied": "4.33333333333333"
+    },
+    {
+      "factor": 0.5,
+      "clamp": 0.5,
+      "quantize": 0.5,
+      "format": "0.5",
+      "formatApplied": "0.5"
+    },
+    {
+      "factor": 2.5,
+      "clamp": 2.5,
+      "quantize": 2.5,
+      "format": "2.5",
+      "formatApplied": "2.5"
+    },
+    {
+      "factor": 4.333,
+      "clamp": 4.333,
+      "quantize": 4.333,
+      "format": "4.333",
+      "formatApplied": "4.333"
+    },
+    {
+      "factor": 0.333,
+      "clamp": 0.333,
+      "quantize": 0.333,
+      "format": "0.333",
+      "formatApplied": "0.333"
+    },
+    {
+      "factor": 1.23456,
+      "clamp": 1.23456,
+      "quantize": 1.235,
+      "format": "1.235",
+      "formatApplied": "1.23456"
+    },
+    {
+      "factor": 999.9999,
+      "clamp": 999.9999,
+      "quantize": 1000,
+      "format": "1000",
+      "formatApplied": "999.9999"
+    },
+    {
+      "factor": 0.00149,
+      "clamp": 0.00149,
+      "quantize": 0.001,
+      "format": "0.001",
+      "formatApplied": "0.00149"
+    },
+    {
+      "factor": 0.0005,
+      "clamp": 0.001,
+      "quantize": 0.001,
+      "format": "0.001",
+      "formatApplied": "0.001"
+    }
+  ],
+  "formatKitchenAmount": [
+    {
+      "amount": 10.333,
+      "decimals": 1,
+      "expect": "10.3"
+    },
+    {
+      "amount": 0.35,
+      "decimals": 0,
+      "expect": "0.35"
+    },
+    {
+      "amount": 2030.333,
+      "decimals": 0,
+      "expect": "2,030"
+    },
+    {
+      "amount": 10.5,
+      "decimals": 0,
+      "expect": "11"
+    },
+    {
+      "amount": 0.3333333333333333,
+      "decimals": 0,
+      "expect": "1/3"
+    },
+    {
+      "amount": 2.5,
+      "decimals": 0,
+      "expect": "2 1/2"
+    },
+    {
+      "amount": 3.226,
+      "decimals": 0,
+      "expect": "3"
+    },
+    {
+      "amount": 0,
+      "decimals": 0,
+      "expect": "0"
+    },
+    {
+      "amount": 0,
+      "decimals": 1,
+      "expect": "0"
+    },
+    {
+      "amount": 0.001,
+      "decimals": 0,
+      "expect": "0.001"
+    },
+    {
+      "amount": 0.001,
+      "decimals": 1,
+      "expect": "0.001"
+    },
+    {
+      "amount": 0.01,
+      "decimals": 0,
+      "expect": "0.01"
+    },
+    {
+      "amount": 0.01,
+      "decimals": 1,
+      "expect": "0.01"
+    },
+    {
+      "amount": 0.049,
+      "decimals": 0,
+      "expect": "0.049"
+    },
+    {
+      "amount": 0.049,
+      "decimals": 1,
+      "expect": "0.049"
+    },
+    {
+      "amount": 0.125,
+      "decimals": 0,
+      "expect": "1/8"
+    },
+    {
+      "amount": 0.125,
+      "decimals": 1,
+      "expect": "1/8"
+    },
+    {
+      "amount": 0.25,
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 0.25,
+      "decimals": 1,
+      "expect": "1/4"
+    },
+    {
+      "amount": 0.5,
+      "decimals": 0,
+      "expect": "1/2"
+    },
+    {
+      "amount": 0.5,
+      "decimals": 1,
+      "expect": "1/2"
+    },
+    {
+      "amount": 0.66,
+      "decimals": 0,
+      "expect": "0.66"
+    },
+    {
+      "amount": 0.66,
+      "decimals": 1,
+      "expect": "0.66"
+    },
+    {
+      "amount": 0.6666666666666666,
+      "decimals": 0,
+      "expect": "2/3"
+    },
+    {
+      "amount": 0.6666666666666666,
+      "decimals": 1,
+      "expect": "2/3"
+    },
+    {
+      "amount": 0.75,
+      "decimals": 0,
+      "expect": "3/4"
+    },
+    {
+      "amount": 0.75,
+      "decimals": 1,
+      "expect": "3/4"
+    },
+    {
+      "amount": 0.8,
+      "decimals": 0,
+      "expect": "0.8"
+    },
+    {
+      "amount": 0.8,
+      "decimals": 1,
+      "expect": "0.8"
+    },
+    {
+      "amount": 1,
+      "decimals": 0,
+      "expect": "1"
+    },
+    {
+      "amount": 1,
+      "decimals": 1,
+      "expect": "1"
+    },
+    {
+      "amount": 1.25,
+      "decimals": 0,
+      "expect": "1 1/4"
+    },
+    {
+      "amount": 1.25,
+      "decimals": 1,
+      "expect": "1 1/4"
+    },
+    {
+      "amount": 1.5,
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 1.5,
+      "decimals": 1,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 1.75,
+      "decimals": 0,
+      "expect": "1 3/4"
+    },
+    {
+      "amount": 1.75,
+      "decimals": 1,
+      "expect": "1 3/4"
+    },
+    {
+      "amount": 2.2,
+      "decimals": 0,
+      "expect": "2"
+    },
+    {
+      "amount": 2.2,
+      "decimals": 1,
+      "expect": "2.2"
+    },
+    {
+      "amount": 3.5,
+      "decimals": 0,
+      "expect": "3 1/2"
+    },
+    {
+      "amount": 3.5,
+      "decimals": 1,
+      "expect": "3 1/2"
+    },
+    {
+      "amount": 7.25,
+      "decimals": 0,
+      "expect": "7 1/4"
+    },
+    {
+      "amount": 7.25,
+      "decimals": 1,
+      "expect": "7 1/4"
+    },
+    {
+      "amount": 9.99,
+      "decimals": 0,
+      "expect": "10"
+    },
+    {
+      "amount": 9.99,
+      "decimals": 1,
+      "expect": "10"
+    },
+    {
+      "amount": 10,
+      "decimals": 0,
+      "expect": "10"
+    },
+    {
+      "amount": 10,
+      "decimals": 1,
+      "expect": "10"
+    },
+    {
+      "amount": 12.5,
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 12.5,
+      "decimals": 1,
+      "expect": "12.5"
+    },
+    {
+      "amount": 99.5,
+      "decimals": 0,
+      "expect": "100"
+    },
+    {
+      "amount": 99.5,
+      "decimals": 1,
+      "expect": "99.5"
+    },
+    {
+      "amount": 1000,
+      "decimals": 0,
+      "expect": "1,000"
+    },
+    {
+      "amount": 1000,
+      "decimals": 1,
+      "expect": "1,000"
+    },
+    {
+      "amount": 12345.678,
+      "decimals": 0,
+      "expect": "12,346"
+    },
+    {
+      "amount": 12345.678,
+      "decimals": 1,
+      "expect": "12,345.7"
+    }
+  ],
+  "formatMeasuredAmount": [
+    {
+      "amount": 2030.333,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "2,030"
+    },
+    {
+      "amount": 2.55,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "3"
+    },
+    {
+      "amount": 2030.333,
+      "unit": "g",
+      "decimals": 1,
+      "expect": "2,030.3"
+    },
+    {
+      "amount": 4.256,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "4.26"
+    },
+    {
+      "amount": 0.4,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "0.4"
+    },
+    {
+      "amount": 0.004,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "0.25"
+    },
+    {
+      "amount": 1.5,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "2"
+    },
+    {
+      "amount": 12.75,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "g",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "0.25"
+    },
+    {
+      "amount": 1.5,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "1.5"
+    },
+    {
+      "amount": 2.333,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "2.333"
+    },
+    {
+      "amount": 12.75,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "12.75"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "kg",
+      "decimals": 0,
+      "expect": "1,500.5"
+    },
+    {
+      "amount": 0.004,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "0.25"
+    },
+    {
+      "amount": 1.5,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "1.5"
+    },
+    {
+      "amount": 2.333,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "2.33"
+    },
+    {
+      "amount": 12.75,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "12.75"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "oz",
+      "decimals": 0,
+      "expect": "1,500.5"
+    },
+    {
+      "amount": 0.004,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "0.25"
+    },
+    {
+      "amount": 1.5,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "1.5"
+    },
+    {
+      "amount": 2.333,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "2.333"
+    },
+    {
+      "amount": 12.75,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "12.75"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "lb",
+      "decimals": 0,
+      "expect": "1,500.5"
+    },
+    {
+      "amount": 0.004,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "ml",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "l",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "cup",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "tsp",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "tbsp",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "each",
+      "decimals": 0,
+      "expect": "1,501"
+    },
+    {
+      "amount": 0.004,
+      "unit": "",
+      "decimals": 0,
+      "expect": "0.004"
+    },
+    {
+      "amount": 0.25,
+      "unit": "",
+      "decimals": 0,
+      "expect": "1/4"
+    },
+    {
+      "amount": 1.5,
+      "unit": "",
+      "decimals": 0,
+      "expect": "1 1/2"
+    },
+    {
+      "amount": 2.333,
+      "unit": "",
+      "decimals": 0,
+      "expect": "2 1/3"
+    },
+    {
+      "amount": 12.75,
+      "unit": "",
+      "decimals": 0,
+      "expect": "13"
+    },
+    {
+      "amount": 1500.5,
+      "unit": "",
+      "decimals": 0,
+      "expect": "1,501"
+    }
+  ],
+  "formatScaledWeight": [
+    {
+      "grams": 0.24,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.24 g"
+    },
+    {
+      "grams": 0.01,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.01 g"
+    },
+    {
+      "grams": 0.01,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.00035 oz"
+    },
+    {
+      "grams": 2500,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "2.5 kg"
+    },
+    {
+      "grams": 0,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0 g"
+    },
+    {
+      "grams": 2030.333,
+      "system": "metric",
+      "original": {
+        "amount": 2030.333,
+        "unit": "g"
+      },
+      "decimals": 0,
+      "expect": "2,030 g"
+    },
+    {
+      "grams": 10.333,
+      "system": "metric",
+      "original": {
+        "amount": 10.333,
+        "unit": "g"
+      },
+      "decimals": 1,
+      "expect": "10.3 g"
+    },
+    {
+      "grams": 1234,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "1.234 kg"
+    },
+    {
+      "grams": 12345,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "12.345 kg"
+    },
+    {
+      "grams": 0.0001,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.0001 g"
+    },
+    {
+      "grams": 0.0001,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.0000035 oz"
+    },
+    {
+      "grams": 0.001,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.001 g"
+    },
+    {
+      "grams": 0.001,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.000035 oz"
+    },
+    {
+      "grams": 0.4,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.4 g"
+    },
+    {
+      "grams": 0.4,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "0.014 oz"
+    },
+    {
+      "grams": 28.35,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "28 g"
+    },
+    {
+      "grams": 28.35,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "1 oz"
+    },
+    {
+      "grams": 453.6,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "454 g"
+    },
+    {
+      "grams": 453.6,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "1 lb"
+    },
+    {
+      "grams": 999.5,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "1,000 g"
+    },
+    {
+      "grams": 999.5,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "2.204 lb"
+    },
+    {
+      "grams": 1000,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "1 kg"
+    },
+    {
+      "grams": 1000,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "2.205 lb"
+    },
+    {
+      "grams": 4535.9,
+      "system": "metric",
+      "original": null,
+      "decimals": 0,
+      "expect": "4.536 kg"
+    },
+    {
+      "grams": 4535.9,
+      "system": "us",
+      "original": null,
+      "decimals": 0,
+      "expect": "10 lb"
+    },
+    {
+      "grams": 453.59237,
+      "system": "us",
+      "original": {
+        "amount": 1,
+        "unit": "lb"
+      },
+      "decimals": 0,
+      "expect": "1 lb"
+    },
+    {
+      "grams": 453.59237,
+      "system": "metric",
+      "original": {
+        "amount": 1,
+        "unit": "lb"
+      },
+      "decimals": 0,
+      "expect": "454 g"
+    },
+    {
+      "grams": 1500,
+      "system": "metric",
+      "original": {
+        "amount": 1.5,
+        "unit": "kg"
+      },
+      "decimals": 0,
+      "expect": "1.5 kg"
+    }
+  ],
+  "formatYieldAmount": [
+    {
+      "amount": 104,
+      "expect": "104"
+    },
+    {
+      "amount": 8.666,
+      "expect": "8.666"
+    },
+    {
+      "amount": 0.125,
+      "expect": "0.125"
+    },
+    {
+      "amount": 1e-9,
+      "expect": "0.000000001"
+    },
+    {
+      "amount": 2000,
+      "expect": "2000"
+    },
+    {
+      "amount": 1000,
+      "expect": "1000"
+    },
+    {
+      "amount": 1.5,
+      "expect": "1.5"
+    },
+    {
+      "amount": 1,
+      "expect": "1"
+    },
+    {
+      "amount": 24,
+      "expect": "24"
+    },
+    {
+      "amount": 48,
+      "expect": "48"
+    },
+    {
+      "amount": 12,
+      "expect": "12"
+    },
+    {
+      "amount": 1234567.891,
+      "expect": "1234567.891"
+    },
+    {
+      "amount": 0.30000000000000004,
+      "expect": "0.3"
+    }
+  ],
+  "scaleFactorFromYield": [
+    {
+      "saved": 24,
+      "target": 104,
+      "expect": 4.333333333333333
+    },
+    {
+      "saved": 0,
+      "target": 100,
+      "expect": null
+    },
+    {
+      "saved": -24,
+      "target": 100,
+      "expect": null
+    },
+    {
+      "saved": "NaN",
+      "target": 100,
+      "expect": null
+    },
+    {
+      "saved": 24,
+      "target": 0,
+      "expect": null
+    },
+    {
+      "saved": 24,
+      "target": -100,
+      "expect": null
+    },
+    {
+      "saved": 24,
+      "target": "NaN",
+      "expect": null
+    },
+    {
+      "saved": 3,
+      "target": 1,
+      "expect": 0.3333333333333333
+    }
+  ],
+  "scaleFromRequestedYield": [
+    {
+      "saved": 1000,
+      "requested": 1.5,
+      "expect": {
+        "factor": 0.0015,
+        "yieldAmount": 1.5
+      }
+    },
+    {
+      "saved": 24,
+      "requested": 104,
+      "expect": {
+        "factor": 4.333333333333333,
+        "yieldAmount": 104
+      }
+    },
+    {
+      "saved": 24,
+      "requested": 12,
+      "expect": {
+        "factor": 0.5,
+        "yieldAmount": 12
+      }
+    },
+    {
+      "saved": 1000,
+      "requested": "NaN",
+      "expect": null
+    },
+    {
+      "saved": 1000,
+      "requested": 1e-7,
+      "expect": {
+        "factor": 0.001,
+        "yieldAmount": 1
+      }
+    },
+    {
+      "saved": 24,
+      "requested": 0,
+      "expect": null
+    },
+    {
+      "saved": 0,
+      "requested": 12,
+      "expect": null
+    },
+    {
+      "saved": 1,
+      "requested": 5000,
+      "expect": {
+        "factor": 1000,
+        "yieldAmount": 1000
+      }
+    },
+    {
+      "saved": 3,
+      "requested": 1,
+      "expect": {
+        "factor": 0.3333333333333333,
+        "yieldAmount": 1
+      }
+    }
+  ],
+  "tidyVolume": [
+    {
+      "amount": 6,
+      "unit": "tsp",
+      "expect": {
+        "amount": 2,
+        "unit": "tbsp"
+      }
+    },
+    {
+      "amount": 48,
+      "unit": "tsp",
+      "expect": {
+        "amount": 1,
+        "unit": "cup"
+      }
+    },
+    {
+      "amount": 32,
+      "unit": "tbsp",
+      "expect": {
+        "amount": 2,
+        "unit": "cup"
+      }
+    },
+    {
+      "amount": 4.5,
+      "unit": "tsp",
+      "expect": {
+        "amount": 4.5,
+        "unit": "tsp"
+      }
+    },
+    {
+      "amount": 2,
+      "unit": "tsp",
+      "expect": {
+        "amount": 2,
+        "unit": "tsp"
+      }
+    },
+    {
+      "amount": 7,
+      "unit": "cup",
+      "expect": {
+        "amount": 7,
+        "unit": "cup"
+      }
+    },
+    {
+      "amount": 3.0001,
+      "unit": "tsp",
+      "expect": {
+        "amount": 1,
+        "unit": "tbsp"
+      }
+    },
+    {
+      "amount": 15,
+      "unit": "tbsp",
+      "expect": {
+        "amount": 15,
+        "unit": "tbsp"
+      }
+    },
+    {
+      "amount": 16,
+      "unit": "tbsp",
+      "expect": {
+        "amount": 1,
+        "unit": "cup"
+      }
+    },
+    {
+      "amount": 96,
+      "unit": "tsp",
+      "expect": {
+        "amount": 2,
+        "unit": "cup"
+      }
+    },
+    {
+      "amount": 9,
+      "unit": "tsp",
+      "expect": {
+        "amount": 3,
+        "unit": "tbsp"
+      }
+    }
+  ],
+  "clampRecipeQuantity": [
+    {
+      "amount": 1.333333,
+      "expect": "1.333333"
+    },
+    {
+      "amount": "2.50000",
+      "expect": "2.5"
+    },
+    {
+      "amount": 0,
+      "expect": "0"
+    },
+    {
+      "amount": 1234.56789,
+      "expect": "1234.56789"
+    },
+    {
+      "amount": "abc",
+      "expect": ""
+    },
+    {
+      "amount": "",
+      "expect": "0"
+    },
+    {
+      "amount": 1e-7,
+      "expect": "0"
+    }
+  ]
+}

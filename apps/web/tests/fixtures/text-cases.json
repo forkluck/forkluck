@@ -1,0 +1,1116 @@
+{
+  "generator": "cd apps/web && UPDATE_TEXT_FIXTURE=1 pnpm exec vitest run tests/text-cases.test.ts",
+  "normalizedName": [
+    {
+      "input": "  Bread Flour ",
+      "expect": "bread flour"
+    },
+    {
+      "input": "P. Sugar",
+      "expect": "p sugar"
+    },
+    {
+      "input": "Extra-Virgin  Olive Oil",
+      "expect": "extra virgin olive oil"
+    },
+    {
+      "input": "Crème Fraîche",
+      "expect": "creme fraiche"
+    },
+    {
+      "input": "Creme Fraiche",
+      "expect": "creme fraiche"
+    },
+    {
+      "input": "Jalapeño",
+      "expect": "jalapeno"
+    },
+    {
+      "input": "püree",
+      "expect": "puree"
+    },
+    {
+      "input": "  Crème---fraîche! ",
+      "expect": "creme fraiche"
+    },
+    {
+      "input": "ICING SUGAR",
+      "expect": "icing sugar"
+    },
+    {
+      "input": "Pimentón de la Vera",
+      "expect": "pimenton de la vera"
+    },
+    {
+      "input": "Açaí",
+      "expect": "acai"
+    },
+    {
+      "input": "Straße",
+      "expect": "straße"
+    },
+    {
+      "input": "Œufs",
+      "expect": "œufs"
+    },
+    {
+      "input": "Ñoquis",
+      "expect": "noquis"
+    },
+    {
+      "input": "Häagen-Dazs",
+      "expect": "haagen dazs"
+    },
+    {
+      "input": "Piment d'Espelette",
+      "expect": "piment d espelette"
+    },
+    {
+      "input": "Chef's 00 flour",
+      "expect": "chef s 00 flour"
+    },
+    {
+      "input": "1/2 & 1/2",
+      "expect": "1 2 1 2"
+    },
+    {
+      "input": "Salt_and_pepper",
+      "expect": "salt and pepper"
+    },
+    {
+      "input": "Tomatoes (San Marzano)",
+      "expect": "tomatoes san marzano"
+    },
+    {
+      "input": "large, room temperature",
+      "expect": "large room temperature"
+    },
+    {
+      "input": "Diced; 2 cm",
+      "expect": "diced 2 cm"
+    },
+    {
+      "input": "  ",
+      "expect": ""
+    },
+    {
+      "input": "",
+      "expect": ""
+    },
+    {
+      "input": "日本酒",
+      "expect": "日本酒"
+    },
+    {
+      "input": "Café́",
+      "expect": "cafe"
+    },
+    {
+      "input": "ﬁne salt",
+      "expect": "fine salt"
+    },
+    {
+      "input": "Ｆｕｌｌ width",
+      "expect": "full width"
+    },
+    {
+      "input": "éclair",
+      "expect": "eclair"
+    }
+  ],
+  "lineIdentity": [
+    {
+      "input": "eggs",
+      "expect": "egg"
+    },
+    {
+      "input": "Egg",
+      "expect": "egg"
+    },
+    {
+      "input": "large eggs",
+      "expect": "large egg"
+    },
+    {
+      "input": "San Marzano tomatoes",
+      "expect": "san marzano tomato"
+    },
+    {
+      "input": "San Marzano tomato",
+      "expect": "san marzano tomato"
+    },
+    {
+      "input": "Lemon Curd",
+      "expect": "lemon curd"
+    },
+    {
+      "input": "berries",
+      "expect": "berry"
+    },
+    {
+      "input": "cherries",
+      "expect": "cherry"
+    },
+    {
+      "input": "keys",
+      "expect": "key"
+    },
+    {
+      "input": "potatoes",
+      "expect": "potato"
+    },
+    {
+      "input": "peaches",
+      "expect": "peach"
+    },
+    {
+      "input": "radishes",
+      "expect": "radish"
+    },
+    {
+      "input": "boxes",
+      "expect": "box"
+    },
+    {
+      "input": "chives",
+      "expect": "chive"
+    },
+    {
+      "input": "molasses",
+      "expect": "molasse"
+    },
+    {
+      "input": "asparagus",
+      "expect": "asparagus"
+    },
+    {
+      "input": "hummus",
+      "expect": "hummus"
+    },
+    {
+      "input": "couscous",
+      "expect": "couscous"
+    },
+    {
+      "input": "anise",
+      "expect": "anise"
+    },
+    {
+      "input": "gas",
+      "expect": "ga"
+    },
+    {
+      "input": "us",
+      "expect": "us"
+    },
+    {
+      "input": "is",
+      "expect": "is"
+    },
+    {
+      "input": "leaves",
+      "expect": "leave"
+    },
+    {
+      "input": "  ",
+      "expect": ""
+    },
+    {
+      "input": "Crème Fraîches",
+      "expect": "creme fraich"
+    }
+  ],
+  "withPreparationNote": [
+    {
+      "existing": "2 ounces; 56 g",
+      "preparation": "large",
+      "expect": "large, 2 ounces; 56 g"
+    },
+    {
+      "existing": "softened",
+      "preparation": null,
+      "expect": "softened"
+    },
+    {
+      "existing": "Diced, 2 cm",
+      "preparation": "diced",
+      "expect": "Diced, 2 cm"
+    },
+    {
+      "existing": "",
+      "preparation": "large",
+      "expect": "large"
+    },
+    {
+      "existing": "  ",
+      "preparation": "large",
+      "expect": "large"
+    },
+    {
+      "existing": "beaten",
+      "preparation": "  ",
+      "expect": "beaten"
+    },
+    {
+      "existing": "Large; beaten",
+      "preparation": "large",
+      "expect": "Large; beaten"
+    },
+    {
+      "existing": "cold",
+      "preparation": " sifted ",
+      "expect": "sifted, cold"
+    }
+  ],
+  "matchPreparation": [
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": null,
+      "expect": null
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "",
+      "expect": null
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "beaten",
+      "expect": "beaten"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "large, 2 ounces; 56 g",
+      "expect": "large"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "room temperature",
+      "expect": "room temperature"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "large, room temperature",
+      "expect": "large"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "SIFTED",
+      "expect": "Sifted"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "sifted twice",
+      "expect": null
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "separated; yolks",
+      "expect": "yolks"
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": " , ; ",
+      "expect": null
+    },
+    {
+      "preparations": [
+        "beaten",
+        "large",
+        "room temperature",
+        "Sifted",
+        "yolks"
+      ],
+      "qualifier": "Room-temperature",
+      "expect": "room temperature"
+    }
+  ],
+  "fuzzyMatches": [
+    {
+      "text": "garlic",
+      "query": "jarlic",
+      "expect": true
+    },
+    {
+      "text": "garlic",
+      "query": "garlc",
+      "expect": true
+    },
+    {
+      "text": "black garlic",
+      "query": "garlik",
+      "expect": true
+    },
+    {
+      "text": "garlic",
+      "query": "ga",
+      "expect": true
+    },
+    {
+      "text": "garlic",
+      "query": "ge",
+      "expect": false
+    },
+    {
+      "text": "garlic powder",
+      "query": "garl pow",
+      "expect": true
+    },
+    {
+      "text": "garlic",
+      "query": "carrot",
+      "expect": false
+    },
+    {
+      "text": "egg",
+      "query": "popo",
+      "expect": false
+    },
+    {
+      "text": "powdered sugar",
+      "query": "powdened sugra",
+      "expect": false
+    },
+    {
+      "text": "confectioners sugar",
+      "query": "confectoners",
+      "expect": true
+    },
+    {
+      "text": "all purpose flour",
+      "query": "all purpse flur",
+      "expect": true
+    },
+    {
+      "text": "onion",
+      "query": "onoin",
+      "expect": false
+    },
+    {
+      "text": "onion",
+      "query": "oni",
+      "expect": true
+    },
+    {
+      "text": "cinnamon",
+      "query": "cinamon",
+      "expect": true
+    },
+    {
+      "text": "cinnamon",
+      "query": "cinnamin sticks",
+      "expect": false
+    },
+    {
+      "text": "worcestershire sauce",
+      "query": "worchestershire",
+      "expect": true
+    },
+    {
+      "text": "worcestershire sauce",
+      "query": "worcesterhsire",
+      "expect": true
+    },
+    {
+      "text": "",
+      "query": "",
+      "expect": true
+    },
+    {
+      "text": "salt",
+      "query": "",
+      "expect": true
+    },
+    {
+      "text": "salt",
+      "query": "  ",
+      "expect": true
+    }
+  ],
+  "formatCents": [
+    {
+      "cents": 2450,
+      "currency": "USD",
+      "expect": "$24.50"
+    },
+    {
+      "cents": 3750,
+      "currency": "USD",
+      "expect": "$37.50"
+    },
+    {
+      "cents": 3.4,
+      "currency": "USD",
+      "expect": "$0.03"
+    },
+    {
+      "cents": 2450,
+      "currency": "EUR",
+      "expect": "€24.50"
+    },
+    {
+      "cents": 100,
+      "currency": "JPY",
+      "expect": "¥1"
+    },
+    {
+      "cents": 287.5,
+      "currency": "USD",
+      "expect": "$2.88"
+    },
+    {
+      "cents": 288,
+      "currency": "USD",
+      "expect": "$2.88"
+    },
+    {
+      "cents": 0.018,
+      "currency": "USD",
+      "expect": "$0.00"
+    },
+    {
+      "cents": 287.5,
+      "currency": "KWD",
+      "expect": "KWD 2.880"
+    },
+    {
+      "cents": 287.5,
+      "currency": "US$",
+      "expect": "US$ 2.88"
+    },
+    {
+      "cents": 390540,
+      "currency": "USD",
+      "expect": "$3,905.40"
+    },
+    {
+      "cents": 390560,
+      "currency": "USD",
+      "expect": "$3,905.60"
+    },
+    {
+      "cents": 100,
+      "currency": "US$",
+      "expect": "US$ 1.00"
+    },
+    {
+      "cents": 0,
+      "currency": "USD",
+      "expect": "$0.00"
+    },
+    {
+      "cents": 0.5,
+      "currency": "USD",
+      "expect": "$0.01"
+    },
+    {
+      "cents": 1.5,
+      "currency": "USD",
+      "expect": "$0.02"
+    },
+    {
+      "cents": 2.5,
+      "currency": "USD",
+      "expect": "$0.03"
+    },
+    {
+      "cents": -0.5,
+      "currency": "USD",
+      "expect": "-$0.00"
+    },
+    {
+      "cents": -1.5,
+      "currency": "USD",
+      "expect": "-$0.01"
+    },
+    {
+      "cents": -250,
+      "currency": "USD",
+      "expect": "-$2.50"
+    },
+    {
+      "cents": 49.5,
+      "currency": "USD",
+      "expect": "$0.50"
+    },
+    {
+      "cents": 123456789,
+      "currency": "USD",
+      "expect": "$1,234,567.89"
+    },
+    {
+      "cents": 0.3333333333333333,
+      "currency": "USD",
+      "expect": "$0.00"
+    },
+    {
+      "cents": 2450,
+      "currency": "GBP",
+      "expect": "£24.50"
+    },
+    {
+      "cents": 2450,
+      "currency": "CAD",
+      "expect": "CA$24.50"
+    },
+    {
+      "cents": 2450,
+      "currency": "CHF",
+      "expect": "CHF 24.50"
+    }
+  ],
+  "formatWholeCents": [
+    {
+      "cents": 2450,
+      "currency": "USD",
+      "expect": "$25"
+    },
+    {
+      "cents": 3750,
+      "currency": "USD",
+      "expect": "$38"
+    },
+    {
+      "cents": 3.4,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 2450,
+      "currency": "EUR",
+      "expect": "€25"
+    },
+    {
+      "cents": 100,
+      "currency": "JPY",
+      "expect": "¥1"
+    },
+    {
+      "cents": 287.5,
+      "currency": "USD",
+      "expect": "$3"
+    },
+    {
+      "cents": 288,
+      "currency": "USD",
+      "expect": "$3"
+    },
+    {
+      "cents": 0.018,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 287.5,
+      "currency": "KWD",
+      "expect": "KWD 3"
+    },
+    {
+      "cents": 287.5,
+      "currency": "US$",
+      "expect": "US$ 3"
+    },
+    {
+      "cents": 390540,
+      "currency": "USD",
+      "expect": "$3,905"
+    },
+    {
+      "cents": 390560,
+      "currency": "USD",
+      "expect": "$3,906"
+    },
+    {
+      "cents": 100,
+      "currency": "US$",
+      "expect": "US$ 1"
+    },
+    {
+      "cents": 0,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 0.5,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 1.5,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 2.5,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": -0.5,
+      "currency": "USD",
+      "expect": "-$0"
+    },
+    {
+      "cents": -1.5,
+      "currency": "USD",
+      "expect": "-$0"
+    },
+    {
+      "cents": -250,
+      "currency": "USD",
+      "expect": "-$3"
+    },
+    {
+      "cents": 49.5,
+      "currency": "USD",
+      "expect": "$1"
+    },
+    {
+      "cents": 123456789,
+      "currency": "USD",
+      "expect": "$1,234,568"
+    },
+    {
+      "cents": 0.3333333333333333,
+      "currency": "USD",
+      "expect": "$0"
+    },
+    {
+      "cents": 2450,
+      "currency": "GBP",
+      "expect": "£25"
+    },
+    {
+      "cents": 2450,
+      "currency": "CAD",
+      "expect": "CA$25"
+    },
+    {
+      "cents": 2450,
+      "currency": "CHF",
+      "expect": "CHF 25"
+    }
+  ],
+  "formatPreciseCents": [
+    {
+      "cents": 2450,
+      "currency": "USD",
+      "expect": "$24.50"
+    },
+    {
+      "cents": 3750,
+      "currency": "USD",
+      "expect": "$37.50"
+    },
+    {
+      "cents": 3.4,
+      "currency": "USD",
+      "expect": "$0.034"
+    },
+    {
+      "cents": 2450,
+      "currency": "EUR",
+      "expect": "€24.50"
+    },
+    {
+      "cents": 100,
+      "currency": "JPY",
+      "expect": "¥1"
+    },
+    {
+      "cents": 287.5,
+      "currency": "USD",
+      "expect": "$2.875"
+    },
+    {
+      "cents": 288,
+      "currency": "USD",
+      "expect": "$2.88"
+    },
+    {
+      "cents": 0.018,
+      "currency": "USD",
+      "expect": "$0.00018"
+    },
+    {
+      "cents": 287.5,
+      "currency": "KWD",
+      "expect": "KWD 2.875"
+    },
+    {
+      "cents": 287.5,
+      "currency": "US$",
+      "expect": "US$ 2.875"
+    },
+    {
+      "cents": 390540,
+      "currency": "USD",
+      "expect": "$3,905.40"
+    },
+    {
+      "cents": 390560,
+      "currency": "USD",
+      "expect": "$3,905.60"
+    },
+    {
+      "cents": 100,
+      "currency": "US$",
+      "expect": "US$ 1"
+    },
+    {
+      "cents": 0,
+      "currency": "USD",
+      "expect": "$0.00"
+    },
+    {
+      "cents": 0.5,
+      "currency": "USD",
+      "expect": "$0.005"
+    },
+    {
+      "cents": 1.5,
+      "currency": "USD",
+      "expect": "$0.015"
+    },
+    {
+      "cents": 2.5,
+      "currency": "USD",
+      "expect": "$0.025"
+    },
+    {
+      "cents": -0.5,
+      "currency": "USD",
+      "expect": "-$0.005"
+    },
+    {
+      "cents": -1.5,
+      "currency": "USD",
+      "expect": "-$0.015"
+    },
+    {
+      "cents": -250,
+      "currency": "USD",
+      "expect": "-$2.50"
+    },
+    {
+      "cents": 49.5,
+      "currency": "USD",
+      "expect": "$0.495"
+    },
+    {
+      "cents": 123456789,
+      "currency": "USD",
+      "expect": "$1,234,567.89"
+    },
+    {
+      "cents": 0.3333333333333333,
+      "currency": "USD",
+      "expect": "$0.003333"
+    },
+    {
+      "cents": 2450,
+      "currency": "GBP",
+      "expect": "£24.50"
+    },
+    {
+      "cents": 2450,
+      "currency": "CAD",
+      "expect": "CA$24.50"
+    },
+    {
+      "cents": 2450,
+      "currency": "CHF",
+      "expect": "CHF 24.50"
+    }
+  ],
+  "dollarsToCents": [
+    {
+      "input": "24.50",
+      "expect": 2450
+    },
+    {
+      "input": "$3.46",
+      "expect": 346
+    },
+    {
+      "input": " $3.46 ",
+      "expect": 346
+    },
+    {
+      "input": "1,234.56",
+      "expect": 123456
+    },
+    {
+      "input": "$1,234.56",
+      "expect": 123456
+    },
+    {
+      "input": ".5",
+      "expect": 50
+    },
+    {
+      "input": "3.",
+      "expect": 300
+    },
+    {
+      "input": "",
+      "expect": null
+    },
+    {
+      "input": "-3",
+      "expect": null
+    },
+    {
+      "input": "3.46abc",
+      "expect": null
+    },
+    {
+      "input": "abc",
+      "expect": null
+    },
+    {
+      "input": "$",
+      "expect": null
+    },
+    {
+      "input": ".",
+      "expect": null
+    },
+    {
+      "input": "1.2.3",
+      "expect": null
+    },
+    {
+      "input": "$-3",
+      "expect": null
+    },
+    {
+      "input": "0.005",
+      "expect": 1
+    },
+    {
+      "input": "0.015",
+      "expect": 2
+    },
+    {
+      "input": "1.005",
+      "expect": 100
+    },
+    {
+      "input": "2.675",
+      "expect": 268
+    },
+    {
+      "input": "10",
+      "expect": 1000
+    },
+    {
+      "input": "1 000",
+      "expect": 100000
+    },
+    {
+      "input": "0",
+      "expect": 0
+    }
+  ],
+  "centsToDollarInput": [
+    {
+      "cents": 2450,
+      "expect": "24.50"
+    },
+    {
+      "cents": 346,
+      "expect": "3.46"
+    },
+    {
+      "cents": 0,
+      "expect": "0.00"
+    },
+    {
+      "cents": 5,
+      "expect": "0.05"
+    },
+    {
+      "cents": 123456,
+      "expect": "1234.56"
+    },
+    {
+      "cents": 99.5,
+      "expect": "0.99"
+    }
+  ],
+  "search": [
+    {
+      "fields": [
+        "Maldon Sea Salt"
+      ],
+      "query": "maldon salt",
+      "tokens": [
+        "maldon",
+        "salt"
+      ],
+      "matches": true,
+      "rank": 2
+    },
+    {
+      "fields": [
+        "Salt"
+      ],
+      "query": "salt",
+      "tokens": [
+        "salt"
+      ],
+      "matches": true,
+      "rank": 0
+    },
+    {
+      "fields": [
+        "Salted butter"
+      ],
+      "query": "salt",
+      "tokens": [
+        "salt"
+      ],
+      "matches": true,
+      "rank": 1
+    },
+    {
+      "fields": [
+        "Kosher salt"
+      ],
+      "query": "salt",
+      "tokens": [
+        "salt"
+      ],
+      "matches": true,
+      "rank": 2
+    },
+    {
+      "fields": [
+        "Unsalted butter"
+      ],
+      "query": "salt",
+      "tokens": [
+        "salt"
+      ],
+      "matches": true,
+      "rank": 3
+    },
+    {
+      "fields": [
+        "Bread flour",
+        "flour"
+      ],
+      "query": "flo",
+      "tokens": [
+        "flo"
+      ],
+      "matches": true,
+      "rank": 1
+    },
+    {
+      "fields": [
+        "Crème fraîche"
+      ],
+      "query": "creme",
+      "tokens": [
+        "creme"
+      ],
+      "matches": true,
+      "rank": 1
+    },
+    {
+      "fields": [
+        "Lemon juice"
+      ],
+      "query": "juice lemon",
+      "tokens": [
+        "juice",
+        "lemon"
+      ],
+      "matches": true,
+      "rank": 3
+    },
+    {
+      "fields": [
+        "Lemon juice"
+      ],
+      "query": "lemon zest",
+      "tokens": [
+        "lemon",
+        "zest"
+      ],
+      "matches": false,
+      "rank": 2
+    },
+    {
+      "fields": [
+        "Egg"
+      ],
+      "query": "",
+      "tokens": [],
+      "matches": true,
+      "rank": 4
+    }
+  ]
+}

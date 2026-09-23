@@ -1,0 +1,1677 @@
+{
+  "generator": "cd apps/api && UPDATE_ENGINE_FIXTURE=1 .venv/bin/python manage.py test forkluck.test_mac_parity_fixtures",
+  "nutritionPer100g": [
+    {
+      "payload": {
+        "dataType": "Branded",
+        "description": "ORGANIC TAMARI",
+        "brandOwner": "San-J",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 10
+          },
+          {
+            "nutrientId": 1004,
+            "value": 0
+          },
+          {
+            "nutrientId": 1005,
+            "value": 5
+          },
+          {
+            "nutrientId": 1093,
+            "value": 5000
+          },
+          {
+            "nutrientId": 1110,
+            "value": 40
+          }
+        ]
+      },
+      "expect": {
+        "water": 72.5,
+        "fat": 0.0,
+        "protein": 10.0,
+        "sugars": 0.0,
+        "starch": 5.0,
+        "fiber": 0.0,
+        "salt": 12.5,
+        "other": 0.0,
+        "totalCarbohydrate": 5.0,
+        "sodiumMg": 5000.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": 1.0,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 2
+          }
+        ]
+      },
+      "expect": {
+        "water": 12.0,
+        "fat": 1.0,
+        "protein": 10.0,
+        "sugars": 0.0,
+        "starch": 76.0,
+        "fiber": 0.0,
+        "salt": 0.005,
+        "other": 0.995,
+        "totalCarbohydrate": 76.0,
+        "sodiumMg": 2.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 0.2
+          },
+          {
+            "nutrient": {
+              "id": 1007
+            },
+            "amount": 36.9
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 27400
+          }
+        ]
+      },
+      "expect": {
+        "water": 0.2,
+        "fat": 0.0,
+        "protein": 0.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 68.5,
+        "other": 31.3,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 27400.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 0.42
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 38700
+          }
+        ]
+      },
+      "expect": {
+        "water": 0.42,
+        "fat": 0.0,
+        "protein": 0.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 96.75,
+        "other": 2.83,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 38700.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 0.3
+          }
+        ],
+        "dataType": "Foundation"
+      },
+      "expect": {
+        "water": 12.0,
+        "fat": 1.0,
+        "protein": 10.0,
+        "sugars": 0.3,
+        "starch": 75.7,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 1.0,
+        "totalCarbohydrate": 76.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 0.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 0.3
+          }
+        ],
+        "dataType": "SR Legacy"
+      },
+      "expect": {
+        "water": 12.0,
+        "fat": 1.0,
+        "protein": 10.0,
+        "sugars": 0.3,
+        "starch": 75.7,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 1.0,
+        "totalCarbohydrate": 76.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 0.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 0.3
+          },
+          {
+            "nutrient": {
+              "id": 1235
+            },
+            "amount": 4
+          }
+        ],
+        "dataType": "SR Legacy"
+      },
+      "expect": {
+        "water": 12.0,
+        "fat": 1.0,
+        "protein": 10.0,
+        "sugars": 0.3,
+        "starch": 75.7,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 1.0,
+        "totalCarbohydrate": 76.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 4.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 0.3
+          }
+        ],
+        "dataType": "Survey (FNDDS)"
+      },
+      "expect": {
+        "water": 12.0,
+        "fat": 1.0,
+        "protein": 10.0,
+        "sugars": 0.3,
+        "starch": 75.7,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 1.0,
+        "totalCarbohydrate": 76.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 20
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 30
+          },
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 35
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 400
+          },
+          {
+            "nutrient": {
+              "id": 1258
+            },
+            "amount": 12
+          }
+        ]
+      },
+      "expect": {
+        "water": 35.0,
+        "fat": 10.0,
+        "protein": 20.0,
+        "sugars": 0.0,
+        "starch": 30.0,
+        "fiber": 0.0,
+        "salt": 1.0,
+        "other": 4.0,
+        "totalCarbohydrate": 30.0,
+        "sodiumMg": 400.0,
+        "saturatedFat": 10.0,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 20
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 30
+          },
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 35
+          },
+          {
+            "nutrient": {
+              "id": 1079
+            },
+            "amount": 5
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 400
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 3
+          }
+        ]
+      },
+      "expect": {
+        "water": 35.0,
+        "fat": 10.0,
+        "protein": 20.0,
+        "sugars": 3.0,
+        "starch": 22.0,
+        "fiber": 5.0,
+        "salt": 1.0,
+        "other": 4.0,
+        "totalCarbohydrate": 30.0,
+        "sodiumMg": 400.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Foundation",
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1085
+            },
+            "amount": 94.5
+          },
+          {
+            "nutrient": {
+              "id": 1258
+            },
+            "amount": 6.61
+          }
+        ]
+      },
+      "expect": {
+        "water": 0.0,
+        "fat": 94.5,
+        "protein": 0.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 5.5,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": 6.61,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 0.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 20
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 30
+          },
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 35
+          },
+          {
+            "nutrient": {
+              "id": 1079
+            },
+            "amount": 5
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 400
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 3
+          },
+          {
+            "nutrient": {
+              "id": 1258
+            },
+            "amount": 6
+          }
+        ]
+      },
+      "expect": {
+        "water": 35.0,
+        "fat": 10.0,
+        "protein": 20.0,
+        "sugars": 3.0,
+        "starch": 22.0,
+        "fiber": 5.0,
+        "salt": 1.0,
+        "other": 4.0,
+        "totalCarbohydrate": 30.0,
+        "sodiumMg": 400.0,
+        "saturatedFat": 6.0,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 20
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 30
+          }
+        ]
+      },
+      "expect": {
+        "error": "That food does not include complete nutrition data. Choose another result."
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Branded",
+        "description": "SANDWICH COOKIES",
+        "ingredients": "  ENRICHED FLOUR (WHEAT FLOUR, NIACIN, REDUCED IRON, THIAMINE MONONITRATE, RIBOFLAVIN, FOLIC ACID), SUGAR, PEANUT BUTTER (PEANUTS, CORN SYRUP SOLIDS, SALT), SOYBEAN OIL, HIGH FRUCTOSE CORN SYRUP, SOY LECITHIN (EMULSIFIER), VANILLIN - AN ARTIFICIAL FLAVOR. CONTAINS: WHEAT, PEANUT, AND SOY.  ",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 5
+          }
+        ]
+      },
+      "expect": {
+        "water": 95.0,
+        "fat": 0.0,
+        "protein": 5.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 0.0,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Foundation",
+        "description": "Apples, raw",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 0
+          },
+          {
+            "nutrientId": 1051,
+            "value": 85
+          }
+        ]
+      },
+      "expect": {
+        "water": 85.0,
+        "fat": 0.0,
+        "protein": 0.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 15.0,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 0.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Branded",
+        "description": "LONG",
+        "ingredients": "SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, SALT, ",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 5
+          }
+        ]
+      },
+      "expect": {
+        "water": 95.0,
+        "fat": 0.0,
+        "protein": 5.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 0.0,
+        "other": 0.0,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 0.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Foundation",
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 60.2
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 12.4
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 10.1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 14.2
+          },
+          {
+            "nutrient": {
+              "id": 1079
+            },
+            "amount": 2.1
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 3.3
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 320
+          },
+          {
+            "nutrient": {
+              "id": 1007
+            },
+            "amount": 1.4
+          },
+          {
+            "nutrient": {
+              "id": 1018
+            },
+            "amount": 0.5
+          },
+          {
+            "nutrient": {
+              "id": 1258
+            },
+            "amount": 11.5
+          },
+          {
+            "nutrient": {
+              "id": 1008
+            },
+            "amount": 190
+          },
+          {
+            "nutrient": {
+              "id": 1257
+            },
+            "amount": 0.3
+          },
+          {
+            "nutrient": {
+              "id": 1253
+            },
+            "amount": 45
+          },
+          {
+            "nutrient": {
+              "id": 1442
+            },
+            "amount": 1.2
+          },
+          {
+            "nutrient": {
+              "id": 1114
+            },
+            "amount": 0.8
+          },
+          {
+            "nutrient": {
+              "id": 1087
+            },
+            "amount": 120
+          },
+          {
+            "nutrient": {
+              "id": 1089
+            },
+            "amount": 1.9
+          },
+          {
+            "nutrient": {
+              "id": 1092
+            },
+            "amount": 250
+          }
+        ]
+      },
+      "expect": {
+        "water": 60.2,
+        "fat": 10.1,
+        "protein": 12.4,
+        "sugars": 3.3,
+        "starch": 8.8,
+        "fiber": 2.1,
+        "salt": 0.8,
+        "other": 2.3,
+        "totalCarbohydrate": 14.2,
+        "sodiumMg": 320.0,
+        "saturatedFat": 10.1,
+        "calories": 190.0,
+        "transFat": 0.3,
+        "cholesterolMg": 45.0,
+        "addedSugars": 1.2,
+        "vitaminDMcg": 0.8,
+        "calciumMg": 120.0,
+        "ironMg": 1.9,
+        "potassiumMg": 250.0
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Branded",
+        "description": "GRANOLA BAR",
+        "brandName": "Trail Co",
+        "ingredients": "OATS, HONEY, ALMONDS. MAY CONTAIN PEANUTS.",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 8
+          },
+          {
+            "nutrientId": 1085,
+            "value": 18
+          },
+          {
+            "nutrientId": 1050,
+            "value": 64
+          },
+          {
+            "nutrientId": 2033,
+            "value": 6
+          },
+          {
+            "nutrientId": 1063,
+            "value": 25
+          },
+          {
+            "nutrientId": 1093,
+            "value": 180
+          },
+          {
+            "nutrientId": 1008,
+            "value": 450
+          },
+          {
+            "nutrientId": 1235,
+            "value": 20
+          },
+          {
+            "nutrientId": 1110,
+            "value": 80
+          },
+          {
+            "nutrientId": 1087,
+            "value": 40
+          },
+          {
+            "nutrientId": 1089,
+            "value": -2
+          },
+          {
+            "nutrientId": 1092,
+            "value": 300
+          }
+        ]
+      },
+      "expect": {
+        "water": 9.55,
+        "fat": 18.0,
+        "protein": 8.0,
+        "sugars": 25.0,
+        "starch": 33.0,
+        "fiber": 6.0,
+        "salt": 0.45,
+        "other": 0.0,
+        "totalCarbohydrate": 64.0,
+        "sodiumMg": 180.0,
+        "saturatedFat": null,
+        "calories": 450.0,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 20.0,
+        "vitaminDMcg": 2.0,
+        "calciumMg": 40.0,
+        "ironMg": 0.0,
+        "potassiumMg": 300.0
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Foundation",
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 75
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 20
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 3
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 0
+          },
+          {
+            "nutrient": {
+              "id": 1093
+            },
+            "amount": 60
+          },
+          {
+            "nutrient": {
+              "id": 2047
+            },
+            "amount": 115
+          },
+          {
+            "nutrient": {
+              "id": 2048
+            },
+            "amount": 118
+          }
+        ]
+      },
+      "expect": {
+        "water": 75.0,
+        "fat": 3.0,
+        "protein": 20.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 0.15,
+        "other": 1.85,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 60.0,
+        "saturatedFat": null,
+        "calories": null,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 0.0,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "payload": {
+        "dataType": "Foundation",
+        "foodNutrients": "not a list"
+      },
+      "expect": {
+        "error": "That food does not include complete nutrition data. Choose another result."
+      }
+    }
+  ],
+  "ranked": [
+    {
+      "query": "tamari",
+      "matches": [
+        {
+          "fdcId": 9,
+          "description": "TAMARI",
+          "dataType": "Branded",
+          "brand": "San-J"
+        }
+      ],
+      "expect": [
+        9
+      ]
+    },
+    {
+      "query": "ground pork",
+      "matches": [
+        {
+          "fdcId": 123,
+          "description": "PORK, GROUND",
+          "dataType": "Foundation",
+          "brand": ""
+        }
+      ],
+      "expect": [
+        123
+      ]
+    },
+    {
+      "query": "sugar",
+      "matches": [
+        {
+          "fdcId": 1,
+          "description": "Beverages, tea, with sugar",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 2,
+          "description": "Gum drops, no sugar",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 3,
+          "description": "Sugar, white, granulated or lump",
+          "dataType": "Survey (FNDDS)",
+          "brand": ""
+        },
+        {
+          "fdcId": 4,
+          "description": "Sugars, granulated",
+          "dataType": "Foundation",
+          "brand": ""
+        },
+        {
+          "fdcId": 5,
+          "description": "Honey",
+          "dataType": "Foundation",
+          "brand": ""
+        }
+      ],
+      "expect": [
+        4,
+        3,
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "query": "butter, salted",
+      "matches": [
+        {
+          "fdcId": 11,
+          "description": "Cookies, butter",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 12,
+          "description": "Butter, salted",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 13,
+          "description": "Butter, salted",
+          "dataType": "Foundation",
+          "brand": ""
+        },
+        {
+          "fdcId": 14,
+          "description": "Peanut butter",
+          "dataType": "Branded",
+          "brand": "Jif"
+        },
+        {
+          "fdcId": 15,
+          "description": "BUTTERMILK, SALTED",
+          "dataType": "Branded",
+          "brand": ""
+        }
+      ],
+      "expect": [
+        13,
+        12,
+        15,
+        11,
+        14
+      ]
+    },
+    {
+      "query": "",
+      "matches": [
+        {
+          "fdcId": 1,
+          "description": "Anything",
+          "dataType": "",
+          "brand": ""
+        }
+      ],
+      "expect": [
+        1
+      ]
+    }
+  ],
+  "search": [
+    {
+      "query": "tamari",
+      "scope": "branded",
+      "foods": [
+        {
+          "fdcId": 9,
+          "description": "TAMARI",
+          "dataType": "Branded",
+          "brandOwner": "San-J"
+        },
+        {
+          "fdcId": 10,
+          "description": "TAMARI SAUCE",
+          "dataType": "Branded",
+          "brandName": "  Kikkoman  "
+        },
+        {
+          "fdcId": "11",
+          "description": "Bad id",
+          "dataType": "Branded"
+        },
+        {
+          "fdcId": 12,
+          "description": "Long brand",
+          "dataType": "Branded",
+          "brandOwner": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+        }
+      ],
+      "expect": [
+        {
+          "fdcId": 9,
+          "description": "TAMARI",
+          "dataType": "Branded",
+          "brand": "San-J"
+        },
+        {
+          "fdcId": 10,
+          "description": "TAMARI SAUCE",
+          "dataType": "Branded",
+          "brand": "Kikkoman"
+        },
+        {
+          "fdcId": 12,
+          "description": "Long brand",
+          "dataType": "Branded",
+          "brand": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+        }
+      ]
+    },
+    {
+      "query": "sugar",
+      "scope": "common",
+      "foods": [
+        {
+          "fdcId": 1,
+          "description": "Sugar sample 1",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 2,
+          "description": "Sugar sample 2",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 3,
+          "description": "Sugar sample 3",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 4,
+          "description": "Sugar sample 4",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 5,
+          "description": "Sugar sample 5",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 6,
+          "description": "Sugar sample 6",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 7,
+          "description": "Sugar sample 7",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 8,
+          "description": "Sugar sample 8",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 9,
+          "description": "Sugar sample 9",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 10,
+          "description": "Sugar sample 10",
+          "dataType": "SR Legacy"
+        },
+        {
+          "fdcId": 11,
+          "description": "Sugar sample 11",
+          "dataType": "SR Legacy"
+        }
+      ],
+      "expect": [
+        {
+          "fdcId": 1,
+          "description": "Sugar sample 1",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 2,
+          "description": "Sugar sample 2",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 3,
+          "description": "Sugar sample 3",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 4,
+          "description": "Sugar sample 4",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 5,
+          "description": "Sugar sample 5",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 6,
+          "description": "Sugar sample 6",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 7,
+          "description": "Sugar sample 7",
+          "dataType": "SR Legacy",
+          "brand": ""
+        },
+        {
+          "fdcId": 8,
+          "description": "Sugar sample 8",
+          "dataType": "SR Legacy",
+          "brand": ""
+        }
+      ]
+    }
+  ],
+  "details": [
+    {
+      "payload": {
+        "description": "  Butter, salted  ",
+        "dataType": "Foundation",
+        "foodNutrients": [
+          {
+            "nutrient": {
+              "id": 1051
+            },
+            "amount": 12
+          },
+          {
+            "nutrient": {
+              "id": 1003
+            },
+            "amount": 10
+          },
+          {
+            "nutrient": {
+              "id": 1004
+            },
+            "amount": 1
+          },
+          {
+            "nutrient": {
+              "id": 1005
+            },
+            "amount": 76
+          },
+          {
+            "nutrient": {
+              "id": 2000
+            },
+            "amount": 0.3
+          }
+        ]
+      },
+      "expect": {
+        "description": "Butter, salted",
+        "per100g": {
+          "water": 12.0,
+          "fat": 1.0,
+          "protein": 10.0,
+          "sugars": 0.3,
+          "starch": 75.7,
+          "fiber": 0.0,
+          "salt": 0.0,
+          "other": 1.0,
+          "totalCarbohydrate": 76.0,
+          "sodiumMg": 0.0,
+          "saturatedFat": null,
+          "calories": null,
+          "transFat": null,
+          "cholesterolMg": null,
+          "addedSugars": 0.0,
+          "vitaminDMcg": null,
+          "calciumMg": null,
+          "ironMg": null,
+          "potassiumMg": null
+        },
+        "packageIngredients": ""
+      }
+    },
+    {
+      "payload": {
+        "description": "ORGANIC TAMARI",
+        "dataType": "Branded",
+        "brandOwner": "San-J",
+        "ingredients": "  WATER, ORGANIC SOYBEANS, SALT, ORGANIC ALCOHOL.  ",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 10
+          },
+          {
+            "nutrientId": 1004,
+            "value": 0
+          },
+          {
+            "nutrientId": 1005,
+            "value": 5
+          },
+          {
+            "nutrientId": 1093,
+            "value": 5000
+          },
+          {
+            "nutrientId": 1110,
+            "value": 40
+          }
+        ]
+      },
+      "expect": {
+        "description": "ORGANIC TAMARI, San-J",
+        "per100g": {
+          "water": 72.5,
+          "fat": 0.0,
+          "protein": 10.0,
+          "sugars": 0.0,
+          "starch": 5.0,
+          "fiber": 0.0,
+          "salt": 12.5,
+          "other": 0.0,
+          "totalCarbohydrate": 5.0,
+          "sodiumMg": 5000.0,
+          "saturatedFat": null,
+          "calories": null,
+          "transFat": null,
+          "cholesterolMg": null,
+          "addedSugars": null,
+          "vitaminDMcg": 1.0,
+          "calciumMg": null,
+          "ironMg": null,
+          "potassiumMg": null
+        },
+        "packageIngredients": "WATER, ORGANIC SOYBEANS, SALT, ORGANIC ALCOHOL."
+      }
+    },
+    {
+      "payload": {
+        "description": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+        "dataType": "Branded",
+        "brandName": "Brand",
+        "ingredients": "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
+        "foodNutrients": [
+          {
+            "nutrientId": 1003,
+            "value": 10
+          },
+          {
+            "nutrientId": 1004,
+            "value": 0
+          },
+          {
+            "nutrientId": 1005,
+            "value": 5
+          },
+          {
+            "nutrientId": 1093,
+            "value": 5000
+          },
+          {
+            "nutrientId": 1110,
+            "value": 40
+          }
+        ]
+      },
+      "expect": {
+        "description": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+        "per100g": {
+          "water": 72.5,
+          "fat": 0.0,
+          "protein": 10.0,
+          "sugars": 0.0,
+          "starch": 5.0,
+          "fiber": 0.0,
+          "salt": 12.5,
+          "other": 0.0,
+          "totalCarbohydrate": 5.0,
+          "sodiumMg": 5000.0,
+          "saturatedFat": null,
+          "calories": null,
+          "transFat": null,
+          "cholesterolMg": null,
+          "addedSugars": null,
+          "vitaminDMcg": 1.0,
+          "calciumMg": null,
+          "ironMg": null,
+          "potassiumMg": null
+        },
+        "packageIngredients": "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+      }
+    },
+    {
+      "payload": {
+        "description": 42,
+        "foodNutrients": []
+      },
+      "expect": {
+        "error": "The nutrition food response was invalid"
+      }
+    }
+  ],
+  "labelNutritionPer100g": [
+    {
+      "values": {
+        "calories": 100,
+        "fat": 11,
+        "saturatedFat": 7,
+        "sodiumMg": 90,
+        "totalCarbohydrate": 0,
+        "sugars": 0,
+        "protein": 0,
+        "transFat": 0,
+        "cholesterolMg": 30,
+        "fiber": null,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      },
+      "servingGrams": 14,
+      "expect": {
+        "water": 19.8214,
+        "fat": 78.5714,
+        "protein": 0.0,
+        "sugars": 0.0,
+        "starch": 0.0,
+        "fiber": 0.0,
+        "salt": 1.6071,
+        "other": 0.0,
+        "totalCarbohydrate": 0.0,
+        "sodiumMg": 642.8571,
+        "saturatedFat": 50.0,
+        "calories": 714.2857,
+        "transFat": 0.0,
+        "cholesterolMg": 214.2857,
+        "addedSugars": null,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "values": {
+        "calories": 1
+      },
+      "servingGrams": 0,
+      "expect": {
+        "error": "Serving grams must be positive"
+      }
+    },
+    {
+      "values": {
+        "calories": 250,
+        "fat": 12,
+        "saturatedFat": 14,
+        "sodiumMg": 480,
+        "totalCarbohydrate": 30,
+        "fiber": 2,
+        "sugars": 12,
+        "addedSugars": 10,
+        "protein": 5
+      },
+      "servingGrams": 55,
+      "expect": {
+        "water": 12.3636,
+        "fat": 21.8182,
+        "protein": 9.0909,
+        "sugars": 21.8182,
+        "starch": 29.0909,
+        "fiber": 3.6364,
+        "salt": 2.1818,
+        "other": 0.0,
+        "totalCarbohydrate": 54.5455,
+        "sodiumMg": 872.7273,
+        "saturatedFat": 21.8182,
+        "calories": 454.5455,
+        "transFat": null,
+        "cholesterolMg": null,
+        "addedSugars": 18.1818,
+        "vitaminDMcg": null,
+        "calciumMg": null,
+        "ironMg": null,
+        "potassiumMg": null
+      }
+    },
+    {
+      "values": {
+        "calories": 0
+      },
+      "servingGrams": -1,
+      "expect": {
+        "error": "Serving grams must be positive"
+      }
+    }
+  ]
+}
