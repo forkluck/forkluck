@@ -6,10 +6,9 @@ from typing import Any
 from django.conf import settings
 
 from ...integrations.emails import EmailNotConfigured
-from ...integrations.ghost_members import newsletter_status, set_newsletter
 from ...models import DeviceToken, EmailVerificationCode, User
 from ...verification import issue_code, verify_code
-from ..shared.values import bool_value, text_value, uuid_value
+from ..shared.values import text_value, uuid_value
 from .billing import delete_user_with_billing
 
 JsonObject = dict[str, Any]
@@ -23,15 +22,6 @@ def action_update_account(user: User, body: JsonObject) -> JsonObject:
     return {"name": user.name}
 
 
-def action_set_newsletter(user: User, body: JsonObject) -> JsonObject:
-    # Ghost is the record, so the answer is read back from it rather than
-    # echoed from the request.
-    enabled = bool_value(body.get("enabled"), "Newsletter")
-    if not set_newsletter(user.email, enabled, user.name or None):
-        raise ValueError("Couldn't update your newsletter preference")
-    return {"enabled": newsletter_status(user.email)}
-
-
 def action_revoke_device(user: User, body: JsonObject) -> JsonObject:
     """Sign one phone out from the web. Deleting the row is the revoke."""
     device_id = uuid_value(body.get("id"), "device id")
@@ -43,7 +33,7 @@ def action_revoke_device(user: User, body: JsonObject) -> JsonObject:
 
 def action_delete_account(user: User, body: JsonObject) -> JsonObject:
     """The owner deletes their own account: the same command the admin runs,
-    so Stripe, the feedback board and the newsletter are all let go first.
+    so Stripe is let go first.
     The phones follow by cascade from their tokens."""
     if settings.FORKLUCK_ALLOW_DEMO_ACCOUNT and user.email == "user@user.com":
         raise ValueError("Account deletion isn't available for the demo account")
@@ -75,7 +65,6 @@ def action_delete_account_confirmed(user: User, body: JsonObject) -> JsonObject:
 # its own: dispatch mounts it under `delete-account` on the mobile table.
 ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "update-account": action_update_account,
-    "set-newsletter": action_set_newsletter,
     "revoke-device": action_revoke_device,
     "request-account-deletion": action_request_account_deletion,
     "delete-account": action_delete_account,

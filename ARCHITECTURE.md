@@ -24,8 +24,8 @@ therefore reaches Django directly for authentication and OAuth redirects, and
 reaches everything else through Next.js.
 
 The Next.js server answers on one hostname, `app.forkluck.com`. The public site
-at `forkluck.com` is a separate self-hosted Ghost, proxied by its own nginx
-server block; nothing in this repository renders it.
+at `forkluck.com` is static files served by nginx (`deploy/nginx/forkluck-site.conf`);
+nothing in this repository renders it.
 
 ## Route groups
 

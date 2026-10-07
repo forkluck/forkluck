@@ -48,10 +48,11 @@ the SSH deploy account; changes inside `deploy/` must be applied as an
 infrastructure update.
 
 The public repository carries three nginx templates: `forkluck.conf` is the application on
-`app.forkluck.com`, `forkluck-ghost.conf` is the public site on `forkluck.com`,
-and `forkluck-design.conf` is the visual guide on `design.forkluck.com`. The
-first two replace temporary upstream failures with a static maintenance page and a
-`503 Service Unavailable` response. The design template has no service of its
+`app.forkluck.com`, `forkluck-site.conf` is the public site on `forkluck.com`
+(static files under `/var/www/forkluck-site`), and `forkluck-design.conf` is the
+visual guide on `design.forkluck.com`. The application template replaces temporary
+upstream failures with a static maintenance page and a `503 Service Unavailable`
+response. The design template has no service of its
 own: it proxies the guide's paths to the same Next process as the application,
 and it uses the static-asset map and log format that `forkluck.conf` defines at
 http level, so the two must be installed together. `forkluck.conf` also
@@ -63,8 +64,8 @@ configuration, and reload nginx when any template changes:
 sudo install -d -m 755 /var/www/forkluck
 sudo install -m 644 deploy/nginx/maintenance.html /var/www/forkluck/maintenance.html
 sudo install -m 644 deploy/nginx/forkluck.conf /etc/nginx/sites-available/forkluck
-sudo install -m 644 deploy/nginx/forkluck-ghost.conf /etc/nginx/sites-available/forkluck-ghost
-sudo ln -sf /etc/nginx/sites-available/forkluck-ghost /etc/nginx/sites-enabled/forkluck-ghost
+sudo install -m 644 deploy/nginx/forkluck-site.conf /etc/nginx/sites-available/forkluck-site
+sudo ln -sf /etc/nginx/sites-available/forkluck-site /etc/nginx/sites-enabled/forkluck-site
 sudo install -m 644 deploy/nginx/forkluck-design.conf /etc/nginx/sites-available/forkluck-design
 sudo ln -sf /etc/nginx/sites-available/forkluck-design /etc/nginx/sites-enabled/forkluck-design
 sudo nginx -t
@@ -153,9 +154,8 @@ copies only `apps/web`, `apps/api`, and `data`.
 
 Routing:
 
-- `forkluck.com` → the public site: a self-hosted Ghost at `/opt/ghost`,
-  proxied to `127.0.0.1:2368`. See `deploy/ghost/README.md`. It is a separate
-  application with its own release cycle; this repository's deploy never
+- `forkluck.com` → the public site: static files under `/var/www/forkluck-site`,
+  the mirror of the retired Ghost site; this repository's deploy never
   touches it.
 - `www.forkluck.com` → redirects to `forkluck.com`
 - `app.forkluck.com` → application
@@ -175,11 +175,6 @@ release; ordinary application sessions continue working.
 
 ## Email verification
 
-The optional feedback board deployment and its shared account/mail setup are
-documented in [`deploy/fider/README.md`](../deploy/fider/README.md). It reuses
-the host's PostgreSQL and Ghost mail bridge, with a dedicated database and
-host-only session secret. It is deployed separately from the app release.
-
 Production requires both of these in `/etc/forkluck/backend.env` and refuses
 to start when either requirement is missing:
 
@@ -188,23 +183,10 @@ FORKLUCK_REQUIRE_EMAIL_VERIFICATION=true
 ACS_CONNECTION_STRING=<Azure Communication Services connection string>
 ```
 
-On the hosted installation, all product mail uses Ghost's existing delivery
-bridge. Set `FORKLUCK_MAIL_BRIDGE_URL=http://127.0.0.1:3003/v3/forkluck.com/messages`
-and `FORKLUCK_MAIL_BRIDGE_API_KEY` to the existing bridge key. These settings
-take precedence over ACS and must be configured together. Direct ACS is then
-optional. HTTPS is required for a bridge outside loopback. A bridge failure
-surfaces to the caller without retrying via ACS and risking duplicate codes.
-
 Verify a live code email before deploying a release that first enables this
 gate. An existing unverified user should log out and sign in again, then enter
 the emailed code. Stored recipe shares remain present but grant no access until
 their recipient verifies.
-
-Newsletter membership is optional: set `GHOST_ADMIN_URL` (for example
-`https://forkluck.com`) and `GHOST_ADMIN_API_KEY` to mirror verified accounts
-into Ghost, and leave both empty to disable the sync entirely. The key comes
-from Ghost admin under Settings → Integrations → Add custom integration, where
-the Admin API key is shown as `id:secret` — copy it whole.
 
 ## Starter price catalog
 

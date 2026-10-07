@@ -6,7 +6,6 @@ import { getSession } from "@/lib/auth-session"
 import {
   getAiCredential,
   getBusinessSettings,
-  getNewsletterStatus,
 } from "@/lib/backend/queries"
 
 export const metadata: Metadata = {
@@ -14,14 +13,11 @@ export const metadata: Metadata = {
 }
 
 export default async function SettingsPage() {
-  const [session, businessSettings, credential, newsletter] = await Promise.all(
-    [
-      getSession(),
-      getBusinessSettings(),
-      getAiCredential(),
-      getNewsletterStatus(),
-    ]
-  )
+  const [session, businessSettings, credential] = await Promise.all([
+    getSession(),
+    getBusinessSettings(),
+    getAiCredential(),
+  ])
   if (!session) redirect("/login")
 
   // The credential read is loopback-only; only its status crosses into the
@@ -32,7 +28,6 @@ export default async function SettingsPage() {
       billing={session.billing}
       businessSettings={businessSettings}
       aiKey={{ configured: credential.configured, hint: credential.hint }}
-      newsletter={newsletter}
     />
   )
 }

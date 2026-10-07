@@ -200,25 +200,6 @@ SHOPIFY_API_SECRET = os.getenv("SHOPIFY_API_SECRET", "")
 # post-callback redirects back into /settings.
 FORKLUCK_APP_ORIGIN = os.getenv("FORKLUCK_APP_ORIGIN", DEV_APP_ORIGIN)
 
-# One confidential OAuth client, our own feedback board. Empty secret disables
-# the endpoints for ordinary self-hosted installations.
-FORKLUCK_FEEDBACK_ORIGIN = os.getenv(
-    "FORKLUCK_FEEDBACK_ORIGIN", "https://feedback.forkluck.com"
-).rstrip("/")
-FORKLUCK_FEEDBACK_CLIENT_SECRET = os.getenv("FORKLUCK_FEEDBACK_CLIENT_SECRET", "")
-FORKLUCK_FEEDBACK_API_KEY = os.getenv("FORKLUCK_FEEDBACK_API_KEY", "")
-if FORKLUCK_FEEDBACK_CLIENT_SECRET:
-    from django.core.exceptions import ImproperlyConfigured
-
-    _feedback_url = urlparse(FORKLUCK_FEEDBACK_ORIGIN)
-    if (
-        len(FORKLUCK_FEEDBACK_CLIENT_SECRET) < 32
-        or _feedback_url.scheme != "https" or not _feedback_url.hostname
-        or _feedback_url.username or _feedback_url.password
-        or _feedback_url.path or _feedback_url.query or _feedback_url.fragment
-    ):
-        raise ImproperlyConfigured("Feedback requires an HTTPS origin and a strong client secret.")
-
 
 def signed_in_cookie_domain(app_origin: str) -> str | None:
     """Parent domain the forkluck_signed_in cookie is shared on, or None.
@@ -235,8 +216,8 @@ def signed_in_cookie_domain(app_origin: str) -> str | None:
     return "." + ".".join(labels[1:])
 
 
-# Not HttpOnly by design: the Ghost theme reads it to swap its Sign in / Sign
-# up links for Log out / Dashboard. It carries no identity, only "1".
+# Not HttpOnly by design: the public site's script reads it to swap its Sign
+# in / Sign up links for Log out / Dashboard. It carries no identity, only "1".
 FORKLUCK_SIGNED_IN_COOKIE_NAME = "forkluck_signed_in"
 FORKLUCK_SIGNED_IN_COOKIE_DOMAIN = os.getenv(
     "FORKLUCK_SIGNED_IN_COOKIE_DOMAIN"
@@ -257,17 +238,13 @@ STRIPE_BILLING_ENABLED = bool(
     and STRIPE_WEBHOOK_ENDPOINT_ID
 )
 
-# Transactional email uses the Ghost mail bridge when configured, else ACS.
+# Transactional email goes through Azure Communication Services.
 ACS_CONNECTION_STRING = os.getenv("ACS_CONNECTION_STRING", "")
-FORKLUCK_MAIL_BRIDGE_URL = os.getenv("FORKLUCK_MAIL_BRIDGE_URL", "")
-FORKLUCK_MAIL_BRIDGE_API_KEY = os.getenv("FORKLUCK_MAIL_BRIDGE_API_KEY", "")
 # The test runner must never send real email or require verification, no
 # matter what the machine's environment carries. Positional, not membership: a
 # management command whose argument happens to be "test" must not disarm this.
 if sys.argv[1:2] == ["test"]:
     ACS_CONNECTION_STRING = ""
-    FORKLUCK_MAIL_BRIDGE_URL = ""
-    FORKLUCK_MAIL_BRIDGE_API_KEY = ""
     os.environ["FORKLUCK_REQUIRE_EMAIL_VERIFICATION"] = "0"
     os.environ["FORKLUCK_ADMIN_CODE_LOGIN"] = "0"
     # Deterministic key so token-crypto tests never depend on machine env.
@@ -326,21 +303,6 @@ if bool(FORKLUCK_APP_REVIEW_EMAIL) != bool(FORKLUCK_APP_REVIEW_CODE):
 # from a genuine device; unset leaves it ungated, the self-hosted default.
 FORKLUCK_APP_ATTEST_APP_ID = os.getenv("FORKLUCK_APP_ATTEST_APP_ID", "").strip()
 
-if FORKLUCK_MAIL_BRIDGE_URL or FORKLUCK_MAIL_BRIDGE_API_KEY:
-    from django.core.exceptions import ImproperlyConfigured
-
-    _mail_bridge_url = urlparse(FORKLUCK_MAIL_BRIDGE_URL)
-    if (
-        not FORKLUCK_MAIL_BRIDGE_API_KEY or not _mail_bridge_url.hostname
-        or _mail_bridge_url.username or _mail_bridge_url.password
-        or _mail_bridge_url.query or _mail_bridge_url.fragment
-        or not _mail_bridge_url.path.endswith("/messages")
-        or not (
-            _mail_bridge_url.scheme == "https"
-            or (_mail_bridge_url.scheme == "http" and _mail_bridge_url.hostname in {"127.0.0.1", "::1", "localhost"})
-        )
-    ):
-        raise ImproperlyConfigured("Mail bridge requires a key and an HTTPS or loopback messages URL.")
 # ACS requires a bare sender address; the display name is configured on the
 # ACS MailFrom username, not sent with the message.
 FORKLUCK_EMAIL_FROM = os.getenv("FORKLUCK_EMAIL_FROM", "no-reply@forkluck.com")
@@ -359,13 +321,8 @@ FORKLUCK_REQUIRE_EMAIL_VERIFICATION = env_bool("FORKLUCK_REQUIRE_EMAIL_VERIFICAT
 # The admin (/mommy) asks for an emailed code after the password. Defaults to
 # on whenever email sending is configured.
 FORKLUCK_ADMIN_CODE_LOGIN = env_bool(
-    "FORKLUCK_ADMIN_CODE_LOGIN", bool(ACS_CONNECTION_STRING or FORKLUCK_MAIL_BRIDGE_URL)
+    "FORKLUCK_ADMIN_CODE_LOGIN", bool(ACS_CONNECTION_STRING)
 )
-
-# Optional one-way sync of verified accounts into the self-hosted Ghost
-# newsletter. Both empty disables it; production does not require them.
-GHOST_ADMIN_URL = os.getenv("GHOST_ADMIN_URL", "")
-GHOST_ADMIN_API_KEY = os.getenv("GHOST_ADMIN_API_KEY", "")
 
 # Optional separately deployed supplier-connector service. All three are
 # required before the public application exposes hosted supplier connectors.
@@ -414,9 +371,9 @@ def _development_leftovers() -> list[str]:
         problems.append(
             "FORKLUCK_REQUIRE_EMAIL_VERIFICATION must be enabled in production."
         )
-    if not ACS_CONNECTION_STRING and not FORKLUCK_MAIL_BRIDGE_URL:
+    if not ACS_CONNECTION_STRING:
         problems.append(
-            "ACS_CONNECTION_STRING or FORKLUCK_MAIL_BRIDGE_URL must be set so production users can verify email."
+            "ACS_CONNECTION_STRING must be set so production users can verify email."
         )
 
     # Provider OAuth tokens are unreadable without this key and are written

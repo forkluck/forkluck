@@ -43,7 +43,6 @@ def response(body):
 class GoogleSignInTests(TestCase):
     def setUp(self):
         self.urlopen = self.enterContext(mock.patch("urllib.request.urlopen"))
-        self.newsletter = self.enterContext(mock.patch("forkluck.domains.accounts.views.upsert_member"))
 
     def start(self, next_path="/recipes"):
         result = self.client.get("/api/auth/google/start", {"next": next_path})
@@ -113,7 +112,6 @@ class GoogleSignInTests(TestCase):
         self.assertNotIn(google.SESSION_KEY, self.client.session)
         self.assertEqual(result.cookies[settings.FORKLUCK_SIGNED_IN_COOKIE_NAME].value, "1")
         self.assertFalse(self.client.get("/api/auth/session").json()["user"]["hasPassword"])
-        self.newsletter.assert_called_once_with("chef@example.com", "Chef Google")
         request = self.urlopen.call_args.args[0]
         self.assertEqual(request.full_url, "https://oauth2.googleapis.com/token")
         self.assertEqual(request.get_method(), "POST")
@@ -283,7 +281,6 @@ class GoogleSignInTests(TestCase):
                     self.start()
                     self.assert_failure(self.finish({field: value}), "google-unverified-email" if field == "email_verified" else "google-failed")
                     self.assertFalse(User.objects.exists())
-        self.newsletter.assert_not_called()
 
     def test_inactive_accounts_are_not_linked_or_activated(self):
         for subject in (None, "google-123"):
@@ -325,7 +322,6 @@ class GoogleSignInTests(TestCase):
         cases = [
             ("/recipes?view=all#row", "/recipes?view=all#row"),
             ("/api/auth/google/start?next=%2Frecipes", "/api/auth/google/start?next=%2Frecipes"),
-            ("/api/auth/feedback/authorize?state=x", "/api/auth/feedback/authorize?state=x"),
             ("//evil.example", "/"), ("https://evil.example", "/"),
             ("/\\evil.example", "/"), ("/has space", "/"),
             ("/has\nnewline", "/"), ("/has\x7fdelete", "/"),

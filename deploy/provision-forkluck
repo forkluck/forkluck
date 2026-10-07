@@ -114,9 +114,6 @@ ensure_backend_env STRIPE_WEBHOOK_ENDPOINT_ID ""
 # enable immediately; no session is granted until a signup code is consumed.
 ensure_backend_env ACS_CONNECTION_STRING ""
 ensure_backend_env FORKLUCK_REQUIRE_EMAIL_VERIFICATION true
-# Optional Ghost newsletter sync; both empty leaves membership untouched.
-ensure_backend_env GHOST_ADMIN_URL ""
-ensure_backend_env GHOST_ADMIN_API_KEY ""
 
 if [[ ! -f /etc/forkluck/frontend.env ]]; then
     internal_secret="$(sed -n 's/^FORKLUCK_INTERNAL_SECRET=//p' /etc/forkluck/backend.env)"

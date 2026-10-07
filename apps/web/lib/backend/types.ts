@@ -335,15 +335,6 @@ export type InvoicesOverview = {
   }
 }
 
-/**
- * The product-updates subscription, read from Ghost on every settings render.
- * Ghost is the only record of it, so `enabled` is null when Ghost cannot say
- * and `available` is false when the integration is unconfigured.
- */
-export type NewsletterStatus = {
-  enabled: boolean | null
-  available: boolean
-}
 
 /** A phone signed in through the mobile API; `lastUsedAt` is null until its first read. */
 export type DeviceRow = {

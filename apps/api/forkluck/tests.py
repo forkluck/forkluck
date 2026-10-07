@@ -374,56 +374,6 @@ class ForkluckApiTests(InternalApiTestCase):
         # Email is the sign-in identifier; this action must never touch it.
         self.assertEqual(user.email, "chef@example.com")
 
-    def test_the_newsletter_row_reads_and_writes_through_ghost(self):
-        self.register()
-
-        with mock.patch(
-            "forkluck.domains.accounts.views.newsletter_configured",
-            return_value=False,
-        ):
-            unconfigured = self.get_internal("newsletter/")
-        self.assertEqual(unconfigured.json(), {"enabled": None, "available": False})
-
-        with (
-            mock.patch(
-                "forkluck.domains.accounts.views.newsletter_configured",
-                return_value=True,
-            ),
-            mock.patch(
-                "forkluck.domains.accounts.views.newsletter_status",
-                return_value=False,
-            ),
-        ):
-            configured = self.get_internal("newsletter/")
-        self.assertEqual(configured.json(), {"enabled": False, "available": True})
-
-        with (
-            mock.patch(
-                "forkluck.domains.accounts.actions.set_newsletter",
-                return_value=True,
-            ) as write,
-            mock.patch(
-                "forkluck.domains.accounts.actions.newsletter_status",
-                return_value=True,
-            ),
-        ):
-            subscribed = self.post_internal("set-newsletter", {"enabled": True})
-        self.assertEqual(subscribed.status_code, 200)
-        self.assertEqual(subscribed.json(), {"enabled": True})
-        write.assert_called_once_with("chef@example.com", True, "Test Chef")
-
-        with mock.patch(
-            "forkluck.domains.accounts.actions.set_newsletter", return_value=False
-        ):
-            failed = self.post_internal("set-newsletter", {"enabled": False})
-        self.assertEqual(failed.status_code, 400)
-        self.assertEqual(
-            failed.json()["error"], "Couldn't update your newsletter preference"
-        )
-
-        missing = self.post_internal("set-newsletter", {})
-        self.assertEqual(missing.status_code, 400)
-
     def test_recipe_ingredient_and_cost_lifecycle(self):
         self.register()
 
@@ -1346,28 +1296,6 @@ class EmailVerificationTests(TestCase):
         self.assertEqual(registered.status_code, 500)
         self.assertFalse(User.objects.filter(email="chef@example.com").exists())
         self.assertEqual(self.client.get("/api/auth/session").status_code, 401)
-
-    @override_settings(FORKLUCK_REQUIRE_EMAIL_VERIFICATION=True)
-    @mock.patch("forkluck.domains.accounts.views.upsert_member")
-    def test_verified_signup_is_mirrored_into_the_newsletter(self, upsert):
-        self.post_public(
-            "/api/auth/register",
-            {
-                "name": "Chef Ana",
-                "email": "chef@example.com",
-                "password": "a-long-test-passphrase-2468",
-            },
-        )
-        upsert.assert_not_called()
-
-        with self.captureOnCommitCallbacks(execute=True):
-            verified = self.post_public(
-                "/api/auth/verify-email",
-                {"email": "chef@example.com", "code": self.last_code()},
-            )
-
-        self.assertEqual(verified.status_code, 200)
-        upsert.assert_called_once_with("chef@example.com", "Chef Ana")
 
     @override_settings(
         FORKLUCK_REQUIRE_EMAIL_VERIFICATION=True,

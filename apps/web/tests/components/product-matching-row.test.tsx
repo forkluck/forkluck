@@ -91,7 +91,6 @@ describe("the settings screen", () => {
         billing={{ status: "disabled" } as never}
         businessSettings={DEFAULT_BUSINESS_SETTINGS}
         aiKey={{ configured: false, hint: null }}
-        newsletter={{ enabled: null, available: false }}
       />
     )
 
@@ -107,7 +106,6 @@ describe("the settings screen", () => {
         billing={{ status: "disabled" } as never}
         businessSettings={DEFAULT_BUSINESS_SETTINGS}
         aiKey={{ configured: false, hint: null }}
-        newsletter={{ enabled: null, available: false }}
       />
     )
 

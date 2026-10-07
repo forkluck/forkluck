@@ -3,7 +3,7 @@ from functools import wraps
 from django.urls import path
 
 from .integrations import connector_oauth, pos_oauth
-from .domains.accounts import billing, feedback, google
+from .domains.accounts import billing, google
 from .domains.accounts import views as account_views
 from .domains.shared.billing import billing_json
 
@@ -28,9 +28,6 @@ def operations_connect(view, provider: str):
 
 
 urlpatterns = [
-    path("auth/feedback/authorize", feedback.authorize),
-    path("auth/feedback/token", feedback.token),
-    path("auth/feedback/profile", feedback.profile),
     path("auth/csrf", account_views.csrf, name="csrf"),
     path("auth/session", account_views.public_session, name="public-session"),
     path("auth/register", account_views.register, name="register"),

@@ -243,7 +243,6 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "unignore-sales-modifiers": "action_unignore_sales_modifiers",
     "unignore-sales-skus": "action_unignore_sales_skus",
     "update-account": "action_update_account",
-    "set-newsletter": "action_set_newsletter",
     "revoke-device": "action_revoke_device",
     "request-account-deletion": "action_request_account_deletion",
     "delete-account": "action_delete_account",
@@ -268,7 +267,6 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("auth-methods/", None),
     ("primo/conversations/", None),
     ("primo/conversations/<uuid:conversation_id>/", None),
-    ("newsletter/", None),
     ("devices/", None),
     ("search-index/", None),
     ("ingredients/", None),
@@ -340,9 +338,6 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
 ]
 
 EXPECTED_PUBLIC_ROUTES: list[tuple[str, str | None]] = [
-    ("auth/feedback/authorize", None),
-    ("auth/feedback/token", None),
-    ("auth/feedback/profile", None),
     ("auth/csrf", "csrf"),
     ("auth/session", "public-session"),
     ("auth/register", "register"),

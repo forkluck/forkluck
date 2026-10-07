@@ -89,7 +89,6 @@ function settings() {
       }}
       businessSettings={DEFAULT_BUSINESS_SETTINGS}
       aiKey={{ configured: false, hint: null }}
-      newsletter={{ enabled: null, available: false }}
     />
   )
 }

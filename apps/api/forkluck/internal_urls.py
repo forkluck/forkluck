@@ -78,7 +78,6 @@ urlpatterns = [
         "primo/conversations/<uuid:conversation_id>/",
         internal_get(primo_views.conversation_detail),
     ),
-    path("newsletter/", internal_get(account_views.internal_newsletter)),
     path("devices/", internal_get(devices.device_list)),
     path("search-index/", internal_get(search_views.search_index)),
     path("ingredients/", internal_get(ingredient_views.ingredients)),

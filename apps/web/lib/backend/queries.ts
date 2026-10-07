@@ -23,7 +23,6 @@ import type {
   MenusPayload,
   SavedComparisonDetail,
   SavedComparisonsPayload,
-  NewsletterStatus,
   DeviceRow,
   PosConnectionRow,
   PosSyncRun,
@@ -86,7 +85,6 @@ import {
   recipesPayloadSchema,
   salesOverviewSchema,
   searchIndexPayloadSchema,
-  newsletterStatusSchema,
   devicesPayloadSchema,
   sessionPayloadSchema,
   type SessionPayload,
@@ -141,11 +139,6 @@ export async function getSessionPayload(): Promise<SessionPayload | null> {
     if (error instanceof BackendUnauthorizedError) return null
     throw error
   }
-}
-
-/** The signed-in user's product-updates subscription, as Ghost holds it. */
-export async function getNewsletterStatus(): Promise<NewsletterStatus> {
-  return djangoGetParsed("/internal/v1/newsletter/", newsletterStatusSchema)
 }
 
 /** The phones signed in to this account through the mobile API. */

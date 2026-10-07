@@ -35,7 +35,6 @@ from .views import (
     create_account,
     notify_owner_of_first_verified_sign_in,
     registration_values,
-    sync_newsletter_member,
     throttle_registration,
 )
 
@@ -198,7 +197,6 @@ def redeem_code(request: HttpRequest) -> JsonResponse:
         user.save(update_fields=["email_verified_at"])
         claim_invitations(user)
         notify_owner_of_first_verified_sign_in(user)
-        sync_newsletter_member(user)
 
     # One sign-in retires every other code for the address, so a code
     # requested earlier cannot mint a second token later.

@@ -4,8 +4,8 @@ import { headers } from "next/headers"
  * This Next process answers on two public hosts. A workspace is never indexed,
  * so app.forkluck.com (and anything else that reaches the process) keeps the
  * blanket Disallow; design.forkluck.com is the visual guide, a public article
- * that is meant to be found, so it allows everything. The public site is Ghost
- * at forkluck.com, which serves its own robots.txt and sitemap.
+ * that is meant to be found, so it allows everything. The public site at
+ * forkluck.com is static and serves its own robots.txt.
  */
 const DESIGN_HOST = "design.forkluck.com"
 

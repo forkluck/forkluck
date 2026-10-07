@@ -50,27 +50,6 @@ def reload_settings(environment: dict[str, str]):
 
 
 class ProductionConfigGuardTests(SimpleTestCase):
-    def test_mail_bridge_can_supply_production_transactional_delivery(self):
-        for url in ("https://mail.example.test/v3/example.test/messages", "http://127.0.0.1:3003/v3/example.test/messages"):
-            with self.subTest(url=url):
-                configured = reload_settings({
-                    **GOOD_ENVIRONMENT, "ACS_CONNECTION_STRING": "",
-                    "FORKLUCK_MAIL_BRIDGE_URL": url,
-                    "FORKLUCK_MAIL_BRIDGE_API_KEY": "synthetic-bridge-key",
-                })
-                self.assertTrue(configured.FORKLUCK_ADMIN_CODE_LOGIN)
-
-    def test_partial_or_unsafe_mail_bridge_configuration_fails_at_boot(self):
-        for url, key in (
-            ("", "synthetic-key"), ("https://mail.example.test/messages", ""),
-            ("http://mail.example.test/messages", "synthetic-key"),
-            ("https://user:pass@mail.example.test/messages", "synthetic-key"),
-            ("https://mail.example.test/messages?key=secret", "synthetic-key"),
-            ("https://mail.example.test/messages#fragment", "synthetic-key"),
-            ("https://mail.example.test/", "synthetic-key"),
-        ):
-            with self.subTest(url=url), self.assertRaisesMessage(ImproperlyConfigured, "Mail bridge requires"):
-                reload_settings({**GOOD_ENVIRONMENT, "FORKLUCK_MAIL_BRIDGE_URL": url, "FORKLUCK_MAIL_BRIDGE_API_KEY": key})
 
     def test_google_sign_in_pair_is_all_or_none_in_every_environment(self):
         for environment in ("development", "production", "staging"):
@@ -347,20 +326,12 @@ class ReleasePackagingTests(SimpleTestCase):
         self.assertIn('add_header Retry-After "10" always;', nginx)
         self.assertTrue(maintenance.is_file())
 
-    def test_nginx_ghost_site_serves_the_same_maintenance_response(self):
-        # The public site is a second nginx file in front of Ghost. A Ghost
-        # that is down must answer with the same 503 page as the application,
-        # not nginx's bare gateway error.
-        ghost = (
-            REPO_ROOT
-            / "deploy"
-            / "nginx"
-            / "forkluck-ghost.conf"
-        ).read_text(encoding="utf-8")
+    def test_nginx_public_site_is_static_files(self):
+        site = (REPO_ROOT / "deploy" / "nginx" / "forkluck-site.conf").read_text(encoding="utf-8")
 
-        self.assertIn("error_page 502 503 504 =503 /maintenance.html;", ghost)
-        self.assertIn('add_header Retry-After "10" always;', ghost)
-        self.assertIn("proxy_pass http://127.0.0.1:2368;", ghost)
+        self.assertIn("root /var/www/forkluck-site;", site)
+        self.assertIn("try_files $uri $uri/ $uri/index.html =404;", site)
+        self.assertIn("return 302 https://app.forkluck.com$request_uri;", site)
 
     def test_pull_requests_use_hosted_runners_without_deployment_access(self):
         # Contributor code may run, but must never reach the maintainer's

@@ -71,9 +71,7 @@ a configured provider, and a strict body before it contacts Qwen.
 `drive-file` streams one document out of the connected Drive folder for the
 import dialog's review pane, under the same same-origin, session and
 `invoiceAi` entitlement guards as `parse`, and refuses any file whose ancestry
-is not the folder this workspace connected. There is no cross-origin handler:
-the marketing site signs newsletter subscribers up through Ghost's own
-double-opt-in form, not through the app.
+is not the folder this workspace connected. There is no cross-origin handler.
 
 The browser auth client bounds the CSRF handshake and its one POST with a
 shared 30-second deadline. Network, timeout, and unreadable-response failures
@@ -153,15 +151,6 @@ from `FORKLUCK_INTERNAL_SECRET`, and turns a 401 into
 
 ## Public routes (`/api/`)
 
-The feedback board's confidential OAuth client uses three additional public
-routes: `GET auth/feedback/authorize`, `POST auth/feedback/token` (form-encoded
-client authentication), and `GET auth/feedback/profile` (bearer token). They
-are disabled without `FORKLUCK_FEEDBACK_CLIENT_SECRET`; codes and tokens live
-for two minutes and disclose only the verified user's UUID, display name and
-email. The exact callback, client, scope, lifecycle and rejection matrix are in
-[FEEDBACK.md](FEEDBACK.md). Neither browser cookies nor these profile tokens
-authorize the other service's data API.
-
 | Route                           | Name                     |
 | ------------------------------- | ------------------------ |
 | `auth/csrf`                     | `csrf`                   |
@@ -234,7 +223,7 @@ environment.
 | New account | Create one verified user with an unusable password and a pending owner notification; seed one workspace and claim waiting invitations atomically |
 | Existing verification | Unverified accounts become verified and claim invitations; inactive accounts cannot sign in or acquire a link |
 | Races | Unique email/subject conflicts roll back the losing transaction and resolve the winning account; no duplicate workspace is seeded |
-| Activation | Login follows state consumption. Switching accounts flushes the previous session. Success sets the signed-in indicator, sends the first owner alert once and schedules newsletter sync after commit |
+| Activation | Login follows state consumption. Switching accounts flushes the previous session. Success sets the signed-in indicator, sends the first owner alert once |
 | Failure lifecycle | Invalid callbacks create no account or authenticated session; cancellation, error and replay cannot reuse a retired slot |
 | Password lifecycle | Google-only accounts may set a validated first password without `currentPassword`; after that the locked row requires the current password. Reset codes and other sessions are invalidated by password changes as before |
 | Browser memory | `fl.last-sign-in-method` stores only `google` or `password`; read after mount, tolerate blocked storage, and show the caption on login only. Failed password attempts do not overwrite it |
@@ -424,7 +413,6 @@ session/
 auth-methods/
 primo/conversations/
 primo/conversations/<uuid:conversation_id>/
-newsletter/
 devices/
 search-index/
 ingredients/
@@ -2484,8 +2472,8 @@ disconnect cancel active work, and `cancelled` is terminal. `retry-pos-sync`
 accepts only the user's own failed run and revalidates its connection,
 provider, provider-account identity, and generation.
 
-**Account (5)**
-`update-account`, `set-newsletter`, `revoke-device`,
+**Account (4)**
+`update-account`, `revoke-device`,
 `request-account-deletion`, `delete-account`.
 
 `devices/` lists the phones signed in to the account through the mobile API
@@ -2503,17 +2491,11 @@ the mobile routes.
 
 `delete-account` takes `{}` and runs the same command the admin's delete
 does: the account is locked, open Stripe checkouts are expired, live
-subscriptions are cancelled, the customer is tombstoned, the feedback-board
-user and newsletter member are removed, and the user row is deleted with
+subscriptions are cancelled, the customer is tombstoned, and the user row is
+deleted with
 everything that cascades from it, the phones' device tokens included. It
 answers `{ok: true}`; a provider failure leaves the account in the deleting
 state and answers 503 so the owner can retry. The demo account is refused.
-
-`newsletter/` answers `{enabled, available}` for the signed-in user, read
-straight from Ghost: `available` is false when Ghost is unconfigured, and
-`enabled` is null whenever Ghost cannot say (unconfigured, unreachable, or no
-member for the address). `set-newsletter` takes `{enabled}` and answers with
-the state read back after the write.
 
 **Workspace settings (8)**
 `update-business-settings`, `currency-conversion-quote`,
