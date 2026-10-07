@@ -7,7 +7,6 @@ import {
 } from "@/lib/backend/queries"
 import type { DriveWatchFolder } from "@/lib/backend/types"
 import { driveFileSupport, type DriveFileSupport } from "@/lib/drive-folder"
-import { readNewDriveFiles } from "@/lib/drive-read"
 import {
   DriveCursorExpiredError,
   DriveServiceError,
@@ -179,7 +178,6 @@ function watchError(cause: unknown): string {
 }
 
 let inFlight: Promise<DriveWatchResult> | null = null
-let reading: Promise<void> | null = null
 
 /**
  * Poll once. Never throws: a failed run records its message on the shared
@@ -197,39 +195,6 @@ export function runDriveWatch(): Promise<DriveWatchResult> {
   })
   inFlight = run
   return run
-}
-
-/**
- * Read the files the registry is holding. Guarded on its own rather than with
- * the poll: a read runs the AI over several documents and takes minutes, and
- * it must never hold up the next registration.
- */
-export function startDriveRead(): Promise<void> {
-  if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return Promise.resolve()
-  if (reading) return reading
-  const run = read().finally(() => {
-    reading = null
-  })
-  reading = run
-  return run
-}
-
-async function read(): Promise<void> {
-  try {
-    // Re-read rather than reuse the poll's state: the poll may have just
-    // seeded a folder, which is what makes it readable.
-    const state = await getDriveWatch()
-    await readNewDriveFiles({ folders: state.folders })
-  } catch (cause) {
-    console.info(`Drive read failed: ${watchError(cause)}`)
-  }
-}
-
-/** The timer's run: register what changed, then read what is new. */
-export async function runDriveWatchAndRead(): Promise<DriveWatchResult> {
-  const result = await runDriveWatch()
-  if (result.ok) await startDriveRead()
-  return result
 }
 
 async function poll(): Promise<DriveWatchResult> {

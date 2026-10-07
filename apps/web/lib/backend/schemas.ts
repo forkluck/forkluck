@@ -83,16 +83,6 @@ export const sessionPayloadSchema = z.strictObject({
 export type SessionPayload = z.infer<typeof sessionPayloadSchema>
 
 /* -------------------------------------------------------------------------- */
-/* newsletter/                                                                 */
-/* -------------------------------------------------------------------------- */
-
-/** `enabled` is null whenever Ghost cannot say what the state is. */
-export const newsletterStatusSchema = z.strictObject({
-  enabled: z.boolean().nullable(),
-  available: z.boolean(),
-})
-
-/* -------------------------------------------------------------------------- */
 /* devices/                                                                    */
 /* -------------------------------------------------------------------------- */
 

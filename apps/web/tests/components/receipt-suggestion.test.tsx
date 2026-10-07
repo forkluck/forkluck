@@ -73,7 +73,6 @@ async function openReviewer(result: InvoiceParseResult) {
       open
       onOpenChange={vi.fn()}
       inbox
-      byok={false}
       aiKeyConfigured={false}
       aiKeyHint={null}
     />

@@ -24,7 +24,6 @@ describe("auth continuation", () => {
     "/recipes?view=all#row",
     "/" + "x".repeat(8191),
     "/api/auth/google/start?next=%2Frecipes",
-    "/api/auth/feedback/authorize?state=opaque&scope=profile",
   ])("preserves a local continuation %s", (next) => {
     expect(safeAuthNext(next)).toBe(next)
   })

@@ -19,7 +19,6 @@ import { useBrowseUrl } from "@/hooks/use-browse-url"
 import { useIngredientOptions } from "@/hooks/use-ingredient-options"
 import type { GoogleDriveConfig } from "@/lib/google-drive"
 import { useDialogTarget } from "@/components/ui/dialog"
-import { formatCalendarDayMonth } from "@/lib/datetime"
 
 const ImportInvoicesDialog = dynamic(() =>
   import("@/components/invoices/import-invoices-dialog").then(
@@ -38,8 +37,6 @@ export function InvoicesScreen({
   overview,
   query,
   tab,
-  byok,
-  trial,
   driveConfig,
   driveConnectHref,
 }: {
@@ -48,11 +45,6 @@ export function InvoicesScreen({
   query: string
   /** The tab in the URL: the attention list, or the month. */
   tab: "attention" | null
-  /** The deployment reads with the workspace's own Anthropic key rather than
-   * Forkluck's AI, so the key is worth offering here. */
-  byok: boolean
-  /** On a trial the allowance line offers the subscription that raises it. */
-  trial: boolean
   driveConfig: GoogleDriveConfig | null
   /** Where to connect a folder, when this server can read Drive but the
    * workspace has not connected one yet. */
@@ -178,28 +170,6 @@ export function InvoicesScreen({
         <PageTitle>Invoices</PageTitle>
       </PageHeader>
 
-      {/* No line when the read is unmetered (BYOK, self-hosted) or when the
-          account is read-only: the banner above already says what to do. */}
-      {!byok && overview.aiUsage && overview.aiUsage.maxPages ? (
-        <p className="text-md text-muted-foreground" role="status">
-          {overview.aiUsage.usedPages} of {overview.aiUsage.maxPages} AI pages
-          used. Resets {formatCalendarDayMonth(overview.aiUsage.resetsOn)}.
-          {overview.aiUsage.exhausted &&
-            " You can still enter invoices manually."}
-          {trial && (
-            <>
-              {" "}
-              <GuardedLink
-                href="/subscribe"
-                className="underline underline-offset-4"
-              >
-                Subscribe
-              </GuardedLink>
-            </>
-          )}
-        </p>
-      ) : null}
-
       {hasInvoices ? (
         <>
           <SectionTabs>
@@ -322,7 +292,6 @@ export function InvoicesScreen({
               : ingredientOptionsStatus
           }
           onRetryIngredients={() => void loadOptions()}
-          byok={byok}
           aiKeyConfigured={overview.aiKey.configured}
           aiKeyHint={overview.aiKey.hint}
         />

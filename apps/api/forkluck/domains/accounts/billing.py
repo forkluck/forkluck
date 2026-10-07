@@ -15,8 +15,6 @@ from django.views.decorators.http import require_POST
 
 from ...http.request import error
 from ...integrations import stripe
-from ...integrations.ghost_members import remove_member
-from ...integrations.feedback import remove_feedback_user
 from ...integrations.stripe import StripeError
 from ...models import (
     BillingAccount,
@@ -538,10 +536,6 @@ def _recover_checkout_for_deletion(
 def delete_user_with_billing(user: User) -> tuple[int, dict[str, int]]:
     """Cancel all provider work, tombstone identities, then delete one user."""
 
-    # Queued before the delete so the address is captured while the row is
-    # still readable; on_commit outside an atomic block runs immediately.
-    email = user.email
-
     if not billing_enabled():
         if StripeCustomer.objects.filter(
             account__user=user,
@@ -550,8 +544,6 @@ def delete_user_with_billing(user: User) -> tuple[int, dict[str, int]]:
             raise BillingNotReady(
                 "Restore Stripe billing configuration before deleting this user."
             )
-        remove_feedback_user(user.pk)
-        transaction.on_commit(lambda: remove_member(email))
         return user.delete()
     account = get_billing_account(user)
     with transaction.atomic():
@@ -584,7 +576,6 @@ def delete_user_with_billing(user: User) -> tuple[int, dict[str, int]]:
     for subscription in subscriptions:
         stripe.cancel_subscription(subscription.stripe_subscription_id)
 
-    remove_feedback_user(user.pk)
     with transaction.atomic():
         account = BillingAccount.objects.select_for_update().get(pk=account.pk)
         tombstones = [
@@ -600,5 +591,4 @@ def delete_user_with_billing(user: User) -> tuple[int, dict[str, int]]:
             tombstones,
             ignore_conflicts=True,
         )
-        transaction.on_commit(lambda: remove_member(email))
         return user.delete()

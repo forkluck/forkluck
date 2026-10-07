@@ -24,8 +24,8 @@ therefore reaches Django directly for authentication and OAuth redirects, and
 reaches everything else through Next.js.
 
 The Next.js server answers on one hostname, `app.forkluck.com`. The public site
-at `forkluck.com` is a separate self-hosted Ghost, proxied by its own nginx
-server block; nothing in this repository renders it.
+at `forkluck.com` is static files served by nginx (`deploy/nginx/forkluck-site.conf`);
+nothing in this repository renders it.
 
 ## Route groups
 
@@ -98,7 +98,6 @@ needs neither its code nor a credential. Invoice inference stays in Next.js.
 
 | Responsibility | Entry point |
 | --- | --- |
-| Invoice Qwen endpoint | `apps/web/lib/ai/providers.ts` |
 | Primo gateway client, context contract and generation deadlines | `apps/web/lib/primo/model.ts` |
 | Primo public tool adapter and model wire repair | `apps/web/lib/primo/tools.ts`, `recipe.ts` |
 | Primo prompts, model choice, provider key, installation access and metering | Private `forkluck/forkluck-primo` service |
@@ -106,7 +105,7 @@ needs neither its code nor a credential. Invoice inference stays in Next.js.
 | Public recipe draft schema and confirmed creation | `apps/web/lib/recipe/draft.ts`, `createRecipeFromDraft` in `apps/web/app/(app)/recipes/actions.ts` |
 | Attachment admission and extraction | `apps/web/app/api/primo/attachments/route.ts`, `apps/web/lib/primo/attachment-server.ts` |
 | Invoice model calls and extraction limits | `apps/web/lib/invoice-extract.ts` |
-| Invoice validation, escalation findings, and usage budget | `apps/web/lib/invoice-import.ts`, `invoice-escalation.ts`, `invoice-ai-usage.ts` |
+| Invoice validation and escalation findings | `apps/web/lib/invoice-import.ts`, `invoice-escalation.ts` |
 | Authenticated reads and writes | `apps/web/lib/backend/` and Django `domains/` |
 
 Next.js sends authenticated user identity and versioned context to the private
@@ -125,7 +124,6 @@ of a model provider.
 
 | Invariant | Verification |
 | --- | --- |
-| Invoice Qwen configuration cannot enable Primo or bypass the gateway | Gateway client tests; unconfigured build and browser acceptance |
 | Chat, title and vision carry server-derived identity and task-specific deadlines | Route/extraction tests and private real-SDK integration tests |
 | Each paid attempt is recorded; missing token usage remains unknown | Private ledger, cancellation, interrupted-stream and retry/tool-loop tests |
 | Home, history and drafts remain usable during a gateway outage | Gateway browser acceptance |
@@ -241,8 +239,8 @@ existing `save-recipe` action. USDA ids are never used as pantry ids, and no
 draft supplies a trusted object identity.
 
 Primo is presence-enabled by the server-only `PRIMO_API_KEY`, an installation
-credential for `PRIMO_BASE_URL` (default `https://primo.forkluck.com/v1`). A
-Qwen invoice key does not enable it. An unconfigured Home redirects to Analytics;
+credential for `PRIMO_BASE_URL` (default `https://primo.forkluck.com/v1`).
+An unconfigured Home redirects to Analytics;
 an unavailable configured service leaves Home, history and the next draft
 usable, with Retry and Open Analytics. Rendering never waits for service health.
 There is no direct-provider fallback. The service owns the provider key and

@@ -25,11 +25,6 @@ from ...integrations.emails import (
     send_new_user_notification,
 )
 from ...integrations import turnstile
-from ...integrations.ghost_members import (
-    is_configured as newsletter_configured,
-    newsletter_status,
-    upsert_member,
-)
 from ...http.request import error, read_json
 from ...models import EmailVerificationCode, KitchenMembership, Recipe, User
 from ...services import seed_user_workspace
@@ -65,17 +60,6 @@ def mark_signed_in(response: HttpResponse) -> HttpResponse:
         samesite="Lax",
     )
     return response
-
-
-def sync_newsletter_member(user: User) -> None:
-    """Mirror one verified account into the Ghost newsletter, best effort.
-
-    upsert_member never raises and never re-subscribes somebody Ghost has
-    already unsubscribed, so this is safe to call on every verified sign-in.
-    """
-    if user.email_verified_at is None:
-        return
-    transaction.on_commit(lambda: upsert_member(user.email, user.name or None))
 
 
 def notify_owner_of_first_verified_sign_in(user: User) -> None:
@@ -262,7 +246,6 @@ def verify_email(request: HttpRequest) -> JsonResponse:
         claim_invitations(user)
     login(request, user)
     notify_owner_of_first_verified_sign_in(user)
-    sync_newsletter_member(user)
     return mark_signed_in(JsonResponse({"user": user_json(user)}))
 
 
@@ -485,7 +468,6 @@ def sign_in(request: HttpRequest) -> JsonResponse:
         )
     login(request, user)
     notify_owner_of_first_verified_sign_in(user)
-    sync_newsletter_member(user)
     return mark_signed_in(JsonResponse({"user": user_json(user)}))
 
 
@@ -527,20 +509,5 @@ def internal_session(request: HttpRequest) -> JsonResponse:
             "user": user_json(request.user),
             "billing": billing,
             "kitchens": kitchens,
-        }
-    )
-
-
-def internal_newsletter(request: HttpRequest) -> JsonResponse:
-    """Ghost holds the subscription, so the settings screen asks it each time.
-
-    `enabled` is null when Ghost cannot say — unconfigured, unreachable, or no
-    member for this address.
-    """
-    available = newsletter_configured()
-    return JsonResponse(
-        {
-            "enabled": newsletter_status(request.user.email) if available else None,
-            "available": available,
         }
     )

@@ -90,9 +90,7 @@ describe("the settings screen", () => {
         user={{ id: "1", email: "chef@example.com", name: "Chef" } as never}
         billing={{ status: "disabled" } as never}
         businessSettings={DEFAULT_BUSINESS_SETTINGS}
-        byok={false}
         aiKey={{ configured: false, hint: null }}
-        newsletter={{ enabled: null, available: false }}
       />
     )
 
@@ -107,32 +105,11 @@ describe("the settings screen", () => {
         user={{ id: "1", email: "chef@example.com", name: "Chef" } as never}
         billing={{ status: "disabled" } as never}
         businessSettings={DEFAULT_BUSINESS_SETTINGS}
-        byok={true}
         aiKey={{ configured: false, hint: null }}
-        newsletter={{ enabled: null, available: false }}
       />
     )
 
     expect(screen.getByText("Claude")).toBeTruthy()
     expect(screen.getByRole("button", { name: "Configure" })).toBeTruthy()
-  })
-
-  it("shows no document tools when Forkluck's own AI does the reading", () => {
-    render(
-      <SettingsScreen
-        user={{ id: "1", email: "chef@example.com", name: "Chef" } as never}
-        billing={{ status: "disabled" } as never}
-        businessSettings={DEFAULT_BUSINESS_SETTINGS}
-        byok={false}
-        aiKey={{ configured: false, hint: null }}
-        newsletter={{ enabled: null, available: false }}
-      />
-    )
-
-    // The house engine needs nothing from the merchant, so the group is
-    // absent rather than a row saying there is nothing to do.
-    expect(screen.queryByText("Document tools")).toBeNull()
-    expect(screen.queryByText("Claude")).toBeNull()
-    expect(screen.queryByRole("button", { name: "Configure" })).toBeNull()
   })
 })

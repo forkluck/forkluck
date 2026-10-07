@@ -1001,29 +1001,6 @@ class BillingDeletionTests(InternalApiTestCase):
         self.assertEqual(DeviceToken.objects.count(), 0)
         self.assertEqual(cancel_subscription.call_args.args[0], "sub_1")
 
-    @patch("forkluck.domains.accounts.billing.remove_member")
-    @patch("forkluck.integrations.stripe.cancel_subscription")
-    @patch("forkluck.integrations.stripe.list_subscriptions")
-    @patch("forkluck.integrations.stripe.search_customers")
-    def test_deleting_a_user_removes_their_newsletter_member(
-        self, search_customers, list_subscriptions, cancel_subscription, remove_member
-    ):
-        user = make_user("newsletter-delete@example.com")
-        account = get_billing_account(user)
-        StripeCustomer.objects.create(
-            account=account,
-            stripe_customer_id="cus_news",
-            creation_idempotency_key="customer-news",
-            is_primary=True,
-        )
-        search_customers.return_value = [provider_customer(user, "cus_news")]
-        list_subscriptions.return_value = []
-
-        with self.captureOnCommitCallbacks(execute=True):
-            delete_user_with_billing(user)
-
-        remove_member.assert_called_once_with("newsletter-delete@example.com")
-
     @patch("forkluck.integrations.stripe.cancel_subscription")
     @patch("forkluck.integrations.stripe.list_subscriptions")
     @patch("forkluck.integrations.stripe.search_customers")

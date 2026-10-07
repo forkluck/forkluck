@@ -13,7 +13,6 @@ import {
   History,
   KeyRound,
   Link2Off,
-  Mail,
   Sparkles,
   Tags,
   Trash2,
@@ -39,17 +38,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Page, PageHeader, PageTitle } from "@/components/ui/page"
-import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/toast"
 import {
   type BillingPortalChoice,
   createBillingPortal,
   deleteKitchenData,
   resetGuestLinks,
-  setNewsletter,
 } from "@/app/(app)/settings/actions"
 import type { SessionUser } from "@/lib/auth-session"
-import type { AiKeyStatus, NewsletterStatus } from "@/lib/backend/types"
+import type { AiKeyStatus } from "@/lib/backend/types"
 import { billingStatusLabel, type BillingState } from "@/lib/billing"
 import type { BusinessSettings } from "@/lib/business-settings"
 import { useGuardedNavigate } from "@/components/navigation-blocker"
@@ -106,18 +103,12 @@ export function SettingsScreen({
   user,
   billing,
   businessSettings,
-  byok,
   aiKey,
-  newsletter,
 }: {
   user: SessionUser
   billing: BillingState
   businessSettings: BusinessSettings
-  /** The deployment reads documents with the workspace's own Anthropic key
-   * rather than Forkluck's AI, so the key is worth configuring here. */
-  byok: boolean
   aiKey: AiKeyStatus
-  newsletter: NewsletterStatus
 }) {
   const account = useRowDialog()
   const password = useRowDialog()
@@ -140,28 +131,6 @@ export function SettingsScreen({
   const [portalChoices, setPortalChoices] = React.useState<
     BillingPortalChoice[]
   >([])
-  // Ghost is the record; null (it couldn't say) reads as off.
-  const [subscribed, setSubscribed] = React.useState(
-    newsletter.enabled === true
-  )
-  const [newsletterPending, startNewsletter] = React.useTransition()
-  const [newsletterError, setNewsletterError] = React.useState<string | null>(
-    null
-  )
-
-  function onNewsletterChange(next: boolean) {
-    const previous = subscribed
-    setNewsletterError(null)
-    setSubscribed(next)
-    startNewsletter(async () => {
-      const result = await setNewsletter(next)
-      if ("error" in result) {
-        setSubscribed(previous)
-        setNewsletterError(result.error)
-      }
-    })
-  }
-
   function openBillingPortal(customerId?: string) {
     setPortalError(null)
     startPortal(async () => {
@@ -247,29 +216,7 @@ export function SettingsScreen({
               note="Units, currency, label region, labor rate, and your food cost target."
             />
           </button>
-          {newsletter.available ? (
-            <div className="flex w-full items-center gap-3 border-t border-muted px-4 py-3.5">
-              <RowBody
-                icon={Mail}
-                title="Product updates"
-                note="Occasional emails about new features and changes."
-                trailing={
-                  <Switch
-                    checked={subscribed}
-                    disabled={newsletterPending}
-                    onCheckedChange={onNewsletterChange}
-                    aria-label="Product updates"
-                  />
-                }
-              />
-            </div>
-          ) : null}
         </SettingsGroup>
-        {newsletterError ? (
-          <p role="alert" className="mt-2 text-md text-destructive">
-            {newsletterError}
-          </p>
-        ) : null}
 
         <SettingsGroup title="Kitchen">
           <button type="button" className={rowClassName} onClick={members.show}>
@@ -341,27 +288,22 @@ export function SettingsScreen({
           </button>
         </SettingsGroup>
 
-        {/* Only a deployment that reads with the workspace's own key has a
-            setting here; the house engine needs nothing from the merchant, and
-            a row that says so is noise. */}
-        {byok ? (
-          <SettingsGroup title="Document tools">
-            <div className="flex w-full items-center gap-3 px-4 py-3.5">
-              <RowBody
-                icon={Sparkles}
-                title="Claude"
-                note="Reads uploaded invoices and receipt photos into lines and prices."
-                trailing={
-                  <AiKeyDialog
-                    configured={aiKey.configured}
-                    hint={aiKey.hint}
-                    label="Configure"
-                  />
-                }
-              />
-            </div>
-          </SettingsGroup>
-        ) : null}
+        <SettingsGroup title="Document tools">
+          <div className="flex w-full items-center gap-3 px-4 py-3.5">
+            <RowBody
+              icon={Sparkles}
+              title="Claude"
+              note="Reads uploaded invoices and receipt photos into lines and prices."
+              trailing={
+                <AiKeyDialog
+                  configured={aiKey.configured}
+                  hint={aiKey.hint}
+                  label="Configure"
+                />
+              }
+            />
+          </div>
+        </SettingsGroup>
 
         <SettingsGroup title="History">
           <button type="button" className={rowClassName} onClick={history.show}>

@@ -81,7 +81,5 @@ ds-bundle/
 .design-sync/learnings/
 .design-sync/node_modules
 
-# Ghost local preview: container content and per-target image URL caches
-
 # Claude Code local state and worktrees
 .claude/

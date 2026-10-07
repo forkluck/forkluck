@@ -3,26 +3,18 @@ import { redirect } from "next/navigation"
 
 import { SettingsScreen } from "@/components/settings/settings-screen"
 import { getSession } from "@/lib/auth-session"
-import {
-  getAiCredential,
-  getBusinessSettings,
-  getNewsletterStatus,
-} from "@/lib/backend/queries"
-import { extractionConfig } from "@/lib/invoice-extract"
+import { getAiCredential, getBusinessSettings } from "@/lib/backend/queries"
 
 export const metadata: Metadata = {
   title: "Settings",
 }
 
 export default async function SettingsPage() {
-  const [session, businessSettings, credential, newsletter] = await Promise.all(
-    [
-      getSession(),
-      getBusinessSettings(),
-      getAiCredential(),
-      getNewsletterStatus(),
-    ]
-  )
+  const [session, businessSettings, credential] = await Promise.all([
+    getSession(),
+    getBusinessSettings(),
+    getAiCredential(),
+  ])
   if (!session) redirect("/login")
 
   // The credential read is loopback-only; only its status crosses into the
@@ -32,9 +24,7 @@ export default async function SettingsPage() {
       user={session.user}
       billing={session.billing}
       businessSettings={businessSettings}
-      byok={extractionConfig().engine === "anthropic"}
       aiKey={{ configured: credential.configured, hint: credential.hint }}
-      newsletter={newsletter}
     />
   )
 }

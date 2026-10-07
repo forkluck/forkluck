@@ -30,8 +30,6 @@ from .actions import (
 )
 from .serializers import drive_watch_folder_json, drive_watch_state_json
 from .views import drive_file_limit, drive_files_payload
-from .ai_usage import action_invoice_ai_usage
-from ..shared.billing import EntitlementError
 
 
 def drive_watch(request: HttpRequest) -> JsonResponse:
@@ -48,18 +46,6 @@ def drive_watch(request: HttpRequest) -> JsonResponse:
         }
     )
 
-
-def invoice_ai_usage(request: HttpRequest) -> JsonResponse:
-    try:
-        body = read_json(request)
-        source = _connected_folder(body.get("userId"))
-        if source is None:
-            return error("No connected Drive folder for that workspace", 404)
-        return JsonResponse(action_invoice_ai_usage(source.user, body))
-    except EntitlementError as exc:
-        return error(str(exc), 403, code=exc.code)
-    except ValueError as exc:
-        return error(str(exc))
 
 
 def save_drive_watch(request: HttpRequest) -> JsonResponse:

@@ -19,7 +19,7 @@ import {
   getDriveFolder,
 } from "@/lib/backend/queries"
 import { deleteDocument, isDocumentKeyOf } from "@/lib/document-store"
-import { runDriveWatch, startDriveRead } from "@/lib/drive-watch"
+import { runDriveWatch } from "@/lib/drive-watch"
 import { parseDriveFolderId } from "@/lib/drive-folder"
 import { DriveServiceError, getFolderMeta } from "@/lib/google-drive-service"
 import { verifyAnthropicKey } from "@/lib/invoice-extract"
@@ -604,9 +604,6 @@ export async function connectDriveFolder(
     // registeredAt is null now, so this lists the new folder in full. A
     // failure is the timer's problem, and the card shows what went wrong.
     await runDriveWatch()
-    // The listing above registered the folder's files; reading them is the
-    // timer's job, started now so the first receipts are ready before it ticks.
-    void startDriveRead()
     return result
   } catch (cause) {
     return { error: driveErrorMessage(cause, "Couldn't connect that folder.") }
@@ -699,9 +696,6 @@ export async function checkDriveNow(): Promise<
   if (!result.ok) {
     return { error: result.error ?? "Couldn't check that folder." }
   }
-  // Reading what the poll registered takes minutes and the merchant is
-  // waiting on this call, so it is left running behind the answer.
-  void startDriveRead()
   // The count is this workspace's; the poll was everyone's.
   const { count } = await getDriveFiles("new", 1)
   return { ok: true, newCount: count }

@@ -29,9 +29,6 @@ class AdminAccessTests(TestCase):
         sender = mock.patch("forkluck.verification.send_verification_code")
         self.send_code = sender.start()
         self.addCleanup(sender.stop)
-        newsletter = mock.patch("forkluck.domains.accounts.views.sync_newsletter_member")
-        newsletter.start()
-        self.addCleanup(newsletter.stop)
 
     def post(self, path, data, *, form=False):
         self.client.get("/api/auth/csrf")

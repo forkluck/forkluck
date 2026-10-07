@@ -28,9 +28,9 @@ export async function register(): Promise<void> {
   started[STARTED] = true
 
   // Lazily, so the edge runtime never bundles the Drive client.
-  const { runDriveWatchAndRead } = await import("@/lib/drive-watch")
+  const { runDriveWatch } = await import("@/lib/drive-watch")
   const poll = () => {
-    void runDriveWatchAndRead().catch((cause) => {
+    void runDriveWatch().catch((cause) => {
       console.error("Drive watch threw", cause)
     })
   }

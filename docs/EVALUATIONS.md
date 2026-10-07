@@ -35,8 +35,7 @@ a pinned public checkout; the private README documents setup. They remain
 opt-in live model-quality checks. Public CI uses a synthetic gateway and needs
 neither private source nor inference credentials. Invoice goldens remain
 outside Git: use fabricated documents for shareable results. The extraction
-script never reads Django; `--engine anthropic` uses the shell's
-`ANTHROPIC_API_KEY`, while Qwen uses `QWEN_API_KEY`.
+script never reads Django; it uses the shell's `ANTHROPIC_API_KEY`.
 
 ## Invoice goldens
 

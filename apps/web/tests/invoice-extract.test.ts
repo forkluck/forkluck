@@ -4,17 +4,16 @@ import sharp from "sharp"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { InvoiceExtraction } from "@/lib/invoice-import"
-import { InvoiceAiBudgetError } from "@/lib/invoice-ai-usage"
 import * as imagePrep from "@/lib/image-prep"
 import { normalizeInvoiceExtraction } from "@/lib/invoice-import"
 
 import baldorInvoice from "./fixtures/invoices/baldor-invoice.json"
 
 /**
- * Engine dispatch and validator-gated escalation in the one AI-SDK module.
- * Both providers are stubbed with the SDK's own mock model, so what is under
- * test is the message the engine builds, the errors it maps, and which of two
- * reads wins — never a network call.
+ * Validator-gated escalation in the one AI-SDK module. The provider is
+ * stubbed with the SDK's own mock model, so what is under test is the message
+ * the module builds, the errors it maps, and which of two reads wins — never
+ * a network call.
  */
 
 vi.mock("server-only", () => ({}))
@@ -42,9 +41,6 @@ function stubProvider(provider: string) {
 
 vi.mock("@ai-sdk/anthropic", () => ({
   createAnthropic: stubProvider("anthropic"),
-}))
-vi.mock("@ai-sdk/openai-compatible", () => ({
-  createOpenAICompatible: stubProvider("qwen"),
 }))
 
 /** Rasterization, without the canvas binary: what is under test is which
@@ -110,17 +106,7 @@ function respond(extraction: InvoiceExtraction, finishReason = "stop") {
   }
 }
 
-const ANTHROPIC = {
-  engine: "anthropic" as const,
-  model: "claude-opus-5",
-  apiKey: "sk-ant",
-}
-/** Forkluck's own engine: no merchant key anywhere in the options. */
-const QWEN = {
-  engine: "qwen" as const,
-  model: "qwen3-vl-plus",
-  apiKey: null,
-}
+const ANTHROPIC = { model: "claude-opus-5", apiKey: "sk-ant" }
 
 function lastCall() {
   return doGenerate.mock.lastCall![0]
@@ -225,10 +211,9 @@ describe("receipt highlight ownership", () => {
   })
 
   it("uses the already rendered PDF in the actual extraction path", async () => {
-    vi.stubEnv("QWEN_API_KEY", "sk-forkluck")
     vi.spyOn(imagePrep, "receiptPrefixBoundary").mockResolvedValue(0.245)
     doGenerate.mockResolvedValue(respond(misplacedPrefix()))
-    const result = await extractInvoice(PDF, ["Ingredients"], QWEN)
+    const result = await extractInvoice(PDF, ["Ingredients"], ANTHROPIC)
     if ("error" in result) throw new Error(result.error)
     expect(result.extraction.lines[0].box?.bbox_2d[3]).toBe(0.245)
     expect(result.extraction.lines[1].box?.bbox_2d[1]).toBe(0.245)
@@ -308,7 +293,6 @@ describe("receipt highlight ownership", () => {
   })
 
   it("does not spend a second AI read because a rectangle changed coordinate frames", async () => {
-    vi.stubEnv("QWEN_API_KEY", "sk-forkluck")
     vi.spyOn(imagePrep, "receiptPrefixBoundary").mockResolvedValue(null)
     vi.spyOn(imagePrep, "receiptItemBottomBoundary").mockResolvedValue(0.322)
     const original = misplacedPrefix()
@@ -320,7 +304,7 @@ describe("receipt highlight ownership", () => {
       box: { page: 0, bbox_2d: [250, 325, 900, 360] },
     })
     doGenerate.mockResolvedValue(respond(original))
-    const result = await extractWithEscalation(PDF, ["Ingredients"], QWEN)
+    const result = await extractWithEscalation(PDF, ["Ingredients"], ANTHROPIC)
     if ("error" in result) throw new Error(result.error)
     expect(result.normalized.lines.map((line) => line.quantity)).toEqual([
       null,
@@ -367,7 +351,6 @@ describe("receipt highlight ownership", () => {
 describe("extractionConfig", () => {
   beforeEach(() => {
     for (const name of [
-      "INVOICE_EXTRACTION_ENGINE",
       "INVOICE_EXTRACTION_MODEL",
       "INVOICE_ESCALATION_MODEL",
     ]) {
@@ -375,33 +358,21 @@ describe("extractionConfig", () => {
     }
   })
 
-  it("runs on Forkluck's own Qwen engine by default", () => {
+  it("reads with claude-opus-5 by default", () => {
     // Unset escalation means the same model, read again with a hint.
     expect(extractionConfig()).toEqual({
-      engine: "qwen",
-      model: "qwen3-vl-flash",
-      escalationModel: "qwen3-vl-flash",
-    })
-  })
-
-  it("defaults tier 2 to claude-opus-5 on the opt-in Anthropic engine", () => {
-    vi.stubEnv("INVOICE_EXTRACTION_ENGINE", "anthropic")
-
-    expect(extractionConfig()).toEqual({
-      engine: "anthropic",
       model: "claude-opus-5",
       escalationModel: "claude-opus-5",
     })
   })
 
-  it("takes the escalation model as a model id on the configured engine", () => {
-    vi.stubEnv("INVOICE_EXTRACTION_MODEL", "qwen3-vl-flash")
-    vi.stubEnv("INVOICE_ESCALATION_MODEL", "qwen3-vl-plus")
+  it("takes the escalation model as its own model id", () => {
+    vi.stubEnv("INVOICE_EXTRACTION_MODEL", "claude-sonnet-5")
+    vi.stubEnv("INVOICE_ESCALATION_MODEL", "claude-opus-5")
 
     expect(extractionConfig()).toMatchObject({
-      engine: "qwen",
-      model: "qwen3-vl-flash",
-      escalationModel: "qwen3-vl-plus",
+      model: "claude-sonnet-5",
+      escalationModel: "claude-opus-5",
     })
   })
 
@@ -412,18 +383,16 @@ describe("extractionConfig", () => {
   })
 })
 
-describe("extractInvoice engines", () => {
-  it("sends a PDF to Anthropic as a file part on the merchant's key", async () => {
+describe("extractInvoice", () => {
+  it("sends a PDF as its page images on the merchant's key", async () => {
     const result = await extractInvoice(PDF, ["Produce"], ANTHROPIC)
 
     expect(providerCalls).toMatchObject([
       { provider: "anthropic", apiKey: "sk-ant", model: "claude-opus-5" },
     ])
     const content = lastCall().prompt[0].content
-    expect(content[0]).toMatchObject({
-      type: "file",
-      mediaType: "application/pdf",
-    })
+    expect(rendered).toHaveLength(1)
+    expect(content[0]).toMatchObject({ type: "file", mediaType: "image/png" })
     expect(content[1].text).toContain("Produce")
     expect(lastCall().providerOptions?.anthropic).toEqual({
       structuredOutputMode: "outputFormat",
@@ -433,6 +402,7 @@ describe("extractInvoice engines", () => {
       extraction: CLEAN,
       usage: { inputTokens: 100, outputTokens: 20 },
       model: "claude-opus-5",
+      pageSizes: [{ width: 1224, height: 1584 }],
     })
   })
 
@@ -443,37 +413,6 @@ describe("extractInvoice engines", () => {
       type: "file",
       mediaType: "image/jpeg",
     })
-  })
-
-  it("runs the qwen engine on Forkluck's own key, with no Anthropic options", async () => {
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-
-    await extractInvoice(PHOTO, ["Produce"], QWEN)
-
-    expect(providerCalls).toMatchObject([
-      { provider: "qwen", apiKey: "qwen-key", model: "qwen3-vl-plus" },
-    ])
-    expect(lastCall().providerOptions).toBeUndefined()
-  })
-
-  it("asks DashScope for its json_schema response format", async () => {
-    // json_object mode is refused unless the prompt says "json", and carries
-    // no schema; the flag is what makes the field descriptions reach Qwen.
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-    await extractInvoice(PHOTO, ["Ingredients"], QWEN)
-    expect(providerCalls[0]).toMatchObject({
-      provider: "qwen",
-      structured: true,
-    })
-  })
-
-  it("refuses the qwen engine when this server has no key of its own", async () => {
-    vi.stubEnv("QWEN_API_KEY", "")
-
-    expect(await extractInvoice(PHOTO, ["Produce"], QWEN)).toEqual({
-      error: "Forkluck's AI isn't configured on this server.",
-    })
-    expect(doGenerate).not.toHaveBeenCalled()
   })
 
   it("appends the escalation hint to the prompt", async () => {
@@ -533,66 +472,6 @@ describe("extractInvoice engines", () => {
 })
 
 describe("extractWithEscalation", () => {
-  it("shares the Qwen deadline with escalation and keeps the first read on expiry", async () => {
-    vi.useFakeTimers()
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-    vi.spyOn(AbortSignal, "timeout").mockImplementation((ms) => {
-      const controller = new AbortController()
-      setTimeout(() => controller.abort(), ms)
-      return controller.signal
-    })
-    doGenerate
-      .mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve(respond(MISMATCHED)), 15_000)
-          )
-      )
-      .mockImplementationOnce(
-        ({ abortSignal }) =>
-          new Promise((_resolve, reject) => {
-            abortSignal.addEventListener(
-              "abort",
-              () => reject(new Error("Aborted")),
-              { once: true }
-            )
-          })
-      )
-    let completed = false
-    const run = extractWithEscalation(PDF, ["Ingredients"], QWEN).then(
-      (result) => {
-        completed = true
-        return result
-      }
-    )
-    await vi.advanceTimersByTimeAsync(15_000)
-    expect(doGenerate).toHaveBeenCalledTimes(2)
-    await vi.advanceTimersByTimeAsync(9_999)
-    expect(completed).toBe(false)
-    await vi.advanceTimersByTimeAsync(1)
-    expect(await run).toMatchObject({
-      extraction: MISMATCHED,
-      escalated: false,
-    })
-    expect(AbortSignal.timeout).toHaveBeenCalledTimes(1)
-    expect(AbortSignal.timeout).toHaveBeenCalledWith(25_000)
-  })
-
-  it("does not reserve or start a call after its deadline", async () => {
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-    const budget = { beforeCall: vi.fn(), record: vi.fn() }
-    const result = await extractWithEscalation(PDF, ["Ingredients"], {
-      ...QWEN,
-      budget,
-      signal: AbortSignal.abort(),
-    })
-    expect(result).toMatchObject({
-      error: expect.stringContaining("took too long"),
-    })
-    expect(budget.beforeCall).not.toHaveBeenCalled()
-    expect(doGenerate).not.toHaveBeenCalled()
-  })
-
   it("keeps a clean first read and never pays for a second", async () => {
     const run = await extractWithEscalation(PDF, ["Produce"], ANTHROPIC)
 
@@ -653,25 +532,6 @@ describe("extractWithEscalation", () => {
     expect(run).toMatchObject({ extraction: MISMATCHED, escalated: false })
   })
 
-  it("escalates on qwen against Forkluck's key, never the merchant's", async () => {
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-    vi.stubEnv("INVOICE_EXTRACTION_ENGINE", "qwen")
-    doGenerate
-      .mockResolvedValueOnce(respond(MISMATCHED))
-      .mockResolvedValueOnce(respond(CLEAN))
-
-    // A photo, not a PDF: on qwen a PDF would be rasterized first.
-    const run = await extractWithEscalation(PHOTO, ["Produce"], QWEN)
-
-    // Unset INVOICE_ESCALATION_MODEL means the same model, read again with
-    // the validator's findings.
-    expect(providerCalls).toMatchObject([
-      { provider: "qwen", apiKey: "qwen-key", model: "qwen3-vl-plus" },
-      { provider: "qwen", apiKey: "qwen-key", model: "qwen3-vl-plus" },
-    ])
-    expect(run).toMatchObject({ extraction: CLEAN, escalated: true })
-  })
-
   it("does not escalate when no tier-3 model is configured", async () => {
     vi.stubEnv("INVOICE_ESCALATION_MODEL", "")
     doGenerate.mockResolvedValue(respond(MISMATCHED))
@@ -684,15 +544,11 @@ describe("extractWithEscalation", () => {
 })
 
 describe("rasterizing a scan", () => {
-  beforeEach(() => {
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
-  })
-
   it("draws only the pages of the document it was asked for", async () => {
     pdfPageCount = 6
 
     await extractInvoice(PDF, ["Produce"], {
-      ...QWEN,
+      ...ANTHROPIC,
       pages: { start: 2, end: 3 },
     })
 
@@ -704,7 +560,7 @@ describe("rasterizing a scan", () => {
   it("refuses a scan longer than one document instead of reading its first pages", async () => {
     pdfPageCount = 7
 
-    expect(await extractInvoice(PDF, ["Produce"], QWEN)).toEqual({
+    expect(await extractInvoice(PDF, ["Produce"], ANTHROPIC)).toEqual({
       error: "This scan has 7 pages; Forkluck reads up to 4 per document.",
     })
     expect(doGenerate).not.toHaveBeenCalled()
@@ -714,7 +570,7 @@ describe("rasterizing a scan", () => {
     pdfPageCount = 15
 
     await extractInvoice(PDF, ["Produce"], {
-      ...QWEN,
+      ...ANTHROPIC,
       pages: { start: 8, end: 9 },
     })
 
@@ -778,11 +634,10 @@ describe("detectDocuments", () => {
   })
 
   it("shows a scan cheaply: half scale, and never more than twenty pages", async () => {
-    vi.stubEnv("QWEN_API_KEY", "qwen-key")
     pdfPageCount = 30
     documents([{ pageStart: 0, pageEnd: 29 }])
 
-    await detectDocuments({ kind: "pdf-scan", base64: "cGRm" }, QWEN)
+    await detectDocuments({ kind: "pdf-scan", base64: "cGRm" }, ANTHROPIC)
 
     expect(rendered).toHaveLength(20)
     expect(new Set(rendered.map((page) => page.scale))).toEqual(new Set([0.5]))
@@ -834,88 +689,6 @@ describe("detectDocuments", () => {
     ).toEqual({
       error: "Couldn't tell how many documents this file holds.",
     })
-  })
-})
-
-describe("hosted AI admission", () => {
-  beforeEach(() => vi.stubEnv("QWEN_API_KEY", "test-server-key"))
-
-  it("does not contact Qwen when the budget refuses extraction or detection", async () => {
-    const refusal = new InvoiceAiBudgetError("Monthly allowance reached", true)
-    const budget = {
-      beforeCall: vi.fn().mockRejectedValue(refusal),
-      record: vi.fn(),
-    }
-    await expect(extractInvoice(PHOTO, [], { ...QWEN, budget })).rejects.toBe(
-      refusal
-    )
-    await expect(
-      detectDocuments(
-        { kind: "image", base64: PHOTO.base64, mediaType: PHOTO.mediaType },
-        { ...QWEN, budget }
-      )
-    ).rejects.toBe(refusal)
-    expect(doGenerate).not.toHaveBeenCalled()
-    expect(budget.record).not.toHaveBeenCalled()
-  })
-
-  it("reserves retries before the first network attempt and meters escalation too", async () => {
-    const events: string[] = []
-    const budget = {
-      beforeCall: vi.fn(async () => {
-        events.push("reserve")
-      }),
-      record: vi.fn(async () => {
-        events.push("record")
-      }),
-    }
-    doGenerate
-      .mockImplementationOnce(async () => {
-        events.push("model")
-        return respond(MISMATCHED)
-      })
-      .mockImplementationOnce(async () => {
-        events.push("model")
-        return respond(CLEAN)
-      })
-    await extractWithEscalation(PHOTO, [], { ...QWEN, budget })
-    expect(events).toEqual([
-      "reserve",
-      "model",
-      "record",
-      "reserve",
-      "model",
-      "record",
-    ])
-    expect(budget.beforeCall.mock.calls).toEqual([[2], [2]])
-    expect(budget.record).toHaveBeenCalledTimes(2)
-  })
-
-  it("preserves a usable first read when optional escalation has no budget", async () => {
-    doGenerate.mockResolvedValue(respond(MISMATCHED))
-    const budget = {
-      beforeCall: vi
-        .fn()
-        .mockResolvedValueOnce(undefined)
-        .mockRejectedValue(new InvoiceAiBudgetError("At limit", true)),
-      record: vi.fn(),
-    }
-    const result = await extractWithEscalation(PHOTO, [], { ...QWEN, budget })
-    expect(result).toMatchObject({ extraction: MISMATCHED, escalated: false })
-    expect(doGenerate).toHaveBeenCalledTimes(1)
-  })
-
-  it("records billed usage even when the generated object is malformed", async () => {
-    doGenerate.mockResolvedValue({
-      ...respond(CLEAN),
-      content: [{ type: "text", text: "bad json" }],
-    })
-    const budget = { beforeCall: vi.fn(), record: vi.fn() }
-    const result = await extractInvoice(PHOTO, [], { ...QWEN, budget })
-    expect(result).toHaveProperty("error")
-    expect(budget.record).toHaveBeenCalledWith(
-      expect.objectContaining({ inputTokens: 100, outputTokens: 20 })
-    )
   })
 })
 

@@ -1,9 +1,4 @@
-import base64
-import json
 import logging
-from urllib.error import URLError
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
 from azure.communication.email import EmailClient
 from azure.core.exceptions import AzureError, HttpResponseError
@@ -20,51 +15,21 @@ class EmailNotConfigured(Exception):
 
 def is_configured() -> bool:
     """Whether send_email can deliver, or at least log, a message."""
-    return bool(
-        settings.FORKLUCK_MAIL_BRIDGE_URL
-        or settings.ACS_CONNECTION_STRING
-        or settings.DEBUG
-    )
+    return bool(settings.ACS_CONNECTION_STRING or settings.DEBUG)
 
 
 def send_email(to: str, subject: str, text: str) -> None:
-    """Send through the configured Ghost mail bridge, or directly through ACS.
+    """Send through ACS.
 
-    Raises EmailNotConfigured when neither provider is configured, and
-    ValueError when delivery is not accepted. Callers surface friendly errors.
-    A development server with no provider logs the message instead, so a
-    code can be read off the console; DEBUG is never on in production.
+    Raises EmailNotConfigured when it is not configured, and ValueError when
+    delivery is not accepted. Callers surface friendly errors. A development
+    server with no provider logs the message instead, so a code can be read
+    off the console; DEBUG is never on in production.
     """
     global _client
 
-    if (
-        settings.DEBUG
-        and not settings.FORKLUCK_MAIL_BRIDGE_URL
-        and not settings.ACS_CONNECTION_STRING
-    ):
+    if settings.DEBUG and not settings.ACS_CONNECTION_STRING:
         logger.warning("Email to %s (not sent, no provider):\n%s\n%s", to, subject, text)
-        return
-
-    if settings.FORKLUCK_MAIL_BRIDGE_URL:
-        credentials = base64.b64encode(("api:" + settings.FORKLUCK_MAIL_BRIDGE_API_KEY).encode()).decode()
-        request = Request(settings.FORKLUCK_MAIL_BRIDGE_URL, method="POST", headers={
-            "Authorization": "Basic " + credentials,
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Accept": "application/json",
-        }, data=urlencode({
-            "from": settings.FORKLUCK_EMAIL_FROM, "to": to,
-            "subject": subject, "text": text, "o:tag": "source:forkluck-app",
-        }).encode())
-        try:
-            with urlopen(request, timeout=10) as response:
-                body = json.loads(response.read(4096))
-                if response.status != 200 or not isinstance(body, dict) or not body.get("id"):
-                    raise ValueError("Mail bridge did not accept the message")
-        except (URLError, OSError, ValueError) as exc:
-            # Do not retry through ACS after an ambiguous bridge response:
-            # it may already have queued the message. Never log codes or keys.
-            logger.error("Mail bridge could not accept email")
-            raise ValueError("The verification email could not be sent") from exc
         return
 
     if not settings.ACS_CONNECTION_STRING:

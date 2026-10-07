@@ -175,7 +175,6 @@ def google_callback(request: HttpRequest) -> HttpResponse:
         return failure("google-inactive", next_path)
     login(request, user)
     account_views.notify_owner_of_first_verified_sign_in(user)
-    account_views.sync_newsletter_member(user)
     return account_views.mark_signed_in(HttpResponseRedirect(next_path))
 
 

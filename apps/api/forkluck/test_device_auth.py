@@ -105,7 +105,7 @@ class DeviceSignInTests(InternalApiTestCase, ShapeAssertions):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Too many codes", response.json()["error"])
 
-    @override_settings(ACS_CONNECTION_STRING="", FORKLUCK_MAIL_BRIDGE_URL="", DEBUG=False)
+    @override_settings(ACS_CONNECTION_STRING="", DEBUG=False)
     def test_unconfigured_mail_answers_500_before_the_lookup(self):
         response = self.post("auth/request-code/", {"email": "phone@example.com"})
         self.assertEqual(response.status_code, 500)
@@ -587,7 +587,7 @@ class ReviewAccountTests(InternalApiTestCase):
 
 
 class MailFallbackTests(TestCase):
-    @override_settings(DEBUG=True, ACS_CONNECTION_STRING="", FORKLUCK_MAIL_BRIDGE_URL="")
+    @override_settings(DEBUG=True, ACS_CONNECTION_STRING="")
     def test_a_development_server_logs_instead_of_sending(self):
         from .integrations.emails import send_email
 
@@ -595,7 +595,7 @@ class MailFallbackTests(TestCase):
             send_email("dev@example.com", "Subject", "Your code is: 123456")
         self.assertIn("123456", logs.output[0])
 
-    @override_settings(DEBUG=False, ACS_CONNECTION_STRING="", FORKLUCK_MAIL_BRIDGE_URL="")
+    @override_settings(DEBUG=False, ACS_CONNECTION_STRING="")
     def test_production_still_raises_when_unconfigured(self):
         from .integrations.emails import send_email
 

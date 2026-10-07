@@ -36,7 +36,6 @@ export function ImportFilesPanel({
   inboxNotice,
   error,
   busy,
-  byok,
   aiKeyConfigured,
   aiKeyHint,
   reviewCount,
@@ -60,7 +59,6 @@ export function ImportFilesPanel({
   error: string | null
   /** An import is in flight, so the pickers must not add to the batch. */
   busy: boolean
-  byok: boolean
   aiKeyConfigured: boolean
   aiKeyHint: string | null
   /** Receipts waiting in the reviewer; 0 hides the way back to it. */
@@ -218,23 +216,13 @@ export function ImportFilesPanel({
       ) : null}
 
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
-        {/* Keeps the optional AI fallback reachable. Nothing to offer when
-            Forkluck's own AI does the reading. */}
-        {byok ? (
-          <AiKeyDialog
-            configured={aiKeyConfigured}
-            hint={aiKeyHint}
-            trigger={
-              <Button type="button" variant="ghost" className="mr-auto" />
-            }
-          />
-        ) : null}
-        <Button
-          type="button"
-          variant="outline"
-          className={byok ? undefined : "mr-auto"}
-          onClick={onCancel}
-        >
+        {/* Keeps the optional AI fallback reachable. */}
+        <AiKeyDialog
+          configured={aiKeyConfigured}
+          hint={aiKeyHint}
+          trigger={<Button type="button" variant="ghost" className="mr-auto" />}
+        />
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         {reviewCount > 0 ? (

@@ -496,26 +496,6 @@ export async function updateAccountName(
   }
 }
 
-/** Ghost owns the subscription, so the row re-reads it after the write. */
-export async function setNewsletter(
-  enabled: boolean
-): Promise<{ ok: true } | { error: string }> {
-  const parsed = z.boolean().safeParse(enabled)
-  if (!parsed.success) return { error: "Unknown preference." }
-  try {
-    await djangoAction("set-newsletter", { enabled: parsed.data })
-    revalidatePath("/settings")
-    return { ok: true }
-  } catch (cause) {
-    return {
-      error: actionErrorMessage(
-        cause,
-        "Couldn’t update your newsletter preference."
-      ),
-    }
-  }
-}
-
 export async function updateBusinessSettings(
   // Product matching is written by setProductMatching, not here: flipping it
   // links or withdraws catalog rows, which is not something a defaults save

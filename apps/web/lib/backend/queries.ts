@@ -23,7 +23,6 @@ import type {
   MenusPayload,
   SavedComparisonDetail,
   SavedComparisonsPayload,
-  NewsletterStatus,
   DeviceRow,
   PosConnectionRow,
   PosSyncRun,
@@ -86,7 +85,6 @@ import {
   recipesPayloadSchema,
   salesOverviewSchema,
   searchIndexPayloadSchema,
-  newsletterStatusSchema,
   devicesPayloadSchema,
   sessionPayloadSchema,
   type SessionPayload,
@@ -104,7 +102,6 @@ import type {
   IngredientSummary,
 } from "@/lib/backend/types"
 import type { DuplicateSuggestion } from "@/lib/ingredient-insights"
-import type { InvoiceLineStatus } from "@/lib/invoice-import"
 import type { CurrencyCode } from "@/lib/business-settings"
 import type { RecipeHealth } from "@/lib/recipe/health"
 import {
@@ -142,11 +139,6 @@ export async function getSessionPayload(): Promise<SessionPayload | null> {
     if (error instanceof BackendUnauthorizedError) return null
     throw error
   }
-}
-
-/** The signed-in user's product-updates subscription, as Ghost holds it. */
-export async function getNewsletterStatus(): Promise<NewsletterStatus> {
-  return djangoGetParsed("/internal/v1/newsletter/", newsletterStatusSchema)
 }
 
 /** The phones signed in to this account through the mobile API. */
@@ -223,90 +215,6 @@ export function registerDriveFiles(body: {
   markRegistered: boolean
 }): Promise<{ registered: number; removed: number; newCount: number }> {
   return djangoSystemAction("/internal/v1/system/drive-files/", body)
-}
-
-/**
- * The reader's half of the registry: what one workspace still owes a read
- * (`new`), what it has read (`ready`) and what it failed on, oldest first so a
- * backlog is worked through in the order the receipts arrived. A system read —
- * the watcher has no session to scope it with, so the workspace is named.
- */
-export async function getDriveFilesForWorkspace(
-  userId: string,
-  status: "new" | "ready" | "failed",
-  limit?: number
-): Promise<DriveFilesPayload> {
-  const suffix = limit === undefined ? "" : `&limit=${limit}`
-  const payload = await djangoSystemGet<DriveFilesPayload>(
-    `/internal/v1/system/drive-files/?userId=${encodeURIComponent(userId)}` +
-      `&status=${status}${suffix}`
-  )
-  if (process.env.NODE_ENV !== "production")
-    driveFilesPayloadSchema.parse(payload)
-  return payload
-}
-
-/**
- * The attended path's probe, run for the watcher. Same body and same payload
- * as the `invoice-line-status` action, plus the workspace currency: an
- * unattended read has no session to look one up with, and a document that
- * printed its own currency is normalized against it.
- */
-export function probeInvoiceLinesForWorkspace(
-  userId: string,
-  body: Record<string, unknown>
-): Promise<InvoiceLineStatus & { currencyCode: CurrencyCode }> {
-  return djangoSystemAction("/internal/v1/system/invoice-line-status/", {
-    userId,
-    ...body,
-  })
-}
-
-export function updateInvoiceAiUsageForWorkspace<T>(
-  userId: string,
-  body: Record<string, unknown>
-): Promise<T> {
-  return djangoSystemAction("/internal/v1/system/invoice-ai-usage/", {
-    ...body,
-    userId,
-  })
-}
-
-/** Store what the watcher read and put the file up for review — one entry per
- *  document found in the file, so a bundle arrives as the receipts it holds.
- *  The row must still be waiting to be read, so a late reader never overwrites
- *  an import or a skip. */
-export function saveDriveExtraction(body: {
-  userId: string
-  driveFileId: string
-  parts: Array<{
-    /** 0-based, in the order the documents appear in the file. */
-    part: number
-    document: Record<string, unknown>
-    /** A page range of the file, a region of the prepared photo, or neither
-     *  when the whole file is the document. */
-    pageStart?: number | null
-    pageEnd?: number | null
-    region?: { x0: number; y0: number; x1: number; y1: number } | null
-    /** What read this part: the parts of one file need not agree. */
-    model: string
-    escalated: boolean
-  }>
-}): Promise<{ ok: true; readyCount: number }> {
-  return djangoSystemAction("/internal/v1/system/drive-extractions/", body)
-}
-
-/** The other outcome: the read produced no invoice. `retry-drive-file` puts
- *  the row back in line. */
-export function failDriveExtraction(body: {
-  userId: string
-  driveFileId: string
-  reason: string
-}): Promise<{ ok: true }> {
-  return djangoSystemAction(
-    "/internal/v1/system/drive-extractions/failed/",
-    body
-  )
 }
 
 /** `status` is absent for the active pantry, "archived", or "all"; `kind` is

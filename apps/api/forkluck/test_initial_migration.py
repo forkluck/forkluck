@@ -25,7 +25,8 @@ INITIAL_MODULE = f"{__package__}.migrations.{INITIAL_NAME}"
 # Retired from the model state but not yet dropped: a destructive change ships
 # one release after the code stops naming the table (AGENTS.md, Migrations).
 # Drop the table in the next release and take it off this list.
-RETIRED_TABLES: set[str] = set()
+# Removed from state in 0062; the table itself is dropped next release.
+RETIRED_TABLES: set[str] = {"forkluck_invoiceairead"}
 
 RECORDED_ROWS = [
     INITIAL_NAME,
@@ -89,6 +90,7 @@ RECORDED_ROWS = [
     "0059_saved_comparison_settings",
     "0060_device_token",
     "0061_app_attest_key_and_delete_purpose",
+    "0062_remove_invoice_ai_read_state",
 ]
 FINAL_CONNECTOR_MODELS = {
     "ConnectorAuthorizationSession",

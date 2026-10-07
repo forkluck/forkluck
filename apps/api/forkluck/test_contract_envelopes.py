@@ -209,11 +209,6 @@ SCHEMA_PAYLOADS = {
     "sessionPayloadSchema": lambda case: internal_payload(
         account_views.internal_session, case.user
     ),
-    # Ghost is unconfigured under test, which is one of the shapes: both keys
-    # are present either way.
-    "newsletterStatusSchema": lambda case: internal_payload(
-        account_views.internal_newsletter, case.user
-    ),
     "devicesPayloadSchema": lambda case: case.devices(),
     # Name order, not the page default: the pin reads the first row only, and
     # the fixture's richest ingredient is the one that leads alphabetically.
@@ -1496,10 +1491,6 @@ class EnvelopeContractTests(ShapeAssertions, TestCase):
             [
                 "aiKey.configured",
                 "aiKey.hint",
-                "aiUsage.usedPages",
-                "aiUsage.maxPages",
-                "aiUsage.resetsOn",
-                "aiUsage.exhausted",
                 "byCategory[].categoryId",
                 "byCategory[].currencyCode",
                 "byCategory[].lineCount",

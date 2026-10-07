@@ -21,7 +21,6 @@ const eslintConfig = defineConfig([
     ".ds-sync/**",
     "ds-bundle/**",
     "output/**",
-    // Vendored Ghost theme (a fork of Ghost's Source theme) and its built JS:
   ]),
   {
     rules: {

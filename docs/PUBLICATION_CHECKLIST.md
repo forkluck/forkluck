@@ -14,7 +14,6 @@ configuration public.
 | Connectors | This repository, `services/connectors` | Public, AGPL-3.0-or-later | Dedicated credential store, API, worker, database |
 | Catalog | This repository, `data/catalog` | Public, CC0 | Authoritative dataset, read by the app at build and run time |
 | Agent skills | This repository, `skills` | Public, AGPL-3.0-or-later | Portable contributor guidance |
-| Azure mail provider | Separate repository | Public, MIT | Newsletter delivery; preserve upstream copyright notices |
 | Marketing | Separate repository | Private | Website source, campaigns, and business working material |
 
 A clean baseline has one parentless commit on `main`. Git history cleanup does

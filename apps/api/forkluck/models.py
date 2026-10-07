@@ -70,21 +70,6 @@ def derive_normalized_name(instance, save_kwargs: dict) -> None:
 IngredientMeasureUnit = measure_unit_choices
 
 
-class InvoiceAiRead(models.Model):
-    """One admitted AI read; independent of invoices so deletion cannot refund it."""
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-    period_start = models.DateField()
-    pages = models.PositiveIntegerField()
-    attempts = models.PositiveIntegerField(default=0)
-    input_tokens = models.PositiveBigIntegerField(default=0)
-    output_tokens = models.PositiveBigIntegerField(default=0)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        indexes = [models.Index(fields=["user", "period_start"])]
-
 
 class IngredientMeasureConfidence(models.TextChoices):
     HIGH = "high", "High"

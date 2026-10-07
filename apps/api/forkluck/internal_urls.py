@@ -78,7 +78,6 @@ urlpatterns = [
         "primo/conversations/<uuid:conversation_id>/",
         internal_get(primo_views.conversation_detail),
     ),
-    path("newsletter/", internal_get(account_views.internal_newsletter)),
     path("devices/", internal_get(devices.device_list)),
     path("search-index/", internal_get(search_views.search_index)),
     path("ingredients/", internal_get(ingredient_views.ingredients)),
@@ -204,7 +203,6 @@ urlpatterns = [
         internal_get(sales_views.sales_identity_lines),
     ),
     path("system/drive-watch/", system_get(drive_system.drive_watch)),
-    path("system/invoice-ai-usage/", system_post(drive_system.invoice_ai_usage)),
     path(
         "system/drive-watch/save/",
         system_post(drive_system.save_drive_watch),

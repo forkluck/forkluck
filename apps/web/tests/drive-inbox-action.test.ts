@@ -69,7 +69,7 @@ function storedDocument() {
     ],
     fileName: "baldor.pdf",
     driveWebViewLink: "https://drive.example/file-1",
-    extractionModel: "qwen3-vl-plus",
+    extractionModel: "claude-opus-5",
     escalated: false,
   }
 }
@@ -83,7 +83,7 @@ function part(document: unknown, patch: Record<string, unknown> = {}) {
     region: null,
     status: "ready" as const,
     document,
-    model: "qwen3-vl-plus",
+    model: "claude-opus-5",
     escalated: false,
     extractedAt: "2026-08-01T01:00:00Z",
     ...patch,
@@ -135,7 +135,7 @@ describe("loadReadyDriveDocuments", () => {
         fileName: "baldor.pdf",
         driveFileId: "file-1",
         driveWebViewLink: "https://drive.example/file-1",
-        extractionModel: "qwen3-vl-plus",
+        extractionModel: "claude-opus-5",
         supplierName: "Baldor",
         totalCents: 1298,
       },

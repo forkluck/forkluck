@@ -114,9 +114,6 @@ ensure_backend_env STRIPE_WEBHOOK_ENDPOINT_ID ""
 # enable immediately; no session is granted until a signup code is consumed.
 ensure_backend_env ACS_CONNECTION_STRING ""
 ensure_backend_env FORKLUCK_REQUIRE_EMAIL_VERIFICATION true
-# Optional Ghost newsletter sync; both empty leaves membership untouched.
-ensure_backend_env GHOST_ADMIN_URL ""
-ensure_backend_env GHOST_ADMIN_API_KEY ""
 
 if [[ ! -f /etc/forkluck/frontend.env ]]; then
     internal_secret="$(sed -n 's/^FORKLUCK_INTERNAL_SECRET=//p' /etc/forkluck/backend.env)"
@@ -133,8 +130,6 @@ if [[ ! -f /etc/forkluck/frontend.env ]]; then
         printf '# GOOGLE_PICKER_API_KEY=        (Drive import; referrer-restricted)\n'
         printf '# GOOGLE_CLOUD_PROJECT_NUMBER=  (Drive import; Picker setAppId)\n'
         printf '# Primo — server-only key; leaving it empty hides the feature.\n'
-        printf 'QWEN_API_KEY=\n'
-        printf 'QWEN_BASE_URL=https://dashscope-us.aliyuncs.com/compatible-mode/v1\n'
         printf 'PRIMO_API_KEY=\n'
         printf 'PRIMO_BASE_URL=https://primo.forkluck.com/v1\n'
     } > /etc/forkluck/frontend.env
@@ -148,8 +143,6 @@ ensure_frontend_env() {
         printf '%s=%s\n' "$key" "$value" >> /etc/forkluck/frontend.env
     fi
 }
-ensure_frontend_env QWEN_API_KEY ""
-ensure_frontend_env QWEN_BASE_URL https://dashscope-us.aliyuncs.com/compatible-mode/v1
 ensure_frontend_env PRIMO_API_KEY ""
 ensure_frontend_env PRIMO_BASE_URL https://primo.forkluck.com/v1
 

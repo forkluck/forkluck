@@ -1,7 +1,6 @@
 import "server-only"
 
 import { djangoAction } from "@/lib/backend/client"
-import { invoiceAiBudget, type InvoiceAiBudget } from "@/lib/invoice-ai-usage"
 import {
   getAiCredential,
   getBusinessSettings,
@@ -17,7 +16,6 @@ import {
   detectDocuments,
   extractWithEscalation,
   extractionConfig,
-  type ExtractionEngine,
   type ExtractionFile,
 } from "@/lib/invoice-extract"
 import {
@@ -56,9 +54,7 @@ export type ParseInvoiceInput = {
 /**
  * Bytes for a file in a connected folder. The folder — not the id the caller
  * holds — is the authorization: a file the service account can read but this
- * workspace never connected is refused before it is fetched. Shared with the
- * unattended reader in lib/drive-read.ts, which has no session to look the
- * folder up with and passes the workspace's own.
+ * workspace never connected is refused before it is fetched.
  */
 export async function fetchDriveFileForExtraction(
   driveFileId: string,
@@ -231,10 +227,8 @@ function extractionFile(
  * 1. Text-layer extraction + the deterministic supplier template — no AI, no
  *    key, no cost. Standard Baldor invoices end here.
  * 2. Only when the template defers (unknown layout, scanned PDF, arithmetic
- *    that doesn't reconcile) does the AI come in. By default that is
- *    Forkluck's own engine, which needs nothing from the workspace; a
- *    deployment configured for the `anthropic` engine reads with the
- *    workspace's OWN key instead, and without one the file gets a clear error.
+ *    that doesn't reconcile) does the AI come in, reading with the
+ *    workspace's own Anthropic key; without one the file gets a clear error.
  *
  * A photo or scan has no step 1 to try and goes straight to step 2.
  *
@@ -277,32 +271,25 @@ export async function runInvoiceParse(
     }
 
     const config = extractionConfig()
-    // Only the bring-your-own-key engine needs the workspace's credential;
-    // on Forkluck's own engine an unconfigured server surfaces its own error
-    // from extractInvoice instead.
-    let apiKey: string | null = null
-    if (config.engine === "anthropic") {
-      const credential = await getAiCredential()
-      if (!credential.key) {
-        if (credential.configured) {
-          return {
-            error:
-              "Your saved AI key can't be read — remove it and add it again.",
-          }
-        }
-        if (file.kind === "image") {
-          return {
-            error:
-              "Photos and scans need AI reading — connect an AI key (optional) to import them.",
-          }
-        }
+    const credential = await getAiCredential()
+    if (!credential.key) {
+      if (credential.configured) {
         return {
-          error: free.scanned
-            ? "This looks like a scanned PDF. Forkluck reads digital invoices for free — for scans, connect an AI key (optional) and retry."
-            : "Couldn't read this supplier's layout automatically yet. Connect an AI key (optional) to have AI read it.",
+          error:
+            "Your saved AI key can't be read — remove it and add it again.",
         }
       }
-      apiKey = credential.key
+      if (file.kind === "image") {
+        return {
+          error:
+            "Photos and scans need AI reading — connect an AI key (optional) to import them.",
+        }
+      }
+      return {
+        error: free.scanned
+          ? "This looks like a scanned PDF. Forkluck reads digital invoices for free — for scans, connect an AI key (optional) and retry."
+          : "Couldn't read this supplier's layout automatically yet. Connect an AI key (optional) to have AI read it.",
+      }
     }
     // Fetch categories first so the AI prompt can offer them; the real
     // per-line probe runs after extraction, once supplier/SKUs are known.
@@ -319,15 +306,7 @@ export async function runInvoiceParse(
       return { error: "That Drive file has already been imported." }
     }
     const categoryNames = categories.categories.map((category) => category.name)
-    const options = {
-      engine: config.engine,
-      model: config.model,
-      apiKey,
-      budget:
-        config.engine === "qwen"
-          ? invoiceAiBudget(file.kind === "image" ? 1 : free.pageSizes.length)
-          : undefined,
-    }
+    const options = { model: config.model, apiKey: credential.key }
 
     const reads = await readDocumentParts(aiFile, free, categoryNames, options)
     if (!Array.isArray(reads)) return reads
@@ -342,12 +321,7 @@ export async function runInvoiceParse(
   }
 }
 
-type AiOptions = {
-  engine: ExtractionEngine
-  model: string
-  apiKey: string | null
-  budget?: InvoiceAiBudget
-}
+type AiOptions = { model: string; apiKey: string }
 
 /**
  * One document found inside a file, as the read that found it left it: the raw
@@ -372,9 +346,7 @@ export type DocumentRead = {
  * one receipt in it is unreadable — and only a file where nothing came back is
  * an error, reported as the first one.
  *
- * The attended pipeline above and the unattended reader in lib/drive-read.ts
- * both find their documents here and normalize them with
- * {@link normalizeDocumentRead}.
+ * Documents found here are normalized with {@link normalizeDocumentRead}.
  */
 export function readDocumentParts(
   file: ExtractionFile,

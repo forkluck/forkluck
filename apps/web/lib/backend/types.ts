@@ -285,7 +285,6 @@ export type ConnectorConnection = {
 }
 
 export type InvoicesOverview = {
-  aiUsage: InvoiceAiUsage
   months: Array<{
     month: string
     totals: Array<{ currencyCode: CurrencyCode; totalCents: number }>
@@ -334,24 +333,6 @@ export type InvoicesOverview = {
     providers: ConnectorProvider[]
     connections: ConnectorConnection[]
   }
-}
-
-export type InvoiceAiUsage = {
-  usedPages: number
-  maxPages: number | null
-  /** First day of the next UTC calendar month, as a date-only string. */
-  resetsOn: string
-  exhausted: boolean
-}
-
-/**
- * The product-updates subscription, read from Ghost on every settings render.
- * Ghost is the only record of it, so `enabled` is null when Ghost cannot say
- * and `available` is false when the integration is unconfigured.
- */
-export type NewsletterStatus = {
-  enabled: boolean | null
-  available: boolean
 }
 
 /** A phone signed in through the mobile API; `lastUsedAt` is null until its first read. */

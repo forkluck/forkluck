@@ -77,7 +77,6 @@ from .serializers import (
     expense_category_json,
     invoice_detail_json,
 )
-from .ai_usage import action_invoice_ai_usage
 
 JsonObject = dict[str, Any]
 
@@ -2381,7 +2380,6 @@ def action_retry_drive_file(user: User, body: JsonObject) -> JsonObject:
 
 ACTIONS: dict[str, Callable[[User, JsonObject], JsonObject]] = {
     "save-receipt-feedback": action_save_receipt_feedback,
-    "invoice-ai-usage": action_invoice_ai_usage,
     "save-anthropic-key": action_save_anthropic_key,
     "delete-anthropic-key": action_delete_anthropic_key,
     "invoice-line-status": action_invoice_line_status,

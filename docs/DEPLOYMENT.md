@@ -48,10 +48,11 @@ the SSH deploy account; changes inside `deploy/` must be applied as an
 infrastructure update.
 
 The public repository carries three nginx templates: `forkluck.conf` is the application on
-`app.forkluck.com`, `forkluck-ghost.conf` is the public site on `forkluck.com`,
-and `forkluck-design.conf` is the visual guide on `design.forkluck.com`. The
-first two replace temporary upstream failures with a static maintenance page and a
-`503 Service Unavailable` response. The design template has no service of its
+`app.forkluck.com`, `forkluck-site.conf` is the public site on `forkluck.com`
+(static files under `/var/www/forkluck-site`), and `forkluck-design.conf` is the
+visual guide on `design.forkluck.com`. The application template replaces temporary
+upstream failures with a static maintenance page and a `503 Service Unavailable`
+response. The design template has no service of its
 own: it proxies the guide's paths to the same Next process as the application,
 and it uses the static-asset map and log format that `forkluck.conf` defines at
 http level, so the two must be installed together. `forkluck.conf` also
@@ -63,8 +64,8 @@ configuration, and reload nginx when any template changes:
 sudo install -d -m 755 /var/www/forkluck
 sudo install -m 644 deploy/nginx/maintenance.html /var/www/forkluck/maintenance.html
 sudo install -m 644 deploy/nginx/forkluck.conf /etc/nginx/sites-available/forkluck
-sudo install -m 644 deploy/nginx/forkluck-ghost.conf /etc/nginx/sites-available/forkluck-ghost
-sudo ln -sf /etc/nginx/sites-available/forkluck-ghost /etc/nginx/sites-enabled/forkluck-ghost
+sudo install -m 644 deploy/nginx/forkluck-site.conf /etc/nginx/sites-available/forkluck-site
+sudo ln -sf /etc/nginx/sites-available/forkluck-site /etc/nginx/sites-enabled/forkluck-site
 sudo install -m 644 deploy/nginx/forkluck-design.conf /etc/nginx/sites-available/forkluck-design
 sudo ln -sf /etc/nginx/sites-available/forkluck-design /etc/nginx/sites-enabled/forkluck-design
 sudo nginx -t
@@ -153,9 +154,8 @@ copies only `apps/web`, `apps/api`, and `data`.
 
 Routing:
 
-- `forkluck.com` → the public site: a self-hosted Ghost at `/opt/ghost`,
-  proxied to `127.0.0.1:2368`. See `deploy/ghost/README.md`. It is a separate
-  application with its own release cycle; this repository's deploy never
+- `forkluck.com` → the public site: static files under `/var/www/forkluck-site`,
+  the mirror of the retired Ghost site; this repository's deploy never
   touches it.
 - `www.forkluck.com` → redirects to `forkluck.com`
 - `app.forkluck.com` → application
@@ -175,11 +175,6 @@ release; ordinary application sessions continue working.
 
 ## Email verification
 
-The optional feedback board deployment and its shared account/mail setup are
-documented in [`deploy/fider/README.md`](../deploy/fider/README.md). It reuses
-the host's PostgreSQL and Ghost mail bridge, with a dedicated database and
-host-only session secret. It is deployed separately from the app release.
-
 Production requires both of these in `/etc/forkluck/backend.env` and refuses
 to start when either requirement is missing:
 
@@ -188,23 +183,10 @@ FORKLUCK_REQUIRE_EMAIL_VERIFICATION=true
 ACS_CONNECTION_STRING=<Azure Communication Services connection string>
 ```
 
-On the hosted installation, all product mail uses Ghost's existing delivery
-bridge. Set `FORKLUCK_MAIL_BRIDGE_URL=http://127.0.0.1:3003/v3/forkluck.com/messages`
-and `FORKLUCK_MAIL_BRIDGE_API_KEY` to the existing bridge key. These settings
-take precedence over ACS and must be configured together. Direct ACS is then
-optional. HTTPS is required for a bridge outside loopback. A bridge failure
-surfaces to the caller without retrying via ACS and risking duplicate codes.
-
 Verify a live code email before deploying a release that first enables this
 gate. An existing unverified user should log out and sign in again, then enter
 the emailed code. Stored recipe shares remain present but grant no access until
 their recipient verifies.
-
-Newsletter membership is optional: set `GHOST_ADMIN_URL` (for example
-`https://forkluck.com`) and `GHOST_ADMIN_API_KEY` to mirror verified accounts
-into Ghost, and leave both empty to disable the sync entirely. The key comes
-from Ghost admin under Settings → Integrations → Add custom integration, where
-the Admin API key is shown as `id:secret` — copy it whole.
 
 ## Starter price catalog
 
@@ -468,14 +450,8 @@ cursor untouched and records its message, which the Drive card on
 Suppliers → Connections shows. "Sync now", on that row, runs exactly this
 poll, and joins the timer's run if one is already going.
 
-Each tick also reads what it registered, with the house engine — Forkluck's own
-Qwen key — so the merchant opens the inbox to receipts already read rather than
-waiting on them. `DRIVE_READ_PER_RUN` (default 5) is how many files per
-workspace one tick starts, and a run stops starting new files after four
-minutes, leaving the rest for the next tick. Unattended reading is off entirely
-under `INVOICE_EXTRACTION_ENGINE=anthropic`, whose per-workspace key exists only
-inside a merchant's own session; there every file is read when someone imports
-it.
+A registered file is read when someone imports it: the workspace's Anthropic
+key exists only inside a merchant's own session, so nothing reads unattended.
 
 ## Uploaded invoice documents
 
@@ -505,57 +481,33 @@ Which model reads an uploaded or Drive-fetched document is configured in
 `/etc/forkluck/frontend.env`:
 
 ```env
-INVOICE_EXTRACTION_ENGINE=qwen
-INVOICE_EXTRACTION_MODEL=qwen3-vl-flash
+INVOICE_EXTRACTION_MODEL=claude-opus-5
 ```
 
-`INVOICE_EXTRACTION_MODEL` is the model every document is read with; it
-defaults to `qwen3-vl-flash` on the `qwen` engine and `claude-opus-5` on
-`anthropic`. `INVOICE_ESCALATION_MODEL` is the single re-read a document gets
-when the first read's arithmetic, header or line items did not check out, named
-as a model id on the configured engine. Left unset, that re-read runs on the
-same model with the validator's findings as a hint; set it empty to disable the
-second pass, so every document costs exactly one read.
+`INVOICE_EXTRACTION_MODEL` is the model every document is read with and
+defaults to `claude-opus-5`. `INVOICE_ESCALATION_MODEL` is the single re-read a
+document gets when the first read's arithmetic, header or line items did not
+check out. Left unset, that re-read runs on the same model with the validator's
+findings as a hint; set it empty to disable the second pass, so every document
+costs exactly one read. Each read is bounded to 300 seconds; a failed second
+pass keeps the first usable read with its review findings. Per-pass logs
+include preparation, model and total elapsed milliseconds without document
+content.
 
-Qwen's extraction and optional re-read share a 25-second deadline, leaving
-room for upload and matching within the 30-second target for a single invoice.
-If the second pass runs out of time, the first usable read remains available
-with its review findings. A first-pass timeout returns a retryable error. This
-is an AI-work limit, not a guarantee about upload or network latency; bundles
-require detection and a separate read for each document. The opt-in Anthropic
-engine retains its existing timeout. Per-pass logs include preparation, model
-and total elapsed milliseconds without document content.
+Reading bills the workspace's own Anthropic key, stored per workspace; a
+workspace without one is told so instead of being read. The document itself —
+a receipt photo, or a PDF rasterized to page images — goes to Anthropic and
+nowhere else. After changing these values, restart `forkluck-next.service`.
 
-Who pays depends on the engine. The default `qwen` engine bills Forkluck's own
-`QWEN_API_KEY` and sends the document to Alibaba Cloud Model Studio's US region
-(`QWEN_BASE_URL` is `dashscope-us`) under the boundary described below, so a
-merchant imports receipts without connecting anything and Forkluck pays.
-`anthropic` is the opt-in alternative: it bills the workspace's own Anthropic
-key, stored per workspace, and a workspace without one is told so instead of
-being read. After changing these values, restart `forkluck-next.service`.
-
-**Extraction eval.** `pnpm eval:extraction` scores an engine and model against
-a golden set of real receipts. Those receipts carry card digits and addresses,
-so the set lives outside the repository, at `RECEIPT_GOLDEN_DIR` (default
+**Extraction eval.** `pnpm eval:extraction` scores a model against a golden
+set of real receipts. Those receipts carry card digits and addresses, so the
+set lives outside the repository, at `RECEIPT_GOLDEN_DIR` (default
 `~/forkluck/receipt-golden/`): one case is a receipt file plus
-`<file>.expected.json`. `--engine` and `--model` default to what this
-deployment is configured with, and the run needs `QWEN_API_KEY` (or
-`ANTHROPIC_API_KEY` for that engine) in the shell — it is the only place Forkluck reads a key from
-the environment instead of the workspace — and writes its report under
-`reports/` in the golden directory. It is a development tool; no server needs
-any of this.
-
-**Hosted AI allowance rollout.** Apply migration `0051_invoice_ai_read` and
-restart Django before restarting Next (including its Drive reader). Trial
-workspaces receive 25 AI pages and paid workspaces 100 per UTC calendar month;
-an additional attempt budget covers detection, escalation and SDK retries.
-Both upload and automatic Drive reads reserve against the same owner ledger
-before calling Qwen. A missing/unavailable reservation endpoint refuses AI
-work. Existing invoices and manual/template-only imports remain available.
-Usage starts at zero on rollout; earlier provider calls are not reconstructed.
-Billing-disabled self-hosted installs and the BYOK Anthropic engine are exempt.
-The ledger records aggregate token usage without documents or prompts; unknown
-usage after provider timeouts remains charged against reserved attempts.
+`<file>.expected.json`. `--model` defaults to what this deployment is
+configured with, and the run needs `ANTHROPIC_API_KEY` in the shell — it is
+the only place Forkluck reads a key from the environment instead of the
+workspace — and writes its report under `reports/` in the golden directory. It
+is a development tool; no server needs any of this.
 
 ## Primo
 
@@ -567,10 +519,9 @@ PRIMO_API_KEY=
 PRIMO_BASE_URL=https://primo.forkluck.com/v1
 ```
 
-The key is a per-installation service credential, never a Qwen key and never a
-`NEXT_PUBLIC_` variable. Empty means Primo is hidden and Home opens Analytics.
-Invoice `QWEN_API_KEY`/`QWEN_BASE_URL` remain independent. After changing the
-credential, restart `forkluck-next.service`. A configured service outage leaves
+The key is a per-installation service credential, never a provider key and
+never a `NEXT_PUBLIC_` variable. Empty means Primo is hidden and Home opens
+Analytics. After changing the credential, restart `forkluck-next.service`. A configured service outage leaves
 Home/history/drafts usable with Retry and Open Analytics; there is no direct
 Qwen fallback and no health call during page rendering.
 
@@ -622,9 +573,7 @@ Rollback the private service to its previous immutable release using its
 `deploy-primo <sha>` command; code, prompt and model selection move together,
 active calls drain first, and the current ledger is preserved. Protocol v1 must
 remain compatible across the app/service rollback window. Keep the public app
-on the gateway-capable release during service rollback. Rolling the app back
-past this cutover restores its old direct-Qwen behavior if an invoice Qwen key
-is still present; that is not the normal rollback path. Prefer temporarily
+on the gateway-capable release during service rollback. Prefer temporarily
 clearing `PRIMO_API_KEY` to disable Primo while the rest of Forkluck operates.
 
 Primo conversations and their UI-message parts are stored in Forkluck's own
@@ -656,12 +605,10 @@ to whichever browser agent drives an authenticated WebMCP
 session; unlike Primo, WebMCP does not send them to Alibaba unless that agent's
 own implementation does so. Forkluck does not send
 browser-supplied historical tool payloads and does not log prompts, tool
-results, supplier data, or recipe data. Invoice extraction crosses the same
-boundary, sending the document itself: a receipt photo, or a PDF rasterized to
-page images. A self-host that cannot accept this external data boundary
-leaves `PRIMO_API_KEY` empty. Invoice extraction is a separate choice: leaving
-`QWEN_API_KEY` empty and setting `INVOICE_EXTRACTION_ENGINE=anthropic` uses each
-workspace's Anthropic key. Neither choice provides Primo code to a self-hoster.
+results, supplier data, or recipe data. A self-host that cannot accept this
+external data boundary leaves `PRIMO_API_KEY` empty; invoice extraction does
+not cross it, since documents go to Anthropic on each workspace's own key.
+Neither choice provides Primo code to a self-hoster.
 See Alibaba's [endpoint documentation](https://www.alibabacloud.com/help/en/model-studio/base-url)
 and [processing-scope documentation](https://www.alibabacloud.com/help/en/model-studio/regions/)
 before enabling it in another jurisdiction.

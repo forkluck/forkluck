@@ -88,9 +88,7 @@ function settings() {
         recipeCount: 0,
       }}
       businessSettings={DEFAULT_BUSINESS_SETTINGS}
-      byok={false}
       aiKey={{ configured: false, hint: null }}
-      newsletter={{ enabled: null, available: false }}
     />
   )
 }

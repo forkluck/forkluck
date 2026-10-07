@@ -2,7 +2,7 @@
 
 Recipe costing, formulation, labor and sales for working kitchens.
 
-[forkluck.com](https://forkluck.com) · [App](https://app.forkluck.com) · [Feedback](https://feedback.forkluck.com) · [Contributing](.github/CONTRIBUTING.md) · [Architecture](ARCHITECTURE.md)
+[forkluck.com](https://forkluck.com) · [App](https://app.forkluck.com) · [Contributing](.github/CONTRIBUTING.md) · [Architecture](ARCHITECTURE.md)
 
 [![License: AGPL v3 or later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE)
 
@@ -24,7 +24,7 @@ Development setup, the ingredient catalog, and how changes get reviewed are in [
 
 ## Getting help
 
-Product ideas and feedback go on [feedback.forkluck.com](https://feedback.forkluck.com). Bugs go in [GitHub issues](https://github.com/forkluck/forkluck/issues). Security issues go privately, as described in [SECURITY.md](SECURITY.md).
+Ideas, feedback and bugs go in [GitHub issues](https://github.com/forkluck/forkluck/issues). Security issues go privately, as described in [SECURITY.md](SECURITY.md).
 
 ## Copyright and license
 

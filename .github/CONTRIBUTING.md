@@ -38,8 +38,7 @@ idempotent, so running it again after an unchanged file does nothing.
 
 Run `pnpm backend:dev`, `pnpm dev`, and `pnpm backend:worker` in separate
 terminals. The app is at [localhost:3000](http://localhost:3000). The public
-site at forkluck.com is a separate self-hosted Ghost and is not part of this
-repository.
+site at forkluck.com is static files and is not part of this repository.
 
 The example env files carry safe defaults. Never commit real credentials.
 Local setup uses SQLite and the console email backend. `db:seed` prints the

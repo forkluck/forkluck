@@ -16,13 +16,8 @@ import type { InvoiceExtraction } from "@/lib/invoice-import"
 vi.mock("server-only", () => ({}))
 vi.mock("@/lib/invoice-extract", () => ({
   extractWithEscalation: vi.fn(),
-  // The real module pulls in server-only and the canvas binary; this repeats
-  // only the engine rule the flag defaults read.
+  // The real module pulls in server-only and the canvas binary.
   extractionConfig: () => ({
-    engine:
-      process.env.INVOICE_EXTRACTION_ENGINE === "anthropic"
-        ? "anthropic"
-        : "qwen",
     model: "configured-model",
     escalationModel: "configured-model",
   }),
@@ -107,7 +102,7 @@ describe("extractionCostUsd", () => {
 
   it("reports no price for a model the table doesn't carry", () => {
     expect(
-      extractionCostUsd("qwen3-vl-plus", {
+      extractionCostUsd("unknown-model", {
         inputTokens: 1_000_000,
         outputTokens: 1_000_000,
       })
@@ -130,16 +125,14 @@ describe("notUsableFromError", () => {
 })
 
 describe("report", () => {
-  it("names the file by engine, model and date", () => {
-    expect(
-      reportPath("/golden", "anthropic", "claude-opus-5", "2026-09-01")
-    ).toBe("/golden/reports/anthropic-claude-opus-5-2026-09-01.json")
+  it("names the file by model and date", () => {
+    expect(reportPath("/golden", "claude-opus-5", "2026-09-01")).toBe(
+      "/golden/reports/claude-opus-5-2026-09-01.json"
+    )
   })
 
   it("carries the run and its totals", () => {
     const options = parseArgs([
-      "--engine",
-      "anthropic",
       "--model",
       "claude-sonnet-5",
       "--escalate",
@@ -160,14 +153,12 @@ describe("report", () => {
           outputTokens: 5,
           costUsd: 0.25,
           ms: 1200,
-          engine: "anthropic",
           model: "claude-sonnet-5",
         },
       ],
       "2026-09-01"
     )
     expect(report).toMatchObject({
-      engine: "anthropic",
       model: "claude-sonnet-5",
       escalate: true,
       date: "2026-09-01",
@@ -179,10 +170,9 @@ describe("report", () => {
 })
 
 describe("parseArgs", () => {
-  it("defaults to one pass on Forkluck's own engine over the configured golden set", () => {
+  it("defaults to one pass over the configured golden set", () => {
     const options = parseArgs([])
     expect(options).toMatchObject({
-      engine: "qwen",
       // Null means "whatever the deployment is configured with"; main resolves
       // it against extractionConfig().
       model: null,
@@ -192,13 +182,7 @@ describe("parseArgs", () => {
     })
   })
 
-  it("follows a deployment configured for the Anthropic engine", () => {
-    vi.stubEnv("INVOICE_EXTRACTION_ENGINE", "anthropic")
-
-    expect(parseArgs([]).engine).toBe("anthropic")
-  })
-
   it("refuses an unknown flag", () => {
-    expect(() => parseArgs(["--engin", "qwen"])).toThrow("Unknown flag")
+    expect(() => parseArgs(["--engin", "x"])).toThrow("Unknown flag")
   })
 })

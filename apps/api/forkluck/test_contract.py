@@ -162,7 +162,6 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "save-receipt-feedback": "action_save_receipt_feedback",
     "import-labor": "action_import_labor",
     "invoice-line-status": "action_invoice_line_status",
-    "invoice-ai-usage": "action_invoice_ai_usage",
     "link-invoice-line": "action_link_invoice_line",
     "disconnect-invoice-line": "action_disconnect_invoice_line",
     "use-invoice-price": "action_use_invoice_price",
@@ -244,7 +243,6 @@ EXPECTED_ACTIONS: dict[str, str] = {
     "unignore-sales-modifiers": "action_unignore_sales_modifiers",
     "unignore-sales-skus": "action_unignore_sales_skus",
     "update-account": "action_update_account",
-    "set-newsletter": "action_set_newsletter",
     "revoke-device": "action_revoke_device",
     "request-account-deletion": "action_request_account_deletion",
     "delete-account": "action_delete_account",
@@ -269,7 +267,6 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("auth-methods/", None),
     ("primo/conversations/", None),
     ("primo/conversations/<uuid:conversation_id>/", None),
-    ("newsletter/", None),
     ("devices/", None),
     ("search-index/", None),
     ("ingredients/", None),
@@ -332,7 +329,6 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
     ("product-categories/", None),
     ("sales-identity-lines/", None),
     ("system/drive-watch/", None),
-    ("system/invoice-ai-usage/", None),
     ("system/drive-watch/save/", None),
     ("system/drive-files/", None),
     ("system/invoice-line-status/", None),
@@ -342,9 +338,6 @@ EXPECTED_INTERNAL_ROUTES: list[tuple[str, str | None]] = [
 ]
 
 EXPECTED_PUBLIC_ROUTES: list[tuple[str, str | None]] = [
-    ("auth/feedback/authorize", None),
-    ("auth/feedback/token", None),
-    ("auth/feedback/profile", None),
     ("auth/csrf", "csrf"),
     ("auth/session", "public-session"),
     ("auth/register", "register"),

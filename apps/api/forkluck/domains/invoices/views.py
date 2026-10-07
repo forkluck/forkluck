@@ -34,11 +34,9 @@ from ...models import (
     User,
 )
 from ..shared.search import search_tokens, tokens_filter
-from ..shared.billing import billing_json
 from ..shared.supplier_import import supplier_display_name
 from ..shared.values import month_value
 from .actions import ensure_expense_categories
-from .ai_usage import invoice_ai_usage
 from .connector_sync import connector_payload, run_json as connector_run_json
 from .serializers import (
     drive_file_json,
@@ -363,7 +361,6 @@ def invoice_search(user: User, query: str) -> Q | None:
 
 def invoices_overview(request: HttpRequest) -> JsonResponse:
     user = request.user
-    billing = billing_json(user)
     ensure_expense_categories(user)
     try:
         month = month_value(request.GET.get("month"))
@@ -487,7 +484,6 @@ def invoices_overview(request: HttpRequest) -> JsonResponse:
             "invoices": [invoice_json(row) for row in visible_invoices],
             "categories": [expense_category_json(row) for row in categories],
             "aiKey": anthropic_key_status(user),
-            "aiUsage": invoice_ai_usage(user, billing),
             "connectors": connector_payload(user),
             # The badge on the Drive tab: how many files the poller has found
             # that nobody has imported, skipped or ruled out yet.

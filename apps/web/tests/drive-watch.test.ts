@@ -13,7 +13,6 @@ const backend = {
   saveDriveWatch: vi.fn(),
   registerDriveFiles: vi.fn(),
 }
-const readNewDriveFiles = vi.fn()
 
 vi.mock("@/lib/google-drive-service", async () => {
   const actual = await vi.importActual<
@@ -29,21 +28,13 @@ vi.mock("@/lib/google-drive-service", async () => {
       drive.resolveDriveAncestor(...args),
   }
 })
-vi.mock("@/lib/drive-read", () => ({
-  readNewDriveFiles: (input: unknown) => readNewDriveFiles(input),
-}))
 vi.mock("@/lib/backend/queries", () => ({
   getDriveWatch: () => backend.getDriveWatch(),
   saveDriveWatch: (state: unknown) => backend.saveDriveWatch(state),
   registerDriveFiles: (body: unknown) => backend.registerDriveFiles(body),
 }))
 
-import {
-  planRegistrations,
-  runDriveWatch,
-  runDriveWatchAndRead,
-  startDriveRead,
-} from "@/lib/drive-watch"
+import { planRegistrations, runDriveWatch } from "@/lib/drive-watch"
 import {
   DriveCursorExpiredError,
   DriveServiceError,
@@ -218,11 +209,6 @@ describe("runDriveWatch", () => {
     drive.resolveDriveAncestor
       .mockReset()
       .mockImplementation((parents: string[]) => resolveAncestor(parents))
-    readNewDriveFiles.mockReset().mockResolvedValue({
-      read: 0,
-      failed: 0,
-      skipped: 0,
-    })
   })
 
   it("lists every unregistered folder and takes a start token on the first run", async () => {
@@ -299,43 +285,6 @@ describe("runDriveWatch", () => {
     ])
     expect(first).toBe(second)
     expect(backend.getDriveWatch).toHaveBeenCalledTimes(1)
-  })
-
-  it("reads what it registered on the timer's run, and not on a bare poll", async () => {
-    backend.getDriveWatch.mockResolvedValue(watchState())
-    drive.listDriveChanges.mockResolvedValue({
-      changes: [],
-      newStartPageToken: "cursor-9",
-    })
-
-    await runDriveWatch()
-    expect(readNewDriveFiles).not.toHaveBeenCalled()
-
-    await runDriveWatchAndRead()
-    expect(readNewDriveFiles).toHaveBeenCalledWith({ folders: FOLDERS })
-  })
-
-  it("keeps one reader at a time, on its own guard", async () => {
-    backend.getDriveWatch.mockResolvedValue(watchState())
-    let release = () => {}
-    readNewDriveFiles.mockImplementation(
-      () => new Promise((resolve) => (release = () => resolve({})))
-    )
-
-    const first = startDriveRead()
-    const second = startDriveRead()
-    expect(first).toBe(second)
-
-    // The poll's guard is a different one: a running read never blocks the
-    // next registration.
-    drive.listDriveChanges.mockResolvedValue({
-      changes: [],
-      newStartPageToken: "cursor-9",
-    })
-    expect(await runDriveWatch()).toMatchObject({ ok: true })
-    expect(readNewDriveFiles).toHaveBeenCalledTimes(1)
-    release()
-    await first
   })
 
   it("does nothing at all without a service account", async () => {
