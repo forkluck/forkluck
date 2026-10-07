@@ -10,7 +10,7 @@ it fails.
 from datetime import date, timedelta
 from decimal import Decimal
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from .domains.invoices.views import (
@@ -273,10 +273,13 @@ class ReadQueryCountTests(TestCase):
         ):
             internal_payload(drive_files, self.user, query={"status": "ready"})
 
+    # The connector card adds a query only where the service is configured;
+    # the pin is for the fixed overview.
+    @override_settings(FORKLUCK_CONNECTOR_SERVICE_URL="")
     def test_invoices_overview_counts_drive_files_once(self):
         self.drive_files(DriveFile.Status.NEW, 5)
         with self.assertNumQueries(
-            36,
+            35,
             msg="The invoices overview is a fixed set of aggregates plus one "
             "COUNT for each Drive badge — waiting to be read, and read and "
             "waiting to be confirmed; a per-row Drive read would grow the "
