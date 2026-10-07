@@ -6,8 +6,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
  * A receipt photo has no text layer and no supplier template to try, so it
  * must never touch `extractPdfTextLines` — unpdf would refuse the bytes and
  * the user would be told their photo "isn't a readable PDF". It goes through
- * `prepareImage` (upright, downscaled) and then to the AI — Forkluck's own by
- * default, or the workspace's key on the opt-in `anthropic` engine.
+ * `prepareImage` (upright, downscaled) and then to the AI, on the workspace's
+ * own key.
  */
 
 vi.mock("server-only", () => ({}))
@@ -44,12 +44,8 @@ vi.mock("@/lib/pdf-text", () => ({
 vi.mock("@/lib/image-prep", () => ({
   prepareImage: (input: Buffer) => prepareImage(input),
 }))
-// The engine each case runs on; only `anthropic` reads a workspace key.
-let engine: "anthropic" | "qwen" = "anthropic"
-
 vi.mock("@/lib/invoice-extract", () => ({
   extractionConfig: () => ({
-    engine,
     model: "test-model",
     escalationModel: "",
   }),
@@ -80,7 +76,6 @@ const PHOTO = {
 const KEY = { configured: true, hint: "1234", key: "sk-ant-test-key-1234" }
 
 beforeEach(() => {
-  engine = "anthropic"
   getAiCredential.mockReset().mockResolvedValue(KEY)
   djangoAction.mockReset().mockResolvedValue({
     items: [],
@@ -117,7 +112,6 @@ describe("runInvoiceParse on photos", () => {
       },
       ["Produce"],
       {
-        engine: "anthropic",
         model: "test-model",
         apiKey: "sk-ant-test-key-1234",
       }
@@ -125,40 +119,8 @@ describe("runInvoiceParse on photos", () => {
     expect(result).toEqual({ error: "AI declined" })
   })
 
-  it("reads a photo on Forkluck's own engine with no key at all", async () => {
-    engine = "qwen"
-    getAiCredential.mockResolvedValue({
-      configured: false,
-      hint: null,
-      key: null,
-    })
 
-    const result = await runInvoiceParse(PHOTO)
-
-    expect(getAiCredential).not.toHaveBeenCalled()
-    expect(extractWithEscalation).toHaveBeenCalledWith(
-      {
-        kind: "image",
-        mediaType: "image/jpeg",
-        base64: "cHJlcGFyZWQ=",
-        // The prepared pixels the model reads: also what a box is a fraction of.
-        size: { width: 1200, height: 1600 },
-      },
-      ["Produce"],
-      {
-        engine: "qwen",
-        model: "test-model",
-        apiKey: null,
-        budget: {
-          beforeCall: expect.any(Function),
-          record: expect.any(Function),
-        },
-      }
-    )
-    expect(result).toEqual({ error: "AI declined" })
-  })
-
-  it("asks for a key in the photo's own words on the BYOK engine", async () => {
+  it("asks for a key in the photo's own words", async () => {
     getAiCredential.mockResolvedValue({
       configured: false,
       hint: null,
@@ -210,7 +172,6 @@ describe("runInvoiceParse on photos", () => {
       },
       ["Produce"],
       {
-        engine: "anthropic",
         model: "test-model",
         apiKey: "sk-ant-test-key-1234",
       }

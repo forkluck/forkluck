@@ -19,11 +19,10 @@ const context: PrimoGatewayContext = {
 beforeEach(() => {
   vi.stubEnv("PRIMO_API_KEY", "installation-secret")
   vi.stubEnv("PRIMO_BASE_URL", "https://primo.example.invalid/v1")
-  vi.stubEnv("QWEN_API_KEY", "invoice-secret")
 })
 afterEach(() => vi.unstubAllEnvs())
 
-it("does not enable Primo when only the invoice provider key is configured", () => {
+it("does not enable Primo without the installation credential", () => {
   vi.stubEnv("PRIMO_API_KEY", "")
   expect(primoConfigured()).toBe(false)
   expect(() => primoModel(context)).toThrow("not configured")

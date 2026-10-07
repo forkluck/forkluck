@@ -1,7 +1,6 @@
 import "server-only"
 
 import { createAnthropic } from "@ai-sdk/anthropic"
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import Anthropic from "@anthropic-ai/sdk"
 import {
   APICallError,
@@ -26,23 +25,15 @@ import {
   type NormalizedInvoice,
   type PageSize,
 } from "@/lib/invoice-import"
-import { QWEN_BASE_URL } from "@/lib/ai/providers"
-import {
-  InvoiceAiBudgetError,
-  type InvoiceAiBudget,
-} from "@/lib/invoice-ai-usage"
 
 /**
  * The invoice pipeline's AI adapter. Everything upstream and downstream is
  * pure and tested against fixtures (tests/fixtures/invoices/), so swapping the
  * engine means changing only this module and re-running the eval.
  *
- * Who pays: Forkluck's own key by default. The default `qwen` engine bills
- * Forkluck's `QWEN_API_KEY` and sends the document to Alibaba Cloud Model
- * Studio's US region (`QWEN_BASE_URL` is dashscope-us), so a merchant imports
- * receipts without connecting anything. A workspace's own Anthropic key is the
- * opt-in alternative: the `anthropic` engine bills that key. Both engines
- * have bounded retries; actual charges depend on provider pricing and usage.
+ * Who pays: the workspace's own Anthropic key, stored per workspace; a
+ * workspace without one is told so instead of being read. Retries are
+ * bounded; actual charges depend on provider pricing and usage.
  *
  * The Anthropic call runs through the `ai` SDK because @ai-sdk/anthropic 4.0
  * asks for Anthropic's native structured outputs (`structuredOutputMode:
@@ -50,19 +41,14 @@ import {
  * `verifyAnthropicKey` still needs the Anthropic SDK, for `countTokens`.
  */
 
-export type ExtractionEngine = "anthropic" | "qwen"
-
 const ANTHROPIC_DEFAULT_MODEL = "claude-opus-5"
-const QWEN_DEFAULT_MODEL = "qwen3-vl-flash"
 /** The SDK counts a timeout as a transport failure, so a low retry budget is
  * what keeps a slow-but-successful invoice from being billed three times. */
 const EXTRACTION_TIMEOUT_MS = 300_000
-/** Leave room for upload and matching within the 30-second attended target. */
-const QWEN_DOCUMENT_TIMEOUT_MS = 25_000
 const EXTRACTION_MAX_RETRIES = 1
-/** A receipt Qwen has to read as pixels: past four pages it is a bundle, not a
+/** A PDF is read as page images: past four pages it is a bundle, not a
  * document this pipeline handles. */
-const QWEN_MAX_PDF_PAGES = 4
+const MAX_PDF_PAGES = 4
 /** Rasterizing a scanned page: 2x so small receipt print stays legible, but
  * never past the longest edge the vision model accepts whole. */
 const RASTER_SCALE = 2
@@ -72,25 +58,14 @@ const RASTER_MAX_EDGE_PX = 2576
 const DETECTION_RASTER_SCALE = 0.5
 const DETECTION_MAX_PAGES = 20
 
-/** Deployment's engine and its two model tiers. Pure, so the eval script and
- * the tests read exactly what the parse path runs on. `INVOICE_ESCALATION_MODEL`
- * unset means a second, hinted read on the same model; empty disables the
- * second pass; any value is a model id on the configured engine. */
-export function extractionConfig(): {
-  engine: ExtractionEngine
-  model: string
-  escalationModel: string
-} {
-  const engine: ExtractionEngine =
-    process.env.INVOICE_EXTRACTION_ENGINE?.trim() === "anthropic"
-      ? "anthropic"
-      : "qwen"
+/** Deployment's two model tiers. Pure, so the eval script and the tests read
+ * exactly what the parse path runs on. `INVOICE_ESCALATION_MODEL` unset means
+ * a second, hinted read on the same model; empty disables the second pass. */
+export function extractionConfig(): { model: string; escalationModel: string } {
   const model =
-    process.env.INVOICE_EXTRACTION_MODEL?.trim() ||
-    (engine === "qwen" ? QWEN_DEFAULT_MODEL : ANTHROPIC_DEFAULT_MODEL)
+    process.env.INVOICE_EXTRACTION_MODEL?.trim() || ANTHROPIC_DEFAULT_MODEL
   const escalationModel = process.env.INVOICE_ESCALATION_MODEL
   return {
-    engine,
     model,
     escalationModel:
       escalationModel === undefined ? model : escalationModel.trim(),
@@ -133,19 +108,14 @@ export type ExtractionFile =
     }
 
 export type ExtractionOptions = {
-  engine: ExtractionEngine
   model: string
-  /** The merchant's Anthropic key; null on the Qwen engine, which runs on
-   * Forkluck's own credential. */
-  apiKey: string | null
-  budget?: InvoiceAiBudget
+  /** The workspace's Anthropic key. */
+  apiKey: string
   /** Validator findings from a first read, appended to the prompt. */
   hint?: string
   /** The one document inside a multi-document PDF this read is for, as a
    * 0-based inclusive page range. The whole file when absent. */
   pages?: { start: number; end: number }
-  /** Shared by both reads of one document, so escalation cannot restart the clock. */
-  signal?: AbortSignal
 }
 
 export type ExtractionRead = {
@@ -157,31 +127,11 @@ export type ExtractionRead = {
   pageSizes?: PageSize[]
 }
 
-function engineModel(
-  options: ExtractionOptions
-): { model: LanguageModel } | { error: string } {
-  if (options.engine === "qwen") {
-    const apiKey = process.env.QWEN_API_KEY?.trim()
-    if (!apiKey) {
-      return { error: "Forkluck's AI isn't configured on this server." }
-    }
-    return {
-      model: createOpenAICompatible({
-        name: "qwen",
-        apiKey,
-        baseURL: QWEN_BASE_URL,
-        // DashScope takes OpenAI's json_schema response format, which carries
-        // every field description. Without this flag the SDK falls back to
-        // json_object mode, which DashScope refuses unless the prompt says
-        // "json" and which sends no schema at all.
-        supportsStructuredOutputs: true,
-      })(options.model),
-    }
-  }
-  if (!options.apiKey) {
-    return { error: "Connect an AI key (optional) to have AI read this file." }
-  }
-  return { model: createAnthropic({ apiKey: options.apiKey })(options.model) }
+function anthropicModel(options: {
+  model: string
+  apiKey: string
+}): LanguageModel {
+  return createAnthropic({ apiKey: options.apiKey })(options.model)
 }
 
 /** A scan longer than one document: refused by name, so the parser can say so
@@ -197,9 +147,9 @@ type RasterOptions = {
   preview?: boolean
 }
 
-/** Qwen reads images only, so a scanned PDF — the main path now that qwen is
- * the default engine — is rasterized page by page. The canvas binary is
- * imported here and nowhere else, so the Anthropic path never loads it. */
+/** A PDF is read as page images, which is what gives each line a box the
+ * viewer can draw and lets one range of a bundle be read on its own. The
+ * canvas binary is imported here and nowhere else. */
 async function rasterizePdf(base64: string, options: RasterOptions = {}) {
   const { getDocumentProxy, renderPageAsImage } = await import("unpdf")
   const pdf = await getDocumentProxy(
@@ -212,9 +162,9 @@ async function rasterizePdf(base64: string, options: RasterOptions = {}) {
     (options.pages?.end ?? pdf.numPages - 1) + 1
   )
   const count = last - first + 1
-  if (!options.preview && count > QWEN_MAX_PDF_PAGES) {
+  if (!options.preview && count > MAX_PDF_PAGES) {
     throw new ScanTooLongError(
-      `This scan has ${count} pages; Forkluck reads up to ${QWEN_MAX_PDF_PAGES} per document.`
+      `This scan has ${count} pages; Forkluck reads up to ${MAX_PDF_PAGES} per document.`
     )
   }
   const end = options.preview
@@ -249,11 +199,10 @@ async function rasterizePdf(base64: string, options: RasterOptions = {}) {
 }
 
 /** The message the model is sent, and the pixel size of each page it shows —
- * undefined when nothing here knows one (a PDF handed over whole). */
+ * undefined for an image nothing has measured. */
 async function userMessage(
   file: ExtractionFile,
   prompt: string,
-  engine: ExtractionEngine,
   pages?: { start: number; end: number }
 ): Promise<{
   message: ModelMessage
@@ -261,9 +210,7 @@ async function userMessage(
   pageImages?: string[]
 }> {
   const rasterized =
-    file.kind === "pdf" && engine === "qwen"
-      ? await rasterizePdf(file.base64, { pages })
-      : null
+    file.kind === "pdf" ? await rasterizePdf(file.base64, { pages }) : null
   const document = rasterized?.parts ?? [
     { type: "file" as const, data: file.base64, mediaType: file.mediaType },
   ]
@@ -392,54 +339,35 @@ export async function extractInvoice(
   categoryNames: string[],
   options: ExtractionOptions
 ): Promise<ExtractionRead | { error: string }> {
-  const engine = engineModel(options)
-  if ("error" in engine) return engine
+  const model = anthropicModel(options)
   const startedAt = performance.now()
-  const signal =
-    options.signal ??
-    AbortSignal.timeout(
-      options.engine === "qwen"
-        ? QWEN_DOCUMENT_TIMEOUT_MS
-        : EXTRACTION_TIMEOUT_MS
-    )
+  const signal = AbortSignal.timeout(EXTRACTION_TIMEOUT_MS)
   try {
-    signal.throwIfAborted()
     const { message, pageSizes, pageImages } = await userMessage(
       file,
       buildPrompt(categoryNames, options.hint),
-      options.engine,
       options.pages
     )
     const preparationMs = Math.round(performance.now() - startedAt)
-    signal.throwIfAborted()
-    await options.budget?.beforeCall(1 + EXTRACTION_MAX_RETRIES)
     const modelStartedAt = performance.now()
     const result = await generateObject({
-      model: engine.model,
+      model,
       schema: invoiceExtractionSchema,
       maxOutputTokens: 16000,
       maxRetries: EXTRACTION_MAX_RETRIES,
       abortSignal: signal,
-      providerOptions:
-        options.engine === "anthropic"
-          ? {
-              anthropic: {
-                structuredOutputMode: "outputFormat",
-                effort: "medium",
-              },
-            }
-          : undefined,
+      providerOptions: {
+        anthropic: { structuredOutputMode: "outputFormat", effort: "medium" },
+      },
       messages: [message],
     })
     const modelMs = Math.round(performance.now() - modelStartedAt)
-    await options.budget?.record(result.usage)
     const extraction = await alignReceiptHighlights(
       result.object,
       pageImages,
       pageSizes
     )
     // One line per pass: what the read cost, and why the call stopped.
-    // The optional budget separately persists aggregate token usage.
     console.info("invoice-extract", {
       model: options.model,
       inputTokens: result.usage.inputTokens ?? 0,
@@ -463,7 +391,6 @@ export async function extractInvoice(
       pageSizes,
     }
   } catch (error) {
-    if (error instanceof InvoiceAiBudgetError) throw error
     if (signal.aborted) {
       return {
         error:
@@ -472,7 +399,6 @@ export async function extractInvoice(
     }
     if (error instanceof ScanTooLongError) return { error: error.message }
     if (NoObjectGeneratedError.isInstance(error)) {
-      await options.budget?.record(error.usage ?? {})
       return (
         stopReasonError(error.finishReason) ?? {
           error: "Extraction returned no usable data — try again.",
@@ -483,9 +409,7 @@ export async function extractInvoice(
       if (error.statusCode === 401 || error.statusCode === 403) {
         return {
           error:
-            options.engine === "anthropic"
-              ? "Anthropic rejected your API key — check it under AI key on the Invoices page."
-              : "The extraction engine rejected Forkluck's key.",
+            "Anthropic rejected your API key — check it under AI key on the Invoices page.",
         }
       }
       return {
@@ -535,24 +459,13 @@ export async function extractWithEscalation(
   file: ExtractionFile,
   categoryNames: string[],
   options: {
-    engine: ExtractionEngine
     model: string
-    apiKey: string | null
-    budget?: InvoiceAiBudget
+    apiKey: string
     /** One document's page range inside a multi-document PDF. */
     pages?: { start: number; end: number }
-    signal?: AbortSignal
   }
 ): Promise<ExtractionRun | { error: string; notUsable?: string }> {
-  const signal =
-    options.signal ??
-    (options.engine === "qwen"
-      ? AbortSignal.timeout(QWEN_DOCUMENT_TIMEOUT_MS)
-      : undefined)
-  const first = await extractInvoice(file, categoryNames, {
-    ...options,
-    signal,
-  })
+  const first = await extractInvoice(file, categoryNames, options)
   if ("error" in first) return first
   // A file the model refused stops here rather than in normalization, so the
   // caller can see the refusal's own words: "three receipts" is a file to
@@ -580,22 +493,13 @@ export async function extractWithEscalation(
     usage: first.usage,
     pageSizes: first.pageSizes,
   }
-  if (!escalationModel || !needsEscalation(firstNormalized) || signal?.aborted)
-    return kept
+  if (!escalationModel || !needsEscalation(firstNormalized)) return kept
 
-  // The second read runs on the configured engine: qwen on Forkluck's key,
-  // anthropic on the merchant's.
   const second = await extractInvoice(file, categoryNames, {
-    engine: options.engine,
     model: escalationModel,
     apiKey: options.apiKey,
     pages: options.pages,
-    budget: options.budget,
     hint: escalationHint(extractionFindings(firstNormalized)),
-    signal,
-  }).catch((cause: unknown) => {
-    if (cause instanceof InvoiceAiBudgetError) return { error: cause.message }
-    throw cause
   })
   if ("error" in second) return kept
   const secondNormalized = normalizeInvoiceExtraction(
@@ -640,9 +544,8 @@ export type DetectionInput =
       mediaType: "image/jpeg" | "image/png" | "image/webp"
     }
 
-/** Flat and nullable rather than a union: DashScope's json_schema mode takes
- * one object shape per array element, and a page range and a region are never
- * both answered for the same file anyway. */
+/** Flat and nullable rather than a union: one object shape per array element,
+ * and a page range and a region are never both answered for the same file. */
 const detectionSchema = z.object({
   documents: z
     .array(
@@ -683,19 +586,13 @@ const DETECTION_TEXT_LINES = 40
  * How many documents a file holds, and where each one sits. Run only when
  * there is reason to believe there is more than one: a PDF of several pages,
  * or a photo the reader already refused as a bundle. One structured-output
- * call on the configured engine.
+ * call.
  */
 export async function detectDocuments(
   input: DetectionInput,
-  options: {
-    engine: ExtractionEngine
-    model: string
-    apiKey: string | null
-    budget?: InvoiceAiBudget
-  }
+  options: { model: string; apiKey: string }
 ): Promise<{ documents: DetectedDocument[] } | { error: string }> {
-  const engine = engineModel(options)
-  if ("error" in engine) return engine
+  const model = anthropicModel(options)
   const prompt = [
     "This file may hold more than one supplier document.",
     "List each document's page range (first and last page, 0-based) — or for a single photo, each receipt's region as fractions of the image from the top-left — in reading order.",
@@ -728,20 +625,14 @@ export async function detectDocuments(
   }
   content.push({ type: "text", text: prompt })
   try {
-    await options.budget?.beforeCall(1 + EXTRACTION_MAX_RETRIES)
     const result = await generateObject({
-      model: engine.model,
+      model,
       schema: detectionSchema,
       maxOutputTokens: 2000,
       maxRetries: EXTRACTION_MAX_RETRIES,
-      abortSignal: AbortSignal.timeout(
-        options.engine === "qwen"
-          ? QWEN_DOCUMENT_TIMEOUT_MS
-          : EXTRACTION_TIMEOUT_MS
-      ),
+      abortSignal: AbortSignal.timeout(EXTRACTION_TIMEOUT_MS),
       messages: [{ role: "user", content }],
     })
-    await options.budget?.record(result.usage)
     const documents: DetectedDocument[] = []
     for (const document of result.object.documents) {
       if (document.region) {
@@ -762,10 +653,7 @@ export async function detectDocuments(
       documents: documents.length,
     })
     return { documents }
-  } catch (cause) {
-    if (cause instanceof InvoiceAiBudgetError) throw cause
-    if (NoObjectGeneratedError.isInstance(cause))
-      await options.budget?.record(cause.usage ?? {})
+  } catch {
     return { error: "Couldn't tell how many documents this file holds." }
   }
 }
@@ -777,8 +665,7 @@ export async function verifyAnthropicKey(
 ): Promise<{ ok: true } | { error: string }> {
   const client = new Anthropic({ apiKey, timeout: 15_000, maxRetries: 0 })
   try {
-    // A constant Anthropic model: the configured engine may be qwen, whose
-    // model ids this endpoint would reject outright.
+    // The default model: this verifies the key, not the configured model.
     await client.messages.countTokens({
       model: ANTHROPIC_DEFAULT_MODEL,
       messages: [{ role: "user", content: "ping" }],

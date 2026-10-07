@@ -99,7 +99,7 @@ is a retryable read failure, never an import.
 | Admission | Refused origins, sessions, plans and bodies never start extraction or a heartbeat |
 | Upload transport | The maximum 8,000,000-byte photo, base64-encoded with JSON metadata, must fit through nginx's 12 MiB body limit before the route applies its file limits |
 | Long reads | Uploads and Drive reads keep sending bytes while either AI pass runs; one final JSON result preserves line identities and boxes |
-| AI latency | Default Qwen Flash reads and optional escalation share 25 seconds per document; an expired second pass keeps the first usable read and its review findings |
+| AI latency | Each read is bounded to 300 seconds; a failed second pass keeps the first usable read and its review findings |
 | Failure and lifecycle | Read errors remain JSON; completion, failure and response cancellation clear the heartbeat |
 | Retry and file identity | Retry or reselecting a failed upload (name and size) or Drive file (id) reuses its queue entry and clears stale batch errors; queued, running and completed files are reused without a duplicate warning or another read |
 | Downstream | Reading does not import invoices or apply prices; a broken response offers Retry without exposing proxy HTML |
@@ -486,7 +486,6 @@ product/<str:product_ref>/
 product-categories/
 sales-identity-lines/
 system/drive-watch/
-system/invoice-ai-usage/        POST only
 system/drive-watch/save/        POST only
 system/drive-files/             GET and POST
 system/invoice-line-status/     POST only
@@ -553,7 +552,8 @@ currency. Both call one function; the currency is added because an unattended
 read has no session to look one up with and a document that printed its own
 currency is normalized against the workspace's.
 
-`POST system/drive-extractions/` takes
+`POST system/drive-extractions/` and `/failed/` have no caller since the unattended
+Drive reader was removed; both go in the next release. `POST system/drive-extractions/` takes
 `{userId, driveFileId, parts, model?, escalated?}` and returns
 `{ok, readyCount}`. A file may hold several documents — a scanned bundle of
 receipts, a photo of two of them — so `parts` is a list of 1 to 40 of them,
@@ -607,7 +607,7 @@ keys.
 This service boundary is separate from the unchanged Next.js/Django contract.
 Next.js uses server-only `PRIMO_API_KEY` and `PRIMO_BASE_URL` (default
 `https://primo.forkluck.com/v1`). A missing credential hides Primo and redirects
-Home to Analytics; an invoice `QWEN_API_KEY` does not enable it. Requests with
+Home to Analytics. Requests with
 Primo unconfigured return 503 before inference. The browser never sees either
 credential and never calls the service directly.
 
@@ -1959,8 +1959,7 @@ produced it. It is taken on the total rather than per shift, which rounds once
 instead of accumulating a per-row error, and it carries the sign of the money
 it is on. Zero is the default and reports a zero burden.
 
-**Invoices / expenses (28)**
-`invoice-ai-usage`,
+**Invoices / expenses (27)**
 `import-invoices`, `save-invoice`, `save-receipt-feedback`, `review-invoice-line`,
 `invoice-line-status`, `link-invoice-line`,
 `disconnect-invoice-line`, `use-invoice-price`, `delete-invoice`, `save-expense-category`,
@@ -1976,69 +1975,6 @@ the Drive registry (`drive-files/`) and the supplier memory
 (`supplier-items/`). The registry is written by the poller alone, through the
 system routes above.
 
-**Hosted invoice AI allowance.** `invoice-ai-usage` is an internal action used
-by the Next invoice reader, never a browser-supplied accounting instruction.
-The system counterpart, `POST system/invoice-ai-usage/`, accepts the same body
-plus `userId` and requires a connected Drive folder belonging to that owner.
-Both reserve under the workspace's User row lock, before any provider call.
-
-- `{operation: "reserve", readId: null, pages, attempts}` admits one file:
-  `pages` is the actual PDF page count (1–200), measured by the server, or 1
-  for an image. `attempts` is 1–2, including the SDK's possible transport retry.
-- `{operation: "reserve", readId, pages: 0, attempts}` reserves another model
-  pass for that same owner-scoped read without charging its pages again.
-- Both return `{readId}` (UUID, or null for a billing-exempt installation).
-- `{operation: "record", readId, inputTokens, outputTokens}` records cumulative
-  nonnegative token totals, each at most one billion, and returns `{ok}`.
-  Repeated or older totals cannot decrease the recorded usage or refund work.
-
-Trial kitchens receive 25 AI pages and paid kitchens 100 per UTC calendar
-month; a free kitchen receives none and is refused with `upgrade_required`
-before any page is reserved, and a self-hosted one is unlimited.
-Each plan also has eight reserved model attempts per allowed page, shared by
-detection, extraction, escalation and transport retries. A call reserves both
-its initial attempt and its possible retry, conservatively retaining unused
-retry capacity. Next bounds outputs to 16,000 tokens per extraction attempt
-or 2,000 for detection, detection text to 80,000 characters, and category text
-to 8,000. This bounds provider work; it is not a dollar-denominated billing
-cap. Actual reported tokens are retained for cost analysis, while provider
-timeouts with unknown usage remain charged against the attempt allowance.
-
-The first actual AI call consumes the whole file's pages, including when the
-provider later fails or the user closes the reviewer. Template-only and manual
-imports consume nothing. Saved invoices have no count limit. Deleting invoices,
-undoing imports, merging ingredients/suppliers or reconnecting Drive cannot
-refund AI usage. AI reads belong to the existing invoice workspace owner:
-recipe collaborators do not gain access to that owner's invoices or allowance.
-Account deletion cascades through its AI usage records.
-
-An over-budget reservation answers 403 with `code: "invoice_ai_limit_reached"`
-and a reset-date/upgrade message. No model call follows a failed reservation,
-including when the backend is unavailable. An already admitted read can finish
-at the page cap if attempt capacity remains. A new month refuses further calls
-on an old read; a fresh read uses the new month. Upgrades/downgrades change the
-limit without erasing usage. Billing-disabled, staff and enabled demo accounts
-are exempt; the bring-your-own-Anthropic-key path never reserves hosted usage.
-Drive leaves budget-blocked files `new` for a later month or upgrade. They do
-not become failed invoices. A declined optional escalation retains the first
-usable extraction.
-
-`invoices-overview/` adds `aiUsage: {usedPages, maxPages, resetsOn, exhausted}`.
-`maxPages` is null for exempt accounts; `resetsOn` is the next UTC month's first
-day as a date-only `YYYY-MM-DD` string, deliberately not revived as a Date.
-`exhausted` includes the internal attempt ceiling even if page slots remain.
-The overview adds one billing lookup and one aggregate query; neither grows
-with the number of AI reads. The invoices screen shows usage and reset date,
-and refreshes them when the import dialog closes.
-
-| Invariant | Accepted behavior | Refused/preserved behavior |
-| --- | --- | --- |
-| Syntax | Integer measured pages; 1–2 reserved attempts; UUID continuation | Booleans, negatives, malformed IDs and added continuation pages fail |
-| Identity | Session owner or connected system Drive owner | Body userId cannot redirect a session action; foreign read IDs fail |
-| Concurrency | Uploads and Drive reserve under the same owner lock | Parallel requests cannot pass the last page or attempt together |
-| Precedence | Deterministic reading first; BYOK bypasses hosted quota | Missing backend reservation never permits Qwen spending |
-| Lifecycle | Monthly reset; cumulative tokens; plan change retains usage | Delete, undo, merge and reconnect never refund; account deletion cascades |
-| Downstream | Existing invoices, prices and manual imports stay usable | Budget-blocked Drive files remain new; optional escalation keeps first read |
 
 **Drive folder.** The workspace's supplier documents live in one Google Drive
 folder. Django stores Drive ids and metadata only — never file bytes; the Next

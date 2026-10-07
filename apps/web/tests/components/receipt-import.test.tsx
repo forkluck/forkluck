@@ -107,7 +107,6 @@ function Harness({ inbox = true }: { inbox?: boolean }) {
       open={open}
       onOpenChange={setOpen}
       inbox={inbox}
-      byok={false}
       aiKeyConfigured={false}
       aiKeyHint={null}
     />

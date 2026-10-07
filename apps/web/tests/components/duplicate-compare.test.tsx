@@ -158,7 +158,6 @@ describe("this receipt beside the one already imported", () => {
         open
         onOpenChange={vi.fn()}
         inbox
-        byok={false}
         aiKeyConfigured={false}
         aiKeyHint={null}
       />

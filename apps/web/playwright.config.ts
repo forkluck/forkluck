@@ -100,8 +100,6 @@ export default defineConfig({
         // Enable Primo without allowing acceptance runs to use real inference or blob credentials.
         PRIMO_API_KEY: primoEnabled ? "synthetic-acceptance-only" : "",
         PRIMO_BASE_URL: `http://127.0.0.1:${primoPort}/v1`,
-        QWEN_API_KEY: "synthetic-invoice-only",
-        QWEN_BASE_URL: "https://primo.example.invalid/v1",
         AZURE_STORAGE_CONNECTION_STRING: "",
         DOCUMENT_STORE_DIR: "./.forkluck/acceptance-documents",
       },

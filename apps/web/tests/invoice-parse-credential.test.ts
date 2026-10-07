@@ -7,8 +7,6 @@ import type { ParseInvoiceInput } from "@/lib/invoice-parse"
 /**
  * The AI-credential state machine in `runInvoiceParse`.
  *
- * The workspace's credential is read only on the opt-in `anthropic` engine; on
- * Forkluck's own default engine the parse never asks for one. There,
  * `/internal/v1/ai-credential/` answers with three distinct states, and a null
  * `key` covers two of them: never configured, and configured-but-undecryptable.
  * They produce different user-facing copy, and only one of them is an error the
@@ -46,12 +44,8 @@ vi.mock("@/lib/invoice-template", () => ({
   parseInvoiceFromTextLines: (pages: unknown) =>
     parseInvoiceFromTextLines(pages),
 }))
-// The engine each case runs on; the credential branch keys off it.
-let engine: "anthropic" | "qwen" = "anthropic"
-
 vi.mock("@/lib/invoice-extract", () => ({
   extractionConfig: () => ({
-    engine,
     model: "test-model",
     escalationModel: "",
   }),
@@ -76,7 +70,6 @@ function textLayer(scanned: boolean) {
 }
 
 beforeEach(() => {
-  engine = "anthropic"
   getAiCredential.mockReset()
   djangoAction.mockReset()
   extractPdfTextLines.mockReset()
@@ -168,7 +161,6 @@ describe("runInvoiceParse credential states", () => {
         INPUT.file,
         ["Produce"],
         {
-          engine: "anthropic",
           model: "test-model",
           apiKey: "sk-ant-test-key-1234",
         }
@@ -212,53 +204,6 @@ describe("runInvoiceParse credential states", () => {
     expect(extractWithEscalation).not.toHaveBeenCalled()
   })
 
-  it("reads on Forkluck's own engine with no workspace credential", async () => {
-    engine = "qwen"
-    textLayer(true)
-    djangoAction.mockResolvedValue({
-      items: [],
-      duplicate: false,
-      categories: [{ id: "c1", name: "Produce" }],
-    })
-    extractWithEscalation.mockResolvedValue({ error: "AI declined" })
-
-    const result = await runInvoiceParse(INPUT)
-
-    expect(getAiCredential).not.toHaveBeenCalled()
-    expect(extractWithEscalation).toHaveBeenCalledWith(
-      INPUT.file,
-      ["Produce"],
-      {
-        engine: "qwen",
-        model: "test-model",
-        apiKey: null,
-        budget: {
-          beforeCall: expect.any(Function),
-          record: expect.any(Function),
-        },
-      }
-    )
-    expect(result).toEqual({ error: "AI declined" })
-  })
-
-  it("surfaces the unconfigured-server error, never a key prompt", async () => {
-    engine = "qwen"
-    textLayer(true)
-    djangoAction.mockResolvedValue({
-      items: [],
-      duplicate: false,
-      categories: [],
-    })
-    extractWithEscalation.mockResolvedValue({
-      error: "Forkluck's AI isn't configured on this server.",
-    })
-
-    const result = await runInvoiceParse(INPUT)
-
-    expect(result).toEqual({
-      error: "Forkluck's AI isn't configured on this server.",
-    })
-  })
 
   it("skips the AI when the probe already knows this Drive file", async () => {
     textLayer(true)

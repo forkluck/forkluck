@@ -28,7 +28,7 @@ const cropImage = vi.fn()
 
 vi.mock("@/lib/backend/queries", () => ({
   getAiCredential: () =>
-    Promise.resolve({ configured: false, hint: null, key: null }),
+    Promise.resolve({ configured: true, hint: "1234", key: "sk-ant-test" }),
   getBusinessSettings: () => Promise.resolve({ currencyCode: "USD" }),
   getDriveFolder: () => Promise.resolve({ folder: null, skipped: [] }),
 }))
@@ -43,9 +43,7 @@ vi.mock("@/lib/image-prep", () => ({
   cropImage: (input: Buffer, region: unknown) => cropImage(input, region),
 }))
 vi.mock("@/lib/invoice-extract", () => ({
-  // Forkluck's own engine throughout: no workspace key is involved in a split.
   extractionConfig: () => ({
-    engine: "qwen",
     model: "test-model",
     escalationModel: "",
   }),
@@ -287,13 +285,8 @@ describe("a PDF holding two invoices", () => {
     // No page range: the model is shown the file, and the four-page refusal
     // applies to it whole.
     expect(extractWithEscalation.mock.calls[0][2]).toEqual({
-      engine: "qwen",
       model: "test-model",
-      apiKey: null,
-      budget: {
-        beforeCall: expect.any(Function),
-        record: expect.any(Function),
-      },
+      apiKey: "sk-ant-test",
     })
     if ("error" in result) throw new Error(result.error)
     expect(result.documents[0].part).toEqual({
@@ -389,7 +382,7 @@ describe("a photo of several receipts", () => {
   })
 
   it("refuses rather than import one receipt twice when both regions are the same", async () => {
-    // What qwen3-vl-plus actually answered for a photo of one receipt.
+    // What the model actually answered for a photo of one receipt.
     extractWithEscalation.mockResolvedValue({
       error: "This file doesn't look like a supplier invoice: 2 receipts.",
       notUsable: "This photo shows 2 receipts.",

@@ -8,7 +8,6 @@ import {
   getBusinessSettings,
   getNewsletterStatus,
 } from "@/lib/backend/queries"
-import { extractionConfig } from "@/lib/invoice-extract"
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -32,7 +31,6 @@ export default async function SettingsPage() {
       user={session.user}
       billing={session.billing}
       businessSettings={businessSettings}
-      byok={extractionConfig().engine === "anthropic"}
       aiKey={{ configured: credential.configured, hint: credential.hint }}
       newsletter={newsletter}
     />

@@ -78,7 +78,6 @@ function openDialog(inbox = false, drive = false) {
       open
       onOpenChange={vi.fn()}
       inbox={inbox}
-      byok={false}
       aiKeyConfigured={false}
       aiKeyHint={null}
     />
@@ -358,7 +357,6 @@ describe("a file the folder keeps handing back", () => {
         inboxNotice={null}
         error={null}
         busy={false}
-        byok={false}
         aiKeyConfigured={false}
         aiKeyHint={null}
         reviewCount={0}

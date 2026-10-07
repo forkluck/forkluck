@@ -1496,10 +1496,6 @@ class EnvelopeContractTests(ShapeAssertions, TestCase):
             [
                 "aiKey.configured",
                 "aiKey.hint",
-                "aiUsage.usedPages",
-                "aiUsage.maxPages",
-                "aiUsage.resetsOn",
-                "aiUsage.exhausted",
                 "byCategory[].categoryId",
                 "byCategory[].currencyCode",
                 "byCategory[].lineCount",

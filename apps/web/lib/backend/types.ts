@@ -285,7 +285,6 @@ export type ConnectorConnection = {
 }
 
 export type InvoicesOverview = {
-  aiUsage: InvoiceAiUsage
   months: Array<{
     month: string
     totals: Array<{ currencyCode: CurrencyCode; totalCents: number }>
@@ -334,14 +333,6 @@ export type InvoicesOverview = {
     providers: ConnectorProvider[]
     connections: ConnectorConnection[]
   }
-}
-
-export type InvoiceAiUsage = {
-  usedPages: number
-  maxPages: number | null
-  /** First day of the next UTC calendar month, as a date-only string. */
-  resetsOn: string
-  exhausted: boolean
 }
 
 /**

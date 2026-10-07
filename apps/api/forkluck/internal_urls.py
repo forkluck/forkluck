@@ -204,7 +204,6 @@ urlpatterns = [
         internal_get(sales_views.sales_identity_lines),
     ),
     path("system/drive-watch/", system_get(drive_system.drive_watch)),
-    path("system/invoice-ai-usage/", system_post(drive_system.invoice_ai_usage)),
     path(
         "system/drive-watch/save/",
         system_post(drive_system.save_drive_watch),

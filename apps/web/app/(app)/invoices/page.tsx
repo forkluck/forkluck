@@ -4,9 +4,7 @@ import { redirect } from "next/navigation"
 import { InvoicesScreen } from "@/components/invoices/invoices-screen"
 import { getSession } from "@/lib/auth-session"
 import { getDriveFolder, getInvoicesOverview } from "@/lib/backend/queries"
-import { onTrial } from "@/lib/billing"
 import { monthSearchParam } from "@/lib/date-search-param"
-import { extractionConfig } from "@/lib/invoice-extract"
 import type { GoogleDriveConfig } from "@/lib/google-drive"
 
 export const metadata: Metadata = {
@@ -56,8 +54,6 @@ export default async function InvoicesPage({
       query={query ?? ""}
       // A search answers across every month, so it is neither tab's list.
       tab={query?.trim() ? null : (attention ?? null)}
-      byok={extractionConfig().engine === "anthropic"}
-      trial={onTrial(session.billing)}
       driveConfig={googleDriveConfig()}
       driveConnectHref={
         process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && !drive.folder

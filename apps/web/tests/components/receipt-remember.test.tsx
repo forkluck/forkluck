@@ -85,7 +85,6 @@ async function openReviewer() {
       open
       onOpenChange={vi.fn()}
       inbox
-      byok={false}
       aiKeyConfigured={false}
       aiKeyHint={null}
     />

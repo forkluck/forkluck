@@ -106,16 +106,12 @@ export function SettingsScreen({
   user,
   billing,
   businessSettings,
-  byok,
   aiKey,
   newsletter,
 }: {
   user: SessionUser
   billing: BillingState
   businessSettings: BusinessSettings
-  /** The deployment reads documents with the workspace's own Anthropic key
-   * rather than Forkluck's AI, so the key is worth configuring here. */
-  byok: boolean
   aiKey: AiKeyStatus
   newsletter: NewsletterStatus
 }) {
@@ -341,27 +337,22 @@ export function SettingsScreen({
           </button>
         </SettingsGroup>
 
-        {/* Only a deployment that reads with the workspace's own key has a
-            setting here; the house engine needs nothing from the merchant, and
-            a row that says so is noise. */}
-        {byok ? (
-          <SettingsGroup title="Document tools">
-            <div className="flex w-full items-center gap-3 px-4 py-3.5">
-              <RowBody
-                icon={Sparkles}
-                title="Claude"
-                note="Reads uploaded invoices and receipt photos into lines and prices."
-                trailing={
-                  <AiKeyDialog
-                    configured={aiKey.configured}
-                    hint={aiKey.hint}
-                    label="Configure"
-                  />
-                }
-              />
-            </div>
-          </SettingsGroup>
-        ) : null}
+        <SettingsGroup title="Document tools">
+          <div className="flex w-full items-center gap-3 px-4 py-3.5">
+            <RowBody
+              icon={Sparkles}
+              title="Claude"
+              note="Reads uploaded invoices and receipt photos into lines and prices."
+              trailing={
+                <AiKeyDialog
+                  configured={aiKey.configured}
+                  hint={aiKey.hint}
+                  label="Configure"
+                />
+              }
+            />
+          </div>
+        </SettingsGroup>
 
         <SettingsGroup title="History">
           <button type="button" className={rowClassName} onClick={history.show}>

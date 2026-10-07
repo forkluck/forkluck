@@ -180,7 +180,6 @@ function ImportBody({
   onIngredientCreated,
   initialFiles,
   inbox,
-  byok,
   aiKeyConfigured,
   aiKeyHint,
   onDone,
@@ -195,7 +194,6 @@ function ImportBody({
   initialFiles: File[] | null
   /** Opened on the receipts the watcher has already read, rather than empty. */
   inbox: boolean
-  byok: boolean
   aiKeyConfigured: boolean
   aiKeyHint: string | null
   onDone: () => void
@@ -846,9 +844,8 @@ function ImportBody({
         <DialogDescription>
           Add supplier invoice PDFs and receipt photos from Google Drive or your
           computer. Standard invoices are read for free on this server; anything
-          it can&apos;t read automatically is read by{" "}
-          {byok ? "your own AI key" : "Forkluck's AI"}. You review every receipt
-          before anything is saved: ingredient lines update your supplier
+          it can&apos;t read automatically is read by your own AI key. You
+          review every receipt before anything is saved: ingredient lines update your supplier
           prices, everything else is tracked as spend.
         </DialogDescription>
         <ImportFilesPanel
@@ -871,7 +868,6 @@ function ImportBody({
           inboxNotice={inboxNotice}
           error={error}
           busy={importingKey !== null}
-          byok={byok}
           aiKeyConfigured={aiKeyConfigured}
           aiKeyHint={aiKeyHint}
           reviewCount={invoices.length}
@@ -945,14 +941,12 @@ function ImportBody({
         }
       >
         {/* Keeps the optional AI fallback reachable once the reviewer has
-            taken the screen. Nothing to offer when Forkluck's AI reads. */}
-        {byok ? (
-          <AiKeyDialog
-            configured={aiKeyConfigured}
-            hint={aiKeyHint}
-            trigger={<Button type="button" variant="ghost" />}
-          />
-        ) : null}
+            taken the screen. */}
+        <AiKeyDialog
+          configured={aiKeyConfigured}
+          hint={aiKeyHint}
+          trigger={<Button type="button" variant="ghost" />}
+        />
       </ReceiptPager>
 
       <div className="grid min-h-0 flex-1 gap-3 pt-3 md:grid-cols-[minmax(0,1fr)_640px]">
@@ -1023,7 +1017,6 @@ export function ImportInvoicesDialog({
   onOpenChange,
   initialFiles = null,
   inbox = false,
-  byok,
   aiKeyConfigured,
   aiKeyHint,
 }: {
@@ -1043,9 +1036,6 @@ export function ImportInvoicesDialog({
   initialFiles?: File[] | null
   /** Open on the receipts the Drive watcher has already read. */
   inbox?: boolean
-  /** The deployment reads with the workspace's own Anthropic key rather than
-   * Forkluck's AI. */
-  byok: boolean
   aiKeyConfigured: boolean
   aiKeyHint: string | null
 }) {
@@ -1098,7 +1088,6 @@ export function ImportInvoicesDialog({
             onIngredientCreated={onIngredientCreated}
             initialFiles={initialFiles}
             inbox={inbox}
-            byok={byok}
             aiKeyConfigured={aiKeyConfigured}
             aiKeyHint={aiKeyHint}
             onDone={close}

@@ -83,7 +83,6 @@ function settings(newsletter: NewsletterStatus) {
         recipeCount: 0,
       }}
       businessSettings={DEFAULT_BUSINESS_SETTINGS}
-      byok={false}
       aiKey={{ configured: false, hint: null }}
       newsletter={newsletter}
     />

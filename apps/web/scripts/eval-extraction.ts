@@ -7,7 +7,6 @@ import { prepareImage } from "@/lib/image-prep"
 import {
   extractWithEscalation,
   extractionConfig,
-  type ExtractionEngine,
   type ExtractionFile,
 } from "@/lib/invoice-extract"
 import {
@@ -36,10 +35,10 @@ import {
  * does, so a Baldor invoice is scored (and bootstrapped) without paying for a
  * model. Everything else goes through extractWithEscalation on the key in the
  * environment — this script never reads Django or the stored credential.
- * `--engine` and `--model` default to what this deployment is configured with.
+ * `--model` defaults to what this deployment is configured with.
  *
  *   pnpm eval:extraction --bootstrap
- *   pnpm eval:extraction --engine anthropic --model claude-sonnet-5 --escalate
+ *   pnpm eval:extraction --model claude-sonnet-5 --escalate
  */
 
 /** Mirrors DEFAULT_EXPENSE_CATEGORIES in
@@ -58,8 +57,7 @@ const CATEGORY_NAMES = [
 
 const CASE_EXTENSIONS = [".pdf", ".jpg", ".png", ".webp"]
 
-/** USD per million tokens, list price. Qwen is absent on purpose: DashScope
- * pricing is not in this table, so those runs report zero cost. */
+/** USD per million tokens, list price. */
 const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   "claude-opus-5": { input: 5, output: 25 },
   "claude-sonnet-5": { input: 2, output: 10 },
@@ -67,7 +65,6 @@ const MODEL_PRICING: Record<string, { input: number; output: number }> = {
 }
 
 export type EvalOptions = {
-  engine: ExtractionEngine
   model: string | null
   escalate: boolean
   bootstrap: boolean
@@ -83,10 +80,9 @@ export type EvalCase = {
   hasExpected: boolean
 }
 
-export type EvalCaseOutcome = CaseOutcome & { engine: string; model: string }
+export type EvalCaseOutcome = CaseOutcome & { model: string }
 
 export type EvalReport = {
-  engine: ExtractionEngine
   model: string
   escalate: boolean
   date: string
@@ -96,9 +92,7 @@ export type EvalReport = {
 
 /** The only place Forkluck reads a key from the environment instead of the
  * workspace, so the error can name the variable that was missing. */
-function keyVariable(engine: ExtractionEngine): string {
-  return engine === "qwen" ? "QWEN_API_KEY" : "ANTHROPIC_API_KEY"
-}
+const KEY_VARIABLE = "ANTHROPIC_API_KEY"
 
 export function defaultGoldenDir(env: NodeJS.ProcessEnv = process.env): string {
   const configured = env.RECEIPT_GOLDEN_DIR?.trim()
@@ -107,8 +101,6 @@ export function defaultGoldenDir(env: NodeJS.ProcessEnv = process.env): string {
 
 export function parseArgs(argv: string[]): EvalOptions {
   const options: EvalOptions = {
-    // The deployment's own engine, so a bare run scores what production runs.
-    engine: extractionConfig().engine,
     model: null,
     escalate: false,
     bootstrap: false,
@@ -119,13 +111,6 @@ export function parseArgs(argv: string[]): EvalOptions {
     const flag = argv[index]
     const value = argv[index + 1]
     switch (flag) {
-      case "--engine":
-        if (value !== "anthropic" && value !== "qwen") {
-          throw new Error("--engine takes anthropic or qwen")
-        }
-        options.engine = value
-        index += 1
-        break
       case "--model":
         if (!value) throw new Error("--model takes a model id")
         options.model = value
@@ -238,7 +223,6 @@ export function buildReport(
   date: string
 ): EvalReport {
   return {
-    engine: options.engine,
     model,
     escalate: options.escalate,
     date,
@@ -247,21 +231,15 @@ export function buildReport(
   }
 }
 
-export function reportPath(
-  dir: string,
-  engine: string,
-  model: string,
-  date: string
-): string {
+export function reportPath(dir: string, model: string, date: string): string {
   const slug = model.replace(/[^a-z0-9.-]+/gi, "-")
-  return path.join(dir, "reports", `${engine}-${slug}-${date}.json`)
+  return path.join(dir, "reports", `${slug}-${date}.json`)
 }
 
 // --- Running a case --------------------------------------------------------
 
 type Read = {
   extraction: InvoiceExtraction
-  engine: string
   model: string
   escalated: boolean
   usage: { inputTokens: number; outputTokens: number }
@@ -280,7 +258,6 @@ async function templateRead(
   if (!extraction) return null
   return {
     extraction,
-    engine: "template",
     model: "text-layer",
     escalated: false,
     usage: { inputTokens: 0, outputTokens: 0 },
@@ -293,7 +270,7 @@ async function modelRead(
   base64: string,
   options: EvalOptions,
   model: string,
-  apiKey: string | null
+  apiKey: string
 ): Promise<Read | { error: string }> {
   const file: ExtractionFile =
     evalCase.kind === "pdf"
@@ -303,11 +280,7 @@ async function modelRead(
           mediaType: prepared.mediaType,
           base64: prepared.base64,
         }))
-  const run = await extractWithEscalation(file, CATEGORY_NAMES, {
-    engine: options.engine,
-    model,
-    apiKey,
-  })
+  const run = await extractWithEscalation(file, CATEGORY_NAMES, { model, apiKey })
   if ("error" in run) {
     // A "not usable" verdict is refused upstream, so it arrives as an error;
     // the bundle case is scored on that verdict, not counted as a crash.
@@ -315,7 +288,6 @@ async function modelRead(
     if (!notUsable) return run
     return {
       extraction: notUsable,
-      engine: options.engine,
       model,
       escalated: false,
       usage: { inputTokens: 0, outputTokens: 0 },
@@ -323,7 +295,6 @@ async function modelRead(
   }
   return {
     extraction: run.extraction,
-    engine: options.engine,
     model: run.model,
     escalated: run.escalated,
     usage: run.usage,
@@ -343,11 +314,7 @@ async function readCase(
     // here; it is one failed case, not a failed run.
     const template = await templateRead(evalCase, base64)
     if (template) return template
-    if (!apiKey) {
-      return {
-        error: `No ${keyVariable(options.engine)} in the environment.`,
-      }
-    }
+    if (!apiKey) return { error: `No ${KEY_VARIABLE} in the environment.` }
     return await modelRead(evalCase, bytes, base64, options, model, apiKey)
   } catch (cause) {
     return { error: cause instanceof Error ? cause.message : String(cause) }
@@ -371,7 +338,6 @@ function scoreCase(
       outputTokens: 0,
       costUsd: 0,
       ms,
-      engine: "-",
       model: fallbackModel,
     }
   }
@@ -398,7 +364,6 @@ function scoreCase(
     outputTokens: read.usage.outputTokens,
     costUsd: extractionCostUsd(read.model, read.usage) ?? 0,
     ms,
-    engine: read.engine,
     model: read.model,
   }
 }
@@ -410,7 +375,6 @@ const pct = (value: number): string => `${(value * 100).toFixed(0)}%`
 function printTable(outcomes: EvalCaseOutcome[]): void {
   const rows = outcomes.map((outcome) => [
     outcome.name.slice(0, 48),
-    outcome.engine,
     outcome.error ? "error" : outcome.comparison?.fullyCorrect ? "yes" : "no",
     outcome.comparison ? pct(outcome.comparison.headerFieldAccuracy) : "-",
     outcome.comparison ? pct(outcome.comparison.lineFieldAccuracy) : "-",
@@ -421,7 +385,6 @@ function printTable(outcomes: EvalCaseOutcome[]): void {
   ])
   const header = [
     "case",
-    "engine",
     "correct",
     "header",
     "lines",
@@ -472,7 +435,7 @@ async function bootstrap(
       )}\n`
     )
     console.log(
-      `wrote ${path.basename(evalCase.expectedPath)} (${read.engine})`
+      `wrote ${path.basename(evalCase.expectedPath)} (${read.model})`
     )
   }
   if (needsKey.length > 0) {
@@ -491,11 +454,10 @@ async function main(): Promise<void> {
   }
   // extractWithEscalation reads the tier-3 model from the environment, so the
   // flags are written back before the config is read — that is how the eval
-  // runs a single pass, and how --engine picks the right tier-3 default.
-  process.env.INVOICE_EXTRACTION_ENGINE = options.engine
+  // runs a single pass.
   if (options.model) process.env.INVOICE_EXTRACTION_MODEL = options.model
   if (!options.escalate) process.env.INVOICE_ESCALATION_MODEL = ""
-  const apiKey = process.env[keyVariable(options.engine)]?.trim() || null
+  const apiKey = process.env[KEY_VARIABLE]?.trim() || null
   const model = extractionConfig().model
 
   const cases = discoverCases(options.dir, options.only)
@@ -526,9 +488,6 @@ async function main(): Promise<void> {
       `reconciled ${pct(summary.reconciledRate)}, escalated ${pct(summary.escalatedRate)}, ` +
       `$${summary.costUsd.toFixed(4)}, ${Math.round(summary.meanMs)} ms mean`
   )
-  if (options.engine === "qwen") {
-    console.log("Cost reads $0: DashScope pricing is not in the table.")
-  }
   if (drafts.length > 0) {
     console.log(
       `Not golden yet — ${drafts.length} expected file(s) still marked "draft": ${drafts.join(", ")}`
@@ -536,7 +495,7 @@ async function main(): Promise<void> {
   }
 
   const date = new Date().toISOString().slice(0, 10)
-  const report = reportPath(options.dir, options.engine, model, date)
+  const report = reportPath(options.dir, model, date)
   fs.mkdirSync(path.dirname(report), { recursive: true })
   fs.writeFileSync(
     report,
