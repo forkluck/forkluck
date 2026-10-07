@@ -3,10 +3,7 @@ import { redirect } from "next/navigation"
 
 import { SettingsScreen } from "@/components/settings/settings-screen"
 import { getSession } from "@/lib/auth-session"
-import {
-  getAiCredential,
-  getBusinessSettings,
-} from "@/lib/backend/queries"
+import { getAiCredential, getBusinessSettings } from "@/lib/backend/queries"
 
 export const metadata: Metadata = {
   title: "Settings",

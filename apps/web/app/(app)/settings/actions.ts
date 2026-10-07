@@ -496,7 +496,6 @@ export async function updateAccountName(
   }
 }
 
-
 export async function updateBusinessSettings(
   // Product matching is written by setProductMatching, not here: flipping it
   // links or withdraws catalog rows, which is not something a defaults save

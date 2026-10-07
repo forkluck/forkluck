@@ -280,7 +280,10 @@ async function modelRead(
           mediaType: prepared.mediaType,
           base64: prepared.base64,
         }))
-  const run = await extractWithEscalation(file, CATEGORY_NAMES, { model, apiKey })
+  const run = await extractWithEscalation(file, CATEGORY_NAMES, {
+    model,
+    apiKey,
+  })
   if ("error" in run) {
     // A "not usable" verdict is refused upstream, so it arrives as an error;
     // the bundle case is scored on that verdict, not counted as a crash.
@@ -434,9 +437,7 @@ async function bootstrap(
         2
       )}\n`
     )
-    console.log(
-      `wrote ${path.basename(evalCase.expectedPath)} (${read.model})`
-    )
+    console.log(`wrote ${path.basename(evalCase.expectedPath)} (${read.model})`)
   }
   if (needsKey.length > 0) {
     console.log("\nStill without an expected file:")

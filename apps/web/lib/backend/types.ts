@@ -335,7 +335,6 @@ export type InvoicesOverview = {
   }
 }
 
-
 /** A phone signed in through the mobile API; `lastUsedAt` is null until its first read. */
 export type DeviceRow = {
   id: string

@@ -220,9 +220,7 @@ export function ImportFilesPanel({
         <AiKeyDialog
           configured={aiKeyConfigured}
           hint={aiKeyHint}
-          trigger={
-            <Button type="button" variant="ghost" className="mr-auto" />
-          }
+          trigger={<Button type="button" variant="ghost" className="mr-auto" />}
         />
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel

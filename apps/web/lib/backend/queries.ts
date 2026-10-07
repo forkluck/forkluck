@@ -217,7 +217,6 @@ export function registerDriveFiles(body: {
   return djangoSystemAction("/internal/v1/system/drive-files/", body)
 }
 
-
 /** `status` is absent for the active pantry, "archived", or "all"; `kind` is
  * absent for food, "supply" for packaging, or "all"; `category` is a
  * tenant-owned category id. */

@@ -34,10 +34,7 @@ vi.mock("@/lib/backend/queries", () => ({
   registerDriveFiles: (body: unknown) => backend.registerDriveFiles(body),
 }))
 
-import {
-  planRegistrations,
-  runDriveWatch,
-} from "@/lib/drive-watch"
+import { planRegistrations, runDriveWatch } from "@/lib/drive-watch"
 import {
   DriveCursorExpiredError,
   DriveServiceError,
@@ -289,7 +286,6 @@ describe("runDriveWatch", () => {
     expect(first).toBe(second)
     expect(backend.getDriveWatch).toHaveBeenCalledTimes(1)
   })
-
 
   it("does nothing at all without a service account", async () => {
     delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON

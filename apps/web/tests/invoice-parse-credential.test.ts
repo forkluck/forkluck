@@ -204,7 +204,6 @@ describe("runInvoiceParse credential states", () => {
     expect(extractWithEscalation).not.toHaveBeenCalled()
   })
 
-
   it("skips the AI when the probe already knows this Drive file", async () => {
     textLayer(true)
     getAiCredential.mockResolvedValue({

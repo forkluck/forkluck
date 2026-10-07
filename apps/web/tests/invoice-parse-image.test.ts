@@ -119,7 +119,6 @@ describe("runInvoiceParse on photos", () => {
     expect(result).toEqual({ error: "AI declined" })
   })
 
-
   it("asks for a key in the photo's own words", async () => {
     getAiCredential.mockResolvedValue({
       configured: false,

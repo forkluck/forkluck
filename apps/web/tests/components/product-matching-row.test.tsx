@@ -112,5 +112,4 @@ describe("the settings screen", () => {
     expect(screen.getByText("Claude")).toBeTruthy()
     expect(screen.getByRole("button", { name: "Configure" })).toBeTruthy()
   })
-
 })

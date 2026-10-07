@@ -350,7 +350,10 @@ describe("receipt highlight ownership", () => {
 
 describe("extractionConfig", () => {
   beforeEach(() => {
-    for (const name of ["INVOICE_EXTRACTION_MODEL", "INVOICE_ESCALATION_MODEL"]) {
+    for (const name of [
+      "INVOICE_EXTRACTION_MODEL",
+      "INVOICE_ESCALATION_MODEL",
+    ]) {
       vi.stubEnv(name, undefined)
     }
   })
@@ -411,7 +414,6 @@ describe("extractInvoice", () => {
       mediaType: "image/jpeg",
     })
   })
-
 
   it("appends the escalation hint to the prompt", async () => {
     await extractInvoice(PDF, ["Produce"], {
@@ -529,7 +531,6 @@ describe("extractWithEscalation", () => {
 
     expect(run).toMatchObject({ extraction: MISMATCHED, escalated: false })
   })
-
 
   it("does not escalate when no tier-3 model is configured", async () => {
     vi.stubEnv("INVOICE_ESCALATION_MODEL", "")
@@ -690,7 +691,6 @@ describe("detectDocuments", () => {
     })
   })
 })
-
 
 describe("a file the model refuses", () => {
   it("hands the refusal's own words back so a bundle can be split", async () => {

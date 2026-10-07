@@ -197,7 +197,6 @@ export function runDriveWatch(): Promise<DriveWatchResult> {
   return run
 }
 
-
 async function poll(): Promise<DriveWatchResult> {
   const polledAt = new Date().toISOString()
   let seeded = 0

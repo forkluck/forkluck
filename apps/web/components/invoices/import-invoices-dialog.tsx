@@ -845,8 +845,8 @@ function ImportBody({
           Add supplier invoice PDFs and receipt photos from Google Drive or your
           computer. Standard invoices are read for free on this server; anything
           it can&apos;t read automatically is read by your own AI key. You
-          review every receipt before anything is saved: ingredient lines update your supplier
-          prices, everything else is tracked as spend.
+          review every receipt before anything is saved: ingredient lines update
+          your supplier prices, everything else is tracked as spend.
         </DialogDescription>
         <ImportFilesPanel
           config={config}
