@@ -48,7 +48,7 @@
     "context:stats": "repomix --token-count-tree 1000"
   },
   "devDependencies": {
-    "repomix": "^1.18.0"
+    "repomix": "^1.18.1"
   },
   "pnpm": {
     "overrides": {
