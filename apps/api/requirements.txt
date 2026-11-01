@@ -1,5 +1,5 @@
-Django==5.2.17
+Django==5.2.18
 gunicorn==26.2.0
-psycopg2-binary==2.9.12
-cryptography==50.0.1
+psycopg2-binary==2.9.13
+cryptography==50.0.2
 azure-communication-email==1.1.0
